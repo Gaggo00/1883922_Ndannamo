@@ -1,5 +1,7 @@
-package com.example.accessing_data_mysql;
+package com.example.accessing_data_mysql.controller;
 
+import com.example.accessing_data_mysql.User;
+import com.example.accessing_data_mysql.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
