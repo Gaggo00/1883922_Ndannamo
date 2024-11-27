@@ -24,7 +24,7 @@ public class UserService {
 
     public User registerUser(User user) {
         if(userRepository.findByEmail(user.getEmail()).isPresent()) {
-            throw new IllegalStateException("Email already token");
+            throw new IllegalStateException("Email already taken");
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRole(User.Role.USER);
