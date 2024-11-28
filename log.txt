@@ -1,0 +1,7 @@
+Log
+
+Nov 28 11.28 Jacopo
+- Cambiamenti nel Dockerfile del frontend e nel compose per aggiornamento automatico del frontend
+- Aggiunta .gitignore per non pushare node_modules
+- Aggiunta file log.txt
+
