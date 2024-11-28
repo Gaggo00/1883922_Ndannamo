@@ -3,6 +3,7 @@ import Login from "./components/Login";
 import Navbar from './common/Navbar'
 import FooterComponent from "./common/Footer";
 import Home from "./pages/Home";
+import Main from "./pages/Main";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import {AuthProvider} from "./auth/AuthContext";
 
@@ -16,6 +17,7 @@ function App() {
                     <Routes>
                         <Route path="/" element={<Home/>} />
                         <Route path="/login" element={<Login/>} />
+                        <Route path="/main" element={<Main/>} />
                     </Routes>
                 </header>
                   <FooterComponent/>

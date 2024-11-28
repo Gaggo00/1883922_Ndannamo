@@ -1,0 +1,27 @@
+.mainContainer {
+    width: 300px;
+    height: 200px;
+    background-color: #4CAF50;
+    color: black;
+    display: flex;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.secondaryContainer {
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: 20px;
+}
+
+
+.destination {
+    font-weight: 500;
+    font-size: 50px;
+}
+
+.data {
+    font-weight: 100;
+}
