@@ -10,7 +10,7 @@ function Home() {
 
     return (
         <div style={{ textAlign: 'center', marginTop: '50px' }}>
-            <h1>Benvenuto nel nostro fantastico sito!</h1>
+            <h1>Benvenuto nel nostro fantastico sito!!</h1>
             <p>Questa è la pagina Home. Scopri tutto ciò che abbiamo da offrire!</p>
             <button
                 onClick={goToLogin}
