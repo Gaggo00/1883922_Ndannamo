@@ -39,6 +39,7 @@ public class AuthController {
         );
         final UserDetails userDetails = userService.getUserByEmail(loginRequest.getEmail());
         final String jwt = jwtService.generateToken(userDetails);
+
         return ResponseEntity.ok(jwt);
     }
 

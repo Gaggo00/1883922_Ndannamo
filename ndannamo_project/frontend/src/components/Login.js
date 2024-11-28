@@ -1,56 +1,53 @@
-import React, {useState} from "react"
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../auth/AuthContext';
+import UserService from '../services/UserService';
 
-export default function Login(probs) {
-    const [email, setEmail] = useState("")
-    const [password, setPassword] = useState("")
-    const [message, setMessage] = useState("")
+function Login() {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
+    const { login } = useAuth(); // Usa il contesto per aggiornare lo stato di autenticazione
+    const navigate = useNavigate();
 
-    const onSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        let user = {email: email, password: password};
 
-
-        fetch("http://localhost:8080/api/auth/login", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(user),
-        })
-            .then((response) => response.json())
-            .then((data) => {
-                setMessage("La password è esatta! Benvenuto :) ");
-                console.log(data);
-                console.log("qui entro sempre!")
-            })
-            .catch((error) =>{
-                setMessage(error.message);
-                //console.log("Something went wrong");
-            });
+        try {
+            const userData = await UserService.login(email, password);
+            if (userData) {
+                localStorage.setItem('token', userData);
+                login(); // Aggiorna lo stato di autenticazione
+                navigate('/');
+            } else {
+                setError(userData.message);
+            }
+        } catch (error) {
+            console.log(error);
+            setError(error.message);
+            setTimeout(() => {
+                setError('');
+            }, 5000);
+        }
     };
-    return(
-        <form onSubmit={onSubmit}>
-            <div className="Login">
-                Login to find the secret
-                <div className="InputBox">
-                    <label>Email:</label>
-                    <input
-                        type="email"
-                        name="email"
-                        onChange={(event) => setEmail(event.target.value)}
-                    />
+
+    return (
+        <div className="auth-container">
+            <h2>Login</h2>
+            {error && <p className="error-message">{error}</p>}
+            <form onSubmit={handleSubmit}>
+                <div className="form-group">
+                    <label>Email: </label>
+                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
                 </div>
-                <div className="InputBox">
-                    <label>Password:</label>
-                    <input
-                        type="password"
-                        name="password"
-                        onChange={(event) => setPassword(event.target.value)}
-                    />
+                <div className="form-group">
+                    <label>Password: </label>
+                    <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
                 </div>
                 <button type="submit">Login</button>
-                {message && <div className="Message">{message}</div>}
-            </div>
-        </form>
+            </form>
+        </div>
     );
 }
+
+export default Login;
