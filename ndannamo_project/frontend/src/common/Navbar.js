@@ -8,7 +8,7 @@ function Navbar() {
 
     useEffect(() => {
         // Forza un controllo ogni volta che il percorso cambia
-        console.log('Percorso cambiato:', location.pathname);
+        //console.log('Percorso cambiato:', location.pathname);
     }, [location]);
 
     const handleLogout = () => {

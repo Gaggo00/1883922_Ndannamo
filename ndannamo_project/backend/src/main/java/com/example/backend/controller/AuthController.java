@@ -9,6 +9,7 @@ import com.example.backend.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -34,19 +35,33 @@ public class AuthController {
     @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
-        authenticationManager.authenticate(
+        try {
+            authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword())
-        );
-        final UserDetails userDetails = userService.getUserByEmail(loginRequest.getEmail());
-        final String jwt = jwtService.generateToken(userDetails);
+            );
+            final UserDetails userDetails = userService.getUserByEmail(loginRequest.getEmail());
+            final String jwt = jwtService.generateToken(userDetails);
 
-        return ResponseEntity.ok(jwt);
+            return ResponseEntity.ok(jwt);
+        }
+        catch (Exception ex) {
+            return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(ex.getMessage());
+        }
     }
 
     @PostMapping("/register")
     @CrossOrigin(origins = "http://localhost:3000")
-    public ResponseEntity<User> register(@Valid @RequestBody User user) {
-        return ResponseEntity.ok(userService.registerUser(user));
+    public ResponseEntity<?> register(@Valid @RequestBody User user) {
+        try {
+            return ResponseEntity.ok(userService.registerUser(user));
+        }
+        catch (Exception ex) {
+            return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(ex.getMessage());
+        }
     }
 
     @PostMapping("/change-password")
