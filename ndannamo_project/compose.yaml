@@ -39,6 +39,11 @@ services:
     build: ./frontend
     ports:
       - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules  # Evita che node_modules venga sovrascritto dal volume
+    environment:
+      - CHOKIDAR_USEPOLLING=true  # Utilizza il polling per la rilevazione dei cambiamenti nei file
     networks:
       - frontend_net
 
