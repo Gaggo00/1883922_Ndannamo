@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import UserService from '../services/UserService';
 
-function Login() {
+function Register() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
@@ -15,16 +14,15 @@ function Login() {
         e.preventDefault();
 
         try {
-            const userData = await UserService.login(email, password);
+            const userData = await UserService.register(email, password);
             if (userData) {
                 localStorage.setItem('token', userData);
-                login(); // Aggiorna lo stato di autenticazione
+                login(); // Aggiorna lo stato di autenticazione (login fatto in automatico quando ti registri)
                 navigate('/');
             } else {
                 setError(userData.message);
             }
         } catch (error) {
-            //console.log(error);
             setError(error.response.data);
             setTimeout(() => {
                 setError('');
@@ -34,7 +32,7 @@ function Login() {
 
     return (
         <div className="auth-container">
-            <h2>Login</h2>
+            <h2>Sign up</h2>
             {error && <p className="error-message">{error}</p>}
             <form onSubmit={handleSubmit}>
                 <div className="form-group">
@@ -45,12 +43,10 @@ function Login() {
                     <label>Password: </label>
                     <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
                 </div>
-                <button type="submit">Login</button>
+                <button type="submit">Sign up</button>
             </form>
-            <div>Don't have an account yet?  <Link to="/register">Sign up</Link>
-            </div>
         </div>
     );
 }
 
-export default Login;
+export default Register;

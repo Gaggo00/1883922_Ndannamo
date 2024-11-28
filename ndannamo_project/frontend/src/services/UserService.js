@@ -21,6 +21,26 @@ class UserService{
         }
     }
 
+    static async register(email, password){
+        try {
+            const response = await axios.post(
+                `${UserService.BASE_URL}/api/auth/register`,
+                { email, password },
+                {
+                    headers: {
+                        "Content-Type": "application/json"
+
+                    }
+                }
+            );
+            return response.data;
+        } catch (error) {
+            throw error; // L'errore sarà gestito all'esterno
+        }
+    }
+
+    /*
+    // questa non l'ho capita
     static async register(userData, token){
         try{
             const response = await axios.post(`${UserService.BASE_URL}/auth/register`, userData,
@@ -32,6 +52,7 @@ class UserService{
             throw err;
         }
     }
+    */
 
     /**AUTHENTICATION CHECKER */
     static logout(){
