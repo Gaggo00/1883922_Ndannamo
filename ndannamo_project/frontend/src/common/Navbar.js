@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
+import '../styles/Navbar.css'
 
 function Navbar() {
     const { isAuthenticated, logout } = useAuth();
@@ -19,13 +20,19 @@ function Navbar() {
     };
 
     return (
-        <nav>
-            <ul>
-                {isAuthenticated && location.pathname !== '/login' && (<li><Link to="/" onClick={handleLogout}>Logout</Link></li>)}
-                {!isAuthenticated && location.pathname !== '/logout' && (<li><Link to="/login">Login</Link></li>)}
-                <li><Link to="/">Home</Link></li>
-            </ul>
-        </nav>
+        <div className="navbar">
+            <div className="logo">
+                <span id="title">NDANNAMO</span>
+                <span id="subtitle">WHERE ARE WE GOING</span>
+            </div>
+            <div className="center">
+                <a className="centerEl"><Link to="/">Home</Link></a>
+                <a className="centerEl">Trip</a>
+            </div>
+            {!isAuthenticated && location.pathname !== '/logout' && (<a className="right"><Link to="/login">Login</Link></a>)}
+            {isAuthenticated && location.pathname !== '/login' && (<a className="right"><Link to="/" onClick={handleLogout}>Logout</Link></a>)}
+        </div>
+
     );
 }
 

@@ -1,31 +1,30 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
+import "../styles/Home.css"
+import logo from "../static/Logo app.jpg"
+import {useAuth} from "../auth/AuthContext";
 
 function Home() {
+    const { isAuthenticated, logout } = useAuth();
     const navigate = useNavigate();
 
     const goToLogin = () => {
-        navigate('/login'); // Reindirizza alla pagina di login
+        if (isAuthenticated) {
+            navigate('/');
+        }
+        else {
+            navigate('/login');
+        }
     };
 
     return (
-        <div style={{ textAlign: 'center', marginTop: '50px' }}>
-            <h1>Benvenuto nel nostro fantastico sito!!</h1>
-            <p>Questa è la pagina Home. Scopri tutto ciò che abbiamo da offrire!</p>
-            <button
-                onClick={goToLogin}
-                style={{
-                    padding: '10px 20px',
-                    fontSize: '16px',
-                    cursor: 'pointer',
-                    backgroundColor: '#007BFF',
-                    color: '#fff',
-                    border: 'none',
-                    borderRadius: '5px',
-                }}
-            >
-                Vai al Login
-            </button>
+        <div className='home'>
+            <img src={logo} alt='App logo' />
+            <div className='scritte'>
+                <p> PLAN, SHARE AND RELIVE YOUR</p>
+                <p> ADVENTURES TOGETHER </p>
+                <button onClick={goToLogin}>START NOW</button>
+            </div>
         </div>
     );
 }

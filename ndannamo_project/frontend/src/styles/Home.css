@@ -1,0 +1,40 @@
+.home{
+    background:#eee5d4;
+    height:100%;
+    display:flex;
+    align-items: center;
+    width: 100%;
+    height: calc(100vh);
+
+}
+
+img{
+    height:300px;
+    margin-left:30px;
+    width:300px;
+    background:white;
+    margin-left:10%;
+}
+.scritte{
+    color:#004b3f;
+    font-weight: bold;
+    font-size:30px;
+    text-align:center;
+    flex:1;
+}
+button{
+    border:none;
+    background-color:#004b3f;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+}
+
+button a {
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+}
+p{
+    margin:10px;
+}
