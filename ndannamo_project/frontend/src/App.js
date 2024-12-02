@@ -1,5 +1,6 @@
 import './App.css';
 import Login from "./components/Login";
+import Register from "./components/Register";
 import Navbar from './common/Navbar'
 import FooterComponent from "./common/Footer";
 import Home from "./pages/Home";
@@ -17,6 +18,7 @@ function App() {
                     <Routes>
                         <Route path="/" element={<Home/>} />
                         <Route path="/login" element={<Login/>} />
+                        <Route path="/register" element={<Register/>} />
                         <Route path="/main" element={<Main/>} />
                     </Routes>
                 </header>

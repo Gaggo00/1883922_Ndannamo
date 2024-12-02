@@ -4,7 +4,6 @@ import com.example.backend.dto.ChangePasswordRequest;
 import com.example.backend.exception.ResourceNotFoundException;
 import com.example.backend.model.User;
 import com.example.backend.repositories.UserRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
