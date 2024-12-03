@@ -1,4 +1,4 @@
-package com.example.backend.model;
+package com.example.backend.mainDb.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -12,6 +12,7 @@ import java.util.ArrayList;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name="trips")
 public class Trip {
 
     @Id

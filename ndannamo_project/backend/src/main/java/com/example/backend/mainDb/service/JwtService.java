@@ -1,4 +1,4 @@
-package com.example.backend.service;
+package com.example.backend.mainDb.service;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

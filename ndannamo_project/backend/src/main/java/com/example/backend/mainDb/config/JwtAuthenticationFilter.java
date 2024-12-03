@@ -1,6 +1,6 @@
-package com.example.backend.config;
+package com.example.backend.mainDb.config;
 
-import com.example.backend.service.JwtService;
+import com.example.backend.mainDb.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

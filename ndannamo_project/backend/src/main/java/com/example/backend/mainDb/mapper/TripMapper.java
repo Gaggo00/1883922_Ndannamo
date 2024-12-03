@@ -1,7 +1,7 @@
-package com.example.backend.mapper;
+package com.example.backend.mainDb.mapper;
 
-import com.example.backend.dto.TripDTO;
-import com.example.backend.model.Trip;
+import com.example.backend.mainDb.dto.TripDTO;
+import com.example.backend.mainDb.model.Trip;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

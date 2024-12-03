@@ -1,6 +1,6 @@
-package com.example.backend.repositories;
+package com.example.backend.mainDb.repositories;
 
-import com.example.backend.model.Trip;
+import com.example.backend.mainDb.model.Trip;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

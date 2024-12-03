@@ -1,4 +1,4 @@
-package com.example.backend.dto;
+package com.example.backend.mainDb.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotBlank;

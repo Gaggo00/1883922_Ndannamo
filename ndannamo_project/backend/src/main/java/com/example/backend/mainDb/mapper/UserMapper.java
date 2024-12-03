@@ -1,7 +1,7 @@
-package com.example.backend.mapper;
+package com.example.backend.mainDb.mapper;
 
-import com.example.backend.dto.UserDTO;
-import com.example.backend.model.User;
+import com.example.backend.mainDb.dto.UserDTO;
+import com.example.backend.mainDb.model.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

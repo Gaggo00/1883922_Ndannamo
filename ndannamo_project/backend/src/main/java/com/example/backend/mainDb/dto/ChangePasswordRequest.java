@@ -1,4 +1,4 @@
-package com.example.backend.dto;
+package com.example.backend.mainDb.dto;
 
 import lombok.Data;
 

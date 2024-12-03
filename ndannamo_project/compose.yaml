@@ -1,7 +1,7 @@
 
 services:
-  postgres:
-    container_name: 'my-postgres'
+  postgres_main:
+    container_name: 'postgres_main'
     image: 'postgres:17.1'
     environment:
       POSTGRES_USER: myuser
@@ -10,7 +10,7 @@ services:
     ports:
       - '5432:5432'
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_data_main:/var/lib/postgresql/data_main
     networks:
       - spring_net
     healthcheck:
@@ -19,17 +19,40 @@ services:
       timeout: 5s
       retries: 5
 
+
+  postgres_cities:
+    container_name: 'postgres_cities'
+    image: 'postgres:17.1'
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: mydatabase
+    ports:
+      - '5433:5432'
+    volumes:
+      - postgres_data_cities:/var/lib/postgresql/data_cities
+    networks:
+      - spring_net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U myuser -d mydatabase"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+
   app:
     build: backend
     container_name: backend
     ports:
       - "8080:8080"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/mydatabase
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres_main:5432/mydatabase
       SPRING_DATASOURCE_USERNAME: myuser
       SPRING_DATASOURCE_PASSWORD: mypassword
     depends_on:
-      postgres:
+      postgres_main:
+        condition: service_healthy
+      postgres_cities:
         condition: service_healthy
     networks:
       - spring_net
@@ -53,4 +76,5 @@ networks:
   frontend_net:
 
 volumes:
-  postgres_data:
+  postgres_data_main:
+  postgres_data_cities:

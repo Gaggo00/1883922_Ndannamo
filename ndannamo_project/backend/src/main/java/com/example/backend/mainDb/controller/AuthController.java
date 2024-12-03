@@ -1,11 +1,11 @@
-package com.example.backend.controller;
+package com.example.backend.mainDb.controller;
 
 
-import com.example.backend.dto.ChangePasswordRequest;
-import com.example.backend.dto.LoginRequest;
-import com.example.backend.model.User;
-import com.example.backend.service.JwtService;
-import com.example.backend.service.UserService;
+import com.example.backend.mainDb.dto.ChangePasswordRequest;
+import com.example.backend.mainDb.dto.LoginRequest;
+import com.example.backend.mainDb.model.User;
+import com.example.backend.mainDb.service.JwtService;
+import com.example.backend.mainDb.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

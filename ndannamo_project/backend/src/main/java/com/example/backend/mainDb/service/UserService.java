@@ -1,9 +1,9 @@
-package com.example.backend.service;
+package com.example.backend.mainDb.service;
 
-import com.example.backend.dto.ChangePasswordRequest;
 import com.example.backend.exception.ResourceNotFoundException;
-import com.example.backend.model.User;
-import com.example.backend.repositories.UserRepository;
+import com.example.backend.mainDb.dto.ChangePasswordRequest;
+import com.example.backend.mainDb.model.User;
+import com.example.backend.mainDb.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;

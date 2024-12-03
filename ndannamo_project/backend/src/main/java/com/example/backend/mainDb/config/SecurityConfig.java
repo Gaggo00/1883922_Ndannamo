@@ -1,7 +1,7 @@
-package com.example.backend.config;
+package com.example.backend.mainDb.config;
 
-import com.example.backend.repositories.UserRepository;
-import com.example.backend.service.JwtService;
+import com.example.backend.mainDb.repositories.UserRepository;
+import com.example.backend.mainDb.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
