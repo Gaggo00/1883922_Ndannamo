@@ -1,7 +1,7 @@
 import React from 'react';
 import {Link, useNavigate} from 'react-router-dom';
 import "../styles/Home.css"
-import logo from "../static/Logo app.jpg"
+import logo from "../static/Logo app.png"
 import {useAuth} from "../auth/AuthContext";
 
 function Home() {
@@ -21,8 +21,10 @@ function Home() {
         <div className='home'>
             <img src={logo} alt='App logo' />
             <div className='scritte'>
-                <p> PLAN, SHARE AND RELIVE YOUR</p>
-                <p> ADVENTURES TOGETHER </p>
+                <p> PLAN</p>
+                <p> SHARE</p>
+                <p> AND RELIVE</p>
+                <p id="piccolo">YOUR ADVENTURES</p>
                 <button onClick={goToLogin}>START NOW</button>
             </div>
         </div>

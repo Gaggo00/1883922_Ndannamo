@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import UserService from '../services/UserService';
 import '../styles/Login.css'
-import logo from '../static/Logo app.jpg'
+import logo from '../static/Logo app.png'
 
 function Login() {
     const [email, setEmail] = useState('');
