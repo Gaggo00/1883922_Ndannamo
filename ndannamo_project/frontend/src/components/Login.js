@@ -42,14 +42,14 @@ function Login() {
                 <img src={logo} alt='App logo'/>
             </div>
             <div class="form-box">
-                <p>Login your account</p>
+                <p id="title">Login your account</p>
                 <form onSubmit={handleSubmit}>
                     <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)}/>
                     <input type="password" placeholder="Password" value={password}
                            onChange={(e) => setPassword(e.target.value)}/>
                     <button type="submit">Login</button>
                     {error && <p className="error-message">{error}</p>}
-                    <p>Don't have an account yet? <Link to="/register">Sign up</Link></p>
+                    <p id="subtitle" >Don't have an account yet? <Link to="/register">Sign up</Link></p>
                 </form>
             </div>
         </div>

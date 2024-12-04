@@ -1,20 +1,42 @@
 .home{
     display:flex;
     align-items: center;
-    background-image: url("../static/sfondo_home.png");
-    background-size: 100% 100%;
-    background-position: center;
-    background-repeat: no-repeat;
+    background-color: #eee5d4;
     width: 100%;
-    height: 100vh;
-
+    height: 60vh;
+    margin-top:-100px;
+    z-index:2;
+    margin-bottom:-140px;
+    position:relative;
 }
-body, html {
+
+body, html{
     width: 100%;
     height: 100%;
     overflow-x: hidden; /* Evita eventuali barre di scorrimento orizzontali */
 }
-img{
+.page{
+    width: 100%;
+
+}
+#top{
+    width: 100%;
+    height: 46vh;
+    background-color: #eee5d4;
+    margin-left:0;
+    margin-top:-89px;
+    margin-bottom: -10px;
+    z-index:1;
+}
+#bottom{
+    width: 100%;
+    height: 46vh;
+    background-color: #eee5d4;
+    margin-left:0;
+    margin-bottom: -10px;
+    z-index:1;
+}
+#logo{
     height:50vh;
     margin-left:30px;
     width:50vh;
