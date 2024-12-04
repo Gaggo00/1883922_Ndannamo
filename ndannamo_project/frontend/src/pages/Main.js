@@ -1,18 +1,19 @@
 import React from 'react';
-import TripButton from '../components/TripButton/TripButton'
+import LateralMenu from '../components/LateralMenu/LateralMenu';
 import "../styles/Main.css"
+import Trip from '../models/Trip';
 
 function Main() {
 
-    const colors = [
-        '#FFBC70',
-        '#FFF4C7',
+    var trips = [
+        new Trip("Milano", 1725456488000, 1725629288000)
     ]
 
     var upcoming_list = [
         {destination: 'Parigi', data: '22/03 - 26/03'},
         {destination: 'Londra', data: '28/09 - 2/10'},
-        {destination: 'Milano', data: '28/09 - 2/10'}
+        {destination: 'Milano', data: '28/09 - 2/10'},
+        {destination: 'Parma', data: '28/09 - 2/10'}
     ]
 
     var past_list = [
@@ -22,32 +23,7 @@ function Main() {
     ]
 
     return (
-        <div className='page-container'>
-            <div className='section-container'>
-                <div className='title-text'>Upcoming trips</div>
-                <div className='trips-container'>
-                    {upcoming_list.map((trip, index) => (
-                        <TripButton
-                            destination={trip.destination}
-                            data={trip.data}
-                            bg_color={colors[index % colors.length]}
-                        />
-                    ))}
-                </div>
-            </div>
-            <div className='section-container'>
-                <div className='title-text'>Past trips</div>
-                <div className='trips-container'>
-                    {past_list.map((trip, index) => (
-                        <TripButton
-                            destination={trip.destination}
-                            data={trip.data}
-                            bg_color={'#E9E9E9'}
-                        />
-                    ))}
-                </div>
-            </div>
-        </div>
+        <LateralMenu trips_list={trips}></LateralMenu>
     );
 }
 
