@@ -24,9 +24,9 @@ function App() {
                         <Route path="/main" element={<Main/>} />
                     </Routes>
                 </main>
-                {/*<footer>
+                {<footer>
                     <FooterComponent/>
-                </footer>*/}
+                </footer>}
             </div>
         </BrowserRouter>
     </AuthProvider>
