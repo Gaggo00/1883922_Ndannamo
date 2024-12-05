@@ -1,23 +1,28 @@
 .navbar {
-    background-color: #f7c46b;
+    #background-color: #98af45;
+    background-color: #84bd9a;
     overflow: hidden;
     display: flex; /* Attiva Flexbox */
     justify-content: space-between; /* Spazia gli elementi */
     align-items: center; /* Allinea verticalmente gli elementi */
     padding: 5px;
-    color:white;
+    color:#004b3f;
     width: 100%;
     position: absolute;
     top: 0;
-    z-index: 1000;
+    z-index: 10;
     height: 30px;
-
+}
+body, html {
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden; /* Evita eventuali barre di scorrimento orizzontali */
 }
 
 .navbar a {
     text-decoration: none;
     display: inline-block;
-    color:white;
+    color:#004b3f;
     margin-right: 3%;
     font-size: 15px;
 }
@@ -26,8 +31,11 @@
 
 }
 .centerEl{
-    margin-left:15%;
-    margin-right:5%;
+    margin-left:40px;
+    margin-right:40px;
+}
+.centerEl a{
+    margin-right:90px;
 }
 
 .navbar .logo {
@@ -35,6 +43,7 @@
     flex-direction: column; /* Dispone gli elementi in colonna */
     align-items: center; /* Centra gli elementi verticalmente */
     margin-left:3%;
+    font-weight: bold;
 }
 
 #title{
