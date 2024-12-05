@@ -10,22 +10,26 @@ import {AuthProvider} from "./auth/AuthContext";
 
 function App() {
   return (
-      <AuthProvider>
-          <BrowserRouter>
-              <div className="App">
+    <AuthProvider>
+        <BrowserRouter>
+            <div className="App">
                 <header className="App-header">
                     <Navbar/>
+                </header>
+                <main className="App-main">
                     <Routes>
                         <Route path="/" element={<Home/>} />
                         <Route path="/login" element={<Login/>} />
                         <Route path="/register" element={<Register/>} />
                         <Route path="/main" element={<Main/>} />
                     </Routes>
-                </header>
-                  <FooterComponent/>
-              </div>
-          </BrowserRouter>
-      </AuthProvider>
+                </main>
+                {/*<footer>
+                    <FooterComponent/>
+                </footer>*/}
+            </div>
+        </BrowserRouter>
+    </AuthProvider>
   );
 }
 

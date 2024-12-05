@@ -27,8 +27,6 @@ function TripsList({trip_list = [], title, colors = ['#eb9b17', '#eee8da'], max_
                         />
                     )
                 })}
-            </div>
-            <div className='button-container'>
                 {showUpcoming && <button className='show-more-button' onClick={() => toggleVisibility(showUpcoming)}>
                     Show More
                 </button>}

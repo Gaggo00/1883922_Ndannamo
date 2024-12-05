@@ -35,15 +35,13 @@ class TripButton extends Component {
         return (
             <div
                 ref={this.selfRef}
-                style={{ backgroundColor: bg_color }}
+                //style={{ backgroundColor: bg_color }}
                 className={containerClassName}
                 onClick={() => this.setClick(!this.state.clicked)}
             >
-                <div className="secondaryContainer">
                 <div className="destination">{destination}</div>
                 <div className="data">{data}</div>
-                </div>
-                <BsChevronRight style={{height: "100%"}} />
+                {/*<BsChevronRight style={{height: "100%"}} />*/}
             </div>
         );
     }
