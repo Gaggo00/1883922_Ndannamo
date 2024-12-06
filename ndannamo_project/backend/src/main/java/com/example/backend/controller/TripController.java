@@ -58,7 +58,8 @@ public class TripController {
         
         try {
             final Trip trip = tripService.createTrip(tripRequest);
-            return ResponseEntity.ok("trip registrata correttamente, id: " + trip.getId() + "utente loggato id: " + currentUser.getId());
+            //return ResponseEntity.ok("trip registrata correttamente, id: " + trip.getId() + "utente loggato id: " + currentUser.getId());
+            return ResponseEntity.ok("trip registrata correttamente, id: " + trip.getId());
         }
         catch (Exception ex) {
             return ResponseEntity
