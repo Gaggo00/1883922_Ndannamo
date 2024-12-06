@@ -36,7 +36,7 @@ function Login() {
 
     return (
         <div className="all-page">
-    <div class="container">
+    <div class="log-container">
         <div class="login-box">
             <div class="image-box">
                 <img src={logo} alt='App logo'/>

@@ -51,6 +51,15 @@ public class AuthController {
         }
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
+    @GetMapping("/getMyProfile")
+    public ResponseEntity<?> getMyProfile() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        return ResponseEntity.ok(userService.getUserByEmail(email));
+    }
+
+
     @PostMapping("/register")
     @CrossOrigin(origins = "http://localhost:3000")
     public ResponseEntity<?> register(@Valid @RequestBody User user) {

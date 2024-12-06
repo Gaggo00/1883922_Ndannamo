@@ -28,10 +28,13 @@ function Home() {
                     <p> SHARE</p>
                     <p> AND RELIVE</p>
                     <p id="piccolo">YOUR ADVENTURES</p>
+
                     <button onClick={goToLogin}>START NOW</button>
                 </div>
             </div>
+            <div id="bottom-container">
             <img id="bottom" src={ondaArancione}/>
+            </div>
         </div>
 
     )

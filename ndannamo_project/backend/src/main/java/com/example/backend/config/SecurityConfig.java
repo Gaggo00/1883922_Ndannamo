@@ -45,7 +45,7 @@ public class SecurityConfig {
                         .requestMatchers("/images/**").permitAll()
                         .requestMatchers("/index.html").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/products/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/trips/**").permitAll()
                         .requestMatchers("/api/auth/change-password").authenticated()
 
                         .anyRequest().authenticated()

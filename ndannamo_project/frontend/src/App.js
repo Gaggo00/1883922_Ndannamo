@@ -7,6 +7,7 @@ import Home from "./pages/Home";
 import Main from "./pages/Main";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import {AuthProvider} from "./auth/AuthContext";
+import ProfilePage from "./userPages/ProfilePage";
 
 function App() {
   return (
@@ -22,11 +23,12 @@ function App() {
                         <Route path="/login" element={<Login/>} />
                         <Route path="/register" element={<Register/>} />
                         <Route path="/main" element={<Main/>} />
+                        <Route path="/profile" element={<ProfilePage/>} />
                     </Routes>
                 </main>
-                {/*<footer>
+                <footer>
                     <FooterComponent/>
-                </footer>*/}
+                </footer>
             </div>
         </BrowserRouter>
     </AuthProvider>

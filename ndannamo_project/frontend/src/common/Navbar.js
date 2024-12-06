@@ -1,7 +1,11 @@
-import React, { useEffect } from 'react';
+import React, {useEffect} from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import '../styles/Navbar.css'
+import 'bootstrap-icons/font/bootstrap-icons.css';
+import {Dropdown} from "react-bootstrap";
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 
 function Navbar() {
     const { isAuthenticated, logout } = useAuth();
@@ -13,11 +17,9 @@ function Navbar() {
     }, [location]);
 
     const handleLogout = () => {
-        const confirmDelete = window.confirm('Are you sure you want to logout this user?');
-        if (confirmDelete) {
-            logout();
-        }
-    };
+        logout();
+    }
+
 
     return (
         <div className="navbar">
@@ -29,11 +31,23 @@ function Navbar() {
                 <a className="centerEl"><Link to="/">Home</Link></a>
                 <a className="centerEl">Trip</a>
             </div>
-            {!isAuthenticated && location.pathname !== '/logout' && (<a className="right"><Link to="/login">Login</Link></a>)}
-            {isAuthenticated && location.pathname !== '/login' && (<a className="right"><Link to="/" onClick={handleLogout}>Logout</Link></a>)}
-        </div>
+            {isAuthenticated && (
+                <Dropdown drop="down">
+                    <Dropdown.Toggle variant="success" id="dropdown-basic">
+                        <i className="bi bi-person-circle"></i>
+                    </Dropdown.Toggle>
 
-    );
-}
+                    {/* Usa la classe CSS personalizzata per il menu */}
+                    <Dropdown.Menu className="dropdown-menu-custom">
+                        <Dropdown.Item> <Link to="/profile">My profile</Link> </Dropdown.Item>
+                        <Dropdown.Item><Link to="/" onClick={handleLogout}>Logout</Link></Dropdown.Item>
+                    </Dropdown.Menu>
+                </Dropdown>
+            )}
+            {!isAuthenticated && location.pathname !== '/logout' && (<a className="right"><Link to="/login">Login</Link></a>)}
+            </div>
+
+                );
+            }
 
 export default Navbar;

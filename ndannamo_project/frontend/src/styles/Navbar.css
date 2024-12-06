@@ -1,7 +1,5 @@
 .navbar {
-    #background-color: #98af45;
     background-color: #84bd9a;
-    overflow: hidden;
     display: flex; /* Attiva Flexbox */
     justify-content: space-between; /* Spazia gli elementi */
     align-items: center; /* Allinea verticalmente gli elementi */
@@ -9,7 +7,8 @@
     color:#004b3f;
     width: 100%;
     z-index: 10;
-    height: 30px;
+    height: 8vh;
+    position:relative;
 }
 body, html {
     width: 100%;
@@ -50,4 +49,14 @@ body, html {
 }
 #subtitle{
     font-size:10px;
+}
+
+.dropdown-menu-custom {
+    position: absolute;       /* Posiziona il menu fuori dal flusso normale */
+    bottom: 100%;             /* Lo spinge sopra il bottone del dropdown */
+    left: 0;                  /* Allinea il menu correttamente */
+    z-index: 1050;            /* Imposta un livello di z-index più alto per sovrapporsi */
+}
+.dropdown{
+    margin-right: 3%;
 }

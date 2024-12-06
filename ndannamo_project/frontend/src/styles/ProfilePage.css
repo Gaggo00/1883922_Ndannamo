@@ -1,0 +1,21 @@
+.profile-page-container {
+    margin-top:20vh;
+}
+.profile-page-container pass {
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    height: 100%;
+}
+#profile-content{
+    width:70%;
+    border-radius: 100px;
+    box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.3);
+    align-content: center;
+    justify-content: center;
+    margin: 0 auto;
+    height: 40vh;
+}
+p{
+    font-size: 20px;
+}
