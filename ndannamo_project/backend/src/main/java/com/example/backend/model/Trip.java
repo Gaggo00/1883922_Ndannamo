@@ -18,8 +18,8 @@ public class Trip {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     private String title;
-    private String description;
-    private String location;
+    private List<String> locations;
+    private LocalDate creationDate;
     private LocalDate startDate;
     private LocalDate endDate;
 
@@ -29,4 +29,7 @@ public class Trip {
     @ManyToMany(fetch = FetchType.EAGER)
     private List<User> participants = new ArrayList<>();
 
+    public void setCreatedByUser(User user) {
+        this.created_by = user;
+    }
 }

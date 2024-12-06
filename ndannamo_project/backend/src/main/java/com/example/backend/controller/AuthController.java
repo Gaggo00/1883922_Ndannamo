@@ -42,7 +42,11 @@ public class AuthController {
             final UserDetails userDetails = userService.getUserByEmail(loginRequest.getEmail());
             final String jwt = jwtService.generateToken(userDetails);
 
-            return ResponseEntity.ok(jwt);
+            //return ResponseEntity.ok(jwt);
+
+            // CAMBIAMENTO TEMPORANEO perche' ho bisogno di conoscere l'id degli utenti
+            User user = userService.getUserByEmail(loginRequest.getEmail());
+            return ResponseEntity.ok("token: " + jwt + " id: " + user.getId());
         }
         catch (Exception ex) {
             return ResponseEntity
