@@ -2,9 +2,14 @@ package com.example.backend.service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
+
+import org.modelmapper.ModelMapper;
 
 import com.example.backend.repositories.TripRepository;
 import com.example.backend.repositories.UserRepository;
@@ -20,6 +25,8 @@ public class TripService {
     private final TripRepository tripRepository;
     private final UserService userService;
 
+    @Autowired
+    private ModelMapper modelMapper;
 
     @Autowired
     public TripService(TripRepository tripRepository, UserService userService) {
@@ -27,39 +34,60 @@ public class TripService {
         this.userService = userService;
     }
      
-    public Trip createTrip(TripCreationRequest tripRequest) {
-        // TODO: controllo validita' user (che l'user createdBy sia lo stesso utente loggato)
-        // ...
+    public Trip createTrip(String username, TripCreationRequest tripRequest) {
+        // Ottieni user dall'username
+        User logged_user = userService.getUserByEmail(username);
 
         Trip trip = new Trip();
 
         trip.setTitle(tripRequest.getTitle());
         trip.setLocations(tripRequest.getLocations());
+        trip.setCreationDate(LocalDate.now());
         trip.setStartDate(tripRequest.getStartDate());
         trip.setEndDate(tripRequest.getEndDate());
 
-        User created_by = userService.getUserById(tripRequest.getCreatedBy());
-        //User created_by = new User();   // TEMP perche' non ho i veri ID degli utenti per ora
-        trip.setCreatedByUser(created_by);
+        //trip.setCreatedByUser(logged_user);
+        trip.setCreated_by(logged_user);
 
         ArrayList<User> participants = new ArrayList<User>();
-        participants.add(created_by);
-        /*
-        for (long id: tripRequest.getList_participants()) {
-            User user = userService.getUserById(id);
-            participants.add(user);
-        }
-        */
-        
+        participants.add(logged_user);
+
         trip.setParticipants(participants);
 
         return tripRepository.save(trip);
     }
     
 
-    public Trip getTripById(long id) {
-        // TODO: controllare che l'utente sia un participant della trip
-        // ...
-        return tripRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Trip not found!"));
+    public List<TripDTO> getTripsOfUser(String username) {
+
+        // Ottengo l'utente loggato
+        User logged_user = userService.getUserByEmail(username);
+
+        // Prendo le trip dell'utente loggato
+        List<Trip> trips = logged_user.getTrips();
+
+        // Converto la lista di Trip in lista di TripDTO
+        List<TripDTO> tripsDTO = trips.stream()
+            .map(trip -> modelMapper.map(trip, TripDTO.class))
+            .collect(Collectors.toList());
+
+        return tripsDTO;
+    }
+
+
+    public TripDTO getTripById(String username, long id) {
+
+        Trip trip = tripRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Trip not found!"));
+
+        // Controllo che l'utente loggato sia un participant della trip
+        User logged_user = userService.getUserByEmail(username);
+        if (!trip.getParticipants().contains(logged_user)) {
+            throw new ResourceNotFoundException("Trip not found!");
+        }
+
+        // Converti Trip in TripDTO
+        TripDTO tripDTO = modelMapper.map(trip, TripDTO.class);
+
+        return tripDTO;
     }
 }

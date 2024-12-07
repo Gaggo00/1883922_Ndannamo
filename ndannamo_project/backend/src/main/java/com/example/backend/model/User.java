@@ -35,7 +35,15 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "created_by")
+    private List<Trip> trips_created = new ArrayList<>();
+
     @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+        name = "trips_participation", 
+        joinColumns = @JoinColumn(name = "user_id"), 
+        inverseJoinColumns = @JoinColumn(name = "trip_id"))
     private List<Trip> trips = new ArrayList<>();
 
 

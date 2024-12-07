@@ -1,20 +1,18 @@
 package com.example.backend.controller;
 
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
 import com.example.backend.dto.TripCreationRequest;
 import com.example.backend.dto.TripDTO;
 import com.example.backend.model.Trip;
-import com.example.backend.model.User;
+import com.example.backend.service.JwtService;
 import com.example.backend.service.TripService;
 import com.example.backend.service.UserService;
 import com.example.backend.utils.TripValidation;
@@ -24,13 +22,13 @@ import com.example.backend.utils.TripValidation;
 @RequestMapping("/trips")
 public class TripController {
 
-    private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
     private final TripService tripService;
     //private final UserService userService;
 
     @Autowired
-    public TripController(AuthenticationManager authenticationManager, TripService tripService, UserService userService) {
-        this.authenticationManager = authenticationManager;
+    public TripController(JwtService jwtService, TripService tripService, UserService userService) {
+        this.jwtService = jwtService;
         this.tripService = tripService;
         //this.userService = userService;
     }
@@ -38,9 +36,7 @@ public class TripController {
 
     @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/")
-    public ResponseEntity<?> createTrip(@Valid @RequestBody TripCreationRequest tripRequest) {
-
-        // @RequestHeader("Authorization") String token, 
+    public ResponseEntity<?> createTrip(@RequestHeader("Authorization") String token, @Valid @RequestBody TripCreationRequest tripRequest) {
         
         // controlla validita' delle date
         if (!TripValidation.tripValid(tripRequest)) {
@@ -49,17 +45,34 @@ public class TripController {
                 .body("Invalid dates");
         }
         
-        //authenticationManager.authenticate(new )
-        //Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        //User currentUser = (User) authentication.getPrincipal();
-
-        //return ResponseEntity.ok().body("trip registrata correttamente");
-
-        
         try {
-            final Trip trip = tripService.createTrip(tripRequest);
-            //return ResponseEntity.ok("trip registrata correttamente, id: " + trip.getId() + "utente loggato id: " + currentUser.getId());
-            return ResponseEntity.ok("trip registrata correttamente, id: " + trip.getId());
+            // rimuovo "bearer " dalla stringa token -> DA CONTROLLARE se c'e' sempre scritto bearer o no
+            token = token.substring("Bearer ".length());
+            // estrai username dal token
+            String username = jwtService.extractUsername(token);
+            // crea trip
+            final Trip trip = tripService.createTrip(username, tripRequest);
+            return ResponseEntity.ok().body("trip registrata correttamente, id: " + trip.getId());
+        }
+        catch (Exception ex) {
+            return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(ex.getMessage());
+        }
+    }
+
+    @CrossOrigin(origins = "http://localhost:3000")
+    @GetMapping("/")
+    public ResponseEntity<?> getAllTrips(@RequestHeader("Authorization") String token) {
+    
+        try {
+            // rimuovo "bearer " dalla stringa token -> DA CONTROLLARE se c'e' sempre scritto bearer o no
+            token = token.substring("Bearer ".length());
+            // estrai username dal token
+            String username = jwtService.extractUsername(token);
+            // ottieni trips
+            final List<TripDTO> tripsDTO = tripService.getTripsOfUser(username);
+            return ResponseEntity.ok().body(tripsDTO);
         }
         catch (Exception ex) {
             return ResponseEntity
@@ -70,12 +83,17 @@ public class TripController {
 
 
     @CrossOrigin(origins = "http://localhost:3000")
-    @GetMapping("{id}")
-    public ResponseEntity<String> getTrip(@PathVariable Long id) {
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getTrip(@RequestHeader("Authorization") String token, @PathVariable Long id) {
 
         try {
-            final Trip trip = tripService.getTripById(id);
-            return ResponseEntity.ok("trip trovata: " + trip.getTitle());
+            // rimuovo "bearer " dalla stringa token -> DA CONTROLLARE se c'e' sempre scritto bearer o no
+            token = token.substring("Bearer ".length());
+            // estrai username dal token
+            String username = jwtService.extractUsername(token);
+            // ottieni trip
+            final TripDTO tripDTO = tripService.getTripById(username, id);
+            return ResponseEntity.ok().body(tripDTO);
         }
         catch (Exception ex) {
             return ResponseEntity
@@ -83,4 +101,6 @@ public class TripController {
                 .body(ex.getMessage());
         }
     }
+
+
 }

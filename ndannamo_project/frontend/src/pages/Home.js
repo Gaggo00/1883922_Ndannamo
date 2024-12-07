@@ -12,7 +12,7 @@ function Home() {
 
     const goToLogin = () => {
         if (isAuthenticated) {
-            navigate('/');
+            navigate('/main');
         } else {
             navigate('/login');
         }

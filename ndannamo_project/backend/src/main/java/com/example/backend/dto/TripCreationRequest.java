@@ -21,7 +21,4 @@ public class TripCreationRequest {
     private LocalDate startDate;
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate endDate;
-    
-    private long createdBy;
-    
 }
