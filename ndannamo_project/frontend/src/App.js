@@ -8,6 +8,7 @@ import Main from "./pages/Main";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import {AuthProvider} from "./auth/AuthContext";
 import ProfilePage from "./userPages/ProfilePage";
+import ChangePassword from "./userPages/ChangePassword";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
                         <Route path="/register" element={<Register/>} />
                         <Route path="/main" element={<Main/>} />
                         <Route path="/profile" element={<ProfilePage/>} />
+                        <Route path="/change-password" element={<ChangePassword/>} />
                     </Routes>
                 </main>
                 <footer>

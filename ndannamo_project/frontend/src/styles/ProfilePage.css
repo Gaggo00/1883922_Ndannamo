@@ -1,21 +1,51 @@
 .profile-page-container {
-    margin-top:20vh;
+    width: 100%;
+    background-image: url("../static/sfondo_home.png");
+    background-size: 100% 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 50vh;
+    color:#004b3f;
+
 }
-.profile-page-container pass {
+.profile-page-container #pass {
     display: flex;
-    align-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+
+#profile-content #scritte{
+    margin-top: 5vh;
+    display: flex;
+    flex-direction: column;
     justify-content: center;
-    height: 100%;
+    text-align: left;
 }
 #profile-content{
-    width:70%;
+    width:55%;
     border-radius: 100px;
     box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.3);
     align-content: center;
     justify-content: center;
     margin: 0 auto;
     height: 40vh;
+    padding-left:50px;
+    display:flex;
 }
 p{
     font-size: 20px;
+    margin-bottom:10px;
+}
+#color{
+    background-color: #84bd9a;
+    height: 20vh;
+}
+#orange{
+    background-color: #eb9b17;
+    height: 9vh;
+}
+#pass button{
+    border-radius: 10px;
+    background-color: #eb9b17;
+    margin-top:-15px;
 }

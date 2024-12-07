@@ -58,12 +58,33 @@ class UserService {
                 {
                     headers: {Authorization: `Bearer ${token}`}
                 })
-            console.log(response.data)
             return response.data;
         } catch (err) {
             throw err;
         }
     }
+    static async changePassword(token,currentPassword,newPassword) {
+        try{
+            const response = await axios.post(
+                `${UserService.BASE_URL}/api/auth/change-password`,
+                {currentPassword, newPassword},
+                {
+                    headers: {Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json"}
+                });
+            console.log(response);
+            return response.data;
+        }
+        catch(err) {
+            throw (err);
+        }
+    }
+
+
+
+
+
+
 }
 
 
