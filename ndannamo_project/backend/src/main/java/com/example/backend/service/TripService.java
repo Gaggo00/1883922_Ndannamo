@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
-import org.modelmapper.ModelMapper;
+import com.example.backend.mapper.TripMapperImpl;
 
 import com.example.backend.repositories.TripRepository;
 import com.example.backend.repositories.UserRepository;
@@ -24,14 +24,13 @@ public class TripService {
     
     private final TripRepository tripRepository;
     private final UserService userService;
+    private final TripMapperImpl tripMapper;
 
     @Autowired
-    private ModelMapper modelMapper;
-
-    @Autowired
-    public TripService(TripRepository tripRepository, UserService userService) {
+    public TripService(TripRepository tripRepository, UserService userService, TripMapperImpl tripMapper) {
         this.tripRepository = tripRepository;
         this.userService = userService;
+        this.tripMapper = tripMapper;
     }
      
     public Trip createTrip(String username, TripCreationRequest tripRequest) {
@@ -68,7 +67,7 @@ public class TripService {
 
         // Converto la lista di Trip in lista di TripDTO
         List<TripDTO> tripsDTO = trips.stream()
-            .map(trip -> modelMapper.map(trip, TripDTO.class))
+            .map(trip -> tripMapper.toDTO(trip))
             .collect(Collectors.toList());
 
         return tripsDTO;
@@ -86,7 +85,7 @@ public class TripService {
         }
 
         // Converti Trip in TripDTO
-        TripDTO tripDTO = modelMapper.map(trip, TripDTO.class);
+        TripDTO tripDTO = tripMapper.toDTO(trip);
 
         return tripDTO;
     }

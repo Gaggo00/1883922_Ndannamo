@@ -1,9 +1,11 @@
 package com.example.backend.service;
 
 import com.example.backend.dto.ChangePasswordRequest;
+import com.example.backend.dto.UserDTO;
 import com.example.backend.exception.ResourceNotFoundException;
 import com.example.backend.model.User;
 import com.example.backend.repositories.UserRepository;
+import com.example.backend.mapper.UserMapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,21 +16,24 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserMapperImpl userMapper;
 
     @Autowired
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, UserMapperImpl userMapper) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.userMapper = userMapper;
     }
 
-    public User registerUser(User user) {
+    public UserDTO registerUser(User user) {
         if(userRepository.findByEmail(user.getEmail()).isPresent()) {
             throw new IllegalStateException("Email already taken");
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRole(User.Role.USER);
-        return userRepository.save(user);
+        return userMapper.toDTO(userRepository.save(user));
     }
+    
     public User getUserByEmail(String email) {
         return userRepository.findByEmail(email).orElseThrow(()-> new ResourceNotFoundException("User not found!"));
     }
