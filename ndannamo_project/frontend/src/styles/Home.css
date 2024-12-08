@@ -3,38 +3,48 @@
     align-items: center;
     background-color: #eee5d4;
     width: 100%;
-    height: 60vh;
-    margin-top:-100px;
+    height: 39vh;
+    margin-top:-14vh;
     z-index:2;
-    margin-bottom:-140px;
     position:relative;
+
 }
 
-body, html{
+body{
     width: 100%;
     height: 100%;
     overflow-x: hidden; /* Evita eventuali barre di scorrimento orizzontali */
 }
 .page{
     width: 100%;
+    max-height: calc(100vh - 7vh);
+    margin-bottom: -2vh;
 
 }
 #top{
     width: 100%;
-    height: 46vh;
+    height: 55vh;
     background-color: #eee5d4;
     margin-left:0;
     margin-top:-89px;
     margin-bottom: -10px;
     z-index:1;
 }
-#bottom{
-    width: 100%;
-    height: 46vh;
-    background-color: #eee5d4;
-    margin-left:0;
-    margin-bottom: -10px;
+#bottom-container{
+
+    height: 35vh;
     z-index:1;
+    clip-path: inset(0% 0% 10% 0%);
+    margin-top: 3vh;
+
+}
+#bottom{
+    background-color: #eee5d4;
+    width: 100%;
+    position: relative;
+    bottom: 4vh;
+    height: 100%;
+
 }
 #logo{
     height:50vh;
@@ -60,7 +70,7 @@ body, html{
     align-items: center;
     justify-content: center;
 }
-button {
+.scritte button {
     border: none;
     background-color: #004b3f;
     width: auto;
@@ -86,7 +96,7 @@ button a {
     color: white;
     font-weight: bold;
 }
-p{
+.scritte p{
     text-align: left;
     font-size: 5vw;
     margin: -0.5vh;
