@@ -11,6 +11,8 @@ import java.util.List;
 public class UserDTO {
     private long id;
     @NotBlank(message = "Email is required")
+    private String nickname;
+    @NotBlank(message = "Email is required")
     private String email;
     private List<TripDTO> trips_created = new ArrayList<>();
     private List<TripDTO> trips = new ArrayList<>();

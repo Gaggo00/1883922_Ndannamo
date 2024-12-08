@@ -34,7 +34,7 @@ public interface TripMapper {
     public static List<String> userListToIdList(List<User> users) { 
         // Converto la lista di user in lista di id
         List<String> userIds = users.stream()
-            .map(user -> user.getEmail())
+            .map(user -> user.getNickname())
             .collect(Collectors.toList());
 
         return userIds;

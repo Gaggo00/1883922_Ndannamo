@@ -25,11 +25,15 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
+
     @NotBlank
     @Email
     private String email;
-    @NotBlank
 
+    @NotBlank
+    private String nickname;    // non lo si puo' chiamare username se no va in errore tutto
+
+    @NotBlank
     private String password;
 
     @Enumerated(EnumType.STRING)
@@ -56,7 +60,7 @@ public class User implements UserDetails {
     public String getUsername() {
         return email;
     }
-
+    
     @Override
     public boolean isAccountNonExpired() {
         return true;
@@ -79,21 +83,4 @@ public class User implements UserDetails {
     public enum Role {
         USER, ADMIN
     }
-    @Override
-    public String getPassword() {
-        return this.password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
-    // Getter for email
-    public String getEmail() {
-        return email;
-    }
-
 }
