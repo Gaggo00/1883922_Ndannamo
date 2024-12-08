@@ -2,14 +2,15 @@ package com.example.backend.mapper;
 
 import com.example.backend.dto.UserDTO;
 import com.example.backend.model.User;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = TripMapper.class)
 public interface UserMapper {
 
     // Map User entity to UserDTO (senza mappare i viaggi)
-    @Mapping(target = "trips", ignore = true) // Ignora i viaggi per evitare cicli
+    //@Mapping(target = "trips", ignore = true) // Ignora i viaggi per evitare cicli
     @Mapping(target = "trips_created", ignore = true) // Ignora i viaggi per evitare cicli
     UserDTO toDTO(User user);
 

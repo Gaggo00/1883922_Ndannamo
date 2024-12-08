@@ -33,6 +33,12 @@ public class UserService {
         user.setRole(User.Role.USER);
         return userMapper.toDTO(userRepository.save(user));
     }
+
+    public UserDTO getUserDTOByEmail(String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(()-> new ResourceNotFoundException("User not found!"));
+        UserDTO userDTO = userMapper.toDTO(user);
+        return userDTO;
+    }
     
     public User getUserByEmail(String email) {
         return userRepository.findByEmail(email).orElseThrow(()-> new ResourceNotFoundException("User not found!"));

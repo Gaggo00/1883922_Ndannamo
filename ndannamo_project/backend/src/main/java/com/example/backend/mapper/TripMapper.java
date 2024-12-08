@@ -11,7 +11,6 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
-
 @Mapper(componentModel = "spring")
 public interface TripMapper {
 
@@ -32,10 +31,10 @@ public interface TripMapper {
         return user.getId(); 
     }
     @Named("userListToIdList") 
-    public static List<Long> userListToIdList(List<User> users) { 
+    public static List<String> userListToIdList(List<User> users) { 
         // Converto la lista di user in lista di id
-        List<Long> userIds = users.stream()
-            .map(user -> user.getId())
+        List<String> userIds = users.stream()
+            .map(user -> user.getEmail())
             .collect(Collectors.toList());
 
         return userIds;

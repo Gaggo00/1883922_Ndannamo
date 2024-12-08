@@ -1,6 +1,7 @@
 package com.example.backend.controller;
 
 
+import com.example.backend.dto.UserDTO;
 import com.example.backend.dto.ChangePasswordRequest;
 import com.example.backend.dto.LoginRequest;
 import com.example.backend.model.User;
@@ -56,7 +57,7 @@ public class AuthController {
     public ResponseEntity<?> getMyProfile() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
-        return ResponseEntity.ok(userService.getUserByEmail(email));
+        return ResponseEntity.ok(userService.getUserDTOByEmail(email));
     }
 
 
@@ -64,7 +65,13 @@ public class AuthController {
     @CrossOrigin(origins = "http://localhost:3000")
     public ResponseEntity<?> register(@Valid @RequestBody User user) {
         try {
-            return ResponseEntity.ok(userService.registerUser(user));
+            // registra il nuovo utente
+            userService.registerUser(user);
+
+            // fai direttamente anche il login
+            final UserDetails userDetails = userService.getUserByEmail(user.getEmail());
+            final String jwt = jwtService.generateToken(userDetails);
+            return ResponseEntity.ok(jwt);
         }
         catch (Exception ex) {
             return ResponseEntity
