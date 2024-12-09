@@ -1,0 +1,105 @@
+.name-field {
+    background-color: white;
+    font-size: 20px;
+    flex: 3;
+    margin-bottom: 0;
+    padding-left: 20px;
+}
+
+.date-field {
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    font-size: 26px;
+    flex: 3;
+    margin-bottom: 0;
+    border-radius: 0px;
+    box-shadow: none;
+    padding: 0px;
+    margin: 0%;
+    color: black;
+    align-items: start;
+    border:  none;
+    cursor: pointer;
+}
+
+.date-field {
+    outline: none;
+}
+
+.single-date-container {
+    background-color:white;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    cursor: pointer;
+}
+
+.date-container {
+    display: flex;
+    flex-direction: row;
+}
+
+.left {
+    border-top-left-radius: 30px;
+    border-bottom-left-radius: 30px;
+    border-top: solid 1px;
+    border-bottom: solid 1px;
+    border-left: solid 1px;
+    border-right: solid 1px;
+}
+
+.right {
+    border-top-right-radius: 30px;
+    border-bottom-right-radius: 30px;
+    border-top: solid 1px;
+    border-bottom: solid 1px;
+    border-right: solid 1px;
+}
+
+.send {
+    flex: 1;
+    padding: 0px;
+    border-radius: 40px;
+    margin-right: 0;
+    margin-top: 0;
+}
+
+.step {
+    size: 40px;
+    color: grey;
+}
+
+.steps-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 60px;
+}
+
+.form-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
+}
+
+.button-step {
+    border-radius: 0px;
+    padding: 0px;
+    margin: 0px;
+    background: none;
+    box-shadow: none;
+}
+
+.title {
+    font-size: 70px;
+}
+
+.main-container {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    align-items: center;
+}
