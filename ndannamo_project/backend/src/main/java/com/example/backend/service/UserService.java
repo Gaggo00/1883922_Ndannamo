@@ -3,6 +3,7 @@ package com.example.backend.service;
 import com.example.backend.dto.ChangePasswordRequest;
 import com.example.backend.dto.UserDTO;
 import com.example.backend.exception.ResourceNotFoundException;
+import com.example.backend.model.Trip;
 import com.example.backend.model.User;
 import com.example.backend.repositories.UserRepository;
 import com.example.backend.mapper.UserMapperImpl;
@@ -54,6 +55,12 @@ public class UserService {
             throw new BadCredentialsException("Wrong password!");
         }
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(user);
+    }
+
+
+    // per aggiornare gli utenti quando mandi inviti
+    protected void saveUser(User user) {
         userRepository.save(user);
     }
 }

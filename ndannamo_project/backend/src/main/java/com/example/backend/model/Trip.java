@@ -27,16 +27,10 @@ public class Trip {
     @JoinColumn(name="created_by", nullable=false)
     private User created_by;
     
-    @ManyToMany(fetch = FetchType.EAGER) //, mappedBy = "trips")
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "trips_participation", 
         joinColumns = @JoinColumn(name = "trip_id"), 
         inverseJoinColumns = @JoinColumn(name = "user_id"))
     private List<User> participants = new ArrayList<>();
-
-    /*
-    public void setCreatedByUser(User user) {
-        this.created_by = user;
-    }
-    */
 }
