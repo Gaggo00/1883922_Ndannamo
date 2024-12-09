@@ -52,4 +52,3 @@ TripButton.defaultProps = {
 };
 
 export default TripButton;
-
