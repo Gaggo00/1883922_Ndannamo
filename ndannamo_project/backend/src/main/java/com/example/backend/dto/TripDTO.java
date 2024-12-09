@@ -25,4 +25,5 @@ public class TripDTO {
     private LocalDate endDate;
     private long createdBy;
     private List<String> list_participants = new ArrayList<>();
+    private List<String> list_invited = new ArrayList<>();
 }

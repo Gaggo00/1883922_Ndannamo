@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Entity
@@ -50,6 +51,10 @@ public class User implements UserDetails {
         inverseJoinColumns = @JoinColumn(name = "trip_id"))
     private List<Trip> trips = new ArrayList<>();
 
+    // Trip a cui sei stato invitato che non hai ancora accettato/rifiutato
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name="invitations")
+    private List<Trip> invitations = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -82,5 +87,21 @@ public class User implements UserDetails {
     }
     public enum Role {
         USER, ADMIN
+    }
+
+    public boolean addInvitation(Trip trip) {
+        if (!this.invitations.contains(trip)) {
+            this.invitations.add(trip);
+            return true;
+        }
+        return false;
+    }
+
+    public void manageInvitation(Trip trip, boolean acceptInvitation) {
+        invitations.remove(trip);
+
+        if (acceptInvitation) {
+            trips.add(trip);
+        }
     }
 }

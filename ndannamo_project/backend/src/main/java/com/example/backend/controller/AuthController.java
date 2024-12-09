@@ -35,7 +35,7 @@ public class AuthController {
     }
 
     @CrossOrigin(origins = "http://localhost:3000")
-    @PostMapping("/login")
+    @PostMapping(value={"/login", "/login/"})
     public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
         try {
             authenticationManager.authenticate(
@@ -62,7 +62,7 @@ public class AuthController {
     }
 
 
-    @PostMapping("/register")
+    @PostMapping(value={"/register", "/register/"})
     @CrossOrigin(origins = "http://localhost:3000")
     public ResponseEntity<?> register(@Valid @RequestBody User user) {
         try {
