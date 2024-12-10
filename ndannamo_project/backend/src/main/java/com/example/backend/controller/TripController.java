@@ -21,6 +21,7 @@ import com.example.backend.utils.TripValidation;
 
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/trips")
 public class TripController {
 
@@ -33,8 +34,6 @@ public class TripController {
         //this.userService = userService;
     }
 
-
-    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping(value={"", "/"})
     public ResponseEntity<?> createTrip(@Valid @RequestBody TripCreationRequest tripRequest) {
         
@@ -60,7 +59,6 @@ public class TripController {
         }
     }
 
-    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping(value={"", "/"})
     public ResponseEntity<?> getAllTrips() {
         try {
@@ -80,7 +78,6 @@ public class TripController {
 
 
     // Ottieni info su una specifica trip
-    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping(value={"/{id}", "/{id}/"})
     public ResponseEntity<?> getTrip(@PathVariable Long id) {
         try {
@@ -100,7 +97,6 @@ public class TripController {
 
 
     // Elimina una trip
-    @CrossOrigin(origins = "http://localhost:3000")
     @DeleteMapping(value={"/{id}", "/{id}/"})
     public ResponseEntity<?> deleteTrip(@PathVariable Long id) {
         try {
@@ -120,7 +116,6 @@ public class TripController {
 
 
     // Aggiungi persone a una trip
-    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping(value={"/{id}/invite", "/{id}/invite/"})
     public ResponseEntity<?> inviteToTrip(@PathVariable Long id, @Valid @RequestBody TripInviteList inviteList) {
 

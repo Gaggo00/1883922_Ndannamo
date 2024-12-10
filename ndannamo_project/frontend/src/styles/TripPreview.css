@@ -1,0 +1,14 @@
+
+.tripPreviewContainer {
+    display: flex;
+}
+
+.tripBlock{
+    width: fit-content;
+    height: fit-content;
+    /*background-color: red;*/
+    border: 2px solid black;
+    border-radius: 1.5vw;
+    padding: 1vh 1vw;
+    margin: 0.5vw;
+}

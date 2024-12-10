@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {Link, useNavigate} from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
-import UserService from '../services/UserService';
+import AuthService from '../services/AuthService';
 import "../styles/Login.css";
 import logo from '../static/Logo app.png';
 
@@ -17,7 +17,7 @@ function Register() {
         e.preventDefault();
 
         try {
-            const userData = await UserService.register(email, username, password);
+            const userData = await AuthService.register(email, username, password);
             if (userData) {
                 localStorage.setItem('token', userData);
                 login(); // Aggiorna lo stato di autenticazione (login fatto in automatico quando ti registri)

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
-import UserService from '../services/UserService';
+import AuthService from '../services/AuthService';
 import '../styles/Login.css'
 import passport from "../static/Passport.png";
 
@@ -20,7 +20,7 @@ function ChangePassword() {
                 return;
             }
 
-            const response = await UserService.changePassword(token, currentPassword, newPassword);
+            const response = await AuthService.changePassword(token, currentPassword, newPassword);
 
             if (response) {
                 navigate("/profile");

@@ -3,6 +3,7 @@ import LateralMenu from '../components/LateralMenu/LateralMenu';
 import TripCreationForm from '../components/TripCreationForm/TripCreationForm';
 import "../styles/Main.css"
 import Trip from '../models/Trip';
+import TripService from '../services/TripService';
 
 function Main() {
 
@@ -26,6 +27,7 @@ function Main() {
             <LateralMenu trips_list={trips}></LateralMenu>
             <div style={{position: "absolute", left: "250px", heigth: "100px", width: "calc(100% - 250px)"}}>
                 <TripCreationForm/>
+                <button onClick={TripService.getProfile}>PROFILO</button>
             </div>
         </div>
     );

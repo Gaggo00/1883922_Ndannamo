@@ -5,6 +5,7 @@ import AddList from '../AddList/AddList';
 import TripService from '../../services/TripService';
 import './TripCreation.css'
 import 'react-datepicker/dist/react-datepicker.css';
+import { useNavigate } from 'react-router-dom';
 
 function TripCreationForm() {
 
@@ -14,6 +15,8 @@ function TripCreationForm() {
     const [endDate, setEndDate] = useState(new Date());
     const [filled, setFilled] = useState([0, 0, 0]);
     const [destinations, setDestinations] = useState([]);
+
+    const navigate = useNavigate();
 
     const datePickerRefL = useRef(null);
     const datePickerRefR = useRef(null);
@@ -68,6 +71,12 @@ function TripCreationForm() {
     }
 
     const handleSubmit = () => {
+
+        const token = localStorage.getItem('token'); // Recuperiamo il token da localStorage
+        if (!token) {
+            navigate("/login");
+        }
+
         var new_filled = filled
         for (var i = 0; i <= step; i++)
             new_filled[i] = 1
@@ -75,7 +84,7 @@ function TripCreationForm() {
         if (step < steps.length - 1) {
             setStep(step + 1);
         } else {
-            TripService.create(inputValue, destinations, _dateToString(startDate, 0, '-', true), _dateToString(endDate, 0, '-', true));
+            TripService.create(token, inputValue, destinations, _dateToString(startDate, 0, '-', true), _dateToString(endDate, 0, '-', true));
         }
     };
 

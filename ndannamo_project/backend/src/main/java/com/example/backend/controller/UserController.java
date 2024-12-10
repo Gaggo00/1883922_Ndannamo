@@ -11,7 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
-
+import com.example.backend.dto.BooleanDTO;
 import com.example.backend.service.TripService;
 import com.example.backend.service.UserService;
 
@@ -50,17 +50,17 @@ public class UserController {
 
     // Accetta o rifiuta un invito
     @PostMapping(value={"/invitations/{id}", "/invitations/{id}/"})
-    public ResponseEntity<?> inviteToTrip(@PathVariable Long id, @Valid @RequestBody boolean accept) {
+    public ResponseEntity<?> inviteToTrip(@PathVariable Long id, @Valid @RequestBody BooleanDTO accept) {
         try {
             // prendi l'utente dal token
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String email = authentication.getName();
 
             // gestisci inviti
-            tripService.manageInvitation(email, id, accept);
+            tripService.manageInvitation(email, id, accept.getValue());
 
             String message = "Invitation ";
-            if (accept) message += "accepted";
+            if (accept.getValue()) message += "accepted";
             else message += "refused";
             return ResponseEntity.ok().body(message);
         }

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
-import UserService from '../services/UserService';
+import AuthService from '../services/AuthService';
 import '../styles/Login.css'
 import logo from '../static/Logo app.png'
 
@@ -17,7 +17,7 @@ function Login() {
         e.preventDefault();
 
         try {
-            const userData = await UserService.login(email, password);
+            const userData = await AuthService.login(email, password);
             if (userData) {
                 localStorage.setItem('token', userData);
                 login(); // Aggiorna lo stato di autenticazione

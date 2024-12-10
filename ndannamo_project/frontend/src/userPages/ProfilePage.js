@@ -1,14 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import UserService from '../services/UserService';
-import "../styles/ProfilePage.css";
+import TripPreview from '../components/TripPreview.js'
+import TripInvitation from '../components/TripInvitation.js'
 import passport from '../static/Passport.png';
 import { useNavigate } from 'react-router-dom';
+
+import "../styles/ProfilePage.css";
+import "../styles/TripPreview.css";
 
 function ProfilePage() {
     // Impostiamo un valore di default per profileInfo
     const [profileInfo, setProfileInfo] = useState({
+        nickname: '',
         email: '',
-        trips: []
+        trips: [],
+        invitations : []
     });
     const navigate = useNavigate();
 
@@ -28,7 +34,7 @@ function ProfilePage() {
             }
 
             // Chiamata al servizio per ottenere le informazioni del profilo
-            const response = await UserService.getYourProfile(token);
+            const response = await UserService.getProfile(token);
 
             if (response) {
                 setProfileInfo(response);  // Aggiorniamo lo stato con le informazioni del profilo
@@ -50,12 +56,24 @@ function ProfilePage() {
                         <img src={passport} alt="User's passport photo" />
                     </div>
                     <div id="scritte">
+                        <p><strong>Username:</strong> {profileInfo.nickname}</p>
                         <p><strong>Email:</strong> {profileInfo.email}</p>
                         <div id="pass">
                             <p><strong>Password:</strong></p>
                             <button onClick={handlePasswordChange}>Change password</button>
                         </div>
-                        <p><strong>Trips:</strong> {Array.isArray(profileInfo.trips) ? profileInfo.trips.length : "You haven’t joined any trips yet. Start your first adventure!"}</p>
+                        <div><strong>Trips:</strong></div>
+                        <div className='tripPreviewContainer'>
+                            {profileInfo.trips.map((trip, index) =>
+                                <TripPreview key={index} trip={trip}></TripPreview>
+                            )}
+                        </div>
+                        <div><strong>Pending invitations:</strong></div>
+                        <div className='tripPreviewContainer'>
+                            {profileInfo.invitations.map((trip, index) =>
+                                <TripInvitation key={index} trip={trip} reloadProfile={fetchProfileInfo}></TripInvitation>
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>
