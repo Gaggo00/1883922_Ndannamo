@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-import '../styles/Login.css'
 import UserService from '../services/UserService';
+
 import logo from '../static/Logo app.png'
+import "../styles/TripPreview.css";
 
 
 export default function TripInvitation({trip, reloadProfile}) {
@@ -53,13 +54,15 @@ export default function TripInvitation({trip, reloadProfile}) {
     };
 
     return (
-        <div>
-            <p>{trip.title}</p>
-            <p>{trip.startDate} - {trip.endDate}</p>
+        <div className="tripBlock">
+            <p id="title">{trip.title}</p>
+            <p id="date">{trip.startDate} - {trip.endDate}</p>
             <p>{trip.locations.toString()}</p>
             <p>{trip.list_participants.length} participants</p>
-            <button onClick={acceptInvitation}>Accept</button>
-            <button onClick={refuseInvitation}>Refuse</button>
+            <div id="buttonRow">
+                <button onClick={acceptInvitation}>Accept</button>
+                <button onClick={refuseInvitation}>Refuse</button>
+            </div>
         </div>
 
     );

@@ -3,6 +3,7 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  height:100%;
 }
 
 .App-logo {
@@ -25,6 +26,7 @@
 .App-main {
   flex: 1;
   background-color: #eee8da;
+  height:calc(100% - 8vh - 5vh);        /* 8vh = altezza navbar, 5vh = altezza footer */
 }
 
 .App-link {

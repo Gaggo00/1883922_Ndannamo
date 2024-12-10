@@ -12,8 +12,8 @@ export default function TripPreview({trip}) {
 
     return (
         <div className="tripBlock">
-            <p>{trip.title}</p>
-            <p>{trip.startDate} - {trip.endDate}</p>
+            <p id="title">{trip.title}</p>
+            <p id="date">{trip.startDate} - {trip.endDate}</p>
             <p>{trip.locations.toString()}</p>
             <p>{trip.list_participants.length} participants</p>
         </div>

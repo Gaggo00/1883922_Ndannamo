@@ -48,7 +48,7 @@ function TripCreationForm() {
     function _dateToString(date, format = 0, separator = '/', yearB = false) {
         var dateStr = "";
         var day = date.getDate().toString().padStart(2, '0');
-        var month = date.getMonth().toString().padStart(2, '0');
+        var month = (date.getMonth() + 1).toString().padStart(2, '0');
         var year = date.getFullYear().toString()
 
         if (format == 0) {

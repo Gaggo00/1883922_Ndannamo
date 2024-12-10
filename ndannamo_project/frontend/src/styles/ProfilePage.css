@@ -1,12 +1,16 @@
+
 .profile-page-container {
+    display: flex;
     width: 100%;
-    background-image: url("../static/sfondo_home.png");
+    /*height: 100%;*/
+    /*background-image: url("../static/sfondo_home.png");
     background-size: 100% 100%;
     background-position: center;
-    background-repeat: no-repeat;
-    height: 50vh;
+    background-position-y: top;
+    background-repeat: no-repeat;*/
     color:#004b3f;
-
+    z-index: 1;
+    position:relative;
 }
 .profile-page-container #pass {
     display: flex;
@@ -18,19 +22,31 @@
     margin-top: 5vh;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    /*justify-content: center;*/
     text-align: left;
+    padding-right: 2vw;
 }
 #profile-content{
+    background-color: #eee5d4;
+    width:35%;
+    border-radius: 5vw;
+    box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.3);
+    align-content: center;
+    justify-content: center;
+    margin: 15vh 2vw;
+    height: fit-content;
+    display:flex;
+}
+#trips-content{
+    background-color: #eee5d4;
     width:55%;
     border-radius: 100px;
     box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.3);
     align-content: center;
     justify-content: center;
-    margin: 0 auto;
-    height: 40vh;
-    padding-left:50px;
-    display:flex;
+    margin: 15vh 2vw;
+    height: fit-content;
+    min-height:60vh;
 }
 p{
     font-size: 20px;

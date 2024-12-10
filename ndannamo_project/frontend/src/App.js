@@ -15,9 +15,7 @@ function App() {
     <AuthProvider>
         <BrowserRouter>
             <div className="App">
-                <header className="App-header">
-                    <Navbar/>
-                </header>
+                <Navbar/>
                 <main className="App-main">
                     <Routes>
                         <Route path="/" element={<Home/>} />
@@ -28,9 +26,7 @@ function App() {
                         <Route path="/change-password" element={<ChangePassword/>} />
                     </Routes>
                 </main>
-                <footer>
-                    <FooterComponent/>
-                </footer>
+                <FooterComponent/>
             </div>
         </BrowserRouter>
     </AuthProvider>

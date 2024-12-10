@@ -32,9 +32,7 @@ function Home() {
                     <button onClick={goToLogin}>START NOW</button>
                 </div>
             </div>
-            <div id="bottom-container">
             <img id="bottom" src={ondaArancione}/>
-            </div>
         </div>
 
     )

@@ -27,7 +27,6 @@ function Main() {
             <LateralMenu trips_list={trips}></LateralMenu>
             <div style={{position: "absolute", left: "250px", heigth: "100px", width: "calc(100% - 250px)"}}>
                 <TripCreationForm/>
-                <button onClick={TripService.getProfile}>PROFILO</button>
             </div>
         </div>
     );

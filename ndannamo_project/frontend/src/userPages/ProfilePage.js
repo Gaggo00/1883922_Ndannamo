@@ -5,6 +5,9 @@ import TripInvitation from '../components/TripInvitation.js'
 import passport from '../static/Passport.png';
 import { useNavigate } from 'react-router-dom';
 
+import ondaVerde from "../static/wave/Onda2_Verda.png"
+import ondaArancione from "../static/wave/Onda1_Arancione.png"
+
 import "../styles/ProfilePage.css";
 import "../styles/TripPreview.css";
 
@@ -48,28 +51,36 @@ function ProfilePage() {
 
     return (
         <div className="page">
-            <div id="color"></div>
+            {/*<div id="color"></div>*/}
+            <img id="top" src={ondaVerde}/>
             <div className="profile-page-container">
-                <h2>Profile Information</h2>
+                {/*<h2>Profile Information</h2>*/}
                 <div id="profile-content">
                     <div id="image-box">
                         <img src={passport} alt="User's passport photo" />
                     </div>
                     <div id="scritte">
+                        <h2>Profile Information</h2>
                         <p><strong>Username:</strong> {profileInfo.nickname}</p>
                         <p><strong>Email:</strong> {profileInfo.email}</p>
                         <div id="pass">
                             <p><strong>Password:</strong></p>
                             <button onClick={handlePasswordChange}>Change password</button>
                         </div>
-                        <div><strong>Trips:</strong></div>
-                        <div className='tripPreviewContainer'>
+                    </div>
+                </div>
+                <div id="trips-content">
+                    <div className='tripPreviewContainer'>
+                        <h2>Trips</h2>
+                        <div className='tripPreviewBlocksContainer'>
                             {profileInfo.trips.map((trip, index) =>
                                 <TripPreview key={index} trip={trip}></TripPreview>
                             )}
                         </div>
-                        <div><strong>Pending invitations:</strong></div>
-                        <div className='tripPreviewContainer'>
+                    </div>
+                    <div className='tripPreviewContainer'>
+                        <h2>Pending invitations</h2>
+                        <div className='tripPreviewBlocksContainer'>
                             {profileInfo.invitations.map((trip, index) =>
                                 <TripInvitation key={index} trip={trip} reloadProfile={fetchProfileInfo}></TripInvitation>
                             )}
@@ -77,7 +88,7 @@ function ProfilePage() {
                     </div>
                 </div>
             </div>
-            <div id="orange"></div>
+            <img id="bottom" src={ondaArancione}/>
         </div>
     );
 }

@@ -3,12 +3,13 @@
     display: flex; /* Attiva Flexbox */
     justify-content: space-between; /* Spazia gli elementi */
     align-items: center; /* Allinea verticalmente gli elementi */
-    padding: 5px;
     color:#004b3f;
     width: 100%;
     z-index: 10;
     height: 8vh;
-    position:relative;
+    position: fixed !important;
+    top: 0;
+    left: 0;
 }
 body, html {
     width: 100%;
