@@ -21,11 +21,11 @@ class AuthService {
         }
     }
 
-    static async register(email, username, password) {
+    static async register(email, nickname, password) {
         try {
             const response = await axios.post(
                 `${AuthService.BASE_URL}/api/auth/register`,
-                {email, username, password},
+                {email, nickname, password},
                 {
                     headers: {
                         "Content-Type": "application/json"

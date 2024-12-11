@@ -39,7 +39,7 @@ export default function TripPreview({trip, reloadProfile}) {
             <p>{trip.locations.toString()}</p>
             <p>{trip.list_participants.length} participants</p>
 
-            <button onClick={leaveTrip}>Leave (TEMP)</button>
+            {/*<button onClick={leaveTrip}>Leave (TEMP)</button>*/}
         </div>
 
     );

@@ -5,6 +5,7 @@ COPY package.json package-lock.json ./
 
 RUN npm install && npm list
 RUN npm install bootstrap-icons
+RUN npm install react-datepicker
 
 
 

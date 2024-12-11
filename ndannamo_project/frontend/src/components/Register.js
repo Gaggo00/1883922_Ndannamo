@@ -7,7 +7,7 @@ import logo from '../static/Logo app.png';
 
 function Register() {
     const [email, setEmail] = useState('');
-    const [username, setUsername] = useState('');
+    const [nickname, setNickname] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const { login } = useAuth(); // Usa il contesto per aggiornare lo stato di autenticazione
@@ -17,7 +17,7 @@ function Register() {
         e.preventDefault();
 
         try {
-            const userData = await AuthService.register(email, username, password);
+            const userData = await AuthService.register(email, nickname, password);
             if (userData) {
                 localStorage.setItem('token', userData);
                 login(); // Aggiorna lo stato di autenticazione (login fatto in automatico quando ti registri)
@@ -45,8 +45,8 @@ function Register() {
                         <form onSubmit={handleSubmit}>
                             <input type="email" placeholder="Email" value={email}
                                    onChange={(e) => setEmail(e.target.value)}/>
-                            <input placeholder="Username" value={username}
-                                   onChange={(e) => setUsername(e.target.value)}/>
+                            <input placeholder="Username" value={nickname}
+                                   onChange={(e) => setNickname(e.target.value)}/>
                             <input type="password" placeholder="Password" value={password}
                                    onChange={(e) => setPassword(e.target.value)}/>
                             <button type="submit">Sign up</button>
