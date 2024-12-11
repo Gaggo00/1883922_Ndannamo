@@ -74,7 +74,7 @@ function ProfilePage() {
                         <h2>Trips</h2>
                         <div className='tripPreviewBlocksContainer'>
                             {profileInfo.trips.map((trip, index) =>
-                                <TripPreview key={index} trip={trip}></TripPreview>
+                                <TripPreview key={index} trip={trip} reloadProfile={fetchProfileInfo}></TripPreview>
                             )}
                         </div>
                     </div>

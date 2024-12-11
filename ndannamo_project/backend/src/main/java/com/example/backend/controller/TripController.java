@@ -134,4 +134,25 @@ public class TripController {
                 .body(ex.getMessage());
         }
     }
+
+
+    // Lascia una trip
+    @GetMapping(value={"/{id}/leave", "/{id}/leave/"})
+    public ResponseEntity<?> leaveTrip(@PathVariable Long id) {
+
+        try {
+            // prendi l'utente dal token
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String email = authentication.getName();
+
+            // lascia trip
+            tripService.leaveTrip(email, id);
+            return ResponseEntity.ok().body("Trip left");
+        }
+        catch (Exception ex) {
+            return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(ex.getMessage());
+        }
+    }
 }
