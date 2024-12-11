@@ -1,5 +1,61 @@
+.tcf-main-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    height: 400px;
+    max-height: 400px;
+    overflow: hidden;
+}
+
+.tfc-row {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    align-items: start;
+    gap: 20px;
+    flex: 1;
+}
+
+.tfx-last-row {
+    flex: 2;
+}
+
+.tfc-block {
+    width: calc(50% - 10px);
+    height: 100%;
+}
+
+.tfc-list {
+    height: calc(100% - 4px - 20px - 4px);
+    background-color: white;
+    border: solid 2px grey;
+    padding: 10px;
+    border-radius: 20px;
+    margin-left: 10%;
+    margin-right: 10%;
+    max-height: 100px;
+    overflow-y: auto;
+}
+
+.tfc-list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.tfc-list-item-button {
+    background: red;
+    color: 'white';
+    border: 'none';
+    padding: '5px 10px';
+    border-radius: '5px';
+}
+
 .name-field {
     background-color: white;
+    width: 80%;
     font-size: 20px;
     flex: 3;
     margin-bottom: 0;
@@ -80,9 +136,10 @@
 
 .form-container {
     display: flex;
-    flex-direction: row;
-    align-items: center;
+    flex-direction: column;
+    align-items: start;
     gap: 20px;
+    width: 100%;
 }
 
 .button-step {
@@ -94,7 +151,7 @@
 }
 
 .title {
-    font-size: 70px;
+    font-size: 10vh;
 }
 
 .main-container {
@@ -102,4 +159,5 @@
     flex-direction: column;
     gap: 30px;
     align-items: center;
+    width: 50%;
 }

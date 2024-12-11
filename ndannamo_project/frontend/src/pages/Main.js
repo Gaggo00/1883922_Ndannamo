@@ -1,6 +1,8 @@
-import React from 'react';
+import {React, useState} from 'react';
 import LateralMenu from '../components/LateralMenu/LateralMenu';
+import Form from 'react-bootstrap/Form';
 import TripCreationForm from '../components/TripCreationForm/TripCreationForm';
+import {TextField, DateField} from '../components/Fields/Fields';
 import "../styles/Main.css"
 import Trip from '../models/Trip';
 import TripService from '../services/TripService';
@@ -22,12 +24,21 @@ function Main() {
         new Trip(9, "Napoli", 1725456488000, 1725629288000),
     ]
 
+    const [title, setTitle] = useState("");
+    const [startDate, setStartDate] = useState(new Date());
+    const [endDate, setEndDate] = useState(new Date());
+    var lastPossibleDate = new Date();
+    lastPossibleDate.setDate(lastPossibleDate.getDate() + 720);
+
+    function changeStartDate(new_date) {
+        if (new_date > endDate)
+            setEndDate(new_date);
+        setStartDate(new_date);
+    }
+
     return (
         <div style={{width: "100%", heigth: "100%", display: "flex", flexDirection: "row"}}>
-            <LateralMenu trips_list={trips}></LateralMenu>
-            <div style={{position: "absolute", left: "250px", heigth: "100px", width: "calc(100% - 250px)"}}>
-                <TripCreationForm/>
-            </div>
+            <TripCreationForm/>
         </div>
     );
 }
