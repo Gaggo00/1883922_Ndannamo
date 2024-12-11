@@ -19,7 +19,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
+
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api/auth")
 public class AuthController {
 
@@ -34,7 +36,6 @@ public class AuthController {
         this.jwtService = jwtService;
     }
 
-    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping(value={"/login", "/login/"})
     public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
         try {
@@ -53,7 +54,6 @@ public class AuthController {
         }
     }
 
-    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/getMyProfile")
     public ResponseEntity<?> getMyProfile() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -63,7 +63,6 @@ public class AuthController {
 
 
     @PostMapping(value={"/register", "/register/"})
-    @CrossOrigin(origins = "http://localhost:3000")
     public ResponseEntity<?> register(@Valid @RequestBody User user) {
         try {
             // registra il nuovo utente
@@ -83,7 +82,6 @@ public class AuthController {
     }
 
     @PostMapping("/change-password")
-    @CrossOrigin(origins = "http://localhost:3000")
     public ResponseEntity<?> changePassword(@Valid @RequestBody ChangePasswordRequest request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
