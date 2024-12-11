@@ -11,6 +11,7 @@
     background-size: 100% 100%;
     background-position: center;
     background-repeat: no-repeat;
+    margin-bottom: -10px;
 }
 
 .log-container {
@@ -18,7 +19,7 @@
     width: 800px;
     background-color: #eee5d4;
     border-radius: 145px;
-    box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.3);
     padding: 20px;
     display: flex;
     justify-content: center;
