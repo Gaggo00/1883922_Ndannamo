@@ -1,45 +1,37 @@
-import React, {useState, useRef} from 'react';
-import DatePicker from 'react-datepicker';
-import { Bs1CircleFill, Bs2CircleFill, Bs3CircleFill, BsArrowRightCircleFill, BsArrowLeftCircleFill} from "react-icons/bs";
-import AddList from '../AddList/AddList';
+import React, {useRef, useState} from 'react';
 import TripService from '../../services/TripService';
+import {TextField, DateField, PickedField} from '../Fields/Fields';
 import './TripCreation.css'
-import 'react-datepicker/dist/react-datepicker.css';
+
+
+const ListItem = ({ name, onClick }) => {
+    return (
+      <li className='tfc-list-item'>
+        <span>{name}</span>
+        <button className="tfc-list-item-button" type="button" onClick={onClick}>
+          -
+        </button>
+      </li>
+    );
+};
+
 
 function TripCreationForm() {
 
-    const [inputValue, setInputValue] = useState('');
-    const [step, setStep] = useState(0);
+    const [title, setTitle] = useState("");
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
-    const [filled, setFilled] = useState([0, 0, 0]);
+    const [destination, setDestination] = useState("");
     const [destinations, setDestinations] = useState([]);
 
-    const datePickerRefL = useRef(null);
-    const datePickerRefR = useRef(null);
+    const pickerRef = useRef();
     var lastPossibleDate = new Date();
-    lastPossibleDate.setDate(lastPossibleDate.getDate() + 720)
+    lastPossibleDate.setDate(lastPossibleDate.getDate() + 720);
 
-    const openDatePickerL = () => {
-      if (datePickerRefL.current) {
-        datePickerRefL.current.setFocus(); // Focalizza il DatePicker per aprire il calendario
-      }
-    };
-
-    const openDatePickerR = () => {
-        if (datePickerRefR.current) {
-            datePickerRefR.current.setFocus(); // Focalizza il DatePicker per aprire il calendario
-        }
-      };
-
-    const steps = [
-        { id: 0, Icon: Bs1CircleFill },
-        { id: 1, Icon: Bs2CircleFill },
-        { id: 2, Icon: Bs3CircleFill },
-    ];
-
-    const handleBack = () => {
-        setStep(step - 1)
+    function changeStartDate(new_date) {
+        if (new_date > endDate)
+            setEndDate(new_date);
+        setStartDate(new_date);
     }
 
     function _dateToString(date, format = 0, separator = '/', yearB = false) {
@@ -67,7 +59,21 @@ function TripCreationForm() {
         return dateStr
     }
 
-    const handleSubmit = () => {
+    const locations = [
+        "Parigi",
+        "Parma",
+        "Padova",
+        "Palermo",
+        "Londra",
+        "Roma",
+        "Madrid",
+        "Barcellona",
+        "Milano",
+        "Firenze",
+        "Perugia",
+    ];
+
+    /*const handleSubmit = () => {
         var new_filled = filled
         for (var i = 0; i <= step; i++)
             new_filled[i] = 1
@@ -77,74 +83,80 @@ function TripCreationForm() {
         } else {
             TripService.create(inputValue, destinations, _dateToString(startDate, 0, '-', true), _dateToString(endDate, 0, '-', true));
         }
-    };
+    };*/
 
-    const handleStepButton = (new_step) => {
-        setStep(new_step);
+    function addDestination() {
+        if (destination) {
+            var dest = destinations.slice()
+            dest.push(destination);
+            setDestinations(dest);
+            setDestination("");
+            pickerRef.current.reset();
+        }
     }
 
-    function changeStartDate(new_date) {
-        if (new_date > endDate)
-            setEndDate(new_date);
-        setStartDate(new_date);
+    function handleRemotion() {
+        console.log("Eliminare!")
     }
 
-    const getStepStyle = (id) => ({
-        color: filled[id] > 0 ? 'green' : 'grey',
-        size: id === step ? '60px' : '45px',
-    });
-    
     return (
-        <div className="main-container">
-            <label className="title">Start your journey</label>
-            <div className="steps-container">
-                {steps.map(({ id, Icon }) => (
-                    <button className="button-step" key={id} disabled={filled[id] == 0 && (id > 0 && !filled[id - 1])} onClick={() => handleStepButton(id)}>
-                        <Icon {...getStepStyle(id)} />
-                    </button>
-                ))}
+        <form className="tcf-main-container">
+            <div className="tfc-row">
+                <div className="tfc-block">
+                    <TextField value={title} setValue={setTitle} name="Title"/>
+                </div>
             </div>
-            <div className="form-container">
-                {
-                    step >= 1 &&
-                    <button className='send' onClick={handleBack}><BsArrowLeftCircleFill size="32px"/></button>
-                }
-                {
-                    step == 0 &&
-                    <input
-                        className="name-field"
-                        type="text"
-                        placeholder="Inserisci il nome" 
-                        value={inputValue}
-                        onChange={(e) => setInputValue(e.target.value)}
+            <div className="tfc-row">
+                <div className="tfc-block">
+                    <DateField
+                        value={startDate}
+                        setValue={changeStartDate}
+                        name="Start date"
+                        includeDateIntervals={[{start: new Date() - 1, end: lastPossibleDate}]}
+                        dateFormat="dd/MM/yyyy"
                     />
-                    ||
-                    step == 1 &&
-                    <div className='date-container'>
-                        <div className="single-date-container left" onClick={openDatePickerL}>
-                            <label>Andata</label>
-                            <DatePicker 
-                                ref={datePickerRefL} className='date-field' selected={startDate}
-                                onChange={(date) => {changeStartDate(date)}} dateFormat="dd/MM/yyyy" 
-                                includeDateIntervals={[{start: new Date(), end: lastPossibleDate}]}
-                            />
-                        </div>
-                        <div className="single-date-container right" onClick={openDatePickerR}>
-                            <label>Ritorno</label>
-                            <DatePicker
-                                ref={datePickerRefR} className='date-field' selected={endDate}
-                                onChange={(date) => setEndDate(date)} dateFormat="dd/MM/yyyy"
-                                includeDateIntervals={[{start: startDate, end: lastPossibleDate}]}
-                            />
-                        </div>
-                    </div>
-                    ||
-                    step == 2 &&
-                    <AddList destinations={destinations} setDestinations={setDestinations}/>
-                }
-                <button className='send' onClick={handleSubmit}><BsArrowRightCircleFill size="32px"/></button>
+                </div>
+                <div className="tfc-block">
+                    <DateField
+                        value={endDate}
+                        setValue={setEndDate}
+                        name="End date"
+                        includeDateIntervals={[{start: startDate - 1, end: lastPossibleDate}]}
+                        dateFormat="dd/MM/yyyy"
+                    />
+                </div>
             </div>
-        </div>
+            <div className="tfc-row tfx-last-row">
+                <div className="tfc-block">
+                    <div style={{flex: '1', display: 'flex', gap: '12px'}}>
+                        <PickedField ref={pickerRef} style={{flex: '6'}} setValue={setDestination} name="Destination" options={locations}/>
+                        <button
+                            value={destination}
+                            className='general-button'
+                            type='button'
+                            onClick={() => addDestination()}
+                            style={{
+                                flex: '1',
+                                borderRadius: '14px',
+                                marginTop: '26px',
+                                marginBottom: '6px',
+                                backgroundColor: 'white',
+                                border: '1px solid grey',
+                            }}
+                        >
+                            {"+"}
+                        </button>
+                    </div>
+                </div>
+                <div className="tfc-block">
+                    <ul className="tfc-list">
+                        {destinations.map((d, index) => (
+                            <ListItem name={d} key={index} onClick={handleRemotion}/>
+                        ))}
+                    </ul>
+                </div>
+            </div>
+        </form>
     )
 }
 
