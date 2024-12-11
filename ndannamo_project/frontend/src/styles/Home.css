@@ -69,6 +69,7 @@ body{
     text-align:center;
     flex:1;
     margin-left:50px;
+    margin-top:-4vh;
     align-items: center;
     justify-content: center;
 }
@@ -83,7 +84,7 @@ body{
     justify-content: center; /* Centra il contenuto orizzontalmente */
     align-items: center; /* Centra il contenuto verticalmente */
     margin-right: 25%;
-    margin-top: 3%;
+    margin-top: 5%;
     color: white;
     font-weight: bold;
     font-size: 16px; /* Imposta la dimensione del testo */
@@ -101,10 +102,12 @@ button a {
 .scritte p{
     text-align: left;
     font-size: 5vw;
-    margin: -0.5vh;
+    margin-bottom: -3.5vh;
 
 
 }
 #piccolo{
     font-size: 3.1vw;
+    margin-top: 1vh;
+
 }
