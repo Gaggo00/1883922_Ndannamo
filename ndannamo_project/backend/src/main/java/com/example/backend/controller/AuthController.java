@@ -72,8 +72,8 @@ public class AuthController {
             // fai direttamente anche il login
             final UserDetails userDetails = userService.getUserByEmail(user.getEmail());
             final String jwt = jwtService.generateToken(userDetails);
-            //return ResponseEntity.ok(jwt);
-            return ResponseEntity.ok(userDTO);
+            return ResponseEntity.ok(jwt);
+            //return ResponseEntity.ok(userDTO);
         }
         catch (Exception ex) {
             return ResponseEntity

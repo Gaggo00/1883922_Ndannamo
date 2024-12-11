@@ -45,7 +45,7 @@ function Navbar() {
                     </Dropdown.Menu>
                 </Dropdown>
             )}
-            {!isAuthenticated && location.pathname !== '/logout' && (<Link to="/login" className="right">Login</Link>)}
+            {!isAuthenticated && location.pathname !== '/logout' && (<Link to="/login" className="nav-right">Login</Link>)}
             </div>
 
                 );
