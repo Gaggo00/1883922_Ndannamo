@@ -1,6 +1,7 @@
 package com.example.backend.controller;
 
 
+import com.example.backend.dto.UserDTO;
 import com.example.backend.dto.ChangePasswordRequest;
 import com.example.backend.dto.LoginRequest;
 import com.example.backend.model.User;
@@ -15,9 +16,12 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
+
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api/auth")
 public class AuthController {
 
@@ -32,8 +36,7 @@ public class AuthController {
         this.jwtService = jwtService;
     }
 
-    @CrossOrigin(origins = "http://localhost:3000")
-    @PostMapping("/login")
+    @PostMapping(value={"/login", "/login/"})
     public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
         try {
             authenticationManager.authenticate(
@@ -51,11 +54,25 @@ public class AuthController {
         }
     }
 
-    @PostMapping("/register")
-    @CrossOrigin(origins = "http://localhost:3000")
+    @GetMapping("/getMyProfile")
+    public ResponseEntity<?> getMyProfile() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        return ResponseEntity.ok(userService.getUserDTOByEmail(email));
+    }
+
+
+    @PostMapping(value={"/register", "/register/"})
     public ResponseEntity<?> register(@Valid @RequestBody User user) {
         try {
-            return ResponseEntity.ok(userService.registerUser(user));
+            // registra il nuovo utente
+            UserDTO userDTO = userService.registerUser(user);
+
+            // fai direttamente anche il login
+            final UserDetails userDetails = userService.getUserByEmail(user.getEmail());
+            final String jwt = jwtService.generateToken(userDetails);
+            return ResponseEntity.ok(jwt);
+            //return ResponseEntity.ok(userDTO);
         }
         catch (Exception ex) {
             return ResponseEntity
@@ -65,7 +82,6 @@ public class AuthController {
     }
 
     @PostMapping("/change-password")
-    @CrossOrigin(origins = "http://localhost:3000")
     public ResponseEntity<?> changePassword(@Valid @RequestBody ChangePasswordRequest request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();

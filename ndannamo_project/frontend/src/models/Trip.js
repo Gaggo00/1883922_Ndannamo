@@ -1,8 +1,13 @@
 export default class Trip {
-    constructor(destination, start_timestamp, final_timestamp) {
-      this.destination = destination;
-      this.startDate = new Date(start_timestamp);
-      this.finalDate = new Date(final_timestamp);
+
+    constructor(id, destination, owner, people, creation_timestamp, start_timestamp, final_timestamp) {
+        this.id = id
+        this.destination = destination;
+        this.owner = owner;
+        this.people = people;
+        this.creationDaten = new Date(creation_timestamp);
+        this.startDate = new Date(start_timestamp);
+        this.finalDate = new Date(final_timestamp);
     }
 
     getDestination() {

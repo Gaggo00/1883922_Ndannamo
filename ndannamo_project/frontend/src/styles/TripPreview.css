@@ -1,0 +1,39 @@
+
+
+.tripPreviewContainer {
+    display:block;
+    text-align: left;
+    padding: 3vh 5vw;
+}
+
+.tripPreviewBlocksContainer {
+    display: flex;
+}
+
+.tripBlock{
+    width: fit-content;
+    height: fit-content;
+    /*background-color: red;*/
+    border: 2px solid black;
+    border-radius: 1.5vw;
+    padding: 1vh 1vw;
+    margin: 0.5vw;
+    font-size: 12pt;
+}
+
+.tripBlock #title {
+    font-size: 18pt;
+    font-weight: bold;
+}
+
+.tripBlock #buttonRow {
+    width: 100%;
+    margin: 0 auto;
+}
+
+
+.tripBlock button {
+    font-size: 15pt;
+    border-radius: 1vw;
+    padding: 0.5vh 0.5vw;
+}

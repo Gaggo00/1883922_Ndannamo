@@ -1,23 +1,26 @@
 .navbar {
-    background-color: #f7c46b;
-    overflow: hidden;
+    background-color: #84bd9a;
     display: flex; /* Attiva Flexbox */
     justify-content: space-between; /* Spazia gli elementi */
     align-items: center; /* Allinea verticalmente gli elementi */
-    padding: 5px;
-    color:white;
+    color:#004b3f;
     width: 100%;
-    position: absolute;
+    z-index: 10;
+    height: 8vh;
+    position: fixed !important;
     top: 0;
-    z-index: 1000;
-    height: 30px;
-
+    left: 0;
+}
+body, html {
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden; /* Evita eventuali barre di scorrimento orizzontali */
 }
 
 .navbar a {
     text-decoration: none;
     display: inline-block;
-    color:white;
+    color:#004b3f;
     margin-right: 3%;
     font-size: 15px;
 }
@@ -26,8 +29,11 @@
 
 }
 .centerEl{
-    margin-left:15%;
-    margin-right:5%;
+    margin-left:40px;
+    margin-right:40px;
+}
+.centerEl a{
+    margin-right:90px;
 }
 
 .navbar .logo {
@@ -35,6 +41,7 @@
     flex-direction: column; /* Dispone gli elementi in colonna */
     align-items: center; /* Centra gli elementi verticalmente */
     margin-left:3%;
+    font-weight: bold;
 }
 
 #title{
@@ -43,4 +50,14 @@
 }
 #subtitle{
     font-size:10px;
+}
+
+.dropdown-menu-custom {
+    position: absolute;       /* Posiziona il menu fuori dal flusso normale */
+    bottom: 100%;             /* Lo spinge sopra il bottone del dropdown */
+    left: 0;                  /* Allinea il menu correttamente */
+    z-index: 1050;            /* Imposta un livello di z-index più alto per sovrapporsi */
+}
+.dropdown{
+    margin-right: 3%;
 }

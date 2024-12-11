@@ -1,24 +1,30 @@
 .all-page {
     font-family: Arial, sans-serif;
-    background-color: #7dc39f; /* Sfondo rosso */
     margin: 0;
-    height: 100vh; /* Assicura che il body occupi l'intera altezza */
+    height: 98%; /* Assicura che il body occupi l'intera altezza */
     display: flex;
     justify-content: center; /* Centra orizzontalmente */
     align-items: center; /* Centra verticalmente */
     width: 100%;
+    /*background-color: #7dc39f;
+    background-image: url("../static/sfondo_home.png");
+    background-size: 100% 100%;
+    background-position: center;
+    background-repeat: no-repeat;*/
 }
 
-.container {
-    height: 400px;
-    width: 800px;
+.log-container {
+    height: 53%;
+    width: 55%;
+    min-width: fit-content;
+    min-height: fit-content;
     background-color: #eee5d4;
-    border-radius: 10px;
-    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
-    padding: 20px;
+    border-radius: 8vw;
+    box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.3);
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 1;
 }
 
 
@@ -26,42 +32,75 @@
     display: flex;
     flex-direction: row;
     align-items: center;
+    color:#004b3f;
 
 }
-
+.form-box p {
+    font-size: 20px;
+}
 .image-box {
-    width: 60%;
+    width: 70%;
     height:100%;
-    margin-bottom: 20px;
+}
+img{
+    width: 300px;
+    height: 300px;
 
 }
 
 .form-box {
-    width: 40%;
+    width: 60%;
+    margin-left:60px;
 
 }
+.form-box #title{
+    font-weight: bold;
+    font-size: 20px;
+}
+.form-box #subtitle{
+    margin-top:20px;
+    font-size: 15px;
+    text-decoration: none;
+    color:#004b3f;
+}
+.form-box a{
+    text-decoration: none;
+    color:#004b3f;
+    font-weight: bold;
 
+
+}
+.error-message {
+    font-size: 16px;
+    margin-top: 10px;
+    margin-bottom: -10px;
+    color: #a94442;
+}
 form {
     display: flex;
     flex-direction: column;
     align-items:center;
+    margin-top: 20px;
 }
 
-input {
+form input {
     padding: 10px;
     margin-bottom: 10px;
     border:none;
+    width: 220px;
     background:#eee5d4;
+    border-radius:60px;
 }
 
-button {
+form button {
     padding: 10px 20px;
-    background-color: green;
-    width:100px;
+    background-color: #004b3f;
+    width:220px;
     color: #fff;
     border: none;
-    border-radius: 5px;
+    border-radius: 25px;
     cursor: pointer;
+    margin:0;
 
 }
 #logo{

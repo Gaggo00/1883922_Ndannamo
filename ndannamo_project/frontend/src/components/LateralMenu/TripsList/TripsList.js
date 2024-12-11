@@ -2,7 +2,7 @@ import {React, useState} from 'react';
 import TripButton from '../TripButton/TripButton';
 import './TripsList.css'
 
-function TripsList({trip_list = [], title, colors = ['#eb9b17', '#eee8da'], max_size = 3}) {
+function TripsList({trip_list = [], title, colors = ['#eb9b17', '#eee8da'], max_size = 3, selection=(() => {})}) {
 
     const [showUpcoming, setShowUpcoming] = useState(trip_list.length > max_size);
 
@@ -18,15 +18,15 @@ function TripsList({trip_list = [], title, colors = ['#eb9b17', '#eee8da'], max_
                     if (index > max_size - 1 && showUpcoming) return null;
                     return (
                         <TripButton
+                            trip_id={trip.id}
                             destination={trip.getDestination()}
                             data={trip.getDateStr(1)}
                             bg_color={colors[index % colors.length]}
                             key={index}
+                            selection={selection}
                         />
                     )
                 })}
-            </div>
-            <div className='button-container'>
                 {showUpcoming && <button className='show-more-button' onClick={() => toggleVisibility(showUpcoming)}>
                     Show More
                 </button>}

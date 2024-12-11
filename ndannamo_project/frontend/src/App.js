@@ -7,25 +7,29 @@ import Home from "./pages/Home";
 import Main from "./pages/Main";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import {AuthProvider} from "./auth/AuthContext";
+import ProfilePage from "./userPages/ProfilePage";
+import ChangePassword from "./userPages/ChangePassword";
 
 function App() {
   return (
-      <AuthProvider>
-          <BrowserRouter>
-              <div className="App">
-                <header className="App-header">
-                    <Navbar/>
+    <AuthProvider>
+        <BrowserRouter>
+            <div className="App">
+                <Navbar/>
+                <main className="App-main">
                     <Routes>
                         <Route path="/" element={<Home/>} />
                         <Route path="/login" element={<Login/>} />
                         <Route path="/register" element={<Register/>} />
                         <Route path="/main" element={<Main/>} />
+                        <Route path="/profile" element={<ProfilePage/>} />
+                        <Route path="/change-password" element={<ChangePassword/>} />
                     </Routes>
-                </header>
-                  <FooterComponent/>
-              </div>
-          </BrowserRouter>
-      </AuthProvider>
+                </main>
+                <FooterComponent/>
+            </div>
+        </BrowserRouter>
+    </AuthProvider>
   );
 }
 

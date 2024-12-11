@@ -1,5 +1,9 @@
 .App {
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  height:100%;
 }
 
 .App-logo {
@@ -14,14 +18,15 @@
 }
 
 .App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  width: 100%;
   font-size: calc(10px + 2vmin);
   color: white;
+}
+
+.App-main {
+  flex: 1;
+  background-color: #eee8da;
+  height:calc(100% - 8vh - 5vh);        /* 8vh = altezza navbar, 5vh = altezza footer */
 }
 
 .App-link {

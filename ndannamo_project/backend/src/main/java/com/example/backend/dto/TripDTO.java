@@ -9,19 +9,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-
 public class TripDTO {
     private Long id;
     @NotBlank(message = "Name can't be empty")
     private String title;
-    private String description;
+    @NotBlank(message = "Location is required")
+    private List<String> locations;
+    @NotBlank(message = "Creation date is required")
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate creationDate;
     @NotBlank(message = "Start date is required")
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate startDate;
-    @NotBlank(message = "Location is required")
-    private String location;
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate endDate;
-    private Long createdBy;
-    private List<UserDTO> list_participants = new ArrayList<>();
+    private long createdBy;
+    private List<String> list_participants = new ArrayList<>();
 }

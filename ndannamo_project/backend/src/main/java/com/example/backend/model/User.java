@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Entity
@@ -25,19 +26,35 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
+
     @NotBlank
     @Email
     private String email;
-    @NotBlank
 
+    @NotBlank
+    private String nickname;    // non lo si puo' chiamare username se no va in errore tutto
+
+    @NotBlank
     private String password;
 
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "created_by")
+    private List<Trip> trips_created = new ArrayList<>();
+
     @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+        name = "trips_participation", 
+        joinColumns = @JoinColumn(name = "user_id"), 
+        inverseJoinColumns = @JoinColumn(name = "trip_id"))
     private List<Trip> trips = new ArrayList<>();
 
+    // Trip a cui sei stato invitato che non hai ancora accettato/rifiutato
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name="invitations")
+    private List<Trip> invitations = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -48,7 +65,7 @@ public class User implements UserDetails {
     public String getUsername() {
         return email;
     }
-
+    
     @Override
     public boolean isAccountNonExpired() {
         return true;
@@ -71,21 +88,20 @@ public class User implements UserDetails {
     public enum Role {
         USER, ADMIN
     }
-    @Override
-    public String getPassword() {
-        return this.password;
+
+    public boolean addInvitation(Trip trip) {
+        if (!this.invitations.contains(trip)) {
+            this.invitations.add(trip);
+            return true;
+        }
+        return false;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+    public void manageInvitation(Trip trip, boolean acceptInvitation) {
+        invitations.remove(trip);
 
-    public void setRole(Role role) {
-        this.role = role;
+        if (acceptInvitation) {
+            trips.add(trip);
+        }
     }
-    // Getter for email
-    public String getEmail() {
-        return email;
-    }
-
 }
