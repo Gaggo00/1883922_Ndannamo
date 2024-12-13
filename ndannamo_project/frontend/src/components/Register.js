@@ -17,7 +17,7 @@ function Register() {
         e.preventDefault();
 
         try {
-            const userData = await AuthService.register(email, nickname, password);
+            const userData = await AuthService.register(nickname,email, password);
             if (userData) {
                 localStorage.setItem('token', userData);
                 login(); // Aggiorna lo stato di autenticazione (login fatto in automatico quando ti registri)
@@ -43,10 +43,10 @@ function Register() {
                     <div className="form-box">
                         <p id="title">Sign up</p>
                         <form onSubmit={handleSubmit}>
-                            <input type="email" placeholder="Email" value={email}
-                                   onChange={(e) => setEmail(e.target.value)}/>
                             <input placeholder="Username" value={nickname}
                                    onChange={(e) => setNickname(e.target.value)}/>
+                            <input type="email" placeholder="Email" value={email}
+                                   onChange={(e) => setEmail(e.target.value)}/>
                             <input type="password" placeholder="Password" value={password}
                                    onChange={(e) => setPassword(e.target.value)}/>
                             <button type="submit">Sign up</button>
@@ -56,8 +56,8 @@ function Register() {
                 </div>
             </div>
         </div>
-)
-    ;
+    )
+        ;
 }
 
 export default Register;

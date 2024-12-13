@@ -27,14 +27,15 @@ function Login() {
                 login(); // Aggiorna lo stato di autenticazione
                 navigate('/');
             } else {
-                setError(userData.message);
+                setError("Wrong email or password");
             }
         } catch (error) {
             //console.log(error);
-            setError(error.response.data);
+            setError("Wrong email or password");
+            /*
             setTimeout(() => {
                 setError('');
-            }, 5000);
+            }, 5000);*/
         }
     };
 
@@ -49,12 +50,13 @@ function Login() {
                     <div class="form-box">
                         <p id="title">Login</p>
                         <form onSubmit={handleSubmit}>
-                            <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)}/>
+                            <input type="email" placeholder="Email" value={email}
+                                   onChange={(e) => setEmail(e.target.value)}/>
                             <input type="password" placeholder="Password" value={password}
-                                onChange={(e) => setPassword(e.target.value)}/>
+                                   onChange={(e) => setPassword(e.target.value)}/>
                             <button type="submit">Login</button>
                             {error && <p className="error-message">{error}</p>}
-                            <p id="subtitle" >Don't have an account yet? <Link to="/register">Sign up</Link></p>
+                            <p id="subtitle">Don't have an account yet? <Link to="/register">Sign up</Link></p>
                         </form>
                     </div>
                 </div>
