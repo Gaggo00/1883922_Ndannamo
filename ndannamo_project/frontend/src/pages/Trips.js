@@ -8,7 +8,8 @@ import TripPreview from '../components/TripPreview.js'
 
 import ondaVerde from "../static/wave/Onda2_Verda.png"
 import ondaArancione from "../static/wave/Onda1_Arancione.png"
-import TripsBanner from "../static/svg/TripsBanner.js"
+
+import banner from "../static/svg/trips-banner.svg"
 
 import "../styles/Home.css"
 import "../styles/Trips.css"
@@ -87,8 +88,7 @@ export default function Trips() {
                     </div>
                     {/* BANNER */}
                     <div id='banner'>
-                        {/*<img id="bannerImg" src={banner}/>*/}
-                        <TripsBanner/>
+                        <img id="bannerImg" src={banner}></img>
                     </div>
                     {/* UPCOMING TRIPS */}
                     <div id='upcomingTrips'>

@@ -40,6 +40,8 @@ export default function TripPreview({trip, reloadProfile}) {
     }, []);
 
     const fetchImage = async () => {
+        // questa parte va cambiata
+        /*
         const query = trip.locations[0];
         
         //const url = `https://images.search.yahoo.com/search/images;?p=${query}`;
@@ -53,6 +55,7 @@ export default function TripPreview({trip, reloadProfile}) {
         } catch (error) {
             throw error; // L'errore sarà gestito all'esterno
         }
+        */
     }
 
 
@@ -82,36 +85,10 @@ export default function TripPreview({trip, reloadProfile}) {
             <img id="image" src={imgURL}></img>
             <div id="tripBlockContent">
                 <div id="title">{trip.title}</div>
-                <div id="date"><i class="bi bi-calendar3 icon-with-margin"></i>{startDate} - {endDate}</div>
-                <div id="location"><i class="bi bi-geo-alt icon-with-margin"></i>{locationString}</div>
-                <div id="participants"><i class="bi bi-people icon-with-margin"></i>{participantsStr}</div>
+                <div id="date"><i className="bi bi-calendar3 icon-with-margin"></i>{startDate} - {endDate}</div>
+                <div id="location"><i className="bi bi-geo-alt icon-with-margin"></i>{locationString}</div>
+                <div id="participants"><i className="bi bi-people icon-with-margin"></i>{participantsStr}</div>
             </div>
         </div>
     );
 }
-
-
-/*
-
-
-        <Card sx={{ maxWidth: 345 }}>
-            <CardActionArea>
-            <CardMedia
-                component="img"
-                height="140"
-                image="/static/images/cards/contemplative-reptile.jpg"
-                alt="green iguana"
-            />
-            <CardContent>
-                <Typography gutterBottom variant="h5" component="div">
-                {trip.title}
-                </Typography>
-                <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                {trip.startDate} - {trip.endDate}<br/>
-                Lizards are a widespread group of squamate reptiles, with over 6,000
-                species, ranging across all continents except Antarctica
-                </Typography>
-            </CardContent>
-            </CardActionArea>
-        </Card>
-*/

@@ -35,13 +35,14 @@
 }
 
 #pastTrips .tripBlock {
-    background-color: rgb(204, 204, 204);
+    background-color: rgb(238, 232, 218);
 }
 
 .centerSection h2 {
     text-align: left;
     margin-left: 1vw;
     padding-bottom: 1vh;
+    font-size: 21pt;
 }
 
 #trips .tripPreviewBlocksContainer {
@@ -62,7 +63,7 @@
 
 /* BANNER */
 #banner {
-    /*width:100%;*/
+    width: 90%;
     height:fit-content;
     margin: 0 auto;
 }
