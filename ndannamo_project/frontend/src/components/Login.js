@@ -42,12 +42,12 @@ function Login() {
     return (
         <div className="all-page">
             <img id="top" src={ondaVerde}/>
-            <div class="log-container">
-                <div class="login-box">
-                    <div class="image-box">
+            <div className="log-container">
+                <div className="login-box">
+                    <div className="image-box">
                         <img src={logo} alt='App logo'/>
                     </div>
-                    <div class="form-box">
+                    <div className="form-box">
                         <p id="title">Login</p>
                         <form onSubmit={handleSubmit}>
                             <input type="email" placeholder="Email" value={email}
