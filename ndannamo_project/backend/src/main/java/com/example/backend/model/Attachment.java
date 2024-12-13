@@ -20,8 +20,7 @@ public class Attachment {
     private Long fileSize;   // Dimensione del file in byte
 
     @Lob
-    @Column(columnDefinition = "BLOB") // Salva il file come blob binario
+    @Column(columnDefinition = "BYTEA") // Salva il file come blob binario
     private byte[] fileData; // Contenuto del file
 
-    // Getter e Setter (se non usi Lombok)
 }

@@ -18,7 +18,7 @@ public abstract class Event {
 
     private String place;
 
-    @OneToMany(mappedBy = "relatedEvent", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ManyToMany
     private Set<Attachment> attachments;
 
 
