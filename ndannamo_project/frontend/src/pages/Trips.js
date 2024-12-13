@@ -5,11 +5,10 @@ import {useAuth} from "../auth/AuthContext";
 
 import TripService from '../services/TripService';
 import TripPreview from '../components/TripPreview.js'
-import DateHelper from '../utils/DateHelper.js'
 
 import ondaVerde from "../static/wave/Onda2_Verda.png"
 import ondaArancione from "../static/wave/Onda1_Arancione.png"
-import banner from "../static/trips-banner.jpg"
+import TripsBanner from "../static/svg/TripsBanner.js"
 
 import "../styles/Home.css"
 import "../styles/Trips.css"
@@ -17,7 +16,7 @@ import "../styles/Trips.css"
 export default function Trips() {
     
     //const {isAuthenticated, logout} = useAuth();
-    const [trips, setTrips] = useState([]);
+    //const [trips, setTrips] = useState([]);
     const [upcomingTrips, setupcomingTrips] = useState([]);
     const [pastTrips, setPastTrips] = useState([]);
 
@@ -38,13 +37,17 @@ export default function Trips() {
             const response = await TripService.getTrips(token);
 
             if (response) {
-                setTrips(response);  // Aggiorniamo lo stato con le informazioni del profilo
+                //setTrips(response);  // Aggiorniamo lo stato con le informazioni del profilo
 
                 var _upcomingTrips = [];
                 var _pastTrips = [];
-                for (const trip of trips) {
-                    const today = Date.now();
-                    const endDate = DateHelper.stringToDate_YYYY_MM_DD(trip.endDate);
+                const today = Date.now();
+                //console.log("today: " + today.toString())
+                
+                for (const trip of response) {
+
+                    const endDate = Date.parse(trip.endDate)
+                    //console.log("end: " + endDate.toString())
 
                     // e' "past" quando la sua endDate e' prima di oggi, quindi minore
                     if (endDate < today) {
@@ -54,9 +57,9 @@ export default function Trips() {
                         _upcomingTrips.push(trip);
                     }
                 }
-                setupcomingTrips(_upcomingTrips);
-                setPastTrips(_pastTrips);
-
+                setupcomingTrips([..._upcomingTrips]);
+                setPastTrips([..._pastTrips]);
+                
             } else {
                 console.error('Invalid response data');
             }
@@ -84,7 +87,8 @@ export default function Trips() {
                     </div>
                     {/* BANNER */}
                     <div id='banner'>
-                        {<img id="bannerImg" src={banner}/>}
+                        {/*<img id="bannerImg" src={banner}/>*/}
+                        <TripsBanner/>
                     </div>
                     {/* UPCOMING TRIPS */}
                     <div id='upcomingTrips'>

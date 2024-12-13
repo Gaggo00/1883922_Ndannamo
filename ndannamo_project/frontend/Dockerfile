@@ -8,7 +8,6 @@ RUN npm install bootstrap-icons
 RUN npm install react-datepicker
 
 
-
 COPY . .
 
 RUN npm run build

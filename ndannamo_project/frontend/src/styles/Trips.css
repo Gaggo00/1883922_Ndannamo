@@ -11,7 +11,7 @@
     /*display: inline-block;*/
     position: fixed;
     left: 2vw;
-    background-color: blue; /* TEMP */
+    background-color: #dfcca2; /* TEMP */
     width: 20%;
     height: 83vh;
 }
@@ -62,7 +62,7 @@
 
 /* BANNER */
 #banner {
-    width:90%;
+    /*width:100%;*/
     height:fit-content;
     margin: 0 auto;
 }
