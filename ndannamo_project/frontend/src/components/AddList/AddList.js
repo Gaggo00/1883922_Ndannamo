@@ -1,37 +1,57 @@
 import React, { useState } from "react";
+
+import CityService from "../../services/CityService";
+
 import {BsPlus} from 'react-icons/bs';
 import './AddList.css'
+
 
 function AddList({destinations, setDestinations}) {
     const [searchTerm, setSearchTerm] = useState("");
     const [suggestions, setSuggestions] = useState([]);
 
     // Lista delle località
-    const locations = [
-        "Parigi",
-        "Parma",
-        "Padova",
-        "Palermo",
-        "Londra",
-        "Roma",
-        "Madrid",
-        "Barcellona",
-        "Milano",
-        "Firenze",
-        "Perugia",
-    ];
+    var locations = [];
 
-    const handleChange = (event) => {
+    const handleChange = async (event) => {
         const value = event.target.value;
         setSearchTerm(value);
 
-        if (value) {
+        // resetta i suggerimenti se il campo e' vuoto
+        if (!value) {
+            setSuggestions([]);
+        }
+
+        // se ci sono meno di tre caratteri, non fare nulla
+        if (value.length < 3) {
+            return;
+        }
+
+        // ottieni suggerimenti dal server
+        await updateLocationsFromServer(value);
+
         const filteredSuggestions = locations.filter((location) => location.toLowerCase().includes(value.toLowerCase()));
-            setSuggestions(filteredSuggestions);
-        } else {
-            setSuggestions([]); // Resetta i suggerimenti se il campo è vuoto
+        setSuggestions(filteredSuggestions);
+    };
+
+    const updateLocationsFromServer = async (start) => {
+        try {
+            // Chiamata al servizio per ottenere le informazioni del profilo
+            const response = await CityService.getCitiesStartingWith(start);
+
+            if (response) {
+                //console.log(response);
+                locations = response.map(city => city.name + ", " + city.country);
+                
+            } else {
+                console.error('Invalid response data');
+            }
+        } catch (error) {
+            console.error('Error fetching cities:', error);
         }
     };
+
+
 
     const handleSelect = (location) => {
         setSearchTerm(location); // Imposta il valore dell'input al suggerimento selezionato
