@@ -1,6 +1,6 @@
 CREATE TABLE cities (
 	id BIGINT PRIMARY KEY,
-	city TEXT,
+	name TEXT,
 	country TEXT,
 	iso TEXT,
 	latitude NUMERIC,

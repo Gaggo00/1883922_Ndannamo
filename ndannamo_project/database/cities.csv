@@ -1,4 +1,4 @@
-id,city,country,iso,latitude,longitude,image
+id,name,country,iso,latitude,longitude,image
 1392685764,Tokyo,Japan,JPN,35.6897,139.6922,-
 1360771077,Jakarta,Indonesia,IDN,-6.175,106.8275,-
 1356872604,Delhi,India,IND,28.61,77.23,-

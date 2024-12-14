@@ -10,3 +10,6 @@ PER TESTARE SE IL DATABASE HA CARICATO LA TABELLA cities:
 
 - Per vedere tutte le tabelle:
   >>    \dt+
+
+  Per vedere se c'e' qualcosa dentro:
+  >> select * from cities limit 10;
