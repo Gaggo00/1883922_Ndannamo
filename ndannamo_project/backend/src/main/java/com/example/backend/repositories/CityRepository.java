@@ -12,7 +12,7 @@ public interface CityRepository extends JpaRepository<City, Long> {
 
     Optional<City> findByName(String name);
 
-    Optional<List<City>> findByNameIgnoreCaseStartsWith(String nameStart);
+    Optional<City> findByNameAndCountryIgnoreCase(String name, String country);
 
-    
+    Optional<List<City>> findByNameIgnoreCaseStartsWith(String nameStart);
 }

@@ -22,6 +22,28 @@ class CityService{
     }
 
 
+    // Per ottenere l'immagine di una citta da name e country
+    static async getCityImage(name, country) {
+        try {
+            const response = await axios.get(
+                `${CityService.BASE_URL}/image`,
+                { 
+                    params: { 
+                        name: name,
+                        country: country
+                    }
+                },
+                {
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                }
+            );
+            return response.data;
+        } catch (error) {
+            throw error; // L'errore sarà gestito all'esterno
+        }
+    }
 }
 
 export default CityService;

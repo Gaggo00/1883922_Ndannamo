@@ -18,6 +18,7 @@ def get_img_source(search_query):
     )
 
     html = response.text
+    #print(html[:2000])
 
     soup = BeautifulSoup(html, 'lxml')
 
@@ -29,14 +30,14 @@ def get_img_source(search_query):
         return(source)
 
 
-def addImageSrc(startIndex, endIndex) :
+def addImageSrc(startIndex, endIndex):
     maxRows = 47869
 
     rows = np.loadtxt('cities.csv', delimiter=',', dtype=object)
 
-    for index in range(startIndex, endIndex):
+    for index in range(startIndex-1, endIndex-1):
 
-        print("index:", index)
+        print("index:", index+1)
         row = rows[index]
 
         if (index > maxRows): # per sicurezza
@@ -56,7 +57,8 @@ def addImageSrc(startIndex, endIndex) :
 
 
 def main():
-    addImageSrc(51, 100)
+    addImageSrc(1178, 1180)     # dopo 170 richieste circa non va piu'
+
 
 
 if __name__ == "__main__":

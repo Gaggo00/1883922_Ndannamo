@@ -14,7 +14,7 @@
 }
 
 .tripBlock{
-    width: 14vw;
+    width: fit-content;
     height: fit-content;
     background-color: #ffe699; /* rgb(240, 187, 89);*/
     /*border: 2px solid black;*/
@@ -31,9 +31,16 @@
     margin-top: -6vh;
 }
 
+.tripBlock #imageContainer {
+    width: 13vw;
+    height: 20vh;
+    margin: 0 auto;
+}
+
 .tripBlock #image {
     width: 100%;
-    height: 150px;
+    height: 100%;
+    object-fit: cover; /* per mantenere l'aspect ratio */
     border-radius: 1vw;
     background-color: #fff6e2;
     mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1.0) 50%, transparent 100%);

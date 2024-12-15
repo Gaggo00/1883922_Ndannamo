@@ -5,9 +5,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -59,6 +56,26 @@ public class CityController {
             // restituisci una lista vuota
             final List<City> cities = new ArrayList<City>();
             return ResponseEntity.ok().body(cities);
+        }
+        catch (Exception ex) {
+            return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(ex.getMessage());
+        }
+    }
+
+
+    // Ottieni immagine di una city dal nome e country
+    @GetMapping(value={"/image", "/image/"})
+    public ResponseEntity<?> getImageByNameAndCountry(@RequestParam("name") String name, @RequestParam("country") String country) {
+        try {
+            // ottieni cities
+            City city = cityService.getCityByNameAndCountry(name, country);
+            return ResponseEntity.ok().body(city.getImage());
+        }
+        catch (ResourceNotFoundException ex) {
+            // restituisci la stringa "-" -> necessario in caso un utente metta una destinazione non riconosciuta
+            return ResponseEntity.ok().body("-");
         }
         catch (Exception ex) {
             return ResponseEntity

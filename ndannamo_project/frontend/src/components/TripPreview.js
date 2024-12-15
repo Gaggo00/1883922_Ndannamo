@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 
 import TripService from '../services/TripService';
+import CityService from '../services/CityService';
 
 import logo from '../static/Logo app.png'
 import "../styles/TripPreview.css";
@@ -12,8 +13,33 @@ import "../styles/TripPreview.css";
 export default function TripPreview({trip, reloadProfile}) {
 
     const navigate = useNavigate();
-
     const [imgURL, setImgURL] = useState("");
+    const [imageKey, setimageKey] = useState(0);    // serve per far aggiornare l'immagine
+
+    const fecthImage = async (name, country) => {
+        try {
+            const response = await CityService.getCityImage(name, country);
+
+            if (response) {
+                //console.log(response);
+                if (response.length > 7 && response.substring(0,6) == "https:") {
+                    //console.log("sto cambiando url immagine");
+                    setImgURL(response);
+                    setimageKey(1);
+                }
+            } else {
+                console.error('Invalid response data');
+            }
+        } catch (error) {
+            console.error('Error fetching image url:', error);
+        }
+    }
+
+    const mainLocation = trip.locations[0].split(",");
+    const mainLocationName = mainLocation[0].trim();
+    const  mainLocationCountry = mainLocation[1].trim();
+
+    fecthImage(mainLocationName, mainLocationCountry);
 
     const startDateArray = trip.startDate.split("-");
     const startDate = startDateArray[2] + "/" + startDateArray[1] + "/" + startDateArray[0].substring(2)
@@ -35,30 +61,9 @@ export default function TripPreview({trip, reloadProfile}) {
     }
 
 
-    useEffect(() => {
-        fetchImage();
-    }, []);
-
-    const fetchImage = async () => {
-        // questa parte va cambiata
-        /*
-        const query = trip.locations[0];
-        
-        //const url = `https://images.search.yahoo.com/search/images;?p=${query}`;
-        const url = `https://serpapi.com/playground?engine=yahoo_images&p=${query}`
-
-        try {
-            const response = await axios.get(`${url}`);
-            //var firstImage = response.getElementsByTagName("img")[0];
-            //console.log(firstImage.src)
-            console.log(response.data.images_results[0]);
-        } catch (error) {
-            throw error; // L'errore sarà gestito all'esterno
-        }
-        */
-    }
 
 
+    // TEMPORANEA, andra' spostata nella pagina specifica di questa trip
     const leaveTrip = async () => {
         try {
             const token = localStorage.getItem('token'); // Recuperiamo il token da localStorage
@@ -80,9 +85,12 @@ export default function TripPreview({trip, reloadProfile}) {
         }
     };
 
+
     return (
-        <div className="tripBlock">
-            <img id="image" src={imgURL}></img>
+        <div className="tripBlock" >
+            <div id="imageContainer">
+                <img id="image" src={imgURL} key={imageKey}></img>
+            </div>
             <div id="tripBlockContent">
                 <div id="title">{trip.title}</div>
                 <div id="date"><i className="bi bi-calendar3 icon-with-margin"></i>{startDate} - {endDate}</div>
