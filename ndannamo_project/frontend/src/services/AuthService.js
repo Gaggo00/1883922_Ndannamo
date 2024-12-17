@@ -35,7 +35,7 @@ class AuthService {
             );
             return response.data;
         } catch (error) {
-            throw error; // L'errore sarà gestito all'esterno
+            throw error;
         }
     }
 

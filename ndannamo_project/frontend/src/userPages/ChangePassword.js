@@ -12,7 +12,7 @@ function ChangePassword() {
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
+          e.preventDefault();
         try {
             const token = localStorage.getItem('token'); // Retrieve the token from localStorage
             if (!token) {

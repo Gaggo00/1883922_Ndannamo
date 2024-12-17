@@ -1,11 +1,8 @@
 import {React, useState} from 'react';
-import LateralMenu from '../components/LateralMenu/LateralMenu';
-import Form from 'react-bootstrap/Form';
-import TripCreationForm from '../components/TripCreationForm/TripCreationForm';
-import {TextField, DateField} from '../components/Fields/Fields';
 import "../styles/Main.css"
 import Trip from '../models/Trip';
-import TripService from '../services/TripService';
+import MultiStepForm from "../components/TripCreationForm/MultiStepForm/MultiStepForm";
+import '../components/TripCreationForm/TripCreation.css'
 
 function Main() {
 
@@ -37,8 +34,10 @@ function Main() {
     }
 
     return (
-        <div style={{width: "100%", heigth: "100%", display: "flex", flexDirection: "row"}}>
-            <TripCreationForm/>
+        <div>
+            <div className="trip-box">
+                <MultiStepForm/>
+            </div>
         </div>
     );
 }
