@@ -40,6 +40,22 @@ class TripService{
             throw error; // L'errore sarà gestito all'esterno
         }
     }
+    static async deleteTrip(token, tripId) {
+
+        try {
+            const response = await axios.delete(
+                `${TripService.BASE_URL}/${tripId}`,
+                {
+                    headers: {
+                        "Authorization" : `Bearer ${token}`
+                    }
+                }
+            );
+            return response.data;
+        } catch (error) {
+            throw error; // L'errore sarà gestito all'esterno
+        }
+    }
 }
 
 export default TripService;

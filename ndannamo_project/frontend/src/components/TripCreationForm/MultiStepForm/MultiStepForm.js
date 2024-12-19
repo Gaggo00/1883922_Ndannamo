@@ -40,7 +40,16 @@ const MultiStepForm = () => {
                 return;
             }
 
-            const response = await TripService.create(token, formData.title, formData.city, formData.startDate, formData.endDate);
+            const formattedStartDate = formData.startDate.split('T')[0];
+            const formattedEndDate = formData.endDate.split('T')[0];
+
+            const response = await TripService.create(
+                token,
+                formData.title,
+                formData.city,
+                formattedStartDate,
+                formattedEndDate
+            );
 
             if (response) {
                 nextStep();
@@ -49,6 +58,7 @@ const MultiStepForm = () => {
             console.log(error);
         }
     };
+
 
     // Funzione per rendere i pallini di avanzamento dinamici
     const renderProgressDots = () => {

@@ -32,6 +32,27 @@ export default function TripPreview({trip, reloadProfile}) {
         }
     };
 
+    const deleteTrip = async () => {
+        try {
+            const token = localStorage.getItem('token'); // Recuperiamo il token da localStorage
+            if (!token) {
+                navigate("/login");
+            }
+            // Chiamata al servizio per accettare
+            const response = await TripService.deleteTrip(token, trip.id);
+
+            if (response) {
+                //setProfileInfo(response);  // Aggiorniamo lo stato con le informazioni del profilo
+                reloadProfile();
+                console.log("Invitation accepted!")
+            } else {
+                console.error('Invalid response data');
+            }
+        } catch (error) {
+            console.error('Error fetching profile information:', error);
+        }
+    };
+
     return (
         <div className="tripBlock">
             <p id="title">{trip.title}</p>
@@ -40,6 +61,7 @@ export default function TripPreview({trip, reloadProfile}) {
             <p>{trip.list_participants.length} participants</p>
 
             <button onClick={leaveTrip}>Leave (TEMP)</button>
+            <button onClick={deleteTrip}>Delete Trip</button>
         </div>
 
     );
