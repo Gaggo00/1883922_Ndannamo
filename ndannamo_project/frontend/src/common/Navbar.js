@@ -24,12 +24,12 @@ function Navbar() {
     return (
         <div className="navbar">
             <div className="logo">
-                <span id="title">NDANNAMO</span>
-                <span id="subtitle">WHERE ARE WE GOING</span>
+                <div id="valigia-logo"></div>
+                <div id="scritta-logo"></div>
             </div>
             <div className="center">
                 <Link to="/" className="centerEl">Home</Link>
-                <Link to="/trips" className="centerEl">Trip</Link>
+                <Link to="/main" className="centerEl">Trip</Link>
             </div>
             {isAuthenticated && (
                 <Dropdown drop="down">
