@@ -9,9 +9,7 @@
     width: 40vw;
     border-radius: 30px;
 }
-.trip-box{
-    height: 100vh;
-}
+
 .Step{
     height: 30vh;
     background-color: #ffffff;
@@ -105,16 +103,7 @@
 .dot.active {
     background-color: #4caf50; /* Cambia il colore quando il pallino è attivo */
 }
-.multi-step-form {
-    padding: 20px;
-    margin: 0 auto;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100vw;
-    height: 100vh;
-    background: aquamarine;
-}
+
 .city{
     display: flex;
 }

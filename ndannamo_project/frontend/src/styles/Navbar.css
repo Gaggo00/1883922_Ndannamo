@@ -10,6 +10,7 @@
     position: fixed !important;
     top: 0;
     left: 0;
+    font-weight: bolder;
 }
 body, html {
     width: 100%;
@@ -36,12 +37,33 @@ body, html {
     margin-right:90px;
 }
 
-.navbar .logo {
+.navbar .logo1 {
     display: flex;
     flex-direction: column; /* Dispone gli elementi in colonna */
     align-items: center; /* Centra gli elementi verticalmente */
     margin-left:3%;
     font-weight: bold;
+}
+.navbar #scritta-logo{
+    background-image: url("../static/scritta logo.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 31px;
+    width: 106px;
+    margin-left: 11px;
+    margin-top:8px;
+}
+.navbar .logo {
+    display: flex;
+    align-items: center;
+}
+.navbar #valigia-logo{
+    background-image: url("../static/valigia logo.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 40px;
+    width: 52px;
+    margin-left: 38px;
 }
 
 #title{
