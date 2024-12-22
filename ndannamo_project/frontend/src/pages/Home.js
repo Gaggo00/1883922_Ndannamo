@@ -1,5 +1,5 @@
 import React from 'react';
-import {Link, useNavigate} from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 import "../styles/Home.css"
 import logo from "../static/Logo app.png"
 import {useAuth} from "../auth/AuthContext";
@@ -12,7 +12,7 @@ function Home() {
 
     const goToLogin = () => {
         if (isAuthenticated) {
-            navigate('/');
+            navigate('/main');
         } else {
             navigate('/login');
         }
@@ -28,10 +28,13 @@ function Home() {
                     <p> SHARE</p>
                     <p> AND RELIVE</p>
                     <p id="piccolo">YOUR ADVENTURES</p>
+
                     <button onClick={goToLogin}>START NOW</button>
                 </div>
             </div>
+            <div id="bottom-container">
             <img id="bottom" src={ondaArancione}/>
+            </div>
         </div>
 
     )

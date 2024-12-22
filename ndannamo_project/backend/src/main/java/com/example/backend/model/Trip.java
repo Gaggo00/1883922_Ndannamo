@@ -18,15 +18,19 @@ public class Trip {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     private String title;
-    private String description;
-    private String location;
+    private List<String> locations;
+    private LocalDate creationDate;
     private LocalDate startDate;
     private LocalDate endDate;
 
     @ManyToOne
     @JoinColumn(name="created_by", nullable=false)
     private User created_by;
+    
     @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+        name = "trips_participation", 
+        joinColumns = @JoinColumn(name = "trip_id"), 
+        inverseJoinColumns = @JoinColumn(name = "user_id"))
     private List<User> participants = new ArrayList<>();
-
 }

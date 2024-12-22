@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import UserService from '../services/UserService';
+import "../styles/Login.css";
+import logo from '../static/Logo app.png';
 
 function Register() {
     const [email, setEmail] = useState('');
+    const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const { login } = useAuth(); // Usa il contesto per aggiornare lo stato di autenticazione
@@ -14,7 +17,7 @@ function Register() {
         e.preventDefault();
 
         try {
-            const userData = await UserService.register(email, password);
+            const userData = await UserService.register(email, username, password);
             if (userData) {
                 localStorage.setItem('token', userData);
                 login(); // Aggiorna lo stato di autenticazione (login fatto in automatico quando ti registri)
@@ -31,22 +34,30 @@ function Register() {
     };
 
     return (
-        <div className="auth-container">
-            <h2>Sign up</h2>
-            {error && <p className="error-message">{error}</p>}
-            <form onSubmit={handleSubmit}>
-                <div className="form-group">
-                    <label>Email: </label>
-                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+        <div className="all-page">
+            <div className="log-container">
+                <div className="login-box">
+                    <div className="image-box">
+                        <img src={logo} alt='App logo'/>
+                    </div>
+                    <div className="form-box">
+                        <p id="title">Sign up</p>
+                        <form onSubmit={handleSubmit}>
+                            <input type="email" placeholder="Email" value={email}
+                                   onChange={(e) => setEmail(e.target.value)}/>
+                            <input placeholder="Username" value={username}
+                                   onChange={(e) => setUsername(e.target.value)}/>
+                            <input type="password" placeholder="Password" value={password}
+                                   onChange={(e) => setPassword(e.target.value)}/>
+                            <button type="submit">Sign up</button>
+                            {error && <p className="error-message">{error}</p>}
+                        </form>
+                    </div>
                 </div>
-                <div className="form-group">
-                    <label>Password: </label>
-                    <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-                </div>
-                <button type="submit">Sign up</button>
-            </form>
+            </div>
         </div>
-    );
+)
+    ;
 }
 
 export default Register;
