@@ -1,60 +1,12 @@
 import axios from "axios";
 
-class UserService {
-    static BASE_URL = "http://localhost:8080"
+export default class UserService {
+    static BASE_URL = "http://localhost:8080/profile"
 
-    static async login(email, password) {
+
+    static async getProfile(token) {
         try {
-            const response = await axios.post(
-                `${UserService.BASE_URL}/api/auth/login`,
-                {email, password},
-                {
-                    headers: {
-                        "Content-Type": "application/json"
-
-                    }
-                }
-            );
-            return response.data;
-        } catch (error) {
-            throw error; // L'errore sarà gestito all'esterno
-        }
-    }
-
-    static async register(email, username, password) {
-        try {
-            const response = await axios.post(
-                `${UserService.BASE_URL}/api/auth/register`,
-                {email, username, password},
-                {
-                    headers: {
-                        "Content-Type": "application/json"
-
-                    }
-                }
-            );
-            return response.data;
-        } catch (error) {
-            throw error; // L'errore sarà gestito all'esterno
-        }
-    }
-
-
-    /**AUTHENTICATION CHECKER */
-    static logout() {
-        localStorage.removeItem('token')
-        localStorage.removeItem('role')
-    }
-
-    static isAuthenticated() {
-        const token = localStorage.getItem('token')
-        return !!token
-    }
-
-
-    static async getYourProfile(token) {
-        try {
-            const response = await axios.get(`${UserService.BASE_URL}/api/auth/getMyProfile`,
+            const response = await axios.get(`${UserService.BASE_URL}`,
                 {
                     headers: {Authorization: `Bearer ${token}`}
                 })
@@ -63,29 +15,24 @@ class UserService {
             throw err;
         }
     }
-    static async changePassword(token,currentPassword,newPassword) {
-        try{
+
+
+    
+    static async acceptInvitation(token, tripId, value) {
+
+        try {
             const response = await axios.post(
-                `${UserService.BASE_URL}/api/auth/change-password`,
-                {currentPassword, newPassword},
+                `${UserService.BASE_URL}/invitations/${tripId}`,
+                { value },
                 {
-                    headers: {Authorization: `Bearer ${token}`,
-                        "Content-Type": "application/json"}
-                });
-            console.log(response);
+                    headers: {
+                        "Authorization" : `Bearer ${token}`
+                    }
+                }
+            );
             return response.data;
-        }
-        catch(err) {
-            throw (err);
+        } catch (error) {
+            throw error; // L'errore sarà gestito all'esterno
         }
     }
-
-
-
-
-
-
 }
-
-
-export default UserService;

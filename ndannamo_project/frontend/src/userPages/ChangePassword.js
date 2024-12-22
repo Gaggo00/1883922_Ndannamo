@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
-import UserService from '../services/UserService';
+import AuthService from '../services/AuthService';
 import '../styles/Login.css'
-import passport from "../static/Passport.png";
+import locker from "../static/locker.png";
 
 function ChangePassword() {
     const [currentPassword, setCurrentPassword] = useState('');
@@ -12,7 +12,7 @@ function ChangePassword() {
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
+          e.preventDefault();
         try {
             const token = localStorage.getItem('token'); // Retrieve the token from localStorage
             if (!token) {
@@ -20,7 +20,7 @@ function ChangePassword() {
                 return;
             }
 
-            const response = await UserService.changePassword(token, currentPassword, newPassword);
+            const response = await AuthService.changePassword(token, currentPassword, newPassword);
 
             if (response) {
                 navigate("/profile");
@@ -44,21 +44,21 @@ function ChangePassword() {
             <div className="log-container">
                 <div className="login-box">
                     <div className="image-box">
-                        <img src={passport} alt="User's passport photo" />
+                        <img src={locker} alt="Locker photo" />
                     </div>
                     <div className="form-box">
                         <p id="title">Change password</p>
                         <form onSubmit={handleSubmit}>
                             <input
                                 type="password"
-                                placeholder="current password"
-                                autoComplete="current-password"
+                                placeholder="Current password"
+                                autoComplete="Current-password"
                                 value={currentPassword}
                                 onChange={(e) => setCurrentPassword(e.target.value)}
                             />
                             <input
                                 type="password"
-                                placeholder="new password"
+                                placeholder="New password"
                                 value={newPassword}
                                 onChange={(e) => setNewPassword(e.target.value)}
                             />

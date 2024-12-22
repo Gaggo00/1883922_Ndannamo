@@ -1,43 +1,109 @@
-import {React, useState} from 'react';
-import LateralMenu from '../components/LateralMenu/LateralMenu';
-import Form from 'react-bootstrap/Form';
-import TripCreationForm from '../components/TripCreationForm/TripCreationForm';
-import {TextField, DateField} from '../components/Fields/Fields';
-import "../styles/Main.css"
-import Trip from '../models/Trip';
+import {React, useEffect, useState} from 'react';
+import "../styles/Main.css";
+import MultiStepForm from "../components/TripCreationForm/MultiStepForm/MultiStepForm";
+import '../components/TripCreationForm/TripCreation.css';
+import TripMainPreview from "../components/TripMainPreview";
+import UserService from "../services/UserService";
+import {useNavigate} from "react-router-dom";
+import TripSideBarPreview from "../components/TripSideBarPreview";
 
 function Main() {
 
-    var trips = [
-        new Trip(1, "Parigi", 1739194088000, 1739294088000),
-        new Trip(1, "Bolo", 1739194088000, 1739294088000),
-        new Trip(1, "Monti", 1739194088000, 1739294088000),
-        new Trip(1, "Sali", 1739194088000, 1739294088000),
-        new Trip(2, "Londra", 1736456488000, 1737629288000),
-        new Trip(3, "Roma", 1756456488000, 1762629288000),
-        new Trip(4, "Amsterdam", 1773456488000, 1778629288000),
-        new Trip(5, "Praga", 1725456488000, 1725629288000),
-        new Trip(6, "Stoccolma", 1725456488000, 1725629288000),
-        new Trip(7, "Praga", 1725456488000, 1725629288000),
-        new Trip(8, "Milano", 1725456488000, 1725629288000),
-        new Trip(9, "Napoli", 1725456488000, 1725629288000),
-    ]
+    const [profileInfo, setProfileInfo] = useState({
+        nickname: '',
+        email: '',
+        trips: [],
+        invitations : []
+    });
+    const navigate = useNavigate();
 
-    const [title, setTitle] = useState("");
-    const [startDate, setStartDate] = useState(new Date());
-    const [endDate, setEndDate] = useState(new Date());
-    var lastPossibleDate = new Date();
-    lastPossibleDate.setDate(lastPossibleDate.getDate() + 720);
+    useEffect(() => {
+        fetchProfileInfo();
+    }, []);
 
-    function changeStartDate(new_date) {
-        if (new_date > endDate)
-            setEndDate(new_date);
-        setStartDate(new_date);
-    }
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const openModal = () => {
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+    };
+
+    const handleOverlayClick = (e) => {
+        // Verifica se l'utente ha cliccato sull'overlay e non sul contenuto del modal
+        if (e.target.className === "modal-overlay") {
+            closeModal();
+        }
+    };
+    const fetchProfileInfo = async () => {
+        try {
+            const token = localStorage.getItem('token'); // Recuperiamo il token da localStorage
+            if (!token) {
+                navigate("/login");
+            }
+
+            // Chiamata al servizio per ottenere le informazioni del profilo
+            const response = await UserService.getProfile(token);
+
+            if (response) {
+                setProfileInfo(response);  // Aggiorniamo lo stato con le informazioni del profilo
+            } else {
+                console.error('Invalid response data');
+            }
+        } catch (error) {
+            console.error('Error fetching profile information:', error);
+        }
+    };
 
     return (
-        <div style={{width: "100%", heigth: "100%", display: "flex", flexDirection: "row"}}>
-            <TripCreationForm/>
+        <div className="main">
+            <div className="sidebar">
+                <button onClick={openModal}>+ Create a trip</button>
+                <div className="trip-list">
+                    <h3>Upcoming trips</h3>
+                    {profileInfo.trips.map((trip, index) =>
+                        <TripSideBarPreview key={index} trip={trip} reloadProfile={fetchProfileInfo}></TripSideBarPreview>
+                    )}
+                    <h3>Past Trips</h3>
+                    <div className="trip-item">Londra<br /><small>22/03 - 26/03</small></div>
+                    <div className="trip-item">Madrid<br /><small>22/03 - 26/03</small></div>
+                    <div className="trip-item">Gaeta<br /><small>22/03 - 26/03</small></div>
+                    <div className="trip-item">Capodanno<br /><small>22/03 - 26/03</small></div>
+                </div>
+            </div>
+            <div className="content">
+                <div className="search-bar">
+                    <i className="bi bi-search"></i>
+                    <input type="text" placeholder="Search your trip"/>
+                </div>
+                <div className="header"></div>
+                <h3>Upcoming trips</h3>
+                <div className="container-trip">
+                    <div className="trip-grid">
+                            {profileInfo.trips.map((trip, index) =>
+                                <TripMainPreview key={index} trip={trip} reloadProfile={fetchProfileInfo}></TripMainPreview>
+                            )}
+                    </div>
+                </div>
+                <h3>Past Trips</h3>
+                <div className="container-trip">
+                    <div className="trip-grid">
+                        <div className="trip-card past">Londra<br/><small>22/03 - 26/03</small></div>
+                        <div className="trip-card past">Madrid<br/><small>22/03 - 26/03</small></div>
+                        <div className="trip-card past">Gaeta<br/><small>22/03 - 26/03</small></div>
+                        <div className="trip-card past">Capodanno<br/><small>22/03 - 26/03</small></div>
+                    </div>
+                </div>
+            </div>
+            {isModalOpen && (
+                <div className="modal-overlay" onClick={handleOverlayClick}>
+                    <div className="trip-box">
+                        <MultiStepForm/>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

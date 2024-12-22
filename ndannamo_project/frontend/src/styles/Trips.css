@@ -1,0 +1,72 @@
+
+#trips {
+    /*display:flex;*/
+    position: relative;
+    margin-top: 10vh;
+    height:fit-content;
+    background-color: #eee8da;
+}
+
+#trips .leftSection {
+    /*display: inline-block;*/
+    position: fixed;
+    left: 2vw;
+    background-color: #dfcca2; /* TEMP */
+    width: 20%;
+    height: 83vh;
+}
+
+#trips .centerSection {
+    display: inline-block;
+    background-color: white;
+    width: 68%;
+    margin-left: 20vw;
+    padding-top: 4vh;
+    padding-bottom: 8vh;
+    height: fit-content;
+    min-height: 83vh;
+    border-top-left-radius: 3vw;
+    border-top-right-radius: 3vw;
+}
+
+#upcomingTrips, #pastTrips {
+    width: 90%;
+    margin: 3vh auto;
+}
+
+#pastTrips .tripBlock {
+    background-color: rgb(238, 232, 218);
+}
+
+.centerSection h2 {
+    text-align: left;
+    margin-left: 1vw;
+    padding-bottom: 1vh;
+    font-size: 21pt;
+}
+
+#trips .tripPreviewBlocksContainer {
+    width: fit-content;
+}
+
+
+/* BARRA DI RICERCA */
+
+#searchBarDiv {
+    margin: 0 auto;
+    margin-bottom: 2vh;
+}
+#searchBar {
+    width: 60%;
+}
+
+
+/* BANNER */
+#banner {
+    width: 90%;
+    height:fit-content;
+    margin: 0 auto;
+}
+#bannerImg {
+    width: 100%;
+}

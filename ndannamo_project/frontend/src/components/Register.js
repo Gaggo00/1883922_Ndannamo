@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import {Link, useNavigate} from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
-import UserService from '../services/UserService';
+import AuthService from '../services/AuthService';
 import "../styles/Login.css";
 import logo from '../static/Logo app.png';
 
 function Register() {
     const [email, setEmail] = useState('');
-    const [username, setUsername] = useState('');
+    const [nickname, setNickname] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const { login } = useAuth(); // Usa il contesto per aggiornare lo stato di autenticazione
@@ -17,7 +17,7 @@ function Register() {
         e.preventDefault();
 
         try {
-            const userData = await UserService.register(email, username, password);
+            const userData = await AuthService.register(nickname,email, password);
             if (userData) {
                 localStorage.setItem('token', userData);
                 login(); // Aggiorna lo stato di autenticazione (login fatto in automatico quando ti registri)
@@ -43,10 +43,10 @@ function Register() {
                     <div className="form-box">
                         <p id="title">Sign up</p>
                         <form onSubmit={handleSubmit}>
+                            <input placeholder="Username" value={nickname}
+                                   onChange={(e) => setNickname(e.target.value)}/>
                             <input type="email" placeholder="Email" value={email}
                                    onChange={(e) => setEmail(e.target.value)}/>
-                            <input placeholder="Username" value={username}
-                                   onChange={(e) => setUsername(e.target.value)}/>
                             <input type="password" placeholder="Password" value={password}
                                    onChange={(e) => setPassword(e.target.value)}/>
                             <button type="submit">Sign up</button>
@@ -56,8 +56,8 @@ function Register() {
                 </div>
             </div>
         </div>
-)
-    ;
+    )
+        ;
 }
 
 export default Register;

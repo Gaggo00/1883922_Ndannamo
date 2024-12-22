@@ -21,6 +21,7 @@ import com.example.backend.utils.TripValidation;
 
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/trips")
 public class TripController {
 
@@ -33,8 +34,6 @@ public class TripController {
         //this.userService = userService;
     }
 
-
-    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping(value={"", "/"})
     public ResponseEntity<?> createTrip(@Valid @RequestBody TripCreationRequest tripRequest) {
         
@@ -60,7 +59,6 @@ public class TripController {
         }
     }
 
-    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping(value={"", "/"})
     public ResponseEntity<?> getAllTrips() {
         try {
@@ -80,7 +78,6 @@ public class TripController {
 
 
     // Ottieni info su una specifica trip
-    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping(value={"/{id}", "/{id}/"})
     public ResponseEntity<?> getTrip(@PathVariable Long id) {
         try {
@@ -100,7 +97,6 @@ public class TripController {
 
 
     // Elimina una trip
-    @CrossOrigin(origins = "http://localhost:3000")
     @DeleteMapping(value={"/{id}", "/{id}/"})
     public ResponseEntity<?> deleteTrip(@PathVariable Long id) {
         try {
@@ -120,7 +116,6 @@ public class TripController {
 
 
     // Aggiungi persone a una trip
-    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping(value={"/{id}/invite", "/{id}/invite/"})
     public ResponseEntity<?> inviteToTrip(@PathVariable Long id, @Valid @RequestBody TripInviteList inviteList) {
 
@@ -132,6 +127,27 @@ public class TripController {
             // crea inviti
             String res = tripService.inviteToTrip(email, id, inviteList.getInviteList());
             return ResponseEntity.ok().body("Invitations sent, res = " + res);
+        }
+        catch (Exception ex) {
+            return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(ex.getMessage());
+        }
+    }
+
+
+    // Lascia una trip
+    @GetMapping(value={"/{id}/leave", "/{id}/leave/"})
+    public ResponseEntity<?> leaveTrip(@PathVariable Long id) {
+
+        try {
+            // prendi l'utente dal token
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String email = authentication.getName();
+
+            // lascia trip
+            tripService.leaveTrip(email, id);
+            return ResponseEntity.ok().body("Trip left");
         }
         catch (Exception ex) {
             return ResponseEntity

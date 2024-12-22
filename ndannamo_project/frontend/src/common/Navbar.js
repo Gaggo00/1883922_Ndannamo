@@ -24,12 +24,12 @@ function Navbar() {
     return (
         <div className="navbar">
             <div className="logo">
-                <span id="title">NDANNAMO</span>
-                <span id="subtitle">WHERE ARE WE GOING</span>
+                <div id="valigia-logo"></div>
+                <div id="scritta-logo"></div>
             </div>
             <div className="center">
                 <Link to="/" className="centerEl">Home</Link>
-                <Link to="/trips" className="centerEl">Trip</Link>
+                <Link to="/main" className="centerEl">Trip</Link>
             </div>
             {isAuthenticated && (
                 <Dropdown drop="down">
@@ -39,13 +39,14 @@ function Navbar() {
 
                     {/* Usa la classe CSS personalizzata per il menu */}
                     <Dropdown.Menu className="dropdown-menu-custom">
-                        <Dropdown.Item> <Link to="/profile">My profile</Link> </Dropdown.Item>
+                        <Dropdown.Item as={Link} to="/profile">My profile</Dropdown.Item>
+                        <Dropdown.Item as={Link} to="/trips">My trips</Dropdown.Item>
                         <Dropdown.Divider />
-                        <Dropdown.Item><Link to="/" onClick={handleLogout}>Logout</Link></Dropdown.Item>
+                        <Dropdown.Item as={Link} to="/" onClick={handleLogout}>Logout</Dropdown.Item>
                     </Dropdown.Menu>
                 </Dropdown>
             )}
-            {!isAuthenticated && location.pathname !== '/logout' && (<Link to="/login" className="right">Login</Link>)}
+            {!isAuthenticated && location.pathname !== '/logout' && (<Link to="/login" className="nav-right">Login</Link>)}
             </div>
 
                 );

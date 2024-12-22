@@ -143,6 +143,7 @@ public class TripService {
     }
 
 
+    // Per eliminare una trip (solo se sei il creatore)
     public void deleteTrip(String email, long tripId) {
         Trip trip = getTripById(tripId);
 
@@ -152,5 +153,26 @@ public class TripService {
             throw new ResourceNotFoundException("Only the trip creator can delete this trip");
         }
         tripRepository.delete(trip);
+    }
+
+
+    // Per lasciare una trip (solo se NON sei il creatore)
+    public void leaveTrip(String email, long tripId) {
+        Trip trip = getTripById(tripId);
+
+        // Controllo che l'utente loggato NON sia il creatore della trip
+        User logged_user = userService.getUserByEmail(email);
+        if (trip.getCreated_by() == logged_user) {
+            throw new ResourceNotFoundException("As the trip creator, you can't leave this trip");
+        }
+        // Controllo che l'utente loggato faccia parte della trip
+        else if (!trip.getParticipants().contains(logged_user)) {
+            throw new ResourceNotFoundException("Trip not found");
+        }
+
+        trip.getParticipants().remove(logged_user);
+
+        // Aggiorno il database
+        tripRepository.save(trip);
     }
 }
