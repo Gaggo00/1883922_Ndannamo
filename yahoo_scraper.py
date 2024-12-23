@@ -34,6 +34,10 @@ def get_img_source(search_query):
 def addImageSrc(startIndex, endIndex):
     maxRows = 47869
 
+    # per contare quanti none di fila ricevo
+    noneCounter = 0
+    res = True
+
     rows = np.loadtxt('cities.csv', delimiter=',', dtype=object)
 
     for index in range(startIndex-1, endIndex-1):
@@ -50,6 +54,15 @@ def addImageSrc(startIndex, endIndex):
         # Ottieni url immagine
         src = get_img_source(queryStr)
 
+        if (src == None):
+            noneCounter += 1
+            if (noneCounter > 2):
+                print("tre none di fila, stopping")
+                res = False
+                break
+        else:
+            noneCounter = 0
+
         # Aggiorna riga mettendo la src come campo image
         row[6] = src
 
@@ -57,27 +70,31 @@ def addImageSrc(startIndex, endIndex):
     print("Writing output...")
     np.savetxt('cities.csv', rows, delimiter=',', fmt="%s")
     print("Done")
+    return res
 
 
 def main():
 
     #'''
-    start = 7900
-    end = 8400
+    start = 10300
+    end = 20000
 
     step = 100
     
     # faccio i loop che servono per arrivare a end
     loops = (end - start) // step
     for i in range(0, loops):
-        addImageSrc(start, start+step)
+        ok = addImageSrc(start, start+step)
+        if (not ok):
+            print("stop")
+            break
         start = start+step
         if (i < loops - 1):
             time.sleep(60)          # pausetta cosi forse yahoo non mi denuncia e blocca a vita
     
     #'''
 
-    #addImageSrc(5835, 6000)
+    #addImageSrc(10265, 10300)
 
 
 
