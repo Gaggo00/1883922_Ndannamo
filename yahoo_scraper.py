@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 import requests, lxml
 import csv
 import numpy as np
+import time
 
 
 
@@ -37,11 +38,11 @@ def addImageSrc(startIndex, endIndex):
 
     for index in range(startIndex-1, endIndex-1):
 
-        print("index:", index+1)
-        row = rows[index]
-
         if (index > maxRows): # per sicurezza
             break
+
+        print("Idx:", index+1)
+        row = rows[index]
 
         # Prepara query: nome citta e country
         queryStr = row[1] + " " + row[2]
@@ -53,11 +54,30 @@ def addImageSrc(startIndex, endIndex):
         row[6] = src
 
     # Scrivi output
+    print("Writing output...")
     np.savetxt('cities.csv', rows, delimiter=',', fmt="%s")
+    print("Done")
 
 
 def main():
-    addImageSrc(1178, 1180)     # dopo 170 richieste circa non va piu'
+
+    #'''
+    start = 7900
+    end = 8400
+
+    step = 100
+    
+    # faccio i loop che servono per arrivare a end
+    loops = (end - start) // step
+    for i in range(0, loops):
+        addImageSrc(start, start+step)
+        start = start+step
+        if (i < loops - 1):
+            time.sleep(60)          # pausetta cosi forse yahoo non mi denuncia e blocca a vita
+    
+    #'''
+
+    #addImageSrc(5835, 6000)
 
 
 
