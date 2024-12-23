@@ -60,6 +60,9 @@ export default function TripPreview({trip, reloadProfile}) {
         participantsStr += " and " + quantity + " more";
     }
 
+    const handleClick = () => {
+        navigate(`/trips/${trip.id}`); // Modifica questa rotta in base alla struttura della tua applicazione
+    };
 
 
 
@@ -87,7 +90,7 @@ export default function TripPreview({trip, reloadProfile}) {
 
 
     return (
-        <div className="tripBlock" >
+        <div className="tripBlock" onClick={handleClick}>
             <div id="imageContainer">
                 <img id="image" src={imgURL} key={imageKey}></img>
             </div>

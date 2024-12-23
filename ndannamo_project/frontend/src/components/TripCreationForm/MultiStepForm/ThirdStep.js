@@ -117,7 +117,7 @@ const ThirdStep = ({ nextStep, prevStep, handleChange, values }) => {
 
     return (
         <div className="trip-creation-page">
-            <div className="Step">
+            <div className="fill-flex2">
                 <h2>Where are you going?</h2>
                 <div className="city">
                     <label>
@@ -162,13 +162,12 @@ const ThirdStep = ({ nextStep, prevStep, handleChange, values }) => {
                         </ul>
                     </div>}
                 </div>
+            </div>
                 {/* PULSANTI PREVIOUS E NEXT */}
-                <div className="button-div">
+                <div className="auto-flex2">
                     <button id="previous" onClick={prevStep}>Previous</button>
                     <button id="next" onClick={nextStep}>Next</button>
                 </div>
-
-            </div>
         </div>
     );
 };
