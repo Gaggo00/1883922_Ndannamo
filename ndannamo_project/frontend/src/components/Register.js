@@ -2,8 +2,11 @@ import React, { useState } from 'react';
 import {Link, useNavigate} from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import AuthService from '../services/AuthService';
+
 import "../styles/Login.css";
 import logo from '../static/Logo app.png';
+import ondaVerde from "../static/svg/onda_sopra_verde.svg"
+import ondaArancione from "../static/svg/onda_sotto_arancione.svg"
 
 function Register() {
     const [email, setEmail] = useState('');
@@ -35,6 +38,7 @@ function Register() {
 
     return (
         <div className="all-page">
+            <img id="top" src={ondaVerde}/>
             <div className="log-container">
                 <div className="login-box">
                     <div className="image-box">
@@ -55,6 +59,7 @@ function Register() {
                     </div>
                 </div>
             </div>
+            <img id="bottom" src={ondaArancione}/>
         </div>
     )
         ;

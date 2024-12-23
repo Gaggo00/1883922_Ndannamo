@@ -9,7 +9,7 @@ const Confirmation = ({ prevStep, values, handleSubmit }) => {
                     <li><b>Title:</b> {values.title}</li>
                     <li><b>Start Date:</b> {values.startDate}</li>
                     <li><b>End Date:</b> {values.endDate}</li>
-                    <li><b>City:</b> {values.city.join(", ")}</li>
+                    <li><b>Destinations:</b> {values.city.join(", ")}</li>
                 </ul>
                 <div className="button-div">
                     <button id="previous" onClick={prevStep}>Previous</button>

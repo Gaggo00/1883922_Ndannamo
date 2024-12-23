@@ -11,22 +11,32 @@
 }
 
 .Step{
-    height: 30vh;
+    /*height: 30vh;*/
+    height: fit-content;
     background-color: #ffffff;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     border-radius: 30px;
-    padding:30px;
+    padding:2vw;
+}
+.Step .city{
+    
 }
 .Step button{
-    margin-top: 10px;
+    height: fit-content;
+    width: fit-content;
+    margin-left: 1vw;
+    margin-top: auto;
+    padding: 1vh 0.5vw;
     border-radius: 5px;
+    font-size: 1vw;
 }
 .button-div{
     display: flex;
     justify-content: space-around;
+    padding-top:4vh;
     width: 100%;
 }
 .Step input{
@@ -34,7 +44,7 @@
     background-color: #f3f3f3;
     border: none;
     border-radius: 5px;
-    font-size: 20px;
+    font-size: 1.4vw;
 }
 .Step .date{
     margin-top: 15px;
@@ -44,7 +54,7 @@
 }
 .date-input label {
     display: block;
-    font-size: 9px;
+    font-size: 0.8vw;
     color: #727272;
     margin-bottom: 5px;
     background-color: #f3f3f3;
@@ -57,10 +67,10 @@
     width: 100%;
     border: none;
     background-color: transparent;
-    font-size: 16px;
+    font-size: 1vw;
     color: #000000;
     outline: none;
-    margin-top:0px;
+    margin-top: 0;
     cursor: pointer;
     text-align: left;
 
@@ -108,24 +118,23 @@
     display: flex;
 }
 .list-city{
-    padding-inline: 60px;
-    padding-top: 50px;
     overflow-y: auto;
-    max-height: 300px;
+    max-height: 15vh;
 }
 .list-city ul {
-    margin-right : 10px;
-    margin-top: -45px;
-
+    /*margin-right : 10px;*/
+    padding-left: 1rem;
 }
 ul{
     text-align: left;
     list-style: none;
 }
 .list-city ul button{
+    margin: auto;
     margin-left: 20px;
     background: transparent;
     border: none;
+    padding: 0;
 }
 .auto-flex1{
     flex: 0 0 auto;
@@ -140,7 +149,6 @@ ul{
 }
 .fill-flex2 {
     flex: 1 1 auto;
-
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -149,4 +157,14 @@ ul{
     height: 100%;
     display: flex;
     flex-direction: column;
+}
+
+#selected-destinations {
+    width: 100%;
+    text-align: left;
+    margin-top: 3vh;
+}
+
+#selected-destinations h6 {
+    font-weight: 600;
 }

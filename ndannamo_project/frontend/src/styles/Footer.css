@@ -1,16 +1,16 @@
 footer{
     background: #eb9b17;
     height: 5vh;
-    font-size: 10px;
     color: #FFF4C7;
     position: fixed;
     bottom: 0;
     left: 0;
     z-index:3;
     align-content: center;
+    text-align: center;
     width: 100%;
 }
 
 .footerText{
-    font-size: 12pt;
+    font-size: 0.8vw;
 }

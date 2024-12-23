@@ -29,14 +29,7 @@
     border-top-right-radius: 3vw;
 }
 
-#upcomingTrips, #pastTrips {
-    width: 90%;
-    margin: 3vh auto;
-}
 
-#pastTrips .tripBlock {
-    background-color: rgb(238, 232, 218);
-}
 
 .centerSection h2 {
     text-align: left;
@@ -45,19 +38,21 @@
     font-size: 21pt;
 }
 
-#trips .tripPreviewBlocksContainer {
+.content .tripPreviewBlocksContainer {
     width: fit-content;
 }
 
-
-/* BARRA DI RICERCA */
-
-#searchBarDiv {
-    margin: 0 auto;
-    margin-bottom: 2vh;
+.tripPreviewContainer {
+    display:block;
+    text-align: left;
+    padding: 3vh 5vw;
+    font-size: 9pt;
 }
-#searchBar {
-    width: 60%;
+
+.tripPreviewBlocksContainer {
+    display: grid;
+    grid-template-columns: auto auto auto auto;
+    text-align: left;
 }
 
 
