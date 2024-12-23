@@ -10,6 +10,7 @@ import {BrowserRouter, Route, Routes} from "react-router-dom";
 import {AuthProvider} from "./auth/AuthContext";
 import ProfilePage from "./userPages/ProfilePage";
 import ChangePassword from "./userPages/ChangePassword";
+import TripInfo from "./pages/TripPages/TripInfo";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
                         <Route path="/main" element={<Main/>} />
                         <Route path="/profile" element={<ProfilePage/>} />
                         <Route path="/trips" element={<Trips/>} />
+                        <Route path="/trips/:id" element={<TripInfo />} />
                         <Route path="/change-password" element={<ChangePassword/>} />
                     </Routes>
                 </main>

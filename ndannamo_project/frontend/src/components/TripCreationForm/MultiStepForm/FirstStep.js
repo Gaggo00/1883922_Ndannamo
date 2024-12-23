@@ -20,7 +20,7 @@ const FirstStep = ({ nextStep, handleChange, values }) => {
 
     return (
         <div className="trip-creation-page">
-                <div className="fill-flex2">
+            <div className="fill-flex2">
                 <h2>Choose a Title</h2>
                 <input
                     type="text"
@@ -30,10 +30,10 @@ const FirstStep = ({ nextStep, handleChange, values }) => {
                     onKeyDown={handleKeyDown}
                 />
                 {error && <p style={{ color: 'red' }}>{error}</p>}
-                </div>
-                <div className="auto-flex2">
+            </div>
+            <div className="auto-flex2">
                 <button id="next" onClick={handleNext}>Next</button>
-                </div>
+            </div>
         </div>
     );
 };

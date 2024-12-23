@@ -22,7 +22,7 @@ const SecondStep = ({ nextStep, prevStep, handleChange, values }) => {
 
     return (
         <div className="trip-creation-page" onKeyDown={handleKeyDown} tabIndex="0">
-            <div className="Step">
+            <div className="fill-flex2">
                 <h2>Pick your date!</h2>
                 <div className="date">
                     <div className="date-input" >
@@ -48,13 +48,13 @@ const SecondStep = ({ nextStep, prevStep, handleChange, values }) => {
                         </label>
 
                     </div>
+                    {error && <p style={{ color: 'red' }}>{error}</p>}
                 </div>
-                {error && <p style={{ color: 'red' }}>{error}</p>}
-                <div className="button-div">
+            </div>
+                <div className="auto-flex2">
                     <button id="previous" onClick={prevStep}>Previous</button>
                     <button id="next" onClick={handleNext}>Next</button>
                 </div>
-            </div>
         </div>
     );
 };

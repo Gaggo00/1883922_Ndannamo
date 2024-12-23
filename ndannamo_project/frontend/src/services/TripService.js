@@ -73,6 +73,22 @@ class TripService{
             throw error; // L'errore sarà gestito all'esterno
         }
     }
+    static async getTrip(tripId,token) {
+        try {
+            const response = await axios.get(
+                `${TripService.BASE_URL}/${tripId}`,
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization" : `Bearer ${token}`
+                    }
+                }
+            );
+            return response.data;
+        } catch (error) {
+            throw error; // L'errore sarà gestito all'esterno
+        }
+    }
 }
 
 export default TripService;
