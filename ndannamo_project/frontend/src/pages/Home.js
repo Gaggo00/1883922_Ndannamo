@@ -3,8 +3,9 @@ import {useNavigate} from 'react-router-dom';
 import "../styles/Home.css"
 import logo from "../static/Logo app.png"
 import {useAuth} from "../auth/AuthContext";
-import ondaVerde from "../static/wave/Onda2_Verda.png"
-import ondaArancione from "../static/wave/Onda1_Arancione.png"
+
+import ondaVerde from "../static/svg/onda_sopra_verde.svg"
+import ondaArancione from "../static/svg/onda_sotto_arancione.svg"
 
 function Home() {
     const {isAuthenticated, logout} = useAuth();

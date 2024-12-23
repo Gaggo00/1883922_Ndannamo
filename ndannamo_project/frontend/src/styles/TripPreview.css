@@ -1,28 +1,24 @@
 
 
-.tripPreviewContainer {
-    display:block;
-    text-align: left;
-    padding: 3vh 5vw;
-    font-size: 9pt;
-}
 
-.tripPreviewBlocksContainer {
-    display: grid;
-    grid-template-columns: auto auto auto auto;
-    text-align: left;
-}
 
 .tripBlock{
     width: fit-content;
     height: fit-content;
-    background-color: #ffe699; /* rgb(240, 187, 89);*/
+    background-color: #fbe4c1; /* rgb(240, 187, 89);*/
     /*border: 2px solid black;*/
     border-radius: 1vw;
     padding: 1vh 0.5vw;
     margin: 0.5vw;
     font-size: 12pt;
     box-shadow: 0.3px 0.5vh 0.3vh #0000007e;
+
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.tripBlock:hover {
+    transform: scale(1.03);
 }
 
 #tripBlockContent {
@@ -39,9 +35,10 @@
 
 .tripBlock #image {
     width: 100%;
-    height: 100%;
+    height: 95%;
     object-fit: cover; /* per mantenere l'aspect ratio */
     border-radius: 1vw;
+    border: 3px solid white;
     background-color: #fff6e2;
     mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1.0) 50%, transparent 100%);
 }
@@ -49,14 +46,15 @@
 
 .tripBlock #title {
     display: block;
-    font-size: 18pt;
+    font-size: 1.3vw;
     font-weight: 600;
     margin: 1vh 0;
 }
 
 .tripBlock #date, .tripBlock #location, .tripBlock #participants {
     display: block;
-    font-size: 12pt;
+    font-size: 0.8vw;
+    color: #2f2f2f;
 }
 
 .tripBlock .icon-with-margin {
@@ -70,7 +68,7 @@
 
 
 .tripBlock button {
-    font-size: 15pt;
+    font-size: 1vw;
     border-radius: 1vw;
     padding: 0.5vh 0.5vw;
 }

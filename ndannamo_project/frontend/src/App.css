@@ -4,6 +4,7 @@
   flex-direction: column;
   min-height: 100vh;
   height:100%;
+  background-color: #eee8da;
 }
 
 .App-logo {
@@ -17,16 +18,12 @@
   }
 }
 
-.App-header {
-  width: 100%;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
 .App-main {
   flex: 1;
-  background-color: #eee8da;
+  position: absolute;
+  top: 8vh;
   height:calc(100% - 8vh - 5vh);        /* 8vh = altezza navbar, 5vh = altezza footer */
+  width: 100%;
 }
 
 .App-link {

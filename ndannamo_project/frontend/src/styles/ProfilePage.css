@@ -37,7 +37,7 @@
     height: fit-content;
     display:flex;
 }
-#trips-content{
+.profile-page-container #trips-content{
     background-color: #eee5d4;
     width:55%;
     border-radius: 100px;
@@ -48,19 +48,19 @@
     height: fit-content;
     min-height:60vh;
 }
-p{
+.profile-page-container p{
     font-size: 20px;
     margin-bottom:10px;
 }
-#color{
+.profile-page-container #color{
     background-color: #84bd9a;
     height: 20vh;
 }
-#orange{
+.profile-page-container #orange{
     background-color: #eb9b17;
     height: 9vh;
 }
-#pass button{
+.profile-page-container #pass button{
     border-radius: 10px;
     background-color: #eb9b17;
     margin-top:-15px;
