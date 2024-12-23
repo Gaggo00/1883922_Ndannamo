@@ -42,7 +42,7 @@ services:
     build: ./frontend
     container_name: frontend
     ports:
-      - "3001:3000"
+      - "3000:3000"
     volumes:
       - ./frontend:/app
       - /app/node_modules  # Evita che node_modules venga sovrascritto dal volume
