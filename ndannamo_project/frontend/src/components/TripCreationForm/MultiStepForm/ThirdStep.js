@@ -28,6 +28,7 @@ const ThirdStep = ({ nextStep, prevStep, handleChange, values }) => {
         // resetta i suggerimenti se il campo e' vuoto
         if (!value) {
             setSuggestions([]);
+            return;
         }
 
         // se ci sono meno di tre caratteri, non fare nulla

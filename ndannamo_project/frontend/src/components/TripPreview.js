@@ -7,13 +7,14 @@ import TripService from '../services/TripService';
 import CityService from '../services/CityService';
 
 import logo from '../static/Logo app.png'
+import missingCityImage from '../static/missing_city_image.png'
 import "../styles/TripPreview.css";
 
 
 export default function TripPreview({trip, reloadProfile}) {
 
     const navigate = useNavigate();
-    const [imgURL, setImgURL] = useState("");
+    const [imgURL, setImgURL] = useState(missingCityImage);
     const [imageKey, setimageKey] = useState(0);    // serve per far aggiornare l'immagine
 
     const fecthImage = async (name, country) => {
