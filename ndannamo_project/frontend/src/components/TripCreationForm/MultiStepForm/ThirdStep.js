@@ -1,16 +1,10 @@
 import React, { useState } from 'react';
 
 import CityService from '../../../services/CityService';
-import './AddList/AddList.css'
 
 const ThirdStep = ({ nextStep, prevStep, handleChange, values }) => {
     const [error, setError] = useState('');
     
-    var newCity = "";                   // fatto con useState non funziona perche' si aggiorna in ritardo
-    const setNewCity = (city) => {
-        newCity = city;
-    };
-
     const [suggestions, setSuggestions] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
 
@@ -21,18 +15,14 @@ const ThirdStep = ({ nextStep, prevStep, handleChange, values }) => {
 
     // Quando inserisci delle lettere, per aggiornare i suggerimenti
     const handleInputChange = async (event) => {
-        const value = event.target.value;
-        setSearchTerm(value);
-        //setNewCity(value)
+        setError("");
+        setSearchTerm(event.target.value);
 
-        // resetta i suggerimenti se il campo e' vuoto
-        if (!value) {
-            setSuggestions([]);
-            return;
-        }
+        const value = event.target.value.trim();
 
-        // se ci sono meno di tre caratteri, non fare nulla
+        // se ci sono meno di tre caratteri, resetta i suggerimenti
         if (value.length < 3) {
+            setSuggestions([]);
             return;
         }
 
@@ -63,21 +53,43 @@ const ThirdStep = ({ nextStep, prevStep, handleChange, values }) => {
         }
     };
 
+    // Per aggiungere searchTerm alla lista di destinazioni scelte (serve per quando premi invio/clicchi sul pulsante +)
+    const addCitySearchTerm = () => {
 
-    // Per aggiungere newCity alla lista di destinazioni scelte
-    const addCity = () => {
-        if (newCity.trim() === '') {
+        if (searchTerm.trim() === '') {
             setError('City name cannot be empty!');
             return;
         }
-        if (values.city.includes(newCity.trim())) {
+        if (values.city.includes(searchTerm.trim())) {
             setError('City already added!');
             return;
         }
+
         setError('');
-        const updatedCities = [...values.city, newCity];
+        const updatedCities = [...values.city, searchTerm];
         handleChange({ target: { name: 'city', value: updatedCities } });
-        setNewCity('');
+        
+        setSearchTerm("");
+    };
+
+    // Per aggiungere la citta' passata in input alla lista di destinazioni scelte (serve per quando scegli un suggerimento)
+    const addCity = (cityToAdd) => {
+        console.log("cityToAdd: " + cityToAdd);
+
+        if (cityToAdd.trim() === '') {
+            setError('City name cannot be empty!');
+            return;
+        }
+        if (values.city.includes(cityToAdd.trim())) {
+            setError('City already added!');
+            return;
+        }
+
+        setError('');
+        const updatedCities = [...values.city, cityToAdd];
+        handleChange({ target: { name: 'city', value: updatedCities } });
+        
+        setSearchTerm("");
     };
 
 
@@ -92,8 +104,8 @@ const ThirdStep = ({ nextStep, prevStep, handleChange, values }) => {
     const handleKeyDown = (e) => {
         if (e.key === 'Enter') {
             e.preventDefault();
-            if (newCity.trim()) {
-                addCity();
+            if (searchTerm.trim()) {
+                addCitySearchTerm();
             } else {
                 nextStep();
             }
@@ -102,75 +114,83 @@ const ThirdStep = ({ nextStep, prevStep, handleChange, values }) => {
 
 
     // Per quando clicchi su una destinazione dai suggerimenti
-    const handleSelect = (location) => {
-        //console.log("selected: " + location);
+    const handleSelect = (index) => {
+        console.log("selected location: " + suggestions[index]);
 
-        setNewCity(location);   // Imposta il valore dell'input al suggerimento selezionato
-        
-        //console.log("newCity: " + newCity);
-        
         setSearchTerm("");
         setSuggestions([]);     // Nasconde i suggerimenti
         
-        addCity();
+        addCity(suggestions[index]);
     };
 
 
     return (
         <div className="trip-creation-page">
             <div className="fill-flex2">
-                <h2>Where are you going?</h2>
+                <div className='top-bar'>
+                    <h2>Where are you going?</h2>
+                </div>
+
+                {/* CITTA' SELEZIONATE */}
+                <div id="selected-destinations">
+                    <h6>Selected destinations:</h6>
+                    <div id="selected-destinations-internal">
+                        {(values.city).length !== 0 && <div className="list-city">
+                            <ul>
+                                {values.city.map((city, index) => (
+                                    <li key={index}>
+                                        {city}
+                                        <button onClick={() => removeCity(index)}><i className="bi bi-x"></i></button>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>}
+                    </div>
+                </div>
+                {/* CAMPO INPUT */}
                 <div className="city">
                     <label>
                         <input
+                            id = "text-input"
                             type="text"
+                            className='long-input'
                             value={searchTerm}
                             onChange={handleInputChange}
                             onKeyDown={handleKeyDown}
+                            placeholder='Type a destination'
                         />
                     </label>
-                    <button onClick={addCity}><i class="bi bi-plus-lg"></i></button>
+                    <button onClick={addCitySearchTerm}><i className="bi bi-plus-lg"></i></button>
                 </div>
                 {/* MESSAGGIO DI ERRORE */}
                 {error && <p style={{color: 'red'}}>{error}</p>}
                 {/* SUGGERIMENTI CITTA' */}
                 {suggestions.length > 0 && (
-                <ul className='suggestions'>
-                {suggestions.map((location, index) => (
-                    <li
-                        key={index}
-                        onClick={() => handleSelect(location)}
-                        className='data'
-                        onMouseOver={(e) => (e.target.style.backgroundColor = "#f0f0f0")}
-                        onMouseOut={(e) => (e.target.style.backgroundColor = "#fff")}
-                    >
-                        {location}
-                    </li>
-                ))}
-                </ul>
+                <div className='suggestions'>
+                    <div className='suggestions-items'>
+                        {suggestions.map((location, index) => (
+                        <li
+                            key={index}
+                            onClick={() => handleSelect(index)}
+                            className='data'
+                            onMouseOver={(e) => (e.target.style.backgroundColor = "#f0f0f0")}
+                            onMouseOut={(e) => (e.target.style.backgroundColor = "#fff")}
+                        >
+                            <strong>{location.substring(0,document.getElementById("text-input").value.trim().length)}</strong>{location.substring(document.getElementById("text-input").value.trim().length)}
+                        </li>
+                        ))}
+                    </div>
+                </div>
                 )}
-                {/* CITTA' SELEZIONATE */}
-                <div id="selected-destinations">
-                    {(values.city).length !== 0 && <h6>Selected Cities:</h6>}
-                    {(values.city).length !== 0 && <div className="list-city">
-                        <ul>
-                            {values.city.map((city, index) => (
-                                <li key={index}>
-                                    {city}
-                                    <button onClick={() => removeCity(index)}><i class="bi bi-x"></i></button>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>}
-                </div>
             </div>
-                {/* PULSANTI PREVIOUS E NEXT */}
-                <div className="auto-flex2">
-                    <button id="previous" onClick={prevStep}>Previous</button>
-                    <button id="next" onClick={nextStep}>Next</button>
-                </div>
+            {/* PULSANTI PREVIOUS E NEXT */}
+            <div className="auto-flex2">
+                <button id="previous" onClick={prevStep}>Previous</button>
+                <button id="next" onClick={nextStep}>Next</button>
+            </div>
         </div>
     );
 };
 
 export default ThirdStep;
+

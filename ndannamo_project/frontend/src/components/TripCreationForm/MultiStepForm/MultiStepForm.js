@@ -69,18 +69,18 @@ const MultiStepForm = () => {
                 {dots.map((dot) => (
                     <span
                         key={dot}
-                        className={`dot ${step >= dot ? 'active' : ''}`}
+                        className={`dot ${step > dot ? 'completed' : ''} ${step == dot ? 'active' : ''}`}
                     ></span>
                 ))}
             </div>
-            {step < 4 && <p>STEP {step}</p>}
+            {step < 4 && <p>STEP {step}</p>}{step >= 4 && <p>DONE!</p>}
             </div>
         );
     };
 
     return (
         <div className="multi-step-form">
-            <div className="trip-creation-page2">
+            <div className="trip-creation-page-external">
                 <div className="auto-flex1">
             {renderProgressDots()}
                 </div>
