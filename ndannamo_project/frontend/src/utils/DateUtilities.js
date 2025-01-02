@@ -6,7 +6,7 @@ export default class DateUtilities {
     // date_To_yyyymmdd(Date.now())
     // restituisce "2025-01-02"
     static date_To_yyyymmdd(date, separator="-") {
-        var res = date.split('T')[0];
+        var res = date.toISOString().split('T')[0];
         res = res.replaceAll("-", separator);
         return res;
     }
@@ -16,6 +16,8 @@ export default class DateUtilities {
     // restituisce "02/01/2025"
     static date_To_ddmmyyyy(date, separator) {
         var res = DateUtilities.yyyymmdd_To_ddmmyyyy(DateUtilities.date_To_yyyymmdd(date), "-", separator);
+        console.log(res);
+        return res;
     }
 
     // Esempio:
@@ -23,6 +25,7 @@ export default class DateUtilities {
     // restituisce "02/01/25"
     static date_To_ddmmyy(date, separator) {
         var res = DateUtilities.yyyymmdd_To_ddmmyy(DateUtilities.date_To_yyyymmdd(date), "-", separator);
+        return res;
     }
 
 
@@ -31,6 +34,7 @@ export default class DateUtilities {
     // restituisce "02/01"
     static date_To_ddmm(date, separator) {
         var res = DateUtilities.yyyymmdd_To_ddmm(DateUtilities.date_To_yyyymmdd(date), "-", separator);
+        return res;
     }
 
 
@@ -63,6 +67,18 @@ export default class DateUtilities {
         return dateArray[2] + newSeparator + dateArray[1];
     }
 
+
+    // Esempio:
+    // yyyymmdd_To_ddMONTHyyyy("2020-05-13")
+    // restituisce "13 maggio 2020"
+    static yyyymmdd_To_ddMONTHyyyy(date, oldSeparator="-") {
+        var dateObject = new Date(date.replaceAll(oldSeparator, "-"));
+        return dateObject.toLocaleString('default', {
+            day: "numeric",
+            month: "long",
+            year: "numeric"
+        });
+    }
 
 
 
