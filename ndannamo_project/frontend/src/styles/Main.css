@@ -35,6 +35,15 @@ body {
     width: 1000px;
 }
 
+/* BANNER */
+#banner {
+    width: 90%;
+    height:fit-content;
+    margin: 0 auto;
+}
+#bannerImg {
+    width: 100%;
+}
 
 
 .content h2 {

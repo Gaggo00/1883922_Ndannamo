@@ -29,12 +29,6 @@ function Navbar() {
                     <div id="scritta-logo"></div>
                 </div>
             </Link>
-            {/*
-                <div className="center">
-                    <Link to="/" className="centerEl">Home</Link>
-                    <Link to="/main" className="centerEl">Trip</Link>
-                </div>
-            */}
             {isAuthenticated && (
                 <Dropdown drop="down">
                     <Dropdown.Toggle variant="success" id="dropdown-basic">

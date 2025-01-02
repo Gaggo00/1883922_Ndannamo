@@ -63,7 +63,9 @@
 
 .tripBlock #buttonRow {
     width: 100%;
-    margin: 0 auto;
+    margin: 1vh auto;
+    display: flex;
+    justify-content: space-between;
 }
 
 
@@ -71,4 +73,11 @@
     font-size: 1vw;
     border-radius: 1vw;
     padding: 0.5vh 0.5vw;
+}
+
+
+/* BLOCCHETTI INVITATIONS */
+
+.tripBlock.invitation #tripBlockContent {
+    margin-top: 0.4vh;
 }
