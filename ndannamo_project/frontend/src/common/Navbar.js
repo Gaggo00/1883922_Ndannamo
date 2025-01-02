@@ -38,7 +38,8 @@ function Navbar() {
             {isAuthenticated && (
                 <Dropdown drop="down">
                     <Dropdown.Toggle variant="success" id="dropdown-basic">
-                        <i className="bi bi-passport"></i>
+                        {/*<i className="bi bi-passport"></i>*/}
+                        <i className="bi bi-person-fill"></i>
                     </Dropdown.Toggle>
 
                     {/* Usa la classe CSS personalizzata per il menu */}

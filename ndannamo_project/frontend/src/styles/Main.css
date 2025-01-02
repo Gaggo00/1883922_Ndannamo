@@ -13,8 +13,6 @@ body {
 .content {
     display: flex;
     position: relative;
-    margin-left: 25%;
-    /*padding: 20px;*/
     padding-top: 4vh;
     padding-bottom: 8vh;
     background-color: #fff;
@@ -22,7 +20,6 @@ body {
     margin-top: 5vh;
     margin-left: 22.5vw;
     margin-bottom: 10vh;
-    /*margin-right: 30px;*/
     border-radius: 3vw;
     height:fit-content;
     flex-direction: column;
@@ -42,9 +39,10 @@ body {
 
 .content h2 {
     text-align: left;
-    margin-left: 1vw;
-    padding-bottom: 1vh;
+    margin-left: 0.5vw;
     font-size: 1.5vw;
+    bottom: -0.4vh;
+    position: relative;
     /*margin-top: 2vh;*/
 }
 
@@ -100,6 +98,7 @@ body {
 #upcomingTrips, #pastTrips {
     width: 90%;
     margin: 3vh auto;
+    margin-bottom: 0;
 }
 
 #pastTrips .tripBlock {
@@ -115,6 +114,37 @@ body {
 /* Nelle past trips, quando ci passi col mouse l'immagine torna a colori */
 #pastTrips .tripBlock:hover #image {
     filter: contrast();
+}
+
+.trips-top-row {
+    display: flex;
+    margin-left: 1vw;
+    padding-bottom: 1vh;
+    border: none;
+    background: none;
+}
+
+.trips-top-row .arrow-icon {
+    transform: rotate(0);
+    width: 1vw;
+    height: 1vw;
+    margin: auto;
+    /*margin-bottom: 2.5vh;*/
+}
+
+/* per nascondere le checkbox */
+.trips-top-row #upcomingCheckbox, .trips-top-row #pastCheckbox {
+    display: none;
+}
+
+/* per ruotare la freccia vicino a upcoming trips quando ci clicchi */
+.trips-top-row #upcomingCheckbox:checked + #upcoming-arrow-down {
+    transform: rotate(-90deg);
+}
+
+/* per ruotare la freccia vicino a past trips quando ci clicchi */
+.trips-top-row #pastCheckbox:checked + #past-arrow-down {
+    transform: rotate(-90deg);
 }
 
 .tripPreviewContainer {

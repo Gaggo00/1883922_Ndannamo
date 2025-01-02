@@ -1,6 +1,6 @@
 footer{
     background: #eb9b17;
-    height: 5vh;
+    height: 3.5vh;
     color: #FFF4C7;
     position: fixed;
     bottom: 0;
@@ -12,5 +12,6 @@ footer{
 }
 
 .footerText{
-    font-size: 0.8vw;
+    font-size: 1.6vh;
+    margin: auto;
 }
