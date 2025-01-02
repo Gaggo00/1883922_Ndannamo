@@ -28,8 +28,6 @@ export default function TripInfo() {
             if (!token) {
                 navigate("/login");
             }
-
-            // Chiamata al servizio per ottenere le informazioni del profilo
             const response = await TripService.getTrip(id,token);
 
             if (response) {
@@ -47,11 +45,16 @@ export default function TripInfo() {
             <InternalMenu/>
             <div className="trip-content">
                 <div className="trip-top">
-                    <p><bold>{tripInfo.title}</bold></p>
+                    <span> <strong>{tripInfo.title}</strong> {tripInfo.startDate} {tripInfo.endDate}</span>
                 </div>
-                <h1>Trip Details</h1>
-                <p>Showing details for trip ID: {tripInfo.id}</p>
+                <div className="trip-details">
+                <div className="sezione1">
+                    <h1>Trip Details</h1>
+                    <p>Showing details for trip ID: {tripInfo.id}</p>
+                </div>
+                <div className="sezione2"></div>
 
+                </div>
             </div>
         </div>
     );
