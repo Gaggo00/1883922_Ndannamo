@@ -1,12 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from "axios";
-
 import TripService from '../services/TripService';
 import CityService from '../services/CityService';
-
-import logo from '../static/Logo app.png'
 import missingCityImage from '../static/missing_city_image.png'
 import "../styles/TripPreview.css";
 
@@ -23,7 +18,7 @@ export default function TripPreview({trip, reloadProfile}) {
 
             if (response) {
                 //console.log(response);
-                if (response.length > 7 && response.substring(0,6) == "https:") {
+                if (response.length > 7 && response.substring(0,6) === "https:") {
                     //console.log("sto cambiando url immagine");
                     setImgURL(response);
                     setimageKey(1);
@@ -62,7 +57,7 @@ export default function TripPreview({trip, reloadProfile}) {
     }
 
     const handleClick = () => {
-        navigate(`/trips/${trip.id}`); // Modifica questa rotta in base alla struttura della tua applicazione
+        navigate(`/trips/${trip.id}/summary`); // Modifica questa rotta in base alla struttura della tua applicazione
     };
 
 
@@ -93,7 +88,7 @@ export default function TripPreview({trip, reloadProfile}) {
     return (
         <div className="tripBlock" onClick={handleClick}>
             <div id="imageContainer">
-                <img id="image" src={imgURL} key={imageKey}></img>
+                <img id="image" src={imgURL} key={imageKey} alt="location-image"></img>
             </div>
             <div id="tripBlockContent">
                 <div id="title">{trip.title}</div>

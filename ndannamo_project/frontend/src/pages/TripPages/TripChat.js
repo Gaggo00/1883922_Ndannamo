@@ -4,7 +4,7 @@ import TripService from "../../services/TripService";
 import InternalMenu from "./InternalMenu";
 import './InternalMenu.css'
 
-export default function TripInfo() {
+export default function TripChat() {
     const { id } = useParams();
     const [tripInfo, setTripInfo] = useState({
         id:'',
@@ -48,11 +48,11 @@ export default function TripInfo() {
                     <span> <strong>{tripInfo.title}</strong> {tripInfo.startDate} {tripInfo.endDate}</span>
                 </div>
                 <div className="trip-details">
-                <div className="sezione1">
-                    <h1>Trip Details</h1>
-                    <p>Showing details for trip ID: {tripInfo.id}</p>
-                </div>
-                <div className="sezione2"></div>
+                    <div className="sezione1">
+                        <h1>Trip Details</h1>
+                        <p>Showing details for trip ID: {tripInfo.id}</p>
+                    </div>
+                    <div className="sezione2"></div>
 
                 </div>
             </div>

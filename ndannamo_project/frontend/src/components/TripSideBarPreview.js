@@ -5,8 +5,6 @@ import "../styles/TripPreview.css";
 
 export default function TripSideBarPreview({trip, reloadProfile}) {
 
-    const navigate = useNavigate();
-
 
     return (
         <div className="trip-item">
