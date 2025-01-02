@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
 import com.example.backend.dto.BooleanDTO;
+import com.example.backend.dto.ChangePasswordRequest;
 import com.example.backend.service.TripService;
 import com.example.backend.service.UserService;
 
@@ -63,6 +64,27 @@ public class UserController {
             if (accept.getValue()) message += "accepted";
             else message += "refused";
             return ResponseEntity.ok().body(message);
+        }
+        catch (Exception ex) {
+            return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(ex.getMessage());
+        }
+    }
+
+
+    // Cambia password
+    @PostMapping("/change-password")
+    public ResponseEntity<?> changePassword(@Valid @RequestBody ChangePasswordRequest request) {
+        try {
+            // prendi l'utente dal token
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String email = authentication.getName();
+
+            // cambia la password
+            userService.changePassword(email,request);
+            return ResponseEntity.ok().body("Password changed");
+    
         }
         catch (Exception ex) {
             return ResponseEntity

@@ -33,4 +33,10 @@ public class Trip {
         joinColumns = @JoinColumn(name = "trip_id"), 
         inverseJoinColumns = @JoinColumn(name = "user_id"))
     private List<User> participants = new ArrayList<>();
+
+
+    // spese della trip
+    @OneToMany
+    private List<User> expenses = new ArrayList<>();
+
 }

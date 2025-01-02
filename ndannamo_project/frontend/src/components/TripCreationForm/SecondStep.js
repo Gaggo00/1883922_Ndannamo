@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import DateUtilities from '../../utils/DateUtilities';
 
 
 const SecondStep = ({ nextStep, prevStep, handleChange, values }) => {
@@ -22,12 +23,12 @@ const SecondStep = ({ nextStep, prevStep, handleChange, values }) => {
     };
 
     const setMinStartDate = () => {
-        var today = new Date().toISOString().split('T')[0];
+        var today = DateUtilities.date_To_yyyymmdd(new Date());
         document.getElementById("startDate").setAttribute('min', today);
     }
     const setMinEndDate = () => {
         if (values.startDate) {
-            var nextDay = getNextDay(values.startDate);
+            var nextDay = DateUtilities.getNextDay(values.startDate);
             document.getElementById("endDate").setAttribute('min', nextDay);
             // se endDate non e' ancora stata scelta, la imposto al valore minimo cosi' il calendario si apre su quella data
             if (!values.endDate) {
@@ -36,17 +37,10 @@ const SecondStep = ({ nextStep, prevStep, handleChange, values }) => {
         }
         else {
             //console.log("start date not selected yet");
-            var today = new Date().toISOString().split('T')[0];
-            document.getElementById("endDate").setAttribute('min', getNextDay(today));
+            var today = DateUtilities.date_To_yyyymmdd(new Date());
+            document.getElementById("endDate").setAttribute('min', DateUtilities.getNextDay(today));
         }
     }
-
-    // Prende in input una stringa tipo "yyyy-mm-dd" e restituisce il giorno dopo nello stesso formato
-    const getNextDay = (day) => {
-        var nextDayDate = new Date(Date.parse(day) + (24 * 60 * 60 * 1000));
-        var nextDay = nextDayDate.toISOString().split('T')[0];
-        return nextDay;
-    };
 
     return (
         <div className="trip-creation-page" onKeyDown={handleKeyDown} tabIndex="0">
