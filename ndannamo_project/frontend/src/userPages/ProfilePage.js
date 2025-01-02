@@ -5,8 +5,8 @@ import TripInvitation from '../components/TripInvitation.js'
 import passport from '../static/Passport.png';
 import { useNavigate } from 'react-router-dom';
 
-import ondaVerde from "../static/wave/Onda2_Verda.png"
-import ondaArancione from "../static/wave/Onda1_Arancione.png"
+import ondaVerde from "../static/svg/onda_sopra_verde.svg"
+import ondaArancione from "../static/svg/onda_sotto_arancione.svg"
 
 import "../styles/ProfilePage.css";
 import "../styles/TripPreview.css";
@@ -28,6 +28,10 @@ function ProfilePage() {
     const handlePasswordChange = () => {
         navigate('/change-password');
     };
+
+    const goToTrips = () => {
+        navigate('/main');
+    }
 
     const fetchProfileInfo = async () => {
         try {
@@ -72,13 +76,19 @@ function ProfilePage() {
                 <div id="trips-content">
                     <div className='tripPreviewContainer'>
                         <h2>Trips</h2>
-                        <div className='tripPreviewBlocksContainer'>
-                            {profileInfo.trips.map((trip, index) =>
-                                <TripPreview key={index} trip={trip} reloadProfile={fetchProfileInfo}></TripPreview>
-                            )}
-                        </div>
+                        <div className='flex-space-between'>
+                            <div className='tripPreviewBlocksContainer'>
+                                {profileInfo.trips.slice(0, 3).map((trip, index) =>
+                                    <TripPreview key={index} trip={trip} reloadProfile={fetchProfileInfo}></TripPreview>
+                                )}
+                            </div>
+                            <button id="all-trips-button" onClick={goToTrips}>
+                                <i class="bi bi-chevron-double-right h2"></i>
+                                <p>All trips</p>
+                            </button>
+                        </div> 
                     </div>
-                    <div className='tripPreviewContainer'>
+                    <div className='tripPreviewContainer invitationsContainer'>
                         <h2>Pending invitations</h2>
                         <div className='tripPreviewBlocksContainer'>
                             {profileInfo.invitations.map((trip, index) =>

@@ -11,6 +11,26 @@ export default function TripInvitation({trip, reloadProfile}) {
 
     const navigate = useNavigate();
 
+    const startDateArray = trip.startDate.split("-");
+    const startDate = startDateArray[2] + "/" + startDateArray[1] + "/" + startDateArray[0].substring(2)
+    const endDateArray = trip.endDate.split("-");
+    const endDate = endDateArray[2] + "/" + endDateArray[1] + "/" + endDateArray[0].substring(2)
+
+    var locationString = trip.locations[0];
+    if (trip.locations.length > 1) {
+        locationString += ", ...";
+    }
+
+    var participantsStr = trip.list_participants[0];
+    if (trip.list_participants.length > 1) {
+        participantsStr += ", " + trip.list_participants[1];
+    }
+    if (trip.list_participants.length > 2) {
+        const quantity = trip.list_participants.length - 2;
+        participantsStr += " and " + quantity + " more";
+    }
+
+
     const acceptInvitation = async () => {
         try {
             const token = localStorage.getItem('token'); // Recuperiamo il token da localStorage
@@ -54,11 +74,13 @@ export default function TripInvitation({trip, reloadProfile}) {
     };
 
     return (
-        <div className="tripBlock">
-            <p id="title">{trip.title}</p>
-            <p id="date">{trip.startDate} - {trip.endDate}</p>
-            <p>{trip.locations.toString()}</p>
-            <p>{trip.list_participants.length} participants</p>
+        <div className="tripBlock invitation">
+            <div id="tripBlockContent">
+                <div id="title">{trip.title}</div>
+                <div id="date"><i className="bi bi-calendar3 icon-with-margin"></i>{startDate} - {endDate}</div>
+                <div id="location"><i className="bi bi-geo-alt icon-with-margin"></i>{locationString}</div>
+                <div id="participants"><i className="bi bi-people icon-with-margin"></i>{participantsStr}</div>
+            </div>
             <div id="buttonRow">
                 <button onClick={acceptInvitation}>Accept</button>
                 <button onClick={refuseInvitation}>Refuse</button>
