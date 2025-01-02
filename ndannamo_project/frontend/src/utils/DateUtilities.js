@@ -6,7 +6,7 @@ export default class DateUtilities {
     // date_To_yyyymmdd(Date.now())
     // restituisce "2025-01-02"
     static date_To_yyyymmdd(date, separator="-") {
-        res = date.split('T')[0];
+        var res = date.split('T')[0];
         res = res.replaceAll("-", separator);
         return res;
     }
@@ -15,14 +15,14 @@ export default class DateUtilities {
     // date_To_ddmmyyyy(Date.now(), "/")
     // restituisce "02/01/2025"
     static date_To_ddmmyyyy(date, separator) {
-        res = yyyymmdd_To_ddmmyyyy(date_To_yyyymmdd(date), "-", separator);
+        var res = DateUtilities.yyyymmdd_To_ddmmyyyy(DateUtilities.date_To_yyyymmdd(date), "-", separator);
     }
 
     // Esempio:
     // date_To_ddmmyy(Date.now(), "/")
     // restituisce "02/01/25"
     static date_To_ddmmyy(date, separator) {
-        res = yyyymmdd_To_ddmmyy(date_To_yyyymmdd(date), "-", separator);
+        var res = DateUtilities.yyyymmdd_To_ddmmyy(DateUtilities.date_To_yyyymmdd(date), "-", separator);
     }
 
 
@@ -30,7 +30,7 @@ export default class DateUtilities {
     // date_To_ddmmyy(Date.now(), "/")
     // restituisce "02/01"
     static date_To_ddmm(date, separator) {
-        res = yyyymmdd_To_ddmm(date_To_yyyymmdd(date), "-", separator);
+        var res = DateUtilities.yyyymmdd_To_ddmm(DateUtilities.date_To_yyyymmdd(date), "-", separator);
     }
 
 
@@ -42,7 +42,7 @@ export default class DateUtilities {
     // yyyymmdd_To_ddmmyy("2019-05-13", "-", "/")
     // restituisce "13/05/19"
     static yyyymmdd_To_ddmmyy(date, oldSeparator, newSeparator) {
-        dateArray = date.split(oldSeparator);
+        var dateArray = date.split(oldSeparator);
         return dateArray[2] + newSeparator + dateArray[1] + newSeparator + dateArray[0].substring(2);
     }
 
@@ -50,7 +50,7 @@ export default class DateUtilities {
     // yyyymmdd_To_ddmmyyyy("2020-05-13", "-", "/")
     // restituisce "13/05/2019"
     static yyyymmdd_To_ddmmyyyy(date, oldSeparator, newSeparator) {
-        dateArray = date.split(oldSeparator);
+        var dateArray = date.split(oldSeparator);
         return dateArray[2] + newSeparator + dateArray[1] + newSeparator + dateArray[0];
     }
 
@@ -59,7 +59,7 @@ export default class DateUtilities {
     // yyyymmdd_To_ddmm("2020-05-13", "-", "/")
     // restituisce "13/05"
     static yyyymmdd_To_ddmm(date, oldSeparator, newSeparator) {
-        dateArray = date.split(oldSeparator);
+        var dateArray = date.split(oldSeparator);
         return dateArray[2] + newSeparator + dateArray[1];
     }
 
