@@ -69,7 +69,7 @@ const MultiStepForm = () => {
                 {dots.map((dot) => (
                     <span
                         key={dot}
-                        className={`dot ${step > dot ? 'completed' : ''} ${step == dot ? 'active' : ''}`}
+                        className={`dot ${step > dot ? 'completed' : ''} ${step === dot ? 'active' : ''}`}
                     ></span>
                 ))}
             </div>
