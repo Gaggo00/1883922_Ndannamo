@@ -4,7 +4,7 @@ import Step2 from './SecondStep';
 import Step3 from './ThirdStep';
 import Confirmation from './Confirmation';
 import Success from './Success';
-import '../TripCreation.css';
+import './TripCreation.css';
 import TripService from "../../services/TripService";
 import {useNavigate} from "react-router-dom";
 

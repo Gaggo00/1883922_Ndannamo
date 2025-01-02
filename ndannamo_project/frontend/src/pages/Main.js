@@ -3,7 +3,7 @@ import {useNavigate} from "react-router-dom";
 
 import TripService from '../services/TripService';
 
-import MultiStepForm from "../components/TripCreationForm/MultiStepForm/MultiStepForm";
+import MultiStepForm from "../components/TripCreationForm/MultiStepForm";
 import TripSideBarPreview from "../components/TripSideBarPreview";
 import TripPreview from '../components/TripPreview'
 
