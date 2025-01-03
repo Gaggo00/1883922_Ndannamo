@@ -19,6 +19,9 @@ function ProfilePage() {
         trips: [],
         invitations : []
     });
+    const [editingNickname, setEditingNickname] = useState(false);
+    const [newNickname, setNewNickname] = useState("");
+
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -45,11 +48,53 @@ function ProfilePage() {
 
             if (response) {
                 setProfileInfo(response);  // Aggiorniamo lo stato con le informazioni del profilo
+                setNewNickname(response.nickname);
             } else {
                 console.error('Invalid response data');
             }
         } catch (error) {
             console.error('Error fetching profile information:', error);
+        }
+    };
+
+    const makeNicknameEditable = () => {
+        setEditingNickname(true);
+    }
+    const saveNewNickname = () => {
+        // se il nickname non e' cambiato, non fare nulla
+        if (profileInfo.nickname == newNickname) {
+            setEditingNickname(false);
+            return;
+        }
+
+        // manda richiesta al server
+        const token = localStorage.getItem('token'); // Recuperiamo il token da localStorage
+        if (!token) {
+            navigate("/login");
+        }
+
+        // Chiamata al servizio per ottenere le informazioni del profilo
+        UserService.changeNickname(token, newNickname);
+
+        // aggiorna in locale
+        profileInfo.nickname = newNickname;
+        setEditingNickname(false);
+    }
+
+    // Per quando scrivi qualcosa nel campo per modificare il nickname
+    const handleInputChange = (event) => {
+        var input = event.target.value.replaceAll(" ", "");
+        input = input.substring(0, 20);     // MAX 20 CARATTERI?
+        setNewNickname(input);
+    }
+
+    // Per quando stai modificando il nickname e premi invio
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            if (newNickname.trim()) {
+                saveNewNickname();
+            }
         }
     };
 
@@ -65,10 +110,25 @@ function ProfilePage() {
                     </div>
                     <div id="scritte">
                         <h2>Profile Information</h2>
-                        <p><strong>Username:</strong> {profileInfo.nickname}</p>
-                        <p><strong>Email:</strong> {profileInfo.email}</p>
+                        <p><strong>Username: </strong>
+                            <span>
+                                {!editingNickname && profileInfo.nickname}
+                                {!editingNickname && <button onClick={makeNicknameEditable} className='nickname-button'><i className="bi bi-pencil-fill"></i></button>}
+                                {editingNickname && <input type="text"
+                                                            id="nickname-input"
+                                                            value={newNickname}
+                                                            onChange={handleInputChange}
+                                                            onKeyDown={handleKeyDown}/>}
+                                {editingNickname && <button onClick={saveNewNickname} className='nickname-button'><i className="bi bi-floppy-fill"></i></button>}
+                                
+                            </span>
+                        </p>
+                        <p>
+                            <strong>Email: </strong>
+                            {profileInfo.email}
+                        </p>
                         <div id="pass">
-                            <p><strong>Password:</strong></p>
+                            <p><strong>Password: </strong></p>
                             <button onClick={handlePasswordChange}>Change password</button>
                         </div>
                     </div>
@@ -83,7 +143,7 @@ function ProfilePage() {
                                 )}
                             </div>
                             <button id="all-trips-button" onClick={goToTrips}>
-                                <i class="bi bi-chevron-double-right h2"></i>
+                                <i className="bi bi-chevron-double-right h2"></i>
                                 <p>All trips</p>
                             </button>
                         </div> 
