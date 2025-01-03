@@ -29,7 +29,6 @@ function App() {
                         <Route path="/register" element={<Register/>} />
                         <Route path="/main" element={<Main/>} />
                         <Route path="/profile" element={<ProfilePage/>} />
-                        <Route path="/trips" element={<Trips/>} />
                         <Route path="/trips/:id/summary" element={<TripSummary />} />
                         <Route path="/trips/:id/chat" element={<TripChat />} />
                         <Route path="/trips/:id/schedule" element={<TripSchedule />} />

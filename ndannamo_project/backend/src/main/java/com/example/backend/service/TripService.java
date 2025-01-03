@@ -104,6 +104,11 @@ public class TripService {
         // Converti Trip in TripDTO
         TripDTO tripDTO = tripMapper.toDTO(trip);
 
+        // se l'utente loggato e' il creatore
+        if (logged_user == trip.getCreated_by()) {
+            tripDTO.setCreator(true);
+        }
+
         return tripDTO;
     }
 
