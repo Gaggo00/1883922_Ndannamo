@@ -13,7 +13,6 @@ import jakarta.validation.Valid;
 
 import com.example.backend.dto.BooleanDTO;
 import com.example.backend.dto.ChangePasswordRequest;
-import com.example.backend.dto.StringDTO;
 import com.example.backend.service.TripService;
 import com.example.backend.service.UserService;
 
@@ -85,26 +84,6 @@ public class UserController {
             // cambia la password
             userService.changePassword(email,request);
             return ResponseEntity.ok().body("Password changed");
-    
-        }
-        catch (Exception ex) {
-            return ResponseEntity
-                .status(HttpStatus.FORBIDDEN)
-                .body(ex.getMessage());
-        }
-    }
-
-    // Cambia nickname
-    @PutMapping("/nickname")
-    public ResponseEntity<?> changeNickname(@Valid @RequestBody StringDTO newNickname) {
-        try {
-            // prendi l'utente dal token
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            String email = authentication.getName();
-
-            // cambia la password
-            userService.changeNickname(email, newNickname.getValue());
-            return ResponseEntity.ok().body("Nickname changed");
     
         }
         catch (Exception ex) {

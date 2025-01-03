@@ -32,19 +32,6 @@
     padding-right: 2vw;
 }
 
-#profile-content #nickname-input {
-    width: 8vw;
-}
-#profile-content .nickname-button {
-    background: none;
-    border: none;
-}
-#profile-content .nickname-button i {
-    color: #004b3f;
-    margin: 0 0.5vw;
-}
-
-
 #profile-content, #trips-content {
     background-color: #eee5d4;
     border-radius: 4vw;

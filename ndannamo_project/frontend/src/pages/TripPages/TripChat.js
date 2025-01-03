@@ -4,7 +4,7 @@ import TripService from "../../services/TripService";
 import InternalMenu from "./InternalMenu";
 import './InternalMenu.css'
 
-export default function TripChat({trip}) {
+export default function TripChat() {
     const { id } = useParams();
     const [tripInfo, setTripInfo] = useState({
         id:'',
