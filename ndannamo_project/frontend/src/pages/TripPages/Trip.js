@@ -1,10 +1,11 @@
-import React, {useEffect, useState} from 'react';
-import {useNavigate, useParams} from 'react-router-dom';
-import TripService from "../../services/TripService";
 import InternalMenu from "./InternalMenu";
-import './InternalMenu.css'
+import TripChat from "./TripChat";
 
-export default function TripChat({trip}) {
+
+
+export default function Trip() {
+
+
     const { id } = useParams();
     const [tripInfo, setTripInfo] = useState({
         id:'',
@@ -40,22 +41,10 @@ export default function TripChat({trip}) {
         }
     };
 
-    return (
-        <div className="trip-info">
-            <InternalMenu/>
-            <div className="trip-content">
-                <div className="trip-top">
-                    <span> <strong>{tripInfo.title}</strong> {tripInfo.startDate} {tripInfo.endDate}</span>
-                </div>
-                <div className="trip-details">
-                    <div className="sezione1">
-                        <h1>Trip Details</h1>
-                        <p>Showing details for trip ID: {tripInfo.id}</p>
-                    </div>
-                    <div className="sezione2"></div>
 
-                </div>
-            </div>
-        </div>
+
+    return (
+        <InternalMenu></InternalMenu>
+
     );
 }

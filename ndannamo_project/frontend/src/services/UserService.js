@@ -53,4 +53,22 @@ export default class UserService {
             throw (err);
         }
     }
+
+
+    static async changeNickname(token, value) {
+        try{
+            const response = await axios.put(
+                `${UserService.BASE_URL}/nickname`,
+                { value },
+                {
+                    headers: {Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json"}
+                });
+            console.log(response);
+            return response.data;
+        }
+        catch(err) {
+            throw (err);
+        }
+    }
 }
