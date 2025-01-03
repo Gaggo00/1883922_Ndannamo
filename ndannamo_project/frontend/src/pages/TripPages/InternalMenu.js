@@ -7,6 +7,7 @@ import information_icon from "../../static/svg/icons/information_icon.svg";
 import coin_icon from "../../static/svg/icons/coin_icon.svg";
 import message_icon from "../../static/svg/icons/message_icon.svg";
 import './InternalMenu.css';
+import TripService from "../../services/TripService";
 
 export default function InternalMenu() {
     const navigate = useNavigate();
@@ -14,6 +15,17 @@ export default function InternalMenu() {
     const location = useLocation(); // Ottieni la URL corrente
     const [selectedOption, setSelectedOption] = useState(null);
     const [hoveredOption, setHoveredOption] = useState(null); // Stato per l'hover
+    const [tripInfo, setTripInfo] = useState({
+        id: '',
+        title: '',
+        locations: [],
+        creationDate: '',
+        startDate: '',
+        endDate: '',
+        createdBy: '',
+        list_participants: [],
+        creator: '',
+    });
 
     const options = [
         { id: "summary", icon: information_icon, label: "Summary", path: `/trips/${id}/summary` },
@@ -24,6 +36,9 @@ export default function InternalMenu() {
         { id: "chat", icon: message_icon, label: "Message", path: `/trips/${id}/chat` },
     ];
 
+    useEffect(() => {
+        fetchTripInfo();
+    }, []);
 
     useEffect(() => {
         const currentPath = location.pathname;
@@ -35,7 +50,8 @@ export default function InternalMenu() {
 
     const handleNavigation = (optionId, path) => {
         setSelectedOption(optionId);
-        navigate(path);
+        //navigate(path);
+        navigate(path, { state: { trip: tripInfo } });
     };
 
     const handleMouseEnter = (optionId) => {
@@ -44,6 +60,24 @@ export default function InternalMenu() {
 
     const handleMouseLeave = () => {
         setHoveredOption(null);
+    };
+    const fetchTripInfo = async () => {
+        try {
+            const token = localStorage.getItem('token'); // Recuperiamo il token da localStorage
+            if (!token) {
+                navigate("/login");
+            }
+            const response = await TripService.getTrip(id, token);
+
+            if (response) {
+                setTripInfo(response);
+
+            } else {
+                console.error('Invalid response data');
+            }
+        } catch (error) {
+            console.error('Error fetching profile information:', error);
+        }
     };
 
     return (

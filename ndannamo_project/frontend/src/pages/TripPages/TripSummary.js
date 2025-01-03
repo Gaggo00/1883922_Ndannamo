@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams,useLocation } from 'react-router-dom';
 import TripService from "../../services/TripService";
 import InternalMenu from "./InternalMenu";
 import "./TripSummary.css";
@@ -11,42 +11,12 @@ import calendar_icon from "../../static/svg/icons/calendar_icon.svg";
 import calendar from "../../static/calendar.png";
 import globe from "../../static/globe.png";
 import arrow_down from "../../static/svg/icons/arrow-down2.svg";
+import DateUtilities from "../../utils/DateUtilities";
 
 export default function TripSummary() {
     const { id } = useParams();
-    const [tripInfo, setTripInfo] = useState({
-        id: '',
-        title: '',
-        locations: [],
-        creationDate: '',
-        startDate: '',
-        endDate: '',
-        createdBy: '',
-        list_participants: []
-    });
-    const navigate = useNavigate();
-
-    useEffect(() => {
-        fetchTripInfo();
-    }, []);
-
-    const fetchTripInfo = async () => {
-        try {
-            const token = localStorage.getItem('token'); // Recuperiamo il token da localStorage
-            if (!token) {
-                navigate("/login");
-            }
-            const response = await TripService.getTrip(id, token);
-
-            if (response) {
-                setTripInfo(response);
-            } else {
-                console.error('Invalid response data');
-            }
-        } catch (error) {
-            console.error('Error fetching profile information:', error);
-        }
-    };
+    const location = useLocation();
+    const tripInfo = location.state?.trip; // Recupera il tripInfo dallo stato
 
     return (
         <div className="trip-info">
@@ -54,7 +24,7 @@ export default function TripSummary() {
             <div className="trip-content">
                 <div className="trip-top">
                     <span>
-                        <strong>{tripInfo.title}</strong> {tripInfo.startDate} {tripInfo.endDate}
+                        <strong>{tripInfo.title}</strong> {DateUtilities.yyyymmdd_To_ddmm(tripInfo.startDate,"-","/")} - {DateUtilities.yyyymmdd_To_ddmm(tripInfo.endDate,"-","/")}
                     </span>
                 </div>
                 <div className="trip-details">
@@ -107,9 +77,9 @@ export default function TripSummary() {
                             <div className="internal-section">
                                 <img src={calendar} alt="globe"/>
                                 <div className="dates">
-                                    <p className="date">{tripInfo.startDate}</p>
+                                    <p className="date">{DateUtilities.yyyymmdd_To_ddMONTHyyyy(tripInfo.startDate)}</p>
                                     <img src={arrow_down} alt="arrow_down"/>
-                                    <p className="date">{tripInfo.endDate}</p>
+                                    <p className="date">{DateUtilities.yyyymmdd_To_ddMONTHyyyy(tripInfo.endDate)}</p>
                                 </div>
                             </div>
                         </div>

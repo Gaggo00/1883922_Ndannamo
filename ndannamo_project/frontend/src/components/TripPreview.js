@@ -56,7 +56,7 @@ export default function TripPreview({trip, reloadProfile}) {
     }
 
     const handleClick = () => {
-        navigate(`/trips/${trip.id}/summary`); // Modifica questa rotta in base alla struttura della tua applicazione
+        navigate(`/trips/${trip.id}/summary`, {state: {trip: trip}}); // Modifica questa rotta in base alla struttura della tua applicazione
     };
 
 
