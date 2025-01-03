@@ -11,9 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
-import com.example.backend.dto.BooleanDTO;
 import com.example.backend.dto.ChangePasswordRequest;
-import com.example.backend.dto.StringDTO;
+import com.example.backend.dto.GenericType;
 import com.example.backend.service.TripService;
 import com.example.backend.service.UserService;
 
@@ -52,7 +51,7 @@ public class UserController {
 
     // Accetta o rifiuta un invito
     @PostMapping(value={"/invitations/{id}", "/invitations/{id}/"})
-    public ResponseEntity<?> inviteToTrip(@PathVariable Long id, @Valid @RequestBody BooleanDTO accept) {
+    public ResponseEntity<?> inviteToTrip(@PathVariable Long id, @Valid @RequestBody GenericType<Boolean> accept) {
         try {
             // prendi l'utente dal token
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -73,9 +72,12 @@ public class UserController {
         }
     }
 
+    
+
+    /****************** FUNZIONI PER CAMBIARE I DATI DELL'UTENTE ******************/
 
     // Cambia password
-    @PutMapping("/password")
+    @PutMapping(value={"/password" , "/password/"})
     public ResponseEntity<?> changePassword(@Valid @RequestBody ChangePasswordRequest request) {
         try {
             // prendi l'utente dal token
@@ -95,8 +97,8 @@ public class UserController {
     }
 
     // Cambia nickname
-    @PutMapping("/nickname")
-    public ResponseEntity<?> changeNickname(@Valid @RequestBody StringDTO newNickname) {
+    @PutMapping(value={"/nickname" , "/nickname/"})
+    public ResponseEntity<?> changeNickname(@Valid @RequestBody GenericType<String> newNickname) {
         try {
             // prendi l'utente dal token
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

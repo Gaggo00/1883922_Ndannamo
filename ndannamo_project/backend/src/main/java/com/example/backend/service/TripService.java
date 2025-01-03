@@ -17,6 +17,7 @@ import com.example.backend.mapper.TripMapperImpl;
 import com.example.backend.repositories.ExpenseRepository;
 import com.example.backend.repositories.TripRepository;
 import com.example.backend.repositories.UserRepository;
+import com.example.backend.utils.TripValidation;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.example.backend.exception.ResourceNotFoundException;
 import com.example.backend.model.Expense;
@@ -95,17 +96,17 @@ public class TripService {
 
         Trip trip = getTripById(id);
 
-        // Controllo che l'utente loggato sia un participant della trip
+        // Controllo che l'utente loggato faccia parte della trip
         User logged_user = userService.getUserByEmail(email);
-        if (!trip.getParticipants().contains(logged_user)) {
-            throw new ResourceNotFoundException("Trip not found!");
+        if (!userIsAParticipant(logged_user, trip)) {
+            throw new ResourceNotFoundException("Trip not found");
         }
 
         // Converti Trip in TripDTO
         TripDTO tripDTO = tripMapper.toDTO(trip);
 
         // se l'utente loggato e' il creatore
-        if (logged_user == trip.getCreated_by()) {
+        if (userIsTheCreator(logged_user, trip)) {
             tripDTO.setCreator(true);
         }
 
@@ -117,8 +118,7 @@ public class TripService {
         Trip trip = getTripById(tripId);
 
         // Controllo che l'utente loggato sia il creatore della trip
-        User logged_user = userService.getUserByEmail(email);
-        if (trip.getCreated_by() != logged_user) {
+        if (!userIsTheCreator(email, trip)) {
             throw new ResourceNotFoundException("You can't send invitations for this trip");
         }
 
@@ -166,8 +166,7 @@ public class TripService {
         Trip trip = getTripById(tripId);
 
         // Controllo che l'utente loggato sia il creatore della trip
-        User logged_user = userService.getUserByEmail(email);
-        if (trip.getCreated_by() != logged_user) {
+        if (!userIsTheCreator(email, trip)) {
             throw new ResourceNotFoundException("Only the trip creator can delete this trip");
         }
         tripRepository.delete(trip);
@@ -180,11 +179,11 @@ public class TripService {
 
         // Controllo che l'utente loggato NON sia il creatore della trip
         User logged_user = userService.getUserByEmail(email);
-        if (trip.getCreated_by() == logged_user) {
+        if (userIsTheCreator(logged_user, trip)) {
             throw new ResourceNotFoundException("As the trip creator, you can't leave this trip");
         }
         // Controllo che l'utente loggato faccia parte della trip
-        else if (!trip.getParticipants().contains(logged_user)) {
+        else if (!userIsAParticipant(logged_user, trip)) {
             throw new ResourceNotFoundException("Trip not found");
         }
 
@@ -196,13 +195,16 @@ public class TripService {
 
 
 
+
+    /********************** FUNZIONI PER LE SPESE **********************/
+
+
     // Per ottenere tutte le spese di una trip
     public List<ExpenseDTO> getExpenses(String email, long tripId) {
         Trip trip = getTripById(tripId);
 
         // Controllo che l'utente loggato faccia parte della trip
-        User logged_user = userService.getUserByEmail(email);
-        if (!trip.getParticipants().contains(logged_user)) {
+        if (!userIsAParticipant(email, trip)) {
             throw new ResourceNotFoundException("Trip not found");
         }
 
@@ -224,8 +226,7 @@ public class TripService {
         Trip trip = getTripById(tripId);
 
         // Controllo che l'utente loggato faccia parte della trip
-        User logged_user = userService.getUserByEmail(email);
-        if (!trip.getParticipants().contains(logged_user)) {
+        if (!userIsAParticipant(email, trip)) {
             throw new ResourceNotFoundException("Trip not found");
         }
 
@@ -240,12 +241,10 @@ public class TripService {
         expense.setSplitEven(expenseCreationRequest.getSplitEven());
 
         // Controllo che l'utente pagante faccia parte della trip
-        User paidBy = userService.getUserById(expenseCreationRequest.getPaidById());
-        if (!trip.getParticipants().contains(paidBy)) {
+        if (!userIsAParticipant(expenseCreationRequest.getPaidById(), trip)) {
             throw new ResourceNotFoundException("User 'paid by' not found!");
         }
         expense.setPaidBy(expenseCreationRequest.getPaidById());
-
 
         // Per controllare che la somma degli amount di tutti gli utenti sia uguale all'amount totale
         double tot = 0;
@@ -254,8 +253,8 @@ public class TripService {
         List<AmountUserDTO> amountPerUserDTO = expenseCreationRequest.getAmountPerUser();
         Map<Long, Double> amountPerUserMap = new HashMap<Long, Double>();
         for (AmountUserDTO amountUser : amountPerUserDTO) {
-            User user = userService.getUserById(amountUser.getUser());
-            if (!trip.getParticipants().contains(user)) {
+            // Controllo che l'utente faccia parte della trip
+            if (!userIsAParticipant(amountUser.getUser(), trip)) {
                 throw new ResourceNotFoundException("User not found!");
             }
             tot += amountUser.getAmount();
@@ -279,7 +278,7 @@ public class TripService {
         // Salvo la trip
         tripRepository.save(trip);
 
-        return("okkk");
+        return("Expense created");
     }
 
 
@@ -289,8 +288,7 @@ public class TripService {
         Trip trip = getTripById(tripId);
 
         // Controllo che l'utente loggato faccia parte della trip
-        User logged_user = userService.getUserByEmail(email);
-        if (!trip.getParticipants().contains(logged_user)) {
+        if (!userIsAParticipant(email, trip)) {
             throw new ResourceNotFoundException("Trip not found");
         }
 
@@ -312,6 +310,112 @@ public class TripService {
         expenseService.deleteExpense(expense);
 
         return true;
+    }
+
+
+
+
+    /********************** FUNZIONI PER CAMBIARE I DATI DI UNA TRIP **********************/
+
+
+    public void changeTitle(String email, long tripId, String newTitle) {
+
+        Trip trip = getTripById(tripId);
+
+        // Controllo che l'utente loggato faccia parte della trip
+        if (!userIsAParticipant(email, trip)) {
+            throw new ResourceNotFoundException("Trip not found");
+        }
+
+        // Controllo validita' titolo
+        String titleStripped = newTitle.strip();
+        if (!TripValidation.titleValid(titleStripped)) {
+            throw new ResourceNotFoundException("Title not valid");
+        }
+
+        // Aggiorna titolo
+        trip.setTitle(newTitle);
+
+        // Salva trip
+        tripRepository.save(trip);
+    }
+
+    public void changeDates(String email, long tripId, LocalDate newStartDate, LocalDate newEndDate) {
+        
+        Trip trip = getTripById(tripId);
+
+        // Controllo che l'utente loggato faccia parte della trip
+        if (!userIsAParticipant(email, trip)) {
+            throw new ResourceNotFoundException("Trip not found");
+        }
+
+        // Controllo validita' date
+        if (!TripValidation.datesValid(newStartDate, newEndDate)) {
+            throw new ResourceNotFoundException("Dates not valid");
+        }
+
+        // Aggiorna date
+        trip.setStartDate(newStartDate);
+        trip.setEndDate(newEndDate);
+
+        // Salva trip
+        tripRepository.save(trip);
+    }
+
+    public void changeLocations(String email, long tripId, List<String> newLocations) {
+        
+        Trip trip = getTripById(tripId);
+
+        // Controllo che l'utente loggato faccia parte della trip
+        if (!userIsAParticipant(email, trip)) {
+            throw new ResourceNotFoundException("Trip not found");
+        }
+
+        // Aggiorna localita'
+        trip.setLocations(newLocations);
+
+        // Salva trip
+        tripRepository.save(trip);
+    }
+
+
+
+
+    /****************** FUNZIONI PER CONTROLLARE I PERMESSI DEGLI UTENTI ******************/
+
+    private boolean userIsAParticipant(User user, Trip trip) {
+        return trip.getParticipants().contains(user);
+    }
+
+    private boolean userIsAParticipant(String email, Trip trip) {
+        User user = userService.getUserByEmail(email);
+        return trip.getParticipants().contains(user);
+    }
+
+    private boolean userIsAParticipant(Long userId, Trip trip) {
+        User user = userService.getUserById(userId);
+        return trip.getParticipants().contains(user);
+    }
+
+    private boolean userIsAParticipant(String email, Long tripId) {
+        User user = userService.getUserByEmail(email);
+        Trip trip = getTripById(tripId);
+        return trip.getParticipants().contains(user);
+    }
+
+    private boolean userIsTheCreator(User user, Trip trip) {
+        return trip.getCreated_by() == user;
+    }
+
+    private boolean userIsTheCreator(String email, Trip trip) {
+        User user = userService.getUserByEmail(email);
+        return trip.getCreated_by() == user;
+    }
+
+    private boolean userIsTheCreator(String email, Long tripId) {
+        User user = userService.getUserByEmail(email);
+        Trip trip = getTripById(tripId);
+        return trip.getCreated_by() == user;
     }
 
 }

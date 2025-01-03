@@ -1,7 +1,6 @@
 package com.example.backend.service;
 
 import com.example.backend.dto.ChangePasswordRequest;
-import com.example.backend.dto.StringDTO;
 import com.example.backend.dto.UserDTO;
 import com.example.backend.exception.ResourceNotFoundException;
 import com.example.backend.model.Trip;

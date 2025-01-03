@@ -58,15 +58,15 @@ body {
 
 .sidebar {
     width: 20%;
-    /*background-color: #f4ebe0;*/
     background-color: #b297833b;
-    padding: 15px;
+    padding: 5vh 1vw;
     box-sizing: border-box;
     position: fixed;
-    height: 100%;
+    height: calc(100% - 11.5vh);
     display: flex;
     flex-direction: column;
     text-align: left;
+    overflow-y: auto;
 }
 
 .sidebar button {

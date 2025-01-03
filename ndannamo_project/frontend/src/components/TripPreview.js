@@ -39,7 +39,7 @@ export default function TripPreview({trip, reloadProfile}) {
     fecthImage(mainLocationName, mainLocationCountry);
 
     const startDate = DateUtilities.yyyymmdd_To_ddmmyy(trip.startDate, "-", "/");
-    const endDate = DateUtilities.yyyymmdd_To_ddmmyy(trip.startDate, "-", "/");
+    const endDate = DateUtilities.yyyymmdd_To_ddmmyy(trip.endDate, "-", "/");
 
     var locationString = trip.locations[0];
     if (trip.locations.length > 1) {

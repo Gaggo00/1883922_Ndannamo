@@ -1,18 +1,20 @@
 package com.example.backend.controller;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
 import com.example.backend.dto.ExpenseCreationRequest;
 import com.example.backend.dto.ExpenseDTO;
+import com.example.backend.dto.GenericList;
+import com.example.backend.dto.GenericType;
 import com.example.backend.dto.TripCreationRequest;
 import com.example.backend.dto.TripDTO;
 import com.example.backend.dto.TripInviteList;
@@ -207,7 +209,7 @@ public class TripController {
     }
 
     // Elimina una spesa
-    @DeleteMapping(value={"/{id}/expenses/{expense_id}", "/{id}/expenses/{expense_id}"})
+    @DeleteMapping(value={"/{id}/expenses/{expense_id}", "/{id}/expenses/{expense_id}/"})
     public ResponseEntity<?> deleteExpense(@PathVariable Long id, @PathVariable Long expense_id) {
 
         try {
@@ -218,6 +220,71 @@ public class TripController {
             // elimina spesa
             boolean res = tripService.deleteExpense(email, id, expense_id);
             return ResponseEntity.ok().body(res);
+        }
+        catch (Exception ex) {
+            return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(ex.getMessage());
+        }
+    }
+
+
+
+    /****************************************** CAMBIAMENTO DATI TRIP ******************************************/
+
+
+    // Cambia titolo
+    @PutMapping(value={"/{id}/title", "/{id}/title/"})
+    public ResponseEntity<?> changeTitle(@PathVariable Long id, @Valid @RequestBody GenericType<String> newTitle) {
+        try {
+            // prendi l'utente dal token
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String email = authentication.getName();
+
+            // cambia il titolo
+            tripService.changeTitle(email, id, newTitle.getValue());
+            return ResponseEntity.ok().body("Title changed");
+    
+        }
+        catch (Exception ex) {
+            return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(ex.getMessage());
+        }
+    }
+
+    // Cambia date
+    @PutMapping(value={"/{id}/dates", "/{id}/dates/"})
+    public ResponseEntity<?> changeDates(@PathVariable Long id, @Valid @RequestBody GenericList<LocalDate> newDates) {
+        try {
+            // prendi l'utente dal token
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String email = authentication.getName();
+
+            // cambia le date
+            tripService.changeDates(email, id, newDates.getValue().get(0), newDates.getValue().get(1));
+            return ResponseEntity.ok().body("Dates changed");
+    
+        }
+        catch (Exception ex) {
+            return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(ex.getMessage());
+        }
+    }
+
+    // Cambia destinazioni
+    @PutMapping(value={"/{id}/locations", "/{id}/locations/"})
+    public ResponseEntity<?> changeLocations(@PathVariable Long id, @Valid @RequestBody GenericList<String> newLocations) {
+        try {
+            // prendi l'utente dal token
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String email = authentication.getName();
+
+            // cambia le date
+            tripService.changeLocations(email, id, newLocations.getValue());
+            return ResponseEntity.ok().body("Locations changed");
+    
         }
         catch (Exception ex) {
             return ResponseEntity
