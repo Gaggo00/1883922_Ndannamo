@@ -6,7 +6,6 @@ import DateUtilities from '../utils/DateUtilities';
 
 export default function TripSideBarPreview({trip, reloadProfile}) {
 
-    const navigate = useNavigate();
 
     return (
         <div className="trip-item">

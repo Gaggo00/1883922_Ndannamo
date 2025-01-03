@@ -179,7 +179,7 @@ function Main() {
                 <div id='upcomingTrips'>
                     <button className="trips-top-row" onClick={toggleUpcomingTrips}>
                         <input type="checkbox" id="upcomingCheckbox"/>
-                        <img id="upcoming-arrow-down" className="arrow-icon" src={arrowDown}></img>
+                        <img id="upcoming-arrow-down" className="arrow-icon" src={arrowDown} alt="arrow-down"></img>
                         <h2>Upcoming trips</h2>
                     </button>
                     {showingUpcomingTrips &&
@@ -194,7 +194,7 @@ function Main() {
                 <div id='pastTrips'>
                     <button className="trips-top-row" onClick={togglePastTrips}>
                         <input type="checkbox" id="pastCheckbox"/>
-                        <img id="past-arrow-down" className="arrow-icon" src={arrowDown}></img>
+                        <img id="past-arrow-down" className="arrow-icon" src={arrowDown} alt="arrow-down"></img>
                         <h2>Past trips</h2>
                     </button>
                     {showingPastTrips &&
