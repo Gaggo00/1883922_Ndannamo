@@ -32,16 +32,6 @@ public class Expense {
     private double amount;
     private boolean splitEven;
     
-    /*
-    @ElementCollection
-    @CollectionTable(
-            name="amount_per_user",
-            joinColumns=@JoinColumn(name="expense_id")
-    ) 
-    List<AmountUserDTO> amountPerUser = new ArrayList<>();
-    */
-
-    
     @ElementCollection              // Indicates that the map is a collection of elements that are not entities themselves
     @MapKeyColumn(name="user_id")  // Specifies the column in the collection table that will store the map's keys
     @Column(name="amount")          // Specifies the column in the collection table that will store the map's values

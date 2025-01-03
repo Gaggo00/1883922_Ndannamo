@@ -187,6 +187,10 @@ function Main() {
                             {upcomingTrips.map((trip, index) =>
                                 <TripPreview key={index} trip={trip} reloadProfile={null}></TripPreview>
                             )}
+                            {// se ci sono meno di 4 elementi, aggiungi elementi trasparenti fino ad arrivare a 4 cosi' la riga viene fatta bene
+                            (upcomingTrips.length < 4) && <div className='transparent-tripBlock'></div>}
+                            {(upcomingTrips.length < 3) && <div className='transparent-tripBlock'></div>}
+                            {(upcomingTrips.length < 2) && <div className='transparent-tripBlock'></div>}
                         </div>
                     }
                 </div>
@@ -204,10 +208,10 @@ function Main() {
                             pastTrips.map((trip, index) =>
                                 <TripPreview key={index} trip={trip} reloadProfile={null}></TripPreview>
                             )}
-                                {// se ci sono meno di 4 elementi, aggiungi elementi trasparenti fino ad arrivare a 4 cosi' la riga viene fatta bene
-                                 (pastTrips.length < 4) && <div className='transparent-tripBlock'></div>}
-                                {(pastTrips.length < 3) && <div className='transparent-tripBlock'></div>}
-                                {(pastTrips.length < 2) && <div className='transparent-tripBlock'></div>}
+                            {// se ci sono meno di 4 elementi, aggiungi elementi trasparenti fino ad arrivare a 4 cosi' la riga viene fatta bene
+                                (pastTrips.length < 4) && <div className='transparent-tripBlock'></div>}
+                            {(pastTrips.length < 3) && <div className='transparent-tripBlock'></div>}
+                            {(pastTrips.length < 2) && <div className='transparent-tripBlock'></div>}
                         </div>
                     }
                 </div>

@@ -19,7 +19,6 @@ export default class UserService {
 
     
     static async acceptInvitation(token, tripId, value) {
-
         try {
             const response = await axios.post(
                 `${UserService.BASE_URL}/invitations/${tripId}`,
@@ -39,8 +38,8 @@ export default class UserService {
 
     static async changePassword(token,currentPassword,newPassword) {
         try{
-            const response = await axios.post(
-                `${UserService.BASE_URL}/change-password`,
+            const response = await axios.put(
+                `${UserService.BASE_URL}/password`,
                 {currentPassword, newPassword},
                 {
                     headers: {Authorization: `Bearer ${token}`,

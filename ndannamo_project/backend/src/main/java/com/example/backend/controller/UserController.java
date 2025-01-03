@@ -75,7 +75,7 @@ public class UserController {
 
 
     // Cambia password
-    @PostMapping("/change-password")
+    @PutMapping("/password")
     public ResponseEntity<?> changePassword(@Valid @RequestBody ChangePasswordRequest request) {
         try {
             // prendi l'utente dal token
