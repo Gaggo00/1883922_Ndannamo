@@ -1,5 +1,5 @@
 
-.page {
+.profile-page {
     height: 100%;
 }
 
@@ -70,7 +70,7 @@
 
 
 .profile-page-container .tripPreviewContainer {
-    padding: 1.5vh 4vw;
+    padding: 2vh 4vw;
 }
 
 .profile-page-container .tripPreviewBlocksContainer {

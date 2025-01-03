@@ -81,3 +81,14 @@
 .tripBlock.invitation #tripBlockContent {
     margin-top: 0.4vh;
 }
+
+
+
+/* BLOCCO TRIPBLOCK TRASPARENTE PER LA PAGINA MAIN */
+
+.transparent-tripBlock{
+    width: 14vw;
+    height: 10vh;
+    padding: 1vh 0.5vw;
+    margin: 0.5vw;
+}

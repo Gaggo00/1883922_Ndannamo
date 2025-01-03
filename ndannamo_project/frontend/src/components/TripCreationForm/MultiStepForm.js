@@ -7,6 +7,7 @@ import Success from './Success';
 import './TripCreation.css';
 import TripService from "../../services/TripService";
 import {useNavigate} from "react-router-dom";
+import DateUtilities from '../../utils/DateUtilities';
 
 const MultiStepForm = () => {
     const [step, setStep] = useState(1);
@@ -40,8 +41,10 @@ const MultiStepForm = () => {
                 return;
             }
 
-            const formattedStartDate = formData.startDate.split('T')[0];
-            const formattedEndDate = formData.endDate.split('T')[0];
+            const formattedStartDate = DateUtilities.date_To_yyyymmdd(formData.startDate);  // questo e' il formato che vuole il backend
+            const formattedEndDate = DateUtilities.date_To_yyyymmdd(formData.endDate);
+            //const formattedStartDate = formData.startDate.split('T')[0];
+            //const formattedEndDate = formData.endDate.split('T')[0];
 
             const response = await TripService.create(
                 token,

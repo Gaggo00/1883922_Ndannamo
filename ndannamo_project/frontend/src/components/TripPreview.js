@@ -4,6 +4,7 @@ import TripService from '../services/TripService';
 import CityService from '../services/CityService';
 import missingCityImage from '../static/missing_city_image.png'
 import "../styles/TripPreview.css";
+import DateUtilities from '../utils/DateUtilities';
 
 
 export default function TripPreview({trip, reloadProfile}) {
@@ -37,10 +38,8 @@ export default function TripPreview({trip, reloadProfile}) {
 
     fecthImage(mainLocationName, mainLocationCountry);
 
-    const startDateArray = trip.startDate.split("-");
-    const startDate = startDateArray[2] + "/" + startDateArray[1] + "/" + startDateArray[0].substring(2)
-    const endDateArray = trip.endDate.split("-");
-    const endDate = endDateArray[2] + "/" + endDateArray[1] + "/" + endDateArray[0].substring(2)
+    const startDate = DateUtilities.yyyymmdd_To_ddmmyy(trip.startDate, "-", "/");
+    const endDate = DateUtilities.yyyymmdd_To_ddmmyy(trip.startDate, "-", "/");
 
     var locationString = trip.locations[0];
     if (trip.locations.length > 1) {

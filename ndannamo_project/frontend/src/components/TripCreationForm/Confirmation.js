@@ -1,4 +1,5 @@
 import React from 'react';
+import DateUtilities from '../../utils/DateUtilities';
 
 const Confirmation = ({ prevStep, values, handleSubmit }) => {
     return (
@@ -10,8 +11,8 @@ const Confirmation = ({ prevStep, values, handleSubmit }) => {
                 <div className="input-and-error confirmation">
                     <ul>
                         <li><b>Title:</b> {values.title}</li>
-                        <li><b>Start Date:</b> {values.startDate}</li>
-                        <li><b>End Date:</b> {values.endDate}</li>
+                        <li><b>Start Date:</b> {DateUtilities.date_To_ddmmyyyy(values.startDate, "/")}</li>
+                        <li><b>End Date:</b> {DateUtilities.date_To_ddmmyyyy(values.endDate, "/")}</li>
                         <li><b>Destinations:</b> {values.city.join(", ")}</li>
                     </ul>
                 </div>

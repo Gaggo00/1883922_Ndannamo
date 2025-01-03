@@ -35,4 +35,22 @@ export default class UserService {
             throw error; // L'errore sarà gestito all'esterno
         }
     }
+
+
+    static async changePassword(token,currentPassword,newPassword) {
+        try{
+            const response = await axios.post(
+                `${UserService.BASE_URL}/change-password`,
+                {currentPassword, newPassword},
+                {
+                    headers: {Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json"}
+                });
+            console.log(response);
+            return response.data;
+        }
+        catch(err) {
+            throw (err);
+        }
+    }
 }

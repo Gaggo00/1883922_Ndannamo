@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
+import com.example.backend.dto.ExpenseCreationRequest;
+import com.example.backend.dto.ExpenseDTO;
 import com.example.backend.dto.TripCreationRequest;
 import com.example.backend.dto.TripDTO;
 import com.example.backend.dto.TripInviteList;
@@ -34,6 +36,7 @@ public class TripController {
         //this.userService = userService;
     }
 
+    // Crea una trip
     @PostMapping(value={"", "/"})
     public ResponseEntity<?> createTrip(@Valid @RequestBody TripCreationRequest tripRequest) {
         
@@ -59,6 +62,8 @@ public class TripController {
         }
     }
 
+    
+    // Ottieni tutte le trip dell'utente loggato
     @GetMapping(value={"", "/"})
     public ResponseEntity<?> getAllTrips() {
         try {
@@ -148,6 +153,71 @@ public class TripController {
             // lascia trip
             tripService.leaveTrip(email, id);
             return ResponseEntity.ok().body("Trip left");
+        }
+        catch (Exception ex) {
+            return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(ex.getMessage());
+        }
+    }
+
+
+
+    /****************************************** GESTIONE SPESE ******************************************/
+
+
+    // Ottieni tutte le spese della trip
+    @GetMapping(value={"/{id}/expenses", "/{id}/expenses/"})
+    public ResponseEntity<?> getExpenses(@PathVariable Long id) {
+
+        try {
+            // prendi l'utente dal token
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String email = authentication.getName();
+
+            // ottieni le spese
+            List<ExpenseDTO> expensesDTO = tripService.getExpenses(email, id);
+            return ResponseEntity.ok().body(expensesDTO);
+        }
+        catch (Exception ex) {
+            return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(ex.getMessage());
+        }
+    }
+
+    // Crea nuova spesa
+    @PostMapping(value={"/{id}/expenses", "/{id}/expenses/"})
+    public ResponseEntity<?> createExpense(@PathVariable Long id, @Valid @RequestBody ExpenseCreationRequest expenseCreationRequest) {
+
+        try {
+            // prendi l'utente dal token
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String email = authentication.getName();
+
+            // crea spesa
+            String res = tripService.createExpense(email, id, expenseCreationRequest);
+            return ResponseEntity.ok().body(res);
+        }
+        catch (Exception ex) {
+            return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(ex.getMessage());
+        }
+    }
+
+    // Elimina una spesa
+    @DeleteMapping(value={"/{id}/expenses/{expense_id}", "/{id}/expenses/{expense_id}"})
+    public ResponseEntity<?> deleteExpense(@PathVariable Long id, @PathVariable Long expense_id) {
+
+        try {
+            // prendi l'utente dal token
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String email = authentication.getName();
+
+            // elimina spesa
+            boolean res = tripService.deleteExpense(email, id, expense_id);
+            return ResponseEntity.ok().body(res);
         }
         catch (Exception ex) {
             return ResponseEntity

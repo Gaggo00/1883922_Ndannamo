@@ -5,16 +5,15 @@ import UserService from '../services/UserService';
 
 import logo from '../static/Logo app.png'
 import "../styles/TripPreview.css";
+import DateUtilities from '../utils/DateUtilities';
 
 
 export default function TripInvitation({trip, reloadProfile}) {
 
     const navigate = useNavigate();
 
-    const startDateArray = trip.startDate.split("-");
-    const startDate = startDateArray[2] + "/" + startDateArray[1] + "/" + startDateArray[0].substring(2)
-    const endDateArray = trip.endDate.split("-");
-    const endDate = endDateArray[2] + "/" + endDateArray[1] + "/" + endDateArray[0].substring(2)
+    const startDate = DateUtilities.yyyymmdd_To_ddmmyy(trip.startDate, "-", "/");
+    const endDate = DateUtilities.yyyymmdd_To_ddmmyy(trip.startDate, "-", "/");
 
     var locationString = trip.locations[0];
     if (trip.locations.length > 1) {

@@ -107,12 +107,14 @@ function Main() {
 
         // se c'e' almeno un carattere
         else {
-            //console.log(value);
             const filteredUpcomingTrips = upcomingTripsAll.filter(
                 (trip) => checkTripForSearch(trip, value.toLowerCase())
             );
-            //console.log(upcomingTripsAll);
+            const filteredPastTrips = pastTripsAll.filter(
+                (trip) => checkTripForSearch(trip, value.toLowerCase())
+            );
             setupcomingTrips(filteredUpcomingTrips);
+            setPastTrips(filteredPastTrips);
         }
     };
 
@@ -199,9 +201,13 @@ function Main() {
                         <div className='tripPreviewBlocksContainer'>
                             {
                             // TEMPORANEO per test, poi andra' cambiato "upcomingTrips" con "pastTrips"
-                            upcomingTrips.map((trip, index) =>
+                            pastTrips.map((trip, index) =>
                                 <TripPreview key={index} trip={trip} reloadProfile={null}></TripPreview>
                             )}
+                                {// se ci sono meno di 4 elementi, aggiungi elementi trasparenti fino ad arrivare a 4 cosi' la riga viene fatta bene
+                                 (pastTrips.length < 4) && <div className='transparent-tripBlock'></div>}
+                                {(pastTrips.length < 3) && <div className='transparent-tripBlock'></div>}
+                                {(pastTrips.length < 2) && <div className='transparent-tripBlock'></div>}
                         </div>
                     }
                 </div>

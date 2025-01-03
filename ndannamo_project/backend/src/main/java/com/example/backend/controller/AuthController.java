@@ -80,12 +80,4 @@ public class AuthController {
                 .body(ex.getMessage());
         }
     }
-
-    @PostMapping("/change-password")
-    public ResponseEntity<?> changePassword(@Valid @RequestBody ChangePasswordRequest request) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
-        userService.changePassword(email,request);
-        return ResponseEntity.ok().body("Password changed");
-    }
 }

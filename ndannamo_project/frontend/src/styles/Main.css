@@ -167,6 +167,8 @@ body {
     display: grid;
     grid-template-columns: auto auto auto auto;
     text-align: left;
+    width: 100%;
+    justify-content: space-around;
 }
 
 

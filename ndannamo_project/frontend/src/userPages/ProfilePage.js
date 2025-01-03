@@ -54,7 +54,7 @@ function ProfilePage() {
     };
 
     return (
-        <div className="page">
+        <div className="page profile-page">
             {/*<div id="color"></div>*/}
             <img id="top" src={ondaVerde}/>
             <div className="profile-page-container">
