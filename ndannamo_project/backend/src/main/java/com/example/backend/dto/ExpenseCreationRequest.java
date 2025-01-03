@@ -1,6 +1,8 @@
 package com.example.backend.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,14 +19,14 @@ import java.util.Map;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ExpenseCreationRequest {
-    private long tripId;
-    @NotBlank(message = "Name can't be empty")
     private String title;
-    private String paidBy;
+    private Long paidById;
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
     private double amount;
-    private boolean splitEven;
+    private Boolean splitEven;
     
-    //private Map<String, Double> amountUser = new HashMap<String, Double>();
+    List<AmountUserDTO> amountPerUser = new ArrayList<>();
+    //List<ObjectNode> amountPerUser = new ArrayList<>();   // Lista di dizionari tipo [ {"user":1, "amount":5.12},  {"user":6, "amount":8.67} ]
+    //Map<String, Double> amountPerUser = new HashMap<>();
 }

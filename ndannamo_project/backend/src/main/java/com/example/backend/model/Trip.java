@@ -37,6 +37,6 @@ public class Trip {
 
     // spese della trip
     @OneToMany
-    private List<User> expenses = new ArrayList<>();
+    private List<Expense> expenses = new ArrayList<>();
 
 }
