@@ -6,6 +6,7 @@ import FooterComponent from "./common/Footer";
 import Home from "./pages/Home";
 import Main from "./pages/Main";
 import Trips from "./pages/Trips";
+import Tricount from "./pages/Tricount";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import {AuthProvider} from "./auth/AuthContext";
 import ProfilePage from "./userPages/ProfilePage";
@@ -26,6 +27,7 @@ function App() {
                         <Route path="/profile" element={<ProfilePage/>} />
                         <Route path="/trips" element={<Trips/>} />
                         <Route path="/change-password" element={<ChangePassword/>} />
+                        <Route path="/tricount" element={<Tricount/>}></Route>
                     </Routes>
                 </main>
                 <FooterComponent/>

@@ -2,6 +2,7 @@ import { forwardRef, useImperativeHandle, useState } from 'react';
 import './Field.css'
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import { BsChevronDown } from "react-icons/bs";
 
 export function DateField({
     value,
@@ -25,6 +26,44 @@ export function DateField({
     )
 }
 
+export function PickField({
+    value,
+    setValue,
+    name="",
+    options=[],
+    style={},
+    titleStyle={},
+}) {
+
+    const [flag, setFlag] = useState(0);
+
+    const handleClick = () => {
+        setFlag(1);
+    }
+
+    const handleSelect = (suggestion) => {
+        setValue(suggestion);
+        setFlag(0);
+    };
+
+    return (
+        <div className="field-container" style={style}>
+            <div className="field-title" style={titleStyle}>{name}</div>
+            <div className="field-input f-pick" onClick={() => handleClick()}>
+                {value}
+                <BsChevronDown/>
+            </div>
+            {flag > 0 && <ul className='field-suggestions'>
+                {options.map((option, index) => (
+                    <li key={index} onClick={() => handleSelect(option)} className='field-suggestions-data'>
+                        {option}
+                    </li>
+                ))}
+            </ul>}
+        </div>
+    )
+}
+
 
 export const PickedField = forwardRef(({
     value,
@@ -39,6 +78,10 @@ export const PickedField = forwardRef(({
 
     const [suggestions, setSuggestions] = useState([])
     const [search, setSearch] = useState("")
+
+    const handleClick = () => {
+        setSuggestions(options);
+    }
 
     const handleChange = (event) => {
         var newSearch = event.target.value
@@ -75,6 +118,7 @@ export const PickedField = forwardRef(({
                 style={formStyle}
                 value={search}
                 placeholder={placeholder}
+                onClick={() => handleClick()}
                 onChange={(e) => handleChange(e)}
             />
             {suggestions.length > 0 && <ul className='field-suggestions'>
