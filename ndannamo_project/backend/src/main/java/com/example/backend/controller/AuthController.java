@@ -8,6 +8,10 @@ import com.example.backend.model.User;
 import com.example.backend.service.JwtService;
 import com.example.backend.service.UserService;
 import jakarta.validation.Valid;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
@@ -45,7 +49,11 @@ public class AuthController {
             final UserDetails userDetails = userService.getUserByEmail(loginRequest.getEmail());
             final String jwt = jwtService.generateToken(userDetails);
 
-            return ResponseEntity.ok(jwt);
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+            String expiration = simpleDateFormat.format(jwtService.extractExpiration(jwt));
+
+            // Manda token e data di scadenza separati da virgola (tanto il token ha come caratteri solo lettere, numeri, punto e trattini, non virgola)
+            return ResponseEntity.ok(jwt + "," + expiration);
         }
         catch (Exception ex) {
             return ResponseEntity
@@ -71,8 +79,12 @@ public class AuthController {
             // fai direttamente anche il login
             final UserDetails userDetails = userService.getUserByEmail(user.getEmail());
             final String jwt = jwtService.generateToken(userDetails);
-            return ResponseEntity.ok(jwt);
-            //return ResponseEntity.ok(userDTO);
+            
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+            String expiration = simpleDateFormat.format(jwtService.extractExpiration(jwt));
+
+            // Manda token e data di scadenza separati da virgola (tanto il token ha come caratteri solo lettere, numeri, punto e trattini, non virgola)
+            return ResponseEntity.ok(jwt + "," + expiration);
         }
         catch (Exception ex) {
             return ResponseEntity

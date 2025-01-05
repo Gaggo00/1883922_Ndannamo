@@ -9,9 +9,13 @@ import com.example.backend.exception.ResourceNotFoundException;
 
 public class TripValidation {
     
+    // Titolo, lunghezza min e max
     public static final int TITLE_MIN_LENGTH = 1;
     public static final int TITLE_MAX_LENGTH = 30;
     
+    // Durata massima di una trip in giorni
+    public static final int TRIP_MAX_DAYS = 31;
+
 
 
     public static boolean titleValid(String title) {
@@ -20,7 +24,7 @@ public class TripValidation {
 
 
     public static boolean datesValid(LocalDate startDate, LocalDate endDate) {
-        return endDate.isAfter(startDate);
+        return endDate.isAfter(startDate) && startDate.until(endDate, java.time.temporal.ChronoUnit.DAYS) <= TRIP_MAX_DAYS;
     }
 
 

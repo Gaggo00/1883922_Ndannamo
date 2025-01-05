@@ -16,13 +16,57 @@ function Register() {
     const { login } = useAuth(); // Usa il contesto per aggiornare lo stato di autenticazione
     const navigate = useNavigate();
 
+
+    const [showPassword, setShowPassword] = useState(false);
+
+    const toggleShowPassword = () => {
+        if (showPassword) document.getElementById("password-field").type = "password";
+        else document.getElementById("password-field").type = "text";
+        setShowPassword(!showPassword);
+    }
+
+    const setInvalidField = (id) => {
+        document.getElementById(id).classList.add("wrong-input");
+        /*
+        setTimeout(() => {
+            setValidField(id);
+        }, 1500);
+        */
+    }
+    const setValidField = (id) => {
+        document.getElementById(id).classList.remove("wrong-input");
+    }
+
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        // Controlla se nei campi c'e' scritto qualcosa
+        var fieldsOk = true;
+        if (email.trim() == "") {
+            setInvalidField("email-field");
+            fieldsOk = false;
+        }
+        if (nickname.trim() == "") {
+            setInvalidField("username-field");
+            fieldsOk = false;
+        }
+        if (password.trim() == "") {
+            setInvalidField("password-field");
+            fieldsOk = false;
+        }
+        if (!fieldsOk) return;
+        
 
         try {
             const userData = await AuthService.register(nickname,email, password);
             if (userData) {
-                localStorage.setItem('token', userData);
+                // userData ha questa forma: "token,expiration"
+                var userDataArray = userData.split(",");
+                var token = userDataArray[0];
+                var expiration = userDataArray[1];
+                localStorage.setItem('token', token);
+                localStorage.setItem('token-expiration', expiration);
                 login(); // Aggiorna lo stato di autenticazione (login fatto in automatico quando ti registri)
                 navigate('/');
             } else {
@@ -31,7 +75,7 @@ function Register() {
         } catch (error) {
             setError(error.response.data);
             setTimeout(() => {
-                setError('');
+                //setError('');
             }, 5000);
         }
     };
@@ -47,12 +91,16 @@ function Register() {
                     <div className="form-box">
                         <p id="title">Sign up</p>
                         <form onSubmit={handleSubmit}>
-                            <input placeholder="Username" value={nickname}
-                                   onChange={(e) => setNickname(e.target.value)}/>
-                            <input type="email" placeholder="Email" value={email}
-                                   onChange={(e) => setEmail(e.target.value)}/>
-                            <input type="password" placeholder="Password" value={password}
-                                   onChange={(e) => setPassword(e.target.value)}/>
+                            <div id="form-fields">
+                                <input placeholder="Username" id="username-field" value={nickname} onChange={(e) => {setValidField("username-field"); setNickname(e.target.value);}}/>
+                                <input type="email" id="email-field" placeholder="Email" value={email} onChange={(e) => {setValidField("email-field"); setEmail(e.target.value);}}/>
+                                <div id='password-and-eye'>
+                                    <input type="password" id="password-field" placeholder="Password" value={password}
+                                    onChange={(e) => {setValidField("password-field"); setPassword(e.target.value);}}/>
+                                    {!showPassword && <i className="bi bi-eye-fill h5 clickable" onClick={toggleShowPassword}></i>}
+                                    {showPassword && <i className="bi bi-eye-slash-fill h5 clickable" onClick={toggleShowPassword}></i>}
+                                </div>
+                            </div>
                             <button type="submit">Sign up</button>
                             {error && <p className="error-message">{error}</p>}
                         </form>
