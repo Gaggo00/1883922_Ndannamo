@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
+import com.example.backend.dto.EventDTO;
 import com.example.backend.dto.ExpenseCreationRequest;
 import com.example.backend.dto.ExpenseDTO;
 import com.example.backend.dto.GenericList;
@@ -42,7 +43,7 @@ public class TripController {
     @PostMapping(value={"", "/"})
     public ResponseEntity<?> createTrip(@Valid @RequestBody TripCreationRequest tripRequest) {
         
-        // controlla validita' delle date
+        // controlla validita' dell'input
         if (!TripValidation.tripValid(tripRequest)) {
             return ResponseEntity
                 .status(HttpStatus.FORBIDDEN)
@@ -155,6 +156,31 @@ public class TripController {
             // lascia trip
             tripService.leaveTrip(email, id);
             return ResponseEntity.ok().body("Trip left");
+        }
+        catch (Exception ex) {
+            return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(ex.getMessage());
+        }
+    }
+
+
+
+
+    /****************************************** SCHEDULE ******************************************/
+
+    // Ottieni schedule della trip
+    @GetMapping(value={"/{id}/schedule", "/{id}/schedule/"})
+    public ResponseEntity<?> getSchedule(@PathVariable Long id) {
+
+        try {
+            // prendi l'utente dal token
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String email = authentication.getName();
+
+            // ottieni la schedule
+            List<EventDTO> scheduleDTO = tripService.getSchedule(email, id);
+            return ResponseEntity.ok().body(scheduleDTO);
         }
         catch (Exception ex) {
             return ResponseEntity

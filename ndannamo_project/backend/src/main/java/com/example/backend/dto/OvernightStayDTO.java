@@ -1,29 +1,20 @@
-package com.example.backend.model;
-
-
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import lombok.*;
+package com.example.backend.dto;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
-@Entity
+import com.example.backend.model.Night;
+
+import jakarta.validation.constraints.NotNull;
+import lombok.Data;
+
 @Data
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class OvernightStay {
-
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class OvernightStayDTO {
+    
     private Long id;
-
-    @OneToMany(mappedBy = "overnightStay", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Night> travelDays;
+    
+    //private List<Long> travelDays;        // id delle notti
 
     @NotNull
     private LocalDate startDate;
@@ -35,11 +26,7 @@ public class OvernightStay {
     private LocalTime startCheckOutTime;
     private LocalTime endCheckOutTime;
 
-
     private String address;
     private String contact;
     private String name;
-
-
-
 }

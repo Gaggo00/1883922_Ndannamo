@@ -12,18 +12,27 @@ import org.springframework.cglib.core.Local;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.example.backend.mapper.ActivityMapperImpl;
 import com.example.backend.mapper.ExpenseMapperImpl;
+import com.example.backend.mapper.NightMapperImpl;
+import com.example.backend.mapper.TravelMapperImpl;
 import com.example.backend.mapper.TripMapperImpl;
 import com.example.backend.repositories.ExpenseRepository;
+import com.example.backend.repositories.NightRepository;
 import com.example.backend.repositories.TripRepository;
 import com.example.backend.repositories.UserRepository;
 import com.example.backend.utils.TripValidation;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.example.backend.exception.ResourceNotFoundException;
+import com.example.backend.model.Activity;
+import com.example.backend.model.Event;
 import com.example.backend.model.Expense;
+import com.example.backend.model.Night;
+import com.example.backend.model.Travel;
 import com.example.backend.model.Trip;
 import com.example.backend.model.User;
 import com.example.backend.dto.AmountUserDTO;
+import com.example.backend.dto.EventDTO;
 import com.example.backend.dto.ExpenseCreationRequest;
 import com.example.backend.dto.ExpenseDTO;
 import com.example.backend.dto.TripCreationRequest;
@@ -33,18 +42,27 @@ import com.example.backend.dto.TripDTO;
 public class TripService {
     
     private final TripRepository tripRepository;
+    private final NightRepository nightRepository;
     private final ExpenseService expenseService;
     private final UserService userService;
     private final TripMapperImpl tripMapper;
+    private final NightMapperImpl nightMapper;
+    private final ActivityMapperImpl activityMapper;
+    private final TravelMapperImpl travelMapper;
     private final ExpenseMapperImpl expenseMapper;
 
     @Autowired
-    public TripService(TripRepository tripRepository, ExpenseService expenseService, UserService userService,
-                       TripMapperImpl tripMapper, ExpenseMapperImpl expenseMapper) {
+    public TripService(TripRepository tripRepository, NightRepository nightRepository, ExpenseService expenseService, UserService userService,
+                       TripMapperImpl tripMapper, NightMapperImpl nightMapper, ActivityMapperImpl activityMapper, TravelMapperImpl travelMapper,
+                       ExpenseMapperImpl expenseMapper) {
         this.tripRepository = tripRepository;
+        this.nightRepository = nightRepository;
         this.expenseService = expenseService;
         this.userService = userService;
         this.tripMapper = tripMapper;
+        this.nightMapper = nightMapper;
+        this.activityMapper = activityMapper;
+        this.travelMapper = travelMapper;
         this.expenseMapper = expenseMapper;
     }
     
@@ -71,6 +89,26 @@ public class TripService {
 
         trip.setParticipants(participants);
 
+        // Crea schedule
+        int tripDays = (int) tripRequest.getStartDate().until(tripRequest.getEndDate(), java.time.temporal.ChronoUnit.DAYS);  // durata trip in giorni (escluso l'ultimo)
+        List<Event> schedule = new ArrayList<Event>();
+
+        // La trip va salvata ora se no la creazione delle night da' errore
+        tripRepository.save(trip);
+
+        // Crea una notte per ogni giorno tranne l'ultimo
+        for (var i = 0; i < tripDays; i++) {
+            Night night = new Night();
+            night.setDate(tripRequest.getStartDate().plusDays(i));
+            night.setPlace(tripRequest.getLocations().get(0));        // quale mettiamo se ci sono piu' destinazioni?
+            night.setTrip(trip);
+            nightRepository.save(night);
+            schedule.add(night);
+        }
+
+        trip.setSchedule(schedule);
+
+        // Ri-salva la trip con la schedule aggiornata
         return tripRepository.save(trip);
     }
     
@@ -193,6 +231,38 @@ public class TripService {
         tripRepository.save(trip);
     }
 
+
+
+    /********************** FUNZIONI PER LA SCHEDULE **********************/
+
+    public List<EventDTO> getSchedule(String email, long tripId) {
+        Trip trip = getTripById(tripId);
+
+        // Controllo che l'utente loggato faccia parte della trip
+        if (!userIsAParticipant(email, trip)) {
+            throw new ResourceNotFoundException("Trip not found");
+        }
+
+        // Prendo la schedule della trip
+        List<Event> schedule = trip.getSchedule();
+
+        // Converto la lista di Event in lista di EventDTO
+        List<EventDTO> scheduleDTO = new ArrayList<EventDTO>();
+        
+        for (Event event: schedule) {
+            if (event.getClass() == Night.class) {
+                scheduleDTO.add(nightMapper.toDTO((Night) event));
+            }
+            else if (event.getClass() == Activity.class) {
+                scheduleDTO.add(activityMapper.toDTO((Activity) event));
+            }
+            else if (event.getClass() == Travel.class) {
+                scheduleDTO.add(travelMapper.toDTO((Travel) event));
+            }
+        }
+
+        return scheduleDTO;
+    }
 
 
 
@@ -353,6 +423,11 @@ public class TripService {
         if (!TripValidation.datesValid(newStartDate, newEndDate)) {
             throw new ResourceNotFoundException("Dates not valid");
         }
+
+        // TODO:
+        // Shiftare le date degli eventi in modo che rientrino tra le nuove date (se la data iniziale e' cambiata),
+        // eliminare eventi che cadono al di fuori delle nuove date (se ora la durata e' minore),
+        // o creare nuove notti per coprire i giorni extra (se ora la durata e' maggiore)
 
         // Aggiorna date
         trip.setStartDate(newStartDate);

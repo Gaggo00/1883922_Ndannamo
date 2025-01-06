@@ -4,26 +4,31 @@ package com.example.backend.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
+
 
 @Entity
 @Data
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Travel {
+@Table(name="travels")
+public class Travel extends Event {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    // Per EventDTO
+    private EventType type = EventType.TRAVEL;
+
     private String destination;
-    private LocalDateTime departureTime;
-    private LocalDateTime arrivalTime;
 
-    @OneToMany(mappedBy = "travel", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<TravelDay> travelDays;
+    // La data di partenza gia' ce l'ha perché la prende dalla classe Event
+    private LocalDate arrivalDate;      // se non e' un viaggio tra due giorni diversi, sara' uguale alla data di partenza
 
+    private LocalTime departureTime;
+    private LocalTime arrivalTime;
 }

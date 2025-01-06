@@ -35,6 +35,11 @@ public class Trip {
     private List<User> participants = new ArrayList<>();
 
 
+    // attivita'/viaggi/notti della trip
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "trip")
+    private List<Event> schedule = new ArrayList<>();
+
+
     // spese della trip
     @OneToMany
     private List<Expense> expenses = new ArrayList<>();
