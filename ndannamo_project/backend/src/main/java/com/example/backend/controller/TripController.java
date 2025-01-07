@@ -11,11 +11,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
+import com.example.backend.dto.ActivityCreationRequest;
 import com.example.backend.dto.EventDTO;
 import com.example.backend.dto.ExpenseCreationRequest;
 import com.example.backend.dto.ExpenseDTO;
 import com.example.backend.dto.GenericList;
 import com.example.backend.dto.GenericType;
+import com.example.backend.dto.TravelCreationRequest;
 import com.example.backend.dto.TripCreationRequest;
 import com.example.backend.dto.TripDTO;
 import com.example.backend.dto.TripInviteList;
@@ -181,6 +183,87 @@ public class TripController {
             // ottieni la schedule
             List<EventDTO> scheduleDTO = tripService.getSchedule(email, id);
             return ResponseEntity.ok().body(scheduleDTO);
+        }
+        catch (Exception ex) {
+            return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(ex.getMessage());
+        }
+    }
+
+
+    // Crea activity
+    @PostMapping(value={"/{id}/schedule/activity", "/{id}/schedule/activity/"})
+    public ResponseEntity<?> createActivity(@PathVariable Long id, @Valid @RequestBody ActivityCreationRequest activityCreationRequest) {
+
+        try {
+            // prendi l'utente dal token
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String email = authentication.getName();
+
+            // crea activity
+            String res = tripService.createActivity(email, id, activityCreationRequest);
+            return ResponseEntity.ok().body(res);
+        }
+        catch (Exception ex) {
+            return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(ex.getMessage());
+        }
+    }
+
+    // Elimina activity
+    @DeleteMapping(value={"/{id}/schedule/activity/{activity_id}", "/{id}/schedule/activity/{activity_id}/"})
+    public ResponseEntity<?> deleteActivity(@PathVariable Long id, @PathVariable Long activity_id) {
+
+        try {
+            // prendi l'utente dal token
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String email = authentication.getName();
+
+            // elimina activity
+            String res = tripService.deleteActivity(email, id, activity_id);
+            return ResponseEntity.ok().body(res);
+        }
+        catch (Exception ex) {
+            return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(ex.getMessage());
+        }
+    }
+
+    // Crea travel
+    @PostMapping(value={"/{id}/schedule/travel", "/{id}/schedule/travel/"})
+    public ResponseEntity<?> createTravel(@PathVariable Long id, @Valid @RequestBody TravelCreationRequest travelCreationRequest) {
+
+        try {
+            // prendi l'utente dal token
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String email = authentication.getName();
+
+            // crea travel
+            String res = tripService.createTravel(email, id, travelCreationRequest);
+            return ResponseEntity.ok().body(res);
+        }
+        catch (Exception ex) {
+            return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(ex.getMessage());
+        }
+    }
+
+    // Elimina travel
+    @DeleteMapping(value={"/{id}/schedule/travel/{travel_id}", "/{id}/schedule/travel/{travel_id}/"})
+    public ResponseEntity<?> deleteTravel(@PathVariable Long id, @PathVariable Long travel_id) {
+
+        try {
+            // prendi l'utente dal token
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String email = authentication.getName();
+
+            // elimina travel
+            String res = tripService.deleteTravel(email, id, travel_id);
+            return ResponseEntity.ok().body(res);
         }
         catch (Exception ex) {
             return ResponseEntity

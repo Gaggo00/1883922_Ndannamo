@@ -14,7 +14,7 @@ public interface TravelMapper {
     @Mapping(target = "startTime", source="departureTime")
     @Mapping(target = "endTime", source="arrivalTime")
     @Mapping(target = "name", ignore = true)
-    @Mapping(target = "address", ignore = true)
+    @Mapping(target = "info", ignore = true)
     @Mapping(target = "overnightStay", ignore = true)
     EventDTO toDTO(Travel travel);
 

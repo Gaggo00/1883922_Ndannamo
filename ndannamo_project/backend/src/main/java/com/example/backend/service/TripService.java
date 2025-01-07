@@ -8,21 +8,14 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.example.backend.mapper.ActivityMapperImpl;
+
 import com.example.backend.mapper.ExpenseMapperImpl;
-import com.example.backend.mapper.NightMapperImpl;
-import com.example.backend.mapper.TravelMapperImpl;
 import com.example.backend.mapper.TripMapperImpl;
-import com.example.backend.repositories.ExpenseRepository;
-import com.example.backend.repositories.NightRepository;
 import com.example.backend.repositories.TripRepository;
-import com.example.backend.repositories.UserRepository;
 import com.example.backend.utils.TripValidation;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.example.backend.exception.ResourceNotFoundException;
 import com.example.backend.model.Activity;
 import com.example.backend.model.Event;
@@ -31,10 +24,12 @@ import com.example.backend.model.Night;
 import com.example.backend.model.Travel;
 import com.example.backend.model.Trip;
 import com.example.backend.model.User;
+import com.example.backend.dto.ActivityCreationRequest;
 import com.example.backend.dto.AmountUserDTO;
 import com.example.backend.dto.EventDTO;
 import com.example.backend.dto.ExpenseCreationRequest;
 import com.example.backend.dto.ExpenseDTO;
+import com.example.backend.dto.TravelCreationRequest;
 import com.example.backend.dto.TripCreationRequest;
 import com.example.backend.dto.TripDTO;
 
@@ -42,27 +37,22 @@ import com.example.backend.dto.TripDTO;
 public class TripService {
     
     private final TripRepository tripRepository;
-    private final NightRepository nightRepository;
-    private final ExpenseService expenseService;
+
     private final UserService userService;
+    private final EventService eventService;
+    private final ExpenseService expenseService;
+
     private final TripMapperImpl tripMapper;
-    private final NightMapperImpl nightMapper;
-    private final ActivityMapperImpl activityMapper;
-    private final TravelMapperImpl travelMapper;
     private final ExpenseMapperImpl expenseMapper;
 
     @Autowired
-    public TripService(TripRepository tripRepository, NightRepository nightRepository, ExpenseService expenseService, UserService userService,
-                       TripMapperImpl tripMapper, NightMapperImpl nightMapper, ActivityMapperImpl activityMapper, TravelMapperImpl travelMapper,
-                       ExpenseMapperImpl expenseMapper) {
+    public TripService(TripRepository tripRepository, UserService userService, EventService eventService, ExpenseService expenseService,
+                       TripMapperImpl tripMapper, ExpenseMapperImpl expenseMapper) {
         this.tripRepository = tripRepository;
-        this.nightRepository = nightRepository;
         this.expenseService = expenseService;
         this.userService = userService;
+        this.eventService = eventService;
         this.tripMapper = tripMapper;
-        this.nightMapper = nightMapper;
-        this.activityMapper = activityMapper;
-        this.travelMapper = travelMapper;
         this.expenseMapper = expenseMapper;
     }
     
@@ -98,11 +88,7 @@ public class TripService {
 
         // Crea una notte per ogni giorno tranne l'ultimo
         for (var i = 0; i < tripDays; i++) {
-            Night night = new Night();
-            night.setDate(tripRequest.getStartDate().plusDays(i));
-            night.setPlace(tripRequest.getLocations().get(0));        // quale mettiamo se ci sono piu' destinazioni?
-            night.setTrip(trip);
-            nightRepository.save(night);
+            Night night = eventService.createNight(trip, tripRequest.getStartDate().plusDays(i), tripRequest.getLocations().get(0), null);
             schedule.add(night);
         }
 
@@ -235,6 +221,8 @@ public class TripService {
 
     /********************** FUNZIONI PER LA SCHEDULE **********************/
 
+
+    // Ottieni l'intera schedule
     public List<EventDTO> getSchedule(String email, long tripId) {
         Trip trip = getTripById(tripId);
 
@@ -251,17 +239,99 @@ public class TripService {
         
         for (Event event: schedule) {
             if (event.getClass() == Night.class) {
-                scheduleDTO.add(nightMapper.toDTO((Night) event));
+                scheduleDTO.add(eventService.nightToEventDTO((Night) event));
             }
             else if (event.getClass() == Activity.class) {
-                scheduleDTO.add(activityMapper.toDTO((Activity) event));
+                scheduleDTO.add(eventService.activityToEventDTO((Activity) event));
             }
             else if (event.getClass() == Travel.class) {
-                scheduleDTO.add(travelMapper.toDTO((Travel) event));
+                scheduleDTO.add(eventService.travelToEventDTO((Travel) event));
             }
         }
 
         return scheduleDTO;
+    }
+
+    // Crea una nuova activity
+    public String createActivity(String email, long tripId, ActivityCreationRequest activityCreationRequest) {
+        Trip trip = getTripById(tripId);
+
+        // Controllo che l'utente loggato faccia parte della trip
+        if (!userIsAParticipant(email, trip)) {
+            throw new ResourceNotFoundException("Trip not found");
+        }
+
+        // Creo l'activity
+        Activity activity = eventService.createActivity(trip, activityCreationRequest);
+
+        // Aggiungo l'activity alla schedule
+        List<Event> schedule = trip.getSchedule();
+        schedule.add(activity);
+        trip.setSchedule(schedule);
+
+        // Salvo la trip
+        tripRepository.save(trip);
+
+        return ("Activity created");
+    }
+
+    // Elimina una activity
+    public String deleteActivity(String email, long tripId, long activityId) {
+        Trip trip = getTripById(tripId);
+
+        // Controllo che l'utente loggato faccia parte della trip
+        if (!userIsAParticipant(email, trip)) {
+            throw new ResourceNotFoundException("Trip not found");
+        }
+
+        // Elimina activity
+        eventService.deleteActivity(trip, activityId);
+
+        // Aggiorno la trip
+        tripRepository.save(trip);
+
+        return ("Activity removed");
+    }
+
+    // Crea un nuovo travel
+    public String createTravel(String email, long tripId, TravelCreationRequest travelCreationRequest) {
+        Trip trip = getTripById(tripId);
+
+        // Controllo che l'utente loggato faccia parte della trip
+        if (!userIsAParticipant(email, trip)) {
+            throw new ResourceNotFoundException("Trip not found");
+        }
+
+        // Creo il travel
+        Travel travel = eventService.createTravel(trip, travelCreationRequest);
+
+        // Aggiungo il travel alla schedule
+        List<Event> schedule = trip.getSchedule();
+        schedule.add(travel);
+        trip.setSchedule(schedule);
+
+        // Salvo la trip
+        tripRepository.save(trip);
+
+        return ("Travel created");
+    }
+
+    // Elimina un travel
+    public String deleteTravel(String email, long tripId, long travelId) {
+        Trip trip = getTripById(tripId);
+
+        // Controllo che l'utente loggato faccia parte della trip
+        if (!userIsAParticipant(email, trip)) {
+            throw new ResourceNotFoundException("Trip not found");
+        }
+
+        // Elimina il travel
+        eventService.deleteTravel(trip, travelId);
+
+        // Aggiorno la trip
+        tripRepository.save(trip);
+
+        return ("Travel removed");
     }
 
 

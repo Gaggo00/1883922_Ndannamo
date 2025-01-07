@@ -3,15 +3,16 @@ package com.example.backend.model;
 import java.time.LocalDate;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 
 @Entity
-//@Inheritance(strategy = InheritanceType.JOINED)
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS) 
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 //@MappedSuperclass
 public abstract class Event {
 
@@ -20,7 +21,7 @@ public abstract class Event {
     private Long id;
 
     public enum EventType {ACTIVITY, NIGHT, TRAVEL};
-    private EventType type;       // serve per EventDTO
+    private EventType type;
 
     @ManyToOne
     @JoinColumn(name="trip_id", nullable=false)

@@ -15,11 +15,15 @@ import io.micrometer.common.lang.Nullable;
 @Table(name="activities")
 public class Activity extends Event {
 
+    // Per EventDTO
+    private EventType type = EventType.ACTIVITY;
+
     private String name;
-    private String address;
     private LocalTime startTime;
-    
+
     @Nullable
     private LocalTime endTime = null;       // non e' detto che ci sia
 
+    private String address;
+    private String info;
 }

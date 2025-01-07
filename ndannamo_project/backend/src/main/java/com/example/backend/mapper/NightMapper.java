@@ -17,6 +17,7 @@ public interface NightMapper {
     @Mapping(target = "endTime", ignore = true)
     @Mapping(target = "name", ignore = true)
     @Mapping(target = "address", ignore = true)
+    @Mapping(target = "info", ignore = true)
     EventDTO toDTO(Night night);
 
     // Da EventDTO a Night

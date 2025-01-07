@@ -5,9 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.List;
 
 
 @Entity
@@ -17,13 +15,10 @@ import java.util.List;
 @Table(name="travels")
 public class Travel extends Event {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-
     // Per EventDTO
     private EventType type = EventType.TRAVEL;
 
+    private String address;         // tipo il nome dell'aeroporto, o della stazione, ecc
     private String destination;
 
     // La data di partenza gia' ce l'ha perché la prende dalla classe Event
