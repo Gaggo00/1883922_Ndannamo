@@ -17,7 +17,7 @@
     min-height: fit-content;
     height: 15vh;
     border-radius: 2vw;
-    margin: 1vh 0;
+    margin: 0.2vh 0;
 }
 
 /* Colori dei blocchetti */
@@ -48,7 +48,7 @@
     border-top-left-radius: 2vw;
     border-bottom-left-radius: 2vw;
     justify-content: space-evenly;
-    margin: 0.5vh 0;
+    padding: 0.5vh 0;
 }
 
 .event-block .event-block-left .info-left {
@@ -97,4 +97,24 @@
 
 .event-block .event-block-right .spaced{
     margin: 0.3vh 0;
+}
+
+
+/* Pulsante per aggiungere un'activity/travel */
+
+.hidden-button {
+    background: none;
+    border: none;
+    display: none;
+}
+
+.hidden-button-parent {
+    min-height: 1.5vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.hidden-button-parent:hover .hidden-button{
+    display: block;
 }

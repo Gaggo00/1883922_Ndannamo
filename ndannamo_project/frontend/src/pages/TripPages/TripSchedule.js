@@ -4,6 +4,7 @@ import TripService from "../../services/TripService";
 import ScheduleService from '../../services/ScheduleService';
 import InternalMenu from "./InternalMenu";
 import ScheduleDay from "./ScheduleEvents/ScheduleDay"
+import CreateEventForm from './ScheduleEvents/CreateEventForm';
 import DateUtilities from '../../utils/DateUtilities';
 
 import './InternalMenu.css'
@@ -61,6 +62,27 @@ export default function TripSchedule() {
     const NIGHT = "NIGHT";
     const ACTIVITY = "ACTIVITY";
     const TRAVEL = "TRAVEL";
+
+
+    // Per gestire il pop-up da cui creare nuovi activity/travel
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const openModal = () => {
+        setIsModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+    };
+
+    const handleOverlayClick = (e) => {
+        // Verifica se l'utente ha cliccato sull'overlay e non sul contenuto del modal
+        if (e.target.className === "modal-overlay") {
+            closeModal();
+        }
+    };
+
+
 
     const { id } = useParams();
     const [tripInfo, setTripInfo] = useState({
@@ -179,7 +201,6 @@ export default function TripSchedule() {
                 const activity = new Activity(event.id, event.place, event.date, event.address,
                     event.startTime, event.endTime, event.name, event.info
                 );
-                console.log(activity.address);
                 days[index].activitiesAndTravels.push(activity);
             }
             else if (event.type == TRAVEL) {
@@ -224,13 +245,20 @@ export default function TripSchedule() {
                         </div>
                         <div id="events">
                             {tripDays.map((day, index) =>
-                                <ScheduleDay key={index} day={day}></ScheduleDay>
+                                <ScheduleDay key={index} day={day} openCreateEventForm={openModal}/>
                             )}
                         </div>
                     </div>
                     <div id="event-info"></div>
                 </div>
             </div>
+            {isModalOpen && (
+                <div className="modal-overlay" onClick={handleOverlayClick}>
+                    <div className="new-event-box">
+                        <CreateEventForm/>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
