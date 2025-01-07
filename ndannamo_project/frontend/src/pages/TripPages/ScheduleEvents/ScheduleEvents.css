@@ -1,0 +1,100 @@
+.day {
+    margin: 0 0.5vw;
+    margin-bottom: 4vh;
+}
+
+.day-date {
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.9vw;
+    margin-left: 0.5vw;
+}
+
+.event-block {
+    display: flex;
+    flex-direction: row;
+    width: 100;
+    min-height: fit-content;
+    height: 15vh;
+    border-radius: 2vw;
+    margin: 1vh 0;
+}
+
+/* Colori dei blocchetti */
+.event-block.activity {
+    background-color: rgb(248, 232, 162);
+}
+.event-block.travel {
+    background-color: rgb(172, 235, 185);
+}
+.event-block.night {
+    background-color: rgb(162, 208, 218);
+}
+
+
+.bi.h1 {
+    margin-bottom: 0;
+}
+
+.event-block .event-block-right, .event-block .event-block-left {
+    display: flex;
+    flex-direction: column;
+}
+
+
+.event-block .event-block-left {
+    width: 25%;
+    background-color: rgba(31, 15, 15, 0.082);
+    border-top-left-radius: 2vw;
+    border-bottom-left-radius: 2vw;
+    justify-content: space-evenly;
+    margin: 0.5vh 0;
+}
+
+.event-block .event-block-left .info-left {
+    font-size: 0.8vw;
+    line-height: 1;
+}
+.event-block .event-block-left .info-left.bold {
+    font-weight: 600;
+}
+.event-block .event-block-left .info-left.big {
+    font-size: 0.9vw;
+}
+
+.event-block .event-block-right {
+    border-top-right-radius: 2vw;
+    border-bottom-right-radius: 2vw;
+    margin-left: 1vw;
+    text-align: left;
+    padding: 1vh 0.5vw;
+    font-size: 1vw;
+}
+
+.event-block .event-block-right .label{
+    color: rgb(48, 48, 48);
+    font-size: 0.9vw;
+    font-weight: 600;
+}
+
+.event-block .event-block-right .bi{
+    margin-right: 0.2vw;
+}
+
+.event-block-title {
+    font-size: 1.1vw;
+    font-weight: 600;
+}
+
+.event-block .event-block-right .address{
+    color: rgb(29, 29, 29);
+    font-style: italic;
+}
+
+.event-block .event-block-right .info{
+    font-size: 0.9vw;
+}
+
+.event-block .event-block-right .spaced{
+    margin: 0.3vh 0;
+}
