@@ -4,7 +4,7 @@ import "../styles/Footer.css"
 const FooterComponent = () => {
     return (
         <footer className='footer'>
-            <span className='footerText'>NDANNAMO's Application | All Right Reserved &copy; {new Date().getFullYear()} </span>
+            <span className='footerText'>NDANNAMO's Application | All Rights Reserved &copy; {new Date().getFullYear()} </span>
         </footer>
     )
 }

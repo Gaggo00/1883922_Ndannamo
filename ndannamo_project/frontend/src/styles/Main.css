@@ -7,60 +7,21 @@ body {
 
 .main {
     display: flex;
-    margin-top:8vh;
     background: #f0eadc;
 }
 
-.sidebar {
-    width: 20%;
-    background-color: #f4ebe0;
-    padding: 15px;
-    box-sizing: border-box;
-    position: fixed;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    text-align: left;
-}
-
-.sidebar button {
-    background-color: #f2994a;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    margin-bottom: 20px;
-    cursor: pointer;
-    font-size: 16px;
-    border-radius: 5px;
-}
-
-.trip-list h3 {
-    margin-bottom: 10px;
-    color: #333;
-}
-
-.trip-item {
-    margin: 5px 0;
-    color: #333;
-    cursor: pointer;
-    padding: 10px;
-    border-radius: 5px;
-}
-
-.trip-item:hover {
-    background-color: #e0d8c7;
-}
-
 .content {
-    margin-left: 25%;
-    padding: 20px;
+    display: flex;
+    position: relative;
+    padding-top: 4vh;
+    padding-bottom: 8vh;
     background-color: #fff;
     width: 75%;
-    margin-top: 50px;
-    margin-right: 30px;
-    border-radius: 30px;
-    height: 100vh;
-    display: flex;
+    margin-top: 5vh;
+    margin-left: 22.5vw;
+    margin-bottom: 10vh;
+    border-radius: 3vw;
+    height:fit-content;
     flex-direction: column;
     align-items: center;
 }
@@ -72,6 +33,162 @@ body {
     background-position: center;
     border-radius: 5px;
     width: 1000px;
+}
+
+/* BANNER */
+#banner {
+    width: 90%;
+    height:fit-content;
+    margin: 0 auto;
+}
+#bannerImg {
+    width: 100%;
+}
+
+
+.content h2 {
+    text-align: left;
+    margin-left: 0.5vw;
+    font-size: 1.5vw;
+    bottom: -0.4vh;
+    position: relative;
+    /*margin-top: 2vh;*/
+}
+
+
+.sidebar {
+    width: 20%;
+    background-color: #b297833b;
+    padding: 5vh 1vw;
+    box-sizing: border-box;
+    position: fixed;
+    height: calc(100% - 11.5vh);
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    overflow-y: auto;
+}
+
+.sidebar button {
+    background-color: #f2994a;
+    color: white;
+    font-size: 1vw !important;
+    border: none;
+    padding: 10px 20px;
+    margin-bottom: 20px;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 5px;
+}
+
+.search-bar{
+    margin-bottom:12px;
+    border-radius: 22px;
+    border: none;
+    width: fit-content;
+    background: #f2f2f2;
+    height: 3vh;
+    min-height: fit-content;
+    display: flex;
+    align-items: center;
+    /*justify-content: center;*/
+    padding-left: 1vw;
+}
+
+.search-bar input {
+    background: transparent;
+    border: none;
+    outline: none;
+    width: 30vw;
+    margin-left: 0.5vw;
+}
+
+
+#upcomingTrips, #pastTrips {
+    width: 90%;
+    margin: 3vh auto;
+    margin-bottom: 0;
+}
+
+#pastTrips .tripBlock {
+    background-color: rgb(226, 226, 226);
+}
+
+/* Nelle past trips, l'immagine e' in bianco e nero */
+#pastTrips .tripBlock #image {
+    -webkit-filter: grayscale(1);
+    filter: grayscale(1);
+}
+
+/* Nelle past trips, quando ci passi col mouse l'immagine torna a colori */
+#pastTrips .tripBlock:hover #image {
+    filter: contrast();
+}
+
+.trips-top-row {
+    display: flex;
+    margin-left: 1vw;
+    padding-bottom: 1vh;
+    border: none;
+    background: none;
+}
+
+.trips-top-row .arrow-icon {
+    transform: rotate(0);
+    width: 1vw;
+    height: 1vw;
+    margin: auto;
+    /*margin-bottom: 2.5vh;*/
+}
+
+/* per nascondere le checkbox */
+.trips-top-row #upcomingCheckbox, .trips-top-row #pastCheckbox {
+    display: none;
+}
+
+/* per ruotare la freccia vicino a upcoming trips quando ci clicchi */
+.trips-top-row #upcomingCheckbox:checked + #upcoming-arrow-down {
+    transform: rotate(-90deg);
+}
+
+/* per ruotare la freccia vicino a past trips quando ci clicchi */
+.trips-top-row #pastCheckbox:checked + #past-arrow-down {
+    transform: rotate(-90deg);
+}
+
+.tripPreviewContainer {
+    display:block;
+    text-align: left;
+    padding: 3vh 5vw;
+    font-size: 9pt;
+}
+
+.tripPreviewBlocksContainer {
+    display: grid;
+    grid-template-columns: auto auto auto auto;
+    text-align: left;
+    width: 100%;
+    justify-content: space-around;
+}
+
+
+.trip-list h2 {
+    margin-bottom: 1vh;
+    font-size: 1.5vw;
+    color: #333;
+}
+
+
+.trip-item {
+    margin: 5px 0;
+    color: #333;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.trip-item:hover {
+    background-color: #e0d8c7;
 }
 
 .trip-grid {
@@ -134,6 +251,7 @@ body {
     justify-content: center;
     align-items: center;
     z-index: 1000;
+    backdrop-filter: blur(2px);
 }
 
 .modal {
@@ -157,29 +275,6 @@ body {
     cursor: pointer;
     border-radius: 5px;
 }
-.search-bar{
-    margin-bottom:12px;
-    border-radius: 22px;
-    border: none;
-    width: 340px;
-    background: #f2f2f2;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
 
-.search-bar input {
-    background: transparent;
-    border: none;
-    outline: none;
-    margin-left: 5px;
-}
-.container-trip{
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-}
-.content h3{
-    margin-top: 10px;
-}
+
+

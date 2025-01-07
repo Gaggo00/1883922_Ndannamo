@@ -1,6 +1,7 @@
 package com.example.backend.repositories;
 
 import com.example.backend.model.City;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -12,7 +13,7 @@ public interface CityRepository extends JpaRepository<City, Long> {
 
     Optional<City> findByName(String name);
 
-    Optional<City> findByNameAndCountryIgnoreCase(String name, String country);
+    Optional<City> findFirstByNameAndCountryIgnoreCase(String name, String country);
 
     Optional<List<City>> findByNameIgnoreCaseStartsWith(String nameStart);
 }

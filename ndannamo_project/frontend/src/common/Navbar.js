@@ -23,24 +23,23 @@ function Navbar() {
 
     return (
         <div className="navbar">
-            <div className="logo">
-                <div id="valigia-logo"></div>
-                <div id="scritta-logo"></div>
-            </div>
-            <div className="center">
-                <Link to="/" className="centerEl">Home</Link>
-                <Link to="/main" className="centerEl">Trip</Link>
-            </div>
+            <Link to="/">
+                <div className="logo">
+                    <div id="valigia-logo"></div>
+                    <div id="scritta-logo"></div>
+                </div>
+            </Link>
             {isAuthenticated && (
                 <Dropdown drop="down">
                     <Dropdown.Toggle variant="success" id="dropdown-basic">
-                        <i className="bi bi-passport"></i>
+                        {/*<i className="bi bi-passport"></i>*/}
+                        <i className="bi bi-person-fill"></i>
                     </Dropdown.Toggle>
 
                     {/* Usa la classe CSS personalizzata per il menu */}
                     <Dropdown.Menu className="dropdown-menu-custom">
                         <Dropdown.Item as={Link} to="/profile">My profile</Dropdown.Item>
-                        <Dropdown.Item as={Link} to="/trips">My trips</Dropdown.Item>
+                        <Dropdown.Item as={Link} to="/main">My trips</Dropdown.Item>
                         <Dropdown.Divider />
                         <Dropdown.Item as={Link} to="/" onClick={handleLogout}>Logout</Dropdown.Item>
                     </Dropdown.Menu>

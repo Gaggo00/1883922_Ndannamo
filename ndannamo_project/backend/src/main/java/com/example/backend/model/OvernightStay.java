@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 @Entity
@@ -28,6 +29,12 @@ public class OvernightStay {
     private LocalDate startDate;
     @NotNull
     private LocalDate endDate;
+
+    private LocalTime startCheckInTime;
+    private LocalTime endCheckInTime;
+    private LocalTime startCheckOutTime;
+    private LocalTime endCheckOutTime;
+
 
     private String address;
     private String contact;

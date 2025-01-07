@@ -1,5 +1,6 @@
 package com.example.backend.dto;
 
+import com.example.backend.model.Expense;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
@@ -25,4 +26,7 @@ public class TripDTO {
     private LocalDate endDate;
     private long createdBy;
     private List<String> list_participants = new ArrayList<>();
+    private boolean isCreator = false;
+    
+    //private List<Expense> expenses = new ArrayList<>();
 }

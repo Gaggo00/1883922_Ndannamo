@@ -11,5 +11,30 @@ PER TESTARE SE IL DATABASE HA CARICATO LA TABELLA cities:
 - Per vedere tutte le tabelle:
   >>    \dt+
 
-  Per vedere se c'e' qualcosa dentro:
-  >> select * from cities limit 10;
+- Per vedere se c'e' qualcosa dentro:
+  >>    SELECT * FROM cities LIMIT 10;
+
+
+#################################################################################
+
+PER RI-CREARE LA TABELLA CITIES SENZA ELIMINARE GLI ALTRI DATI:
+
+- Per eliminare tutta la tabella cities:
+  >>    DROP TABLE cities;
+
+
+- Per ri-creare da zero la tabella cities e inizializzarla col CSV:
+
+  >>    CREATE TABLE cities (
+          id BIGINT PRIMARY KEY,
+          name TEXT,
+          country TEXT,
+          iso TEXT,
+          latitude NUMERIC,
+          longitude NUMERIC,
+          image TEXT
+        );
+
+  >>    COPY cities FROM '/docker-entrypoint-initdb.d/cities.csv' DELIMITER ',' CSV HEADER;
+
+

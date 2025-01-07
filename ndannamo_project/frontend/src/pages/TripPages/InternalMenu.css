@@ -1,0 +1,63 @@
+.internal-menu{
+    display:flex;
+    flex-direction:column;
+    gap: 3vh;
+    align-items: baseline;
+    margin-right: 60px;
+    margin-top: 3vh;
+}
+.internal-menu img{
+    width: 4vh;
+    height: 4vh;
+    margin-right: 5px;
+}
+.trip-info{
+    display:flex;
+    flex-direction: row;
+    margin-top:30px;
+}
+.trip-content{
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    background: white;
+    width: 85vw;
+    height: 87vh;
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    right: 2vw;
+}
+.trip-top {
+    background: #f2b95b;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    display: flex;
+    align-items: center;
+    text-align: left;
+    height: 40px;
+    padding-left: 30px;
+}
+.trip-details{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    align-items: center;
+}
+.internal-option{
+    display:flex;
+    border: 2px solid #000;
+    background: #F2B95B;
+    flex-shrink: 0;
+    padding:13px;
+    border-radius: 0px 10px 10px 0px;
+    align-items: end;
+}
+.internal-option p{
+    margin: auto;
+}
+.internal-option.selected img{
+    background: white;
+    margin-right: 5px;
+    border-radius: 10px;
+    padding:3px;
+}

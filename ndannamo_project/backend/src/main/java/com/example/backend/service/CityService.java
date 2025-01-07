@@ -28,7 +28,7 @@ public class CityService {
     }
 
     public City getCityByNameAndCountry(String name, String country) {
-        return cityRepository.findByNameAndCountryIgnoreCase(name, country).orElseThrow(()-> new ResourceNotFoundException("City not found!"));
+        return cityRepository.findFirstByNameAndCountryIgnoreCase(name, country).orElseThrow(()-> new ResourceNotFoundException("City not found!"));
     }
 
     public List<City> getCityByNameStartsWith(String nameStarts) {

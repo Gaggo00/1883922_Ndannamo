@@ -1,19 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from "axios";
-
 import TripService from '../services/TripService';
 import CityService from '../services/CityService';
-
-import logo from '../static/Logo app.png'
+import missingCityImage from '../static/missing_city_image.png'
 import "../styles/TripPreview.css";
+import DateUtilities from '../utils/DateUtilities';
 
 
 export default function TripPreview({trip, reloadProfile}) {
 
     const navigate = useNavigate();
-    const [imgURL, setImgURL] = useState("");
+    const [imgURL, setImgURL] = useState(missingCityImage);
     const [imageKey, setimageKey] = useState(0);    // serve per far aggiornare l'immagine
 
     const fecthImage = async (name, country) => {
@@ -22,7 +19,7 @@ export default function TripPreview({trip, reloadProfile}) {
 
             if (response) {
                 //console.log(response);
-                if (response.length > 7 && response.substring(0,6) == "https:") {
+                if (response.length > 7 && response.substring(0,6) === "https:") {
                     //console.log("sto cambiando url immagine");
                     setImgURL(response);
                     setimageKey(1);
@@ -41,10 +38,8 @@ export default function TripPreview({trip, reloadProfile}) {
 
     fecthImage(mainLocationName, mainLocationCountry);
 
-    const startDateArray = trip.startDate.split("-");
-    const startDate = startDateArray[2] + "/" + startDateArray[1] + "/" + startDateArray[0].substring(2)
-    const endDateArray = trip.endDate.split("-");
-    const endDate = endDateArray[2] + "/" + endDateArray[1] + "/" + endDateArray[0].substring(2)
+    const startDate = DateUtilities.yyyymmdd_To_ddmmyy(trip.startDate, "-", "/");
+    const endDate = DateUtilities.yyyymmdd_To_ddmmyy(trip.endDate, "-", "/");
 
     var locationString = trip.locations[0];
     if (trip.locations.length > 1) {
@@ -60,6 +55,9 @@ export default function TripPreview({trip, reloadProfile}) {
         participantsStr += " and " + quantity + " more";
     }
 
+    const handleClick = () => {
+        navigate(`/trips/${trip.id}/summary`); // Modifica questa rotta in base alla struttura della tua applicazione
+    };
 
 
 
@@ -87,9 +85,9 @@ export default function TripPreview({trip, reloadProfile}) {
 
 
     return (
-        <div className="tripBlock" >
+        <div className="tripBlock" onClick={handleClick}>
             <div id="imageContainer">
-                <img id="image" src={imgURL} key={imageKey}></img>
+                <img id="image" src={imgURL} key={imageKey} alt="location-image"></img>
             </div>
             <div id="tripBlockContent">
                 <div id="title">{trip.title}</div>

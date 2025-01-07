@@ -49,6 +49,17 @@ public class UserService {
         return userRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("User not found!"));
     }
 
+
+    
+    // Cambio nickname
+    public void changeNickname(String email, String newNickname) {
+        User user = getUserByEmail(email);
+        user.setNickname(newNickname);
+        userRepository.save(user);
+    }
+
+
+    // Cambio password
     public void changePassword(String email, ChangePasswordRequest request){
         User user = getUserByEmail(email);
         if(!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())){
