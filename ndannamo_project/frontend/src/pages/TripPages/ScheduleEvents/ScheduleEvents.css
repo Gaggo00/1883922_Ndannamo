@@ -104,8 +104,15 @@
 
 .hidden-button {
     background: none;
-    border: none;
+    border: 2px solid black;
+    border-radius: 50%;
+    margin: 0.5vh 0.2vw;
     display: none;
+    transition: 0.2s all;
+}
+
+.hidden-button:active {
+    transform: translateY(3px);
 }
 
 .hidden-button-parent {

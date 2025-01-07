@@ -15,9 +15,11 @@ export default function NightEvent({night}) {
                 <div className="night-name event-block-title">
                     Stay at {night.overnightStay && night.overnightStay.name}{!night.overnightStay && "?"}
                 </div>
-                <div>
-                    {night.overnightStay && night.overnightStay.address}
-                    {!night.overnightStay && "-"}
+                <div className="address spaced">
+                    <i className="bi bi-geo-alt icon-with-margin"></i>{night.overnightStay && night.overnightStay.address}{!night.overnightStay && "-"}
+                </div>
+                <div className="contact spaced">
+                <i className="bi bi-telephone icon-with-margin"></i>{night.overnightStay && night.overnightStay.contact}{!night.overnightStay && "-"}
                 </div>
 
             </div>

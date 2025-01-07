@@ -6,30 +6,37 @@ import TravelEvent from "./TravelEvent";
 
 export default function ScheduleDay({day, openCreateEventForm}) {
 
-    const createActivity = (previousActivityTime) => {
+    const createActivity = (previousEventTime) => {
         openCreateEventForm();
     }
+    const createTravel = (previousEventTime) => {
+        openCreateEventForm();
+    }
+    
 
     return (
         <div className="day">
             <div className="day-date">{day.date}</div>
             <div className="hidden-button-parent">
-                <button className="hidden-button" onClick={()=>{createActivity("08:00")}}><i className="bi bi-plus-circle h4"></i></button>
+                <button className="hidden-button" onClick={()=>{createActivity("08:00")}}><i className="bi bi-plus-lg h4"></i></button>
+                <button className="hidden-button" onClick={()=>{createTravel("08:00")}}><i className="bi bi-airplane h4"></i></button>
             </div>
             {day.activitiesAndTravels.map((event, index) => {
                     if (event.constructor.name == "Activity") {
-                        return <div>
-                            <ActivityEvent key={index} activity={event}/>
+                        return <div key={index}> 
+                            <ActivityEvent activity={event}/>
                             <div className="hidden-button-parent">
-                                <button className="hidden-button" onClick={()=>{createActivity(event.startTime)}}><i className="bi bi-plus-circle h4"></i></button>
+                                <button className="hidden-button" onClick={()=>{createActivity("08:00")}}><i className="bi bi-plus-lg h4"></i></button>
+                                <button className="hidden-button" onClick={()=>{createTravel("08:00")}}><i className="bi bi-airplane h4"></i></button>
                             </div>
                         </div>;
                     }
                     else if (event.constructor.name == "Travel") {
-                        return <div>
-                            <TravelEvent key={index} travel={event}/>
+                        return <div key={index}>
+                            <TravelEvent travel={event}/>
                             <div className="hidden-button-parent">
-                                <button className="hidden-button" onClick={()=>{createActivity(event.startTime)}}><i className="bi bi-plus-circle h4"></i></button>
+                                <button className="hidden-button" onClick={()=>{createActivity("08:00")}}><i className="bi bi-plus-lg h4"></i></button>
+                                <button className="hidden-button" onClick={()=>{createTravel("08:00")}}><i className="bi bi-airplane h4"></i></button>
                             </div>
                         </div>;
                     }
