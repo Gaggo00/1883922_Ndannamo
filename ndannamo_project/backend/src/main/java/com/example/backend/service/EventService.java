@@ -73,6 +73,23 @@ public class EventService {
     }
 
 
+    /*************** Per eliminare tutta la schedule ***************/
+
+    public void deleteSchedule(List<Event> schedule) {
+        for (Event event: schedule) {
+            if (event.getClass() == Night.class) {
+                nightRepository.delete((Night) event);
+            }
+            else if (event.getClass() == Activity.class) {
+                activityRepository.delete((Activity) event);
+            }
+            else if (event.getClass() == Travel.class) {
+                travelRepository.delete((Travel) event);
+            }
+        }
+    }
+
+
     /*************** NIGHT ***************/
 
     // Crea una nuova night
@@ -98,6 +115,7 @@ public class EventService {
         activity.setDate(activityCreationRequest.getDate());
         activity.setStartTime(activityCreationRequest.getStartTime());
         activity.setEndTime(activityCreationRequest.getEndTime());
+        activity.setAddress(activityCreationRequest.getAddress());
         activity.setInfo(activityCreationRequest.getInfo());
         activity.setTrip(trip);
 

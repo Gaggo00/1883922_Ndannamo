@@ -28,7 +28,7 @@ export default function TripPhotos() {
             if (!token) {
                 navigate("/login");
             }
-            const response = await TripService.getTrip(id,token);
+            const response = await TripService.getTrip(token, id);
 
             if (response) {
                 setTripInfo(response);

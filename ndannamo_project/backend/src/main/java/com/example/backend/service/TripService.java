@@ -193,6 +193,10 @@ public class TripService {
         if (!userIsTheCreator(email, trip)) {
             throw new ResourceNotFoundException("Only the trip creator can delete this trip");
         }
+
+        // Elimina la schedule della trip
+        eventService.deleteSchedule(trip.getSchedule());
+
         tripRepository.delete(trip);
     }
 

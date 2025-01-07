@@ -80,10 +80,35 @@ export default class DateUtilities {
         });
     }
 
+    // Esempio:
+    // yyyymmdd_To_ddMONTH("2020-05-13")
+    // restituisce "13 maggio"
+    static yyyymmdd_To_ddMONTH(date, oldSeparator="-") {
+        var dateObject = new Date(date.replaceAll(oldSeparator, "-"));
+        return dateObject.toLocaleString('default', {
+            day: "numeric",
+            month: "long"
+        });
+    }
+
 
 
     /***************** ALTRE OPERAZIONI SULLE DATE *****************/
 
+
+    // Prende in input due stringe tipo "yyyy-mm-dd" e dice la differenza in giorni tra le due date
+    static daysBetween(startDate, endDate) {
+        let date1 = new Date(startDate);
+        let date2 = new Date(endDate);
+
+        // Calcola la differenza in millisecondi
+        let differenceInTime = date2.getTime() - date1.getTime();
+
+        // Trasforma da differenza in millisecondi in differenza in giorni
+        let differenceInDays = Math.round(differenceInTime / (1000 * 3600 * 24));
+
+        return differenceInDays;
+    }
 
 
     // Prende in input una stringa tipo "yyyy-mm-dd" e restituisce il giorno dopo nello stesso formato
