@@ -2,10 +2,10 @@
 import "./ScheduleEvents.css";
 
 
-export default function ActivityEvent({activity}) {
+export default function ActivityEvent({activity, selectEvent}) {
 
     return (
-        <div className="event-block activity">
+        <div className="event-block activity" onClick={() => {selectEvent(activity)}}>
             <div className="event-block-left">
                 <div className="info-left bold big">{activity.startTime}</div>
                 <i className="bi bi-sun h1"></i>

@@ -2,10 +2,10 @@
 import "./ScheduleEvents.css";
 
 
-export default function TravelEvent({travel}) {
+export default function TravelEvent({travel, selectEvent}) {
 
     return (
-        <div className="event-block travel">
+        <div className="event-block travel" onClick={() => {selectEvent(travel)}}>
             <div className="event-block-left">
                 <div className="info-left bold big">{travel.startTime}</div>
                 <i className="bi bi-airplane-engines h1"></i>

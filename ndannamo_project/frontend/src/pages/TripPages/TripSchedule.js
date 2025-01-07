@@ -1,10 +1,14 @@
 import React, {useEffect, useState} from 'react';
 import {useNavigate, useParams} from 'react-router-dom';
+
 import TripService from "../../services/TripService";
 import ScheduleService from '../../services/ScheduleService';
+
 import InternalMenu from "./InternalMenu";
 import ScheduleDay from "./ScheduleEvents/ScheduleDay"
 import CreateEventForm from './ScheduleEvents/CreateEventForm';
+import EventOpen from './ScheduleEvents/EventOpen';
+
 import DateUtilities from '../../utils/DateUtilities';
 
 import './InternalMenu.css'
@@ -83,6 +87,9 @@ export default function TripSchedule() {
     };
 
 
+    // Per gestire la selezione di un evento
+    const [selectedEvent, setSelectedEvent] = useState(null);
+
 
     const { id } = useParams();
     const [tripInfo, setTripInfo] = useState({
@@ -141,7 +148,7 @@ export default function TripSchedule() {
             if (response) {
                 setTripInfo(response);
 
-                // NOTA PER GAVRIEL: se levi la funzione fetchTripInfo bisogna comunque eseguire questo codice da qualche parte:
+                // NOTA PER GAVRIEL: se levi la funzione fetchTripInfo bisogna comunque eseguire fetchSchedule da qualche parte, dopo aver ottenuto le info della trip:
                 fetchSchedule(response.startDate, response.endDate);
 
             } else {
@@ -236,20 +243,22 @@ export default function TripSchedule() {
             <InternalMenu/>
             <div className="trip-content">
                 <div className="trip-top">
-                    <span> <strong>{tripInfo.title}</strong> {tripInfo.startDate} {tripInfo.endDate}</span>
+                    <span> <strong>{tripInfo.title}:</strong> {DateUtilities.yyyymmdd_To_ddMONTH(tripInfo.startDate)} - {DateUtilities.yyyymmdd_To_ddMONTH(tripInfo.endDate)}</span>
                 </div>
-                <div className="trip-details schedule-section">
+                <div className="trip-details trip-details-schedule">
                     <div id="schedule">
                         <div id="calendar">
                             Qui metteremo il calendario
                         </div>
                         <div id="events">
                             {tripDays.map((day, index) =>
-                                <ScheduleDay key={index} day={day} openCreateEventForm={openModal}/>
+                                <ScheduleDay key={index} day={day} selectEvent={setSelectedEvent} openCreateEventForm={openModal}/>
                             )}
                         </div>
                     </div>
-                    <div id="event-info"></div>
+                    <div id="event-info">
+                        <EventOpen event={selectedEvent}/>
+                    </div>
                 </div>
             </div>
             {isModalOpen && (

@@ -18,6 +18,7 @@
     height: 15vh;
     border-radius: 2vw;
     margin: 0.2vh 0;
+    cursor: pointer;
 }
 
 /* Colori dei blocchetti */
@@ -25,7 +26,7 @@
     background-color: rgb(248, 232, 162);
 }
 .event-block.travel {
-    background-color: rgb(172, 235, 185);
+    background-color: rgb(172, 226, 189);
 }
 .event-block.night {
     background-color: rgb(162, 208, 218);

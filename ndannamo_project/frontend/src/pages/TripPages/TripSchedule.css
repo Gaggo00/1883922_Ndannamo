@@ -1,4 +1,4 @@
-.schedule-section {
+.trip-details-schedule {
     display: flex;
     flex-direction: row;
 }
@@ -18,11 +18,99 @@
 
 #calendar {
     width: 100%;
-    height: 10vh;
+    height: 15vh;
     background-color: rgb(201, 145, 145);
     margin: 1vh 0;
 }
 
 #events {
     overflow-y: auto;
+}
+
+
+
+/* Sezione a destra */
+
+#event-open {
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 3vw;
+}
+
+#event-open .date {
+    font-size: 1.4vw;
+    margin-top: 2vh;
+    color: rgb(100, 100, 100);
+    font-weight: 550;
+}
+
+#event-open .title {
+    font-size: 2vw;
+    font-weight: 650;
+    margin-bottom: 2vh;
+}
+
+#event-open .top-row {
+    width: 100%;
+    text-align: left;
+}
+
+#event-open .map-banner {
+    width: 90%;
+    height: 20vh;
+    border: 1px solid black;
+}
+
+#event-open .event-info {
+    margin-top: 2vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#event-open .event-info-top-row {
+    width: 90%;
+    /*
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    */
+    display: grid;
+    grid-template-columns: 23% auto auto auto;
+    justify-content: space-between;
+    padding: 2vh 0;
+}
+
+#event-open .event-info-top-row .row-element {
+    text-align: left;
+}
+
+#event-open .label {
+    font-size: 1.1vw;
+    font-weight: 600;
+    color: rgb(100, 100, 100);
+}
+
+#event-open .event-info-top-row .value {
+    font-size: 1.1vw;
+}
+
+#event-open .event-info-other {
+    background-color: rgb(224, 224, 224);
+    width: 90%;
+    min-height: 15vh;
+    border-radius: 1vw;
+    text-align: left;
+    padding: 2vh 1vw;
+    margin-top: 2vh;
+    font-size: 0.9vw;
+}
+
+#event-open .attachments {
+    width: 90%;
+    text-align: left;
+    margin-top: 2vh;
 }

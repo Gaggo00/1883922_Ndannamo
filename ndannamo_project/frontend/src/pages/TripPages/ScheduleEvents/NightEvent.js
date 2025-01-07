@@ -2,10 +2,10 @@
 import "./ScheduleEvents.css";
 
 
-export default function NightEvent({night}) {
+export default function NightEvent({night, selectEvent}) {
 
     return (
-        <div className="event-block night">
+        <div className="event-block night" onClick={() => {selectEvent(night)}}>
             <div className="event-block-left">                
                 <div className="info-left bold big">Night</div>
                 <i className="bi bi-moon-stars h1"></i>

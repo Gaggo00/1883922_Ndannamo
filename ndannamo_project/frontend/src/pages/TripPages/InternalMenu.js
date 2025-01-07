@@ -16,12 +16,20 @@ export default function InternalMenu() {
     const [hoveredOption, setHoveredOption] = useState(null); // Stato per l'hover
 
     const options = [
+        /*
         { id: "summary", icon: information_icon, label: "Summary", path: `/trips/${id}/summary` },
         { id: "schedule", icon: schedule_icon, label: "Schedule", path: `/trips/${id}/schedule` },
         { id: "expenses", icon: coin_icon, label: "Expenses", path: `/trips/${id}/expenses` },
         { id: "photos", icon: image_icon, label: "Photos", path: `/trips/${id}/photos` },
         { id: "tickets", icon: ticket_icon, label: "Ticket", path: `/trips/${id}/tickets` },
         { id: "chat", icon: message_icon, label: "Message", path: `/trips/${id}/chat` },
+        */
+        { id: "summary", icon: "bi bi-info-circle h3", label: "Summary", path: `/trips/${id}/summary` },
+        { id: "schedule", icon: "bi bi-file-earmark-text h3", label: "Schedule", path: `/trips/${id}/schedule` },
+        { id: "expenses", icon: "bi bi-currency-dollar h3", label: "Expenses", path: `/trips/${id}/expenses` },
+        { id: "photos", icon: "bi bi-images h3", label: "Photos", path: `/trips/${id}/photos` },
+        { id: "tickets", icon: "bi bi-ticket-perforated h3", label: "Tickets", path: `/trips/${id}/tickets` },
+        { id: "chat", icon: "bi bi-chat-left-text h3", label: "Messages", path: `/trips/${id}/chat` },
     ];
 
 
@@ -56,7 +64,8 @@ export default function InternalMenu() {
                     onMouseEnter={() => handleMouseEnter(option.id)}
                     onMouseLeave={handleMouseLeave}
                 >
-                    <img src={option.icon} alt={`${option.id}-icon`} />
+                    <i class={option.icon}/>
+                    {/*<img src={option.icon} alt={`${option.id}-icon`} />*/}
                     {(selectedOption === option.id || hoveredOption === option.id) && <p>{option.label}</p>}
                 </div>
             ))}
