@@ -1,0 +1,144 @@
+.tc-content {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 40px;
+}
+
+.tc-left {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 15px;
+    flex: 3;
+    padding: 10px;
+    border-right: 1px solid black;
+}
+
+.tc-right {
+    flex: 2;
+}
+
+.tc-top {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.tc-top-text {
+    color: black;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.tc-top-text.active {
+    color: black;
+    text-decoration: underline;
+}
+
+.tc-top-text.inactive {
+    color: gray;
+}
+
+.tc-middle {
+    justify-items: flex-start;
+}
+
+.tc-title {
+    font-size: 25px;
+    font-weight: bold;
+}
+
+.tc-list {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.tc-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    border-radius: 10px;
+}
+
+.h {
+    font-weight: bold;
+    color: grey;
+}
+
+.tc-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    border-radius: 10px;
+}
+
+.tc-item:hover {
+    background-color: rgb(200, 200, 200);
+    cursor: pointer;
+}
+
+.tc-column {
+    flex: 1;
+    text-align: left;
+    padding: 0 10px;
+}
+  
+.tc-name {
+    font-weight: bold;
+}
+  
+.tc-expense,
+.tc-total,
+.tc-date,
+.tc-by {
+    text-align: right;
+}
+
+.tc-button-container {
+    width: 100%;
+    justify-items: center;
+}
+
+.tc-add-button {
+    background-color: #EDEDED;
+    color: #666666;
+    padding: 15px;
+    border-radius: 15px;
+    width: fit-content;
+    cursor: pointer;
+}
+
+.tc-form-line {
+    display: flex;
+    justify-content: space-between;
+}
+
+.tc-list {
+    display: flex;
+    flex-direction: column; /* Elementi disposti verticalmente */
+    gap: 10px; /* Spaziatura tra gli elementi */
+}
+  
+.tc-list-item {
+    display: flex;
+    justify-content: space-between; /* Testo a sinistra, prezzo a destra */
+    align-items: center; /* Centra verticalmente */
+    border-bottom: 1px solid #ddd; /* Linea divisoria */
+    padding: 10px 0;
+}
+
+.tc-list-left {
+    display: flex;
+    align-items: center; /* Centra il checkbox e il nome verticalmente */
+    gap: 10px; /* Spazio tra il checkbox e il nome */
+}
+
+.tc-list-right {
+    font-weight: bold;
+    color: #333;
+}
