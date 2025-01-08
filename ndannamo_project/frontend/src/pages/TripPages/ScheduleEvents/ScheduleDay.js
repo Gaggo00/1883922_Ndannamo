@@ -22,7 +22,7 @@ export default function ScheduleDay({day, selectEvent, openCreateEventForm}) {
                 <button className="hidden-button" onClick={()=>{createTravel(day.night.date, "08:00")}}><i className="bi bi-airplane h4"></i></button>
             </div>
             {day.activitiesAndTravels.map((event, index) => {
-                    if (event.constructor.name == "Activity") {
+                    if (event.constructor.name === "Activity") {
                         return <div key={index}> 
                             <ActivityEvent activity={event} selectEvent={selectEvent}/>
                             <div className="hidden-button-parent">
@@ -31,7 +31,7 @@ export default function ScheduleDay({day, selectEvent, openCreateEventForm}) {
                             </div>
                         </div>;
                     }
-                    else if (event.constructor.name == "Travel") {
+                    else if (event.constructor.name === "Travel") {
                         return <div key={index}>
                             <TravelEvent travel={event} selectEvent={selectEvent}/>
                             <div className="hidden-button-parent">
@@ -40,6 +40,7 @@ export default function ScheduleDay({day, selectEvent, openCreateEventForm}) {
                             </div>
                         </div>;
                     }
+                    return <div/>
                 })
             }
             {day.night && <NightEvent night={day.night} selectEvent={selectEvent}/>}

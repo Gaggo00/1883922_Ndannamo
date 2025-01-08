@@ -106,6 +106,7 @@ export default function TripSchedule() {
         createdBy:'',
         list_participants: []
     });
+    // Struttura elementi EventDTO ricevuti dal backend
     const [schedule, setSchedule] = useState( [
         {
             type: "",
@@ -204,17 +205,17 @@ export default function TripSchedule() {
             // Indice di questo evento nell'array "days", e' uguale alla distanza della data dell'evento da startDate
             const index = DateUtilities.daysBetween(startDate, event.date);
 
-            if (event.type == NIGHT) {
+            if (event.type === NIGHT) {
                 const night = new Night(event.id, event.place, event.date, event.overnightStay);     // DA SISTEMARE overnightStay forse
                 days[index].night = night;
             }
-            else if (event.type == ACTIVITY) {
+            else if (event.type === ACTIVITY) {
                 const activity = new Activity(event.id, event.place, event.date, event.address,
                     event.startTime, event.endTime, event.info, event.name
                 );
                 days[index].activitiesAndTravels.push(activity);
             }
-            else if (event.type == TRAVEL) {
+            else if (event.type === TRAVEL) {
                 const travel = new Travel(event.id, event.place, event.date, event.address,
                     event.startTime, event.endTime, event.info, event.destination, event.arrivalDate
                 );
@@ -244,25 +245,32 @@ export default function TripSchedule() {
 
     const changeSelectedEvent = async (event) => {
         var coords = await fetchCoordinatesFromBackend(event);
+        if (coords) {
+            setSelectedEventLatitude(coords[0]);
+            setSelectedEventLongitude(coords[1]);
+        }
         setSelectedEvent(event);
-        setSelectedEventLatitude(coords[0]);
-        setSelectedEventLongitude(coords[1]);
 
-        if (event.address) {
+        if (event.address && coords) {
             fetchCoordinatesFromExternalAPI(event.address + ", " + event.place, coords[0], coords[1], setSelectedEventLatitude, setSelectedEventLongitude);
         }
     }
 
 
     const fetchCoordinatesFromBackend = async (event) => {
-        const city = event.place.split(",")[0].trim();
-        const country = event.place.split(",")[1].trim();
+        const placeArray = event.place.split(",");
+        const city = placeArray[0].trim();
+        var country = "";
+        if (placeArray.length > 1) {
+            country = placeArray[1].trim();
+        }
+
         try {
             console.log(city, country);
             const response = await MapService.getCityCoordinates(city, country);
 
             if (response) {
-                if (response != "") {
+                if (response !== "") {
                     return response.split(",");
                 }
                 else {

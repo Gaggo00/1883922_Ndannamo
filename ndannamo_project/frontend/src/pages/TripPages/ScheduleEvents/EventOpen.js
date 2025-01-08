@@ -23,7 +23,7 @@ export default function EventOpen({event, latitude, longitude}) {
                 </div>
                 
                 <div className="map-banner">
-                    Qui se ci riusciamo mettiamo una mappa con l'API OpenStreetMap
+                    <Map latitude={latitude} longitude={longitude} message={"Accomodation"}/>
                 </div>
                 
                 <div className='event-info'>
@@ -108,16 +108,7 @@ export default function EventOpen({event, latitude, longitude}) {
     }
 
     const showTravel = (travel) => {
-
-        //fetchCoordinatesFromBackend(travel.place.split(",")[0].trim(), travel.place.split(",")[1].trim());
         
-        //fetchCoordinates(travel.address + ", " + travel.place);
-
-        //setLatitude("46.7366797");
-        //setLongitude("12.1665917");
-        //var latitude = "46.7366797";
-        //var longitude = "12.1665917";
-
         return (
             <div id="event-open">
                 <div className='top-row'>
@@ -167,9 +158,9 @@ export default function EventOpen({event, latitude, longitude}) {
     return (
         <div style={{width: "100%", height: "100%"}}>
             {(!event) && <div>Select an event on the left</div>}
-            {(event && event.constructor.name == "Night") && showNight(event)}
-            {(event && event.constructor.name == "Activity") && showActivity(event)}
-            {(event && event.constructor.name == "Travel") && showTravel(event)}
+            {(event && event.constructor.name === "Night") && showNight(event)}
+            {(event && event.constructor.name === "Activity") && showActivity(event)}
+            {(event && event.constructor.name === "Travel") && showTravel(event)}
         </div>
     );
 
