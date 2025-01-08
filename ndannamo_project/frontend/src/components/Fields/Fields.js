@@ -139,6 +139,7 @@ export function TextField({
     name="",
     type="text",
     placeholder=name,
+    filled=false,
     titleStyle={},
     formStyle={}
 }) {
@@ -147,7 +148,7 @@ export function TextField({
         <div className="field-container">
             <div className="field-title" style={titleStyle}>{name}</div>
             <input
-                className="field-input"
+                className={filled ? "field-input f-filled" : "field-input"}
                 type={type}
                 style={formStyle}
                 placeholder={placeholder}

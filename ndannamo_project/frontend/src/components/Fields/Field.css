@@ -22,6 +22,10 @@
     width: calc(100% - 34px);
 }
 
+.f-disabled {
+    border-radius: 18px;
+}
+
 .f-pick {
     cursor: pointer;
     display: flex;

@@ -12,9 +12,9 @@ export function TCListHeader() {
     )
 }
 
-function TCListItem({name, expense, total, date, by}) {
+function TCListItem({name, expense, total, date, by, onClick}) {
     return (
-        <div className="tc-item">
+        <div className="tc-item" onClick={onClick}>
             <div className="tc-column tc-name">{name}</div>
             <div className="tc-column tc-expense">{expense}</div>
             <div className="tc-column tc-total">{total}</div>

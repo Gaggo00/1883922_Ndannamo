@@ -15,6 +15,7 @@ import TripSchedule from "./pages/TripPages/TripSchedule";
 import TripExpenses from "./pages/TripPages/TripExpenses";
 import TripPhotos from "./pages/TripPages/TripPhotos";
 import TripTickets from "./pages/TripPages/TripTickets";
+import Tricount from "./pages/Tricount.js";
 
 export default function App() {
 
@@ -37,6 +38,7 @@ export default function App() {
                             <Route path="/trips/:id/photos" element={<TripPhotos />} />
                             <Route path="/trips/:id/tickets" element={<TripTickets />} />
                             <Route path="/change-password" element={<ChangePassword/>} />
+                            <Route path="/tricount" element={<Tricount/>} />
                         </Routes>
                     </main>
                     <FooterComponent/>

@@ -1,33 +1,56 @@
 import TextField, { DateField, PickedField, PickField } from "../Fields/Fields"
 import "./Tricount.css"
-import {state, useState} from 'react'
+import {state, useState, useEffect} from 'react'
 
-function TCForm({users = ["marta", "teresa"]}) {
+/***
+ * split ha dei booleani
+ * splitValue i valori
+***/
+function TCForm({
+    title="",
+    amount=0.00,
+    date=new Date(),
+    users = [""],
+    paidBy=users[0],
+    split=users.map(() => false),
+    splitMethod="In modo equo",
+    splitValue=users.map(() => 0),
+    filled=false}) {
 
-    const [title, setTitle] = useState("");
-    const [amount, setAmount] = useState(0.00);
-    const [paidBy, setPaidBy] = useState(users[0]);
-    const [date, setDate] = useState();
-    const [splitMethod, setSplitMethod] = useState("In modo equo");
-    const [splitValue, setSplitValue] = useState(users.map(() => 0));
-    const [split, setSplit] = useState(users.map(() => 0));
+    const [sTitle, setTitle] = useState(title);
+    const [sAmount, setAmount] = useState(amount);
+    const [sPaidBy, setPaidBy] = useState(paidBy);
+    const [sDate, setDate] = useState(date);
+    const [sSplitMethod, setSplitMethod] = useState(splitMethod);
+    const [sSplitValue, setSplitValue] = useState(splitValue);
+    const [sSplit, setSplit] = useState(split);
+
+    useEffect(() => {
+        setTitle(title);
+        setAmount(amount);
+        setPaidBy(paidBy);
+        setSplit(split);
+        setSplitValue(splitValue);
+    }, [title, amount, paidBy, split, splitValue]);
 
     function doSplit(value) {
-        if (splitMethod === "In modo equo") {
-            const countNonZero = split.filter(value => value !== false).length;
+        if (sSplitMethod === "In modo equo") {
+            const countNonZero = sSplit.filter(value => value !== false).length;
             const newSplitValue = users.map(() => 0);
-            for (let i = 0; i < split.length; i++) {
-                if (split[i])
+            for (let i = 0; i < sSplit.length; i++) {
+                if (sSplit[i])
                     newSplitValue[i] = value / countNonZero;
+                else
+                    newSplitValue[i] = 0
             }
             setSplitValue(newSplitValue);
         }
     }
 
     function handleCheck(index) {
-        split[index] = !split[index];
-        setSplit(split);
-        doSplit(amount);
+        sSplit[index] = !sSplit[index];
+        setSplit(sSplit);
+        doSplit(sAmount);
     }
 
     function changeAmount(value) {
@@ -37,26 +60,26 @@ function TCForm({users = ["marta", "teresa"]}) {
 
     return (
         <div className="tc-form">
-            <TextField value={title} setValue={setTitle} name="Title"/>
+            <TextField value={sTitle} setValue={setTitle} name="Title" filled={filled}/>
             <div>
-                <TextField value={amount} setValue={changeAmount} name="Amount" type="number"/>
+                <TextField value={sAmount} setValue={changeAmount} name="Amount" type="number"/>
             </div>
             <div className="tc-form-line">
-                <PickField value={paidBy} setValue={setPaidBy} name="Paid By" options={users} style={{flex: "3"}}/>
-                <DateField value={date} setValue={setDate} name="When" style={{flex: "2"}}/>
+                <PickField value={sPaidBy} setValue={setPaidBy} name="Paid By" options={users} style={{flex: "3"}}/>
+                <DateField value={sDate} setValue={setDate} name="When" style={{flex: "2"}}/>
             </div>
             <div className="tc-form-line">
                 <div>Split</div>
-                <PickField value={splitMethod} setValue={setSplitMethod} options={["In modo equo"]}/>
+                <PickField value={sSplitMethod} setValue={setSplitMethod} options={["In modo equo"]}/>
             </div>
             <div className="list">
                 {users.map((user, index) => (
                     <div className="tc-list-item" key={index}>
-                    <div className="tc-list-left">
-                        <input type="checkbox" id={`item-${index}`} onClick={() => handleCheck(index)}/>
-                        <label htmlFor={`item-${index}`}>{user}</label>
-                    </div>
-                    <div className="tc-list-right">{splitValue[index]}</div>
+                        <div className="tc-list-left">
+                            <input type="checkbox" checked={sSplit[index]} id={`item-${index}`} onChange={() => handleCheck(index)}/>
+                            <label htmlFor={`item-${index}`}>{user}</label>
+                        </div>
+                        <div className="tc-list-right">{sSplitValue[index]}</div>
                     </div>
                 ))}
             </div>
