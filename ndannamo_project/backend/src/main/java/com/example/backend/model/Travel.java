@@ -26,4 +26,6 @@ public class Travel extends Event {
 
     private LocalTime departureTime;
     private LocalTime arrivalTime;
+
+    private String info;    // tipo il gate, o il binario
 }

@@ -18,7 +18,7 @@
 
 #calendar {
     width: 100%;
-    height: 15vh;
+    height: 10vh;
     background-color: rgb(201, 145, 145);
     margin: 1vh 0;
 }
@@ -79,7 +79,7 @@
     justify-content: space-between;
     */
     display: grid;
-    grid-template-columns: 23% auto auto auto;
+    grid-template-columns: 18% auto auto auto;
     justify-content: space-between;
     padding: 2vh 0;
 }

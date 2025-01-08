@@ -161,6 +161,7 @@ public class EventService {
         travel.setArrivalDate(travelCreationRequest.getArrivalDate());
         travel.setDepartureTime(travelCreationRequest.getDepartureTime());
         travel.setArrivalTime(travelCreationRequest.getArrivalTime());
+        travel.setInfo(travelCreationRequest.getInfo());
         travel.setTrip(trip);
 
         // Salva travel

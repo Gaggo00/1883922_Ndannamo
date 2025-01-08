@@ -44,6 +44,30 @@ class CityService{
             throw error; // L'errore sarà gestito all'esterno
         }
     }
+
+
+    // Per ottenere le coordinate di una citta'
+    static async getCityCoordinates(name, country) {
+        try {
+            const response = await axios.get(
+                `${CityService.BASE_URL}/coordinates`,
+                { 
+                    params: { 
+                        name: name,
+                        country: country
+                    }
+                },
+                {
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                }
+            );
+            return response.data;
+        } catch (error) {
+            throw error; // L'errore sarà gestito all'esterno
+        }
+    }
 }
 
 export default CityService;

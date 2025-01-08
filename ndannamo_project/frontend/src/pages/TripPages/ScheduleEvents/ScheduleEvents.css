@@ -126,3 +126,10 @@
 .hidden-button-parent:hover .hidden-button{
     display: block;
 }
+
+
+/* MAPPE */
+
+.leaflet-container {
+    height: 100%;
+}

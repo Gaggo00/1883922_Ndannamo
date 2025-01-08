@@ -64,7 +64,7 @@ export default function InternalMenu() {
                     onMouseEnter={() => handleMouseEnter(option.id)}
                     onMouseLeave={handleMouseLeave}
                 >
-                    <i class={option.icon}/>
+                    <i className={option.icon}/>
                     {/*<img src={option.icon} alt={`${option.id}-icon`} />*/}
                     {(selectedOption === option.id || hoveredOption === option.id) && <p>{option.label}</p>}
                 </div>
