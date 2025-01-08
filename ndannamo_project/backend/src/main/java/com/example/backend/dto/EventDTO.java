@@ -24,6 +24,7 @@ public class EventDTO {
 
     // Per tutti e tre
     private Long id;
+    private Long tripId;
     private String place;
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;

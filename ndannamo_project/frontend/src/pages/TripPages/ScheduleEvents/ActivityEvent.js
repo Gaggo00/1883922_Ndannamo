@@ -4,6 +4,14 @@ import "./ScheduleEvents.css";
 
 export default function ActivityEvent({activity, selectEvent}) {
 
+    const INFO_MAX_CHARACTERS_SHOWN = 60;
+
+    var info = activity.info;
+    info = info.substring(0, INFO_MAX_CHARACTERS_SHOWN);
+    if (activity.info.length > INFO_MAX_CHARACTERS_SHOWN) {
+        info += "...";
+    }
+
     return (
         <div className="event-block activity" onClick={() => {selectEvent(activity)}}>
             <div className="event-block-left">
@@ -19,7 +27,7 @@ export default function ActivityEvent({activity, selectEvent}) {
                     <i className="bi bi-geo-alt icon-with-margin"></i>{activity.address}
                 </div>
                 <div className="info spaced">
-                    {activity.info}
+                    {info}
                 </div>
             </div>
         </div>

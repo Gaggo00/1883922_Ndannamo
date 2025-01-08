@@ -26,6 +26,30 @@ class ScheduleService {
     // per modificare campi di activity/travel/night
 
 
+
+
+
+    /****************** Funzioni per modificare i vari campi degli eventi ******************/
+
+    // Cambia info activity
+    static async changeActivityInfo(token, tripId, activityId, value) {
+        try{
+            const response = await axios.put(
+                `${ScheduleService.BASE_URL}/${tripId}/schedule/activity/${activityId}/info`,
+                { value },
+                {
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                        "Content-Type": "application/json"
+                    }
+                });
+            console.log(response);
+            return response.data;
+        }
+        catch(err) {
+            throw (err);
+        }
+    }
 }
 
 export default ScheduleService;

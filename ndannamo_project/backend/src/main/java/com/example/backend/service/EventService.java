@@ -146,6 +146,24 @@ public class EventService {
     }
 
 
+    // Cambia info activity
+    public void changeActivityInfo(Trip trip, long activityId, String newInfo) {
+        // Trova l'activity
+        Activity activity = getActivityById(activityId);
+
+        // Controlla che l'activity faccia parte della trip
+        if (activity.getTrip() != trip) {
+            throw new ResourceNotFoundException("Activity not found!");
+        }
+
+        // Cambia info
+        activity.setInfo(newInfo);
+
+        // Aggiorna l'activity
+        activityRepository.save(activity);
+    }
+
+
 
     /*************** TRAVEL ***************/
 

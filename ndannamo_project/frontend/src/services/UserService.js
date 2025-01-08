@@ -42,7 +42,8 @@ export default class UserService {
                 `${UserService.BASE_URL}/password`,
                 {currentPassword, newPassword},
                 {
-                    headers: {Authorization: `Bearer ${token}`,
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
                         "Content-Type": "application/json"}
                 });
             console.log(response);
@@ -60,7 +61,8 @@ export default class UserService {
                 `${UserService.BASE_URL}/nickname`,
                 { value },
                 {
-                    headers: {Authorization: `Bearer ${token}`,
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
                         "Content-Type": "application/json"}
                 });
             console.log(response);

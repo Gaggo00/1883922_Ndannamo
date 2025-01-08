@@ -401,4 +401,33 @@ public class TripController {
                 .body(ex.getMessage());
         }
     }
+
+
+
+    
+    
+    
+    /****************************************** CAMBIAMENTO DATI EVENTI ******************************************/
+
+    // Cambia info activity
+    @PutMapping(value={"/{id}/schedule/activity/{activity_id}/info", "/{id}/schedule/activity/{activity_id}/info/"})
+    public ResponseEntity<?> changeActivityInfo(@PathVariable Long id, @PathVariable Long activity_id, @Valid @RequestBody GenericType<String> newTitle) {
+
+        try {
+            // prendi l'utente dal token
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String email = authentication.getName();
+
+            // cambia le info
+            tripService.changeActivityInfo(email, id, activity_id, newTitle.getValue());
+            return ResponseEntity.ok().body("Activity info changed");
+        }
+        catch (Exception ex) {
+            return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(ex.getMessage());
+        }
+    }
+
+
 }

@@ -16,21 +16,23 @@ import './InternalMenu.css'
 import './TripSchedule.css'
 
 class Event {
-    constructor(id, place, date) {
+    constructor(id, tripId, place, date) {
         this.id = id;
+        this.tripId = tripId;
         this.place = place;
+        console.log(place);
         this.date = date;
     }
 }
 class Night extends Event {
-    constructor(id, place, date, overnightStay) {
-        super(id, place, date);
+    constructor(id, tripId, place, date, overnightStay) {
+        super(id, tripId, place, date);
         this.overnightStay = overnightStay;
     }
 }
 class ActivityAndTravel extends Event {
-    constructor(id, place, date, address, startTime, endTime, info) {
-        super(id, place, date);
+    constructor(id, tripId, place, date, address, startTime, endTime, info) {
+        super(id, tripId, place, date);
         this.address = address;
         this.startTime = startTime;
         this.endTime = endTime;
@@ -38,15 +40,15 @@ class ActivityAndTravel extends Event {
     }
 }
 class Activity extends ActivityAndTravel {
-    constructor(id, place, date, address, startTime, endTime, info, name) {
-        super(id, place, date, address, startTime, endTime, info);
+    constructor(id, tripId, place, date, address, startTime, endTime, info, name) {
+        super(id, tripId, place, date, address, startTime, endTime, info);
         this.name = name;
 
     }
 }
 class Travel extends ActivityAndTravel {
-    constructor(id, place, date, address, startTime, endTime, info, destination, arrivalDate) {
-        super(id, place, date, address, startTime, endTime, info);
+    constructor(id, tripId, place, date, address, startTime, endTime, info, destination, arrivalDate) {
+        super(id, tripId, place, date, address, startTime, endTime, info);
         this.destination = destination;
         this.arrivalDate = arrivalDate;
     }
@@ -111,6 +113,7 @@ export default function TripSchedule() {
         {
             type: "",
             id: null,
+            tripId: null,
             place: "",
             date: "",
             destination: "",
@@ -206,17 +209,17 @@ export default function TripSchedule() {
             const index = DateUtilities.daysBetween(startDate, event.date);
 
             if (event.type === NIGHT) {
-                const night = new Night(event.id, event.place, event.date, event.overnightStay);     // DA SISTEMARE overnightStay forse
+                const night = new Night(event.id, event.tripId, event.place, event.date, event.overnightStay);     // DA SISTEMARE overnightStay forse
                 days[index].night = night;
             }
             else if (event.type === ACTIVITY) {
-                const activity = new Activity(event.id, event.place, event.date, event.address,
+                const activity = new Activity(event.id, event.tripId, event.place, event.date, event.address,
                     event.startTime, event.endTime, event.info, event.name
                 );
                 days[index].activitiesAndTravels.push(activity);
             }
             else if (event.type === TRAVEL) {
-                const travel = new Travel(event.id, event.place, event.date, event.address,
+                const travel = new Travel(event.id, event.tripId, event.place, event.date, event.address,
                     event.startTime, event.endTime, event.info, event.destination, event.arrivalDate
                 );
                 days[index].activitiesAndTravels.push(travel);

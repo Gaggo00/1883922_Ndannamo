@@ -530,6 +530,26 @@ public class TripService {
 
 
 
+
+
+    /********************** FUNZIONI PER CAMBIARE I DATI DEGLI EVENTI **********************/
+
+    // Cambia info activity
+    public void changeActivityInfo(String email, long tripId, long activityId, String newInfo) {
+        Trip trip = getTripById(tripId);
+
+        // Controllo che l'utente loggato faccia parte della trip
+        if (!userIsAParticipant(email, trip)) {
+            throw new ResourceNotFoundException("Trip not found");
+        }
+
+        // Cambio le info
+        eventService.changeActivityInfo(trip, activityId, newInfo);
+    }
+
+
+
+
     /****************** FUNZIONI PER CONTROLLARE I PERMESSI DEGLI UTENTI ******************/
 
     private boolean userIsAParticipant(User user, Trip trip) {

@@ -18,8 +18,8 @@ export default function ScheduleDay({day, selectEvent, openCreateEventForm}) {
         <div className="day">
             <div className="day-date">{day.date}</div>
             <div className="hidden-button-parent">
-                <button className="hidden-button" onClick={()=>{createActivity(day.night.date, "08:00")}}><i className="bi bi-plus-lg h4"></i></button>
-                <button className="hidden-button" onClick={()=>{createTravel(day.night.date, "08:00")}}><i className="bi bi-airplane h4"></i></button>
+                <button className="hidden-button" onClick={()=>{createActivity(day.night.date, "05:00")}}><i className="bi bi-plus-lg h4"></i></button>
+                <button className="hidden-button" onClick={()=>{createTravel(day.night.date, "05:00")}}><i className="bi bi-airplane h4"></i></button>
             </div>
             {day.activitiesAndTravels.map((event, index) => {
                     if (event.constructor.name === "Activity") {

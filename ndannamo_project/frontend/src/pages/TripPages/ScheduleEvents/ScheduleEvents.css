@@ -64,6 +64,7 @@
 }
 
 .event-block .event-block-right {
+    width: 70%;
     border-top-right-radius: 2vw;
     border-bottom-right-radius: 2vw;
     margin-left: 1vw;
@@ -87,17 +88,21 @@
     font-weight: 600;
 }
 
-.event-block .event-block-right .address{
-    color: rgb(29, 29, 29);
+.event-block .event-block-right .address {
+    color: rgb(0, 0, 0);
     font-style: italic;
 }
 
-.event-block .event-block-right .info{
+.event-block .event-block-right .info {
     font-size: 0.9vw;
+    color: rgba(0, 0, 0, 0.786);
 }
 
-.event-block .event-block-right .spaced{
+.event-block .event-block-right .spaced {
+    max-width: 90%;
     margin: 0.3vh 0;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
 }
 
 
@@ -128,8 +133,4 @@
 }
 
 
-/* MAPPE */
 
-.leaflet-container {
-    height: 100%;
-}

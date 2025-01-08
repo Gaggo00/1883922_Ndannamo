@@ -107,10 +107,46 @@
     padding: 2vh 1vw;
     margin-top: 2vh;
     font-size: 0.9vw;
+    overflow-wrap: break-word;
 }
 
 #event-open .attachments {
     width: 90%;
     text-align: left;
     margin-top: 2vh;
+}
+
+
+
+
+/* Per modificare i campi di un evento */
+
+.edit-info-button {
+    position: relative;
+    float: right;
+    background: none;
+    border: none;
+}
+.edit-info-button i {
+    color: #000000;
+}
+.edit-info-input {
+    width: 96%;
+    height: 96%;
+    overflow-y: auto;
+    display: inline-block;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    border: 1px solid;
+    padding: 2px;
+}
+.info-content {
+    width: 96%;
+}
+
+
+/* MAPPE */
+
+.leaflet-container {
+    height: 100%;
 }
