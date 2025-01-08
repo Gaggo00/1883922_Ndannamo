@@ -202,8 +202,8 @@ public class TripController {
             String email = authentication.getName();
 
             // crea activity
-            String res = tripService.createActivity(email, id, activityCreationRequest);
-            return ResponseEntity.ok().body(res);
+            Long activityId = tripService.createActivity(email, id, activityCreationRequest);
+            return ResponseEntity.ok().body(activityId);
         }
         catch (Exception ex) {
             return ResponseEntity
@@ -242,8 +242,8 @@ public class TripController {
             String email = authentication.getName();
 
             // crea travel
-            String res = tripService.createTravel(email, id, travelCreationRequest);
-            return ResponseEntity.ok().body(res);
+            Long travelId = tripService.createTravel(email, id, travelCreationRequest);
+            return ResponseEntity.ok().body(travelId);
         }
         catch (Exception ex) {
             return ResponseEntity

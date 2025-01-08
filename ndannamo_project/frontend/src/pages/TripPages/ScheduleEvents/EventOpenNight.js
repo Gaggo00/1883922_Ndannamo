@@ -5,7 +5,7 @@ import DateUtilities from '../../../utils/DateUtilities';
 
 import '../TripSchedule.css'
 
-export default function EventOpenNight({night, latitude, longitude}) {
+export default function EventOpenNight({night, latitude, longitude, reloadSchedule}) {
 
     return (
         <div id="event-open">

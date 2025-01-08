@@ -8,11 +8,38 @@ import ScheduleService from '../../../services/ScheduleService';
 
 import '../TripSchedule.css'
 
-export default function EventOpenActivity({activity, latitude, longitude}) {
+export default function EventOpenActivity({activity, latitude, longitude, reloadSchedule}) {
 
     const INFO_MAX_CHARACTERS = 500;
 
     const navigate = useNavigate();
+
+
+    // Per eliminare l'activity
+    const deleteActivity = async () => {
+        // disabilita pulsante per eliminare, altrimenti uno puo' ri-cliccarlo mentre gia' sta eliminando
+        document.getElementById("delete-button").disabled = true;
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                navigate("/login");
+            }
+            
+            const response = await ScheduleService.deleteActivity(token, activity.tripId, activity.id);
+
+            if (response) {
+                // Ricarica la schedule a sinistra
+                reloadSchedule(null, true);
+            } else {
+                console.error('Invalid response data');
+                document.getElementById("delete-button").disabled = false;  // se non sei riuscito a eliminare l'attivita' ri-abilita il pulsante
+            }
+        } catch (error) {
+            console.error('Error deleting activity:', error);
+            document.getElementById("delete-button").disabled = false;  // se non sei riuscito a eliminare l'attivita' ri-abilita il pulsante
+        }
+    }
+
 
     // Per modificare info
     const [editingInfo, setEditingInfo] = useState(false);
@@ -31,12 +58,15 @@ export default function EventOpenActivity({activity, latitude, longitude}) {
             navigate("/login");
         }
 
-        // Chiamata al servizio per ottenere le informazioni del profilo
+        // cambia le info nel backend
         ScheduleService.changeActivityInfo(token, activity.tripId, activity.id, newInfo);
 
         // aggiorna in locale
         activity.info = newInfo;
         setEditingInfo(false);
+
+        // ricarica la schedule a sinistra
+        reloadSchedule();
     }
 
 
@@ -68,6 +98,7 @@ export default function EventOpenActivity({activity, latitude, longitude}) {
     return (
         <div id="event-open">
             <div className='top-row'>
+                <button onClick={deleteActivity} id="delete-button" className='float-right no-background no-border delete-button'><i className="bi bi-trash3-fill h5"/></button>
                 <div className='date'>
                     {DateUtilities.yyyymmdd_To_WEEKDAYddMONTH(activity.date)}
                 </div>
@@ -100,14 +131,16 @@ export default function EventOpenActivity({activity, latitude, longitude}) {
                     </div>
                 </div>
                 <div className='event-info-other'>
-                    {!editingInfo && <button onClick={() => {setNewInfo(activity.info);setEditingInfo(true);}} className='edit-info-button'><i className="bi bi-pencil-fill"></i></button>}
+                    {!editingInfo && <button onClick={() =>
+                        {setNewInfo(activity.info);setEditingInfo(true);}} className='float-right no-background no-border'><i className="bi bi-pencil-fill"></i></button>
+                    }
                     {!editingInfo && <div className='info-content'>{activity.info}</div>}
                     {editingInfo && <textarea 
                                         className="edit-info-input"
                                         value={newInfo}
                                         onChange={(e) => {handleInputChange(e, true, INFO_MAX_CHARACTERS, setNewInfo);}}
                                         onKeyDown={(e) => {handleKeyDown(e, saveNewInfo);}}/>}
-                    {editingInfo && <button onClick={saveNewInfo} className='edit-info-button'><i className="bi bi-floppy-fill"></i></button>}
+                    {editingInfo && <button onClick={saveNewInfo} className='float-right no-background no-border'><i className="bi bi-floppy-fill"></i></button>}
                 </div>
                 <div className='attachments'>
                     <div className='label'>Attachments</div>

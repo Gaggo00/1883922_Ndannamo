@@ -257,7 +257,7 @@ public class TripService {
     }
 
     // Crea una nuova activity
-    public String createActivity(String email, long tripId, ActivityCreationRequest activityCreationRequest) {
+    public Long createActivity(String email, long tripId, ActivityCreationRequest activityCreationRequest) {
         Trip trip = getTripById(tripId);
 
         // Controllo che l'utente loggato faccia parte della trip
@@ -276,7 +276,7 @@ public class TripService {
         // Salvo la trip
         tripRepository.save(trip);
 
-        return ("Activity created");
+        return (activity.getId());
     }
 
     // Elimina una activity
@@ -291,14 +291,11 @@ public class TripService {
         // Elimina activity
         eventService.deleteActivity(trip, activityId);
 
-        // Aggiorno la trip
-        tripRepository.save(trip);
-
         return ("Activity removed");
     }
 
     // Crea un nuovo travel
-    public String createTravel(String email, long tripId, TravelCreationRequest travelCreationRequest) {
+    public Long createTravel(String email, long tripId, TravelCreationRequest travelCreationRequest) {
         Trip trip = getTripById(tripId);
 
         // Controllo che l'utente loggato faccia parte della trip
@@ -317,7 +314,7 @@ public class TripService {
         // Salvo la trip
         tripRepository.save(trip);
 
-        return ("Travel created");
+        return (travel.getId());
     }
 
     // Elimina un travel
@@ -331,9 +328,6 @@ public class TripService {
 
         // Elimina il travel
         eventService.deleteTravel(trip, travelId);
-
-        // Aggiorno la trip
-        tripRepository.save(trip);
 
         return ("Travel removed");
     }

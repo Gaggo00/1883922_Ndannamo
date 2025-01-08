@@ -118,15 +118,26 @@
 
 
 
+/* Pulsante per eliminare un evento */
+.delete-button {
+    top: 2.8vh;
+    color: rgb(182, 3, 3);
+}
+
 
 /* Per modificare i campi di un evento */
 
-.edit-info-button {
+button.float-right {
     position: relative;
     float: right;
+}
+button.no-background {
     background: none;
+}
+button.no-border {
     border: none;
 }
+
 .edit-info-button i {
     color: #000000;
 }

@@ -134,11 +134,6 @@ public class EventService {
             throw new ResourceNotFoundException("Activity not found!");
         }
 
-        // Rimuovi l'activity dalla schedule
-        List<Event> schedule = trip.getSchedule();
-        schedule.remove(activity);
-        trip.setSchedule(schedule);
-
         // Elimina l'activity
         activityRepository.delete(activity);
 
@@ -196,11 +191,6 @@ public class EventService {
         if (travel.getTrip() != trip) {
             throw new ResourceNotFoundException("Travel not found!");
         }
-
-        // Rimuovi il travel dalla schedule
-        List<Event> schedule = trip.getSchedule();
-        schedule.remove(travel);
-        trip.setSchedule(schedule);
 
         // Elimina il travel
         travelRepository.delete(travel);
