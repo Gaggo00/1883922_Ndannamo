@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import TCListItem, {TCListHeader} from "../components/Tricount/TriListItem";
 import TCForm from "../components/Tricount/TriForm"
 import "../styles/Main.css";
@@ -6,7 +6,21 @@ import "../styles/Main.css";
 function Tricount() {
 
     const [activeText, setActiveText] = useState("list");
-    const [form, setForm] = useState(<TCForm/>);
+    const [formVisibility, setFormVisibility] = useState(true);
+    const [formData, setFormData] = useState({
+        title: "",
+        amount: 0,
+        date: "",
+        users: [],
+        paidBy: "",
+        splitValue: 0,
+        split: [],
+        filled: false,
+        status: 0,
+        onClose: () => setFormVisibility(false),
+    });
+    const itemsRefs = useRef([]);
+    const [selected, setSelected] = useState(-1);
 
     function retrieveTricounts() {
         return [
@@ -22,19 +36,45 @@ function Tricount() {
     const data = retrieveTricounts();
 
     const handleTricountSelection = (index) => {
-        const newForm = <TCForm
-            title={data[index].name}
-            amount={data[index].total}
-            date={data[index].date}
-            users={["Luca", "Damiana"]}
-            paidBy={data[index].by}
-            splitValue={data[index].splitValue}
-            split={data[index].split}
-            filled={true}
-        />
-        
-        setForm(newForm);
+        setFormData({
+            title: data[index].name,
+            amount: data[index].total,
+            date: data[index].date,
+            users: ["Luca", "Damiana"],
+            paidBy: data[index].by,
+            splitValue: data[index].splitValue,
+            split: data[index].split,
+            filled: true,
+            status: 1,
+            onClose: () => setFormVisibility(false),
+        });
+        if (!formVisibility)
+            setFormVisibility(true);
+        if (selected != -1 && itemsRefs.current[selected])
+            itemsRefs.current[selected].setClicked(false);
+        setSelected(index);
     };
+
+    function addSale() {
+        if (formData.status == 1 || !formVisibility) {
+            setFormData({
+                title: "",
+                amount: 0,
+                date: "",
+                users: [],
+                paidBy: "",
+                splitValue: 0,
+                split: [],
+                filled: false,
+                status: 0,
+                onClose: () => setFormVisibility(false),
+            });
+            setFormVisibility(true);
+            if (selected != -1 && itemsRefs.current[selected])
+                itemsRefs.current[selected].setClicked(false);
+            setSelected(-1);
+        }
+    }
 
     return (
         <div className="main">
@@ -60,15 +100,16 @@ function Tricount() {
                                 expense={item.expense}
                                 date={item.date.toDateString()}
                                 onClick={()=>handleTricountSelection(index)}
+                                ref={(el) => (itemsRefs.current[index] = el)}
                             />
                         ))}
                     </div>
                     <div className="tc-button-container">
-                        <div className="tc-add-button">+ Add Spesa</div>
+                        <div className="tc-add-button" onClick={() => addSale()}>+ Add Spesa</div>
                     </div>
                 </div>
                 <div className="tc-right">
-                    {form}
+                    {formVisibility == true && <TCForm {...formData}/>}
                 </div>
             </div>
         </div>

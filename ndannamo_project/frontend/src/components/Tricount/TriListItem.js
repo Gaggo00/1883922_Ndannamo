@@ -1,4 +1,5 @@
 import "./Tricount.css"
+import { useState, forwardRef, useImperativeHandle} from "react";
 
 export function TCListHeader() {
     return (
@@ -12,9 +13,23 @@ export function TCListHeader() {
     )
 }
 
-function TCListItem({name, expense, total, date, by, onClick}) {
+const TCListItem = forwardRef(({name, expense, total, date, by, onClick}, ref) => {
+
+    const [clicked, setClicked] = useState(false);
+
+    function handleClick() {
+        setClicked(true);
+        onClick();
+    }
+
+
+    useImperativeHandle(ref, () => ({
+        setClicked: (value) => setClicked(value),
+    }));
+    
+
     return (
-        <div className="tc-item" onClick={onClick}>
+        <div className={!clicked ? "tc-item" : "tc-item tc-item-clicked"} onClick={handleClick}>
             <div className="tc-column tc-name">{name}</div>
             <div className="tc-column tc-expense">{expense}</div>
             <div className="tc-column tc-total">{total}</div>
@@ -22,6 +37,6 @@ function TCListItem({name, expense, total, date, by, onClick}) {
             <div className="tc-column tc-by">{by}</div>
         </div>
     )
-}
+})
 
 export default TCListItem

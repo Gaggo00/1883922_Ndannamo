@@ -23,7 +23,7 @@
 }
 
 .f-disabled {
-    border-radius: 18px;
+    background-color: rgb(231, 231, 231);
 }
 
 .f-pick {

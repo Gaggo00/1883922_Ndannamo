@@ -82,6 +82,10 @@
     cursor: pointer;
 }
 
+.tc-item-clicked {
+    background-color: rgb(200, 200, 200);
+}
+
 .tc-column {
     flex: 1;
     text-align: left;
@@ -141,4 +145,15 @@
 .tc-list-right {
     font-weight: bold;
     color: #333;
+}
+
+.tc-button-line {
+    display: flex;
+    justify-content: flex-end;
+    gap: 20px;
+    padding-right: 40px;
+}
+
+.tc-button {
+    cursor: pointer;
 }

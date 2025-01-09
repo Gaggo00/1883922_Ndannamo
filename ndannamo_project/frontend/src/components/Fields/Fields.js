@@ -10,6 +10,7 @@ export function DateField({
     name="",
     style={},
     titleStyle={},
+    disabled=false,
     ...rest
 }) {
 
@@ -17,9 +18,10 @@ export function DateField({
         <div className="field-container" style={style}>
             <div className="field-title" style={titleStyle}>{name}</div>
             <DatePicker
-                className='field-input'
+                className={disabled ? 'field-input f-disabled' : 'field-input'}
                 selected={value}
                 onChange={(date) => setValue(date)}
+                disabled={disabled}
                 {...rest}
             />
         </div>
@@ -33,12 +35,14 @@ export function PickField({
     options=[],
     style={},
     titleStyle={},
+    disabled=false,
 }) {
 
     const [flag, setFlag] = useState(0);
 
     const handleClick = () => {
-        setFlag(1);
+        if (!disabled)
+            setFlag(1);
     }
 
     const handleSelect = (suggestion) => {
@@ -49,7 +53,7 @@ export function PickField({
     return (
         <div className="field-container" style={style}>
             <div className="field-title" style={titleStyle}>{name}</div>
-            <div className="field-input f-pick" onClick={() => handleClick()}>
+            <div className={disabled ? "field-input f-pick f-disabled" : "field-input f-pick"} onClick={() => handleClick()}>
                 {value}
                 <BsChevronDown/>
             </div>
@@ -139,21 +143,22 @@ export function TextField({
     name="",
     type="text",
     placeholder=name,
-    filled=false,
     titleStyle={},
-    formStyle={}
+    formStyle={},
+    disabled=false,
 }) {
 
     return (
         <div className="field-container">
             <div className="field-title" style={titleStyle}>{name}</div>
             <input
-                className={filled ? "field-input f-filled" : "field-input"}
+                className={disabled ? "field-input f-disabled" : "field-input"}
                 type={type}
                 style={formStyle}
                 placeholder={placeholder}
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
+                disabled={disabled}
             />
         </div>
     )

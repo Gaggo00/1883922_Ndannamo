@@ -1,6 +1,8 @@
 import TextField, { DateField, PickedField, PickField } from "../Fields/Fields"
 import "./Tricount.css"
 import {state, useState, useEffect} from 'react'
+import { BsXLg } from "react-icons/bs";
+import { GoPencil } from "react-icons/go";
 
 /***
  * split ha dei booleani
@@ -15,7 +17,10 @@ function TCForm({
     split=users.map(() => false),
     splitMethod="In modo equo",
     splitValue=users.map(() => 0),
-    filled=false}) {
+    status=0,
+    filled=false,
+    onClose= () => {}},
+) {
 
     const [sTitle, setTitle] = useState(title);
     const [sAmount, setAmount] = useState(amount);
@@ -24,6 +29,7 @@ function TCForm({
     const [sSplitMethod, setSplitMethod] = useState(splitMethod);
     const [sSplitValue, setSplitValue] = useState(splitValue);
     const [sSplit, setSplit] = useState(split);
+    const [sStatus, setStatus] = useState(status); // 0: new, 1: filled, 2: modify
 
     useEffect(() => {
         setTitle(title);
@@ -31,7 +37,8 @@ function TCForm({
         setPaidBy(paidBy);
         setSplit(split);
         setSplitValue(splitValue);
-    }, [title, amount, paidBy, split, splitValue]);
+        setStatus(status);
+    }, [title, amount, paidBy, split, splitValue, status]);
 
     function doSplit(value) {
         if (sSplitMethod === "In modo equo") {
@@ -48,8 +55,9 @@ function TCForm({
     }
 
     function handleCheck(index) {
-        sSplit[index] = !sSplit[index];
-        setSplit(sSplit);
+        const updatedSplit = [...sSplit];
+        updatedSplit[index] = !updatedSplit[index];
+        setSplit(updatedSplit);
         doSplit(sAmount);
     }
 
@@ -58,25 +66,43 @@ function TCForm({
         doSplit(value);
     }
 
+    function close() {
+        onClose();
+    }
+
+    function modify() {
+        setStatus(2);
+    }
+
     return (
         <div className="tc-form">
-            <TextField value={sTitle} setValue={setTitle} name="Title" filled={filled}/>
+            <div className="tc-button-line">
+                {sStatus > 0 && <GoPencil className="tc-button" onClick={() => modify()} />}
+                <BsXLg className="tc-button" onClick={() => close()}/>
+            </div>
+            <TextField value={sTitle} setValue={setTitle} name="Title" disabled={sStatus == 1}/>
             <div>
-                <TextField value={sAmount} setValue={changeAmount} name="Amount" type="number"/>
+                <TextField value={sAmount} setValue={changeAmount} name="Amount" type="number" disabled={sStatus == 1}/>
             </div>
             <div className="tc-form-line">
-                <PickField value={sPaidBy} setValue={setPaidBy} name="Paid By" options={users} style={{flex: "3"}}/>
-                <DateField value={sDate} setValue={setDate} name="When" style={{flex: "2"}}/>
+                <PickField value={sPaidBy} setValue={setPaidBy} name="Paid By" options={users} style={{flex: "3"}} disabled={sStatus == 1}/>
+                <DateField value={sDate} setValue={setDate} name="When" style={{flex: "2"}} disabled={sStatus == 1}/>
             </div>
             <div className="tc-form-line">
                 <div>Split</div>
-                <PickField value={sSplitMethod} setValue={setSplitMethod} options={["In modo equo"]}/>
+                <PickField value={sSplitMethod} setValue={setSplitMethod} options={["In modo equo"]} disabled={sStatus == 1}/>
             </div>
             <div className="list">
                 {users.map((user, index) => (
                     <div className="tc-list-item" key={index}>
                         <div className="tc-list-left">
-                            <input type="checkbox" checked={sSplit[index]} id={`item-${index}`} onChange={() => handleCheck(index)}/>
+                            <input
+                                type="checkbox"
+                                checked={sSplit[index]}
+                                id={`item-${index}`}
+                                onChange={() => handleCheck(index)}
+                                disabled={sStatus == 1}
+                            />
                             <label htmlFor={`item-${index}`}>{user}</label>
                         </div>
                         <div className="tc-list-right">{sSplitValue[index]}</div>
@@ -84,7 +110,10 @@ function TCForm({
                 ))}
             </div>
             <div className="tc-button-container">
-                <div className="tc-add-button">Send</div>
+                {
+                    sStatus != 1 &&
+                    <div className="tc-add-button">{sStatus == 0 ? "Send" : "Save"}</div>
+                }
             </div>
         </div>
     )
