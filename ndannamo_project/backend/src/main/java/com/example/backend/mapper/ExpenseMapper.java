@@ -19,13 +19,14 @@ public interface ExpenseMapper {
 
     // Da Expense a ExpenseDTO
     @Mapping(target = "tripId", source = "trip.id")         // Mappa solo l'ID della trip
-    //@Mapping(target = "paidById", source = "paidBy.id")     // Mappa solo l'ID dell'user che ha pagato
-    @Mapping(target = "amountPerUser", source = "amountPerUser", qualifiedByName = "userMapToAmountUserDTO")
+    //@Mapping(target = "paidBy", source = "paidBy.id")     // Mappa solo l'ID dell'user che ha pagato
+    //@Mapping(target = "paidByNickname", source = "paidBy.nickname")
+    //@Mapping(target = "amountPerUser", source = "amountPerUser", qualifiedByName = "userMapToAmountUserDTO")
     ExpenseDTO toDTO(Expense expense);
 
     // Da ExpenseDTO a Expense
     @Mapping(target = "trip.id", source = "tripId")             // Mappa l'ID della trip verso l'entità Trip
-    //@Mapping(target = "paidBy.id", source = "paidById")             // Mappa l'ID dell'utente pagante verso l'entità User
+    //@Mapping(target = "paidBy.id", source = "paidBy")             // Mappa l'ID dell'utente pagante verso l'entità User
     @Mapping(target = "amountPerUser", ignore = true)            // Ignora
     Expense toEntity(ExpenseDTO expenseDTO);
 
@@ -33,17 +34,25 @@ public interface ExpenseMapper {
     
     // questa serviva quando amountPerUser era una Map<User,Double> dentro Expense
     @Named("userMapToAmountUserDTO") 
-    public static List<AmountUserDTO> userListToStringList(Map<Long, Double> amountUser) { 
+    public static List<AmountUserDTO> userListToStringList(Map<User, Double> amountUser) { 
         
         List<AmountUserDTO> res = new ArrayList<AmountUserDTO>();
         
         // Converto gli user in AmountUserDTO
-        amountUser.forEach( (userId, amount) -> {
-            res.add(new AmountUserDTO(userId, amount));
+        amountUser.forEach( (user, amount) -> {
+            res.add(new AmountUserDTO(user.getId(), user.getNickname(), amount));
         });
 
         return res;
     }
+
+    /*
+    private String getUserNickname(Long userId) {
+        try {
+            return UserService.getUserDTOById(userId).getNickname();
+        }
+    }
+    */
     
 }
 

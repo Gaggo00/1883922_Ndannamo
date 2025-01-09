@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams,useLocation } from 'react-router-dom';
-import TripService from "../../services/TripService";
+import React from 'react';
+import {useLocation } from 'react-router-dom';
 import InternalMenu from "./InternalMenu";
 import "./TripSummary.css";
 import edit_icon from "../../static/svg/icons/edit_icon.svg";
@@ -14,7 +13,6 @@ import arrow_down from "../../static/svg/icons/arrow-down2.svg";
 import DateUtilities from "../../utils/DateUtilities";
 
 export default function TripSummary() {
-    const { id } = useParams();
     const location = useLocation();
     const tripInfo = location.state?.trip; // Recupera il tripInfo dallo stato
 

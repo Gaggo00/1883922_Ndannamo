@@ -1,0 +1,163 @@
+.trip-details-schedule {
+    display: flex;
+    flex-direction: row;
+}
+
+#schedule {
+    width: 30%;
+    height: 100%;
+    border-right: 1px solid gray;
+    display: flex;
+    flex-direction: column;
+}
+
+#event-info {
+    width: 70%;
+    height: 100%;
+}
+
+#calendar {
+    width: 100%;
+    height: 10vh;
+    background-color: rgb(201, 145, 145);
+    margin: 1vh 0;
+}
+
+#events {
+    overflow-y: auto;
+}
+
+
+
+/* Sezione a destra */
+
+#event-open {
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 3vw;
+}
+
+#event-open .date {
+    font-size: 1.4vw;
+    margin-top: 2vh;
+    color: rgb(100, 100, 100);
+    font-weight: 550;
+}
+
+#event-open .title {
+    font-size: 2vw;
+    font-weight: 650;
+    margin-bottom: 2vh;
+}
+
+#event-open .top-row {
+    width: 100%;
+    text-align: left;
+}
+
+#event-open .map-banner {
+    width: 90%;
+    height: 20vh;
+    border: 1px solid black;
+}
+
+#event-open .event-info {
+    margin-top: 2vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#event-open .event-info-top-row {
+    width: 90%;
+    /*
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    */
+    display: grid;
+    grid-template-columns: 18% auto auto auto;
+    justify-content: space-between;
+    padding: 2vh 0;
+}
+
+#event-open .event-info-top-row .row-element {
+    text-align: left;
+}
+
+#event-open .label {
+    font-size: 1.1vw;
+    font-weight: 600;
+    color: rgb(100, 100, 100);
+}
+
+#event-open .event-info-top-row .value {
+    font-size: 1.1vw;
+}
+
+#event-open .event-info-other {
+    background-color: rgb(224, 224, 224);
+    width: 90%;
+    min-height: 15vh;
+    border-radius: 1vw;
+    text-align: left;
+    padding: 2vh 1vw;
+    margin-top: 2vh;
+    font-size: 0.9vw;
+    overflow-wrap: break-word;
+}
+
+#event-open .attachments {
+    width: 90%;
+    text-align: left;
+    margin-top: 2vh;
+}
+
+
+
+/* Pulsante per eliminare un evento */
+.delete-button {
+    top: 2.8vh;
+    color: rgb(182, 3, 3);
+}
+
+
+/* Per modificare i campi di un evento */
+
+button.float-right {
+    position: relative;
+    float: right;
+}
+button.no-background {
+    background: none;
+}
+button.no-border {
+    border: none;
+}
+
+.edit-info-button i {
+    color: #000000;
+}
+.edit-info-input {
+    width: 96%;
+    height: 96%;
+    overflow-y: auto;
+    display: inline-block;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    border: 1px solid;
+    padding: 2px;
+}
+.info-content {
+    width: 96%;
+}
+
+
+/* MAPPE */
+
+.leaflet-container {
+    height: 100%;
+}

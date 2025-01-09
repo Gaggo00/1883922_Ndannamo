@@ -7,7 +7,8 @@ import {useAuth} from "../auth/AuthContext";
 import ondaVerde from "../static/svg/onda_sopra_verde.svg"
 import ondaArancione from "../static/svg/onda_sotto_arancione.svg"
 
-function Home() {
+
+export default function Home() {
     const {isAuthenticated, logout} = useAuth();
     const navigate = useNavigate();
 
@@ -18,6 +19,27 @@ function Home() {
             navigate('/login');
         }
     };
+
+
+    // Controlla se il token e' scaduto e in caso eliminalo
+    if (isAuthenticated) {
+        const expiration = localStorage.getItem('token-expiration');
+
+        // Se non c'e' la data di scadenza, fai il logout
+        if (!expiration) {
+            logout();
+        }
+        else {
+            var expirationDate = Date.parse(expiration);
+
+            // Se expirationDate e' minore di "now", significa che e' gia' passata, quindi il token e' scaduto
+            if (expirationDate < Date.now()) {
+                // Fai il logout (che rimuove automaticamente il token)
+                logout();
+            }
+        }
+    }
+
 
     return (
         <div className="page">
@@ -36,8 +58,5 @@ function Home() {
             <img id="bottom" src={ondaArancione}/>
         </div>
 
-    )
-        ;
+    );
 }
-
-export default Home;

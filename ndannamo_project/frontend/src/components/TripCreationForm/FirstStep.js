@@ -37,7 +37,7 @@ const FirstStep = ({ nextStep, handleChange, values }) => {
                 </div>
             </div>
             <div className="auto-flex2">
-                <button id="previous" disabled="true">Previous</button>
+                <button id="previous" disabled={true}>Previous</button>
                 <button id="next" onClick={handleNext}>Next</button>
             </div>
         </div>

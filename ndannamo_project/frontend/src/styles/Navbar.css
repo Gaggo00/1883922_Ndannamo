@@ -23,7 +23,7 @@ body, html {
     display: inline-block;
     color:#004b3f;
     margin-right: 3%;
-    font-size: 15px;
+    font-size: 0.8vw;
 }
 .center{
     display:flex;
@@ -45,25 +45,17 @@ body, html {
     font-weight: bold;
 }
 .navbar #scritta-logo{
-    background-image: url("../static/scritta logo.png");
-    background-repeat: no-repeat;
-    background-size: cover;
-    height: 31px;
-    width: 106px;
-    margin-left: 11px;
-    margin-top:8px;
+    width: 5vw;
+    margin-left: 0.8vw;
+    margin-top: 1vh;
 }
 .navbar .logo {
     display: flex;
     align-items: center;
 }
 .navbar #valigia-logo{
-    background-image: url("../static/valigia logo.png");
-    background-repeat: no-repeat;
-    background-size: cover;
-    height: 40px;
-    width: 52px;
-    margin-left: 38px;
+    width: 3vw;
+    margin-left: 2vw;
 }
 
 #title{

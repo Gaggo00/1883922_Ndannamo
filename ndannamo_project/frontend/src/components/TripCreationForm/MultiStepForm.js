@@ -41,10 +41,10 @@ const MultiStepForm = () => {
                 return;
             }
 
-            const formattedStartDate = DateUtilities.date_To_yyyymmdd(formData.startDate);  // questo e' il formato che vuole il backend
-            const formattedEndDate = DateUtilities.date_To_yyyymmdd(formData.endDate);
-            //const formattedStartDate = formData.startDate.split('T')[0];
-            //const formattedEndDate = formData.endDate.split('T')[0];
+            //const formattedStartDate = DateUtilities.date_To_yyyymmdd(formData.startDate);  // questo e' il formato che vuole il backend
+            //const formattedEndDate = DateUtilities.date_To_yyyymmdd(formData.endDate);
+            const formattedStartDate = formData.startDate.split('T')[0];
+            const formattedEndDate = formData.endDate.split('T')[0];
 
             const response = await TripService.create(
                 token,
