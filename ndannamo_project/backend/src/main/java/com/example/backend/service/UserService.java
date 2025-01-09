@@ -26,6 +26,12 @@ public class UserService {
         this.userMapper = userMapper;
     }
 
+    public UserDTO getUserDTOById(Long id) {
+        User user = getUserById(id);
+        UserDTO userDTO = userMapper.toDTO(user);
+        return userDTO;
+    }
+
     public UserDTO registerUser(User user) {
         if(userRepository.findByEmail(user.getEmail()).isPresent()) {
             throw new IllegalStateException("Email already taken");
@@ -36,7 +42,7 @@ public class UserService {
     }
 
     public UserDTO getUserDTOByEmail(String email) {
-        User user = userRepository.findByEmail(email).orElseThrow(()-> new ResourceNotFoundException("User not found!"));
+        User user = getUserByEmail(email);
         UserDTO userDTO = userMapper.toDTO(user);
         return userDTO;
     }

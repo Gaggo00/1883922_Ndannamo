@@ -1,4 +1,4 @@
-import TextField, { DateField, PickedField, PickField } from "../Fields/Fields"
+import TextField, { DateField, PickedField, PickField } from "../../../components/Fields/Fields";
 import "./Tricount.css"
 import {state, useState, useEffect} from 'react'
 import { BsXLg } from "react-icons/bs";

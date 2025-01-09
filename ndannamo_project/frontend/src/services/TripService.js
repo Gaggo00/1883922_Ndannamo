@@ -90,6 +90,7 @@ class TripService{
             throw error; // L'errore sarà gestito all'esterno
         }
     }
+
 }
 
 export default TripService;

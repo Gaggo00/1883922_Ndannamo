@@ -21,6 +21,7 @@ public class ExpenseDTO {
 
     // id dell'utente che ha pagato
     private long paidBy;
+    private String paidByNickname;
 
     @NotBlank(message = "Name can't be empty")
     private String title;
@@ -28,6 +29,8 @@ public class ExpenseDTO {
     @NotBlank(message = "Date is required")
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
+
+    private double amount;
 
     private boolean splitEven;
     

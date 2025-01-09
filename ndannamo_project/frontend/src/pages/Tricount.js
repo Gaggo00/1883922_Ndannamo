@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
-import TCListItem, {TCListHeader} from "../components/Tricount/TriListItem";
-import TCForm from "../components/Tricount/TriForm"
+import TCListItem, {TCListHeader} from "./TripPages/Tricount/TriListItem";
+import TCForm from "./TripPages/Tricount/TriForm"
 import "../styles/Main.css";
 
 function Tricount() {
