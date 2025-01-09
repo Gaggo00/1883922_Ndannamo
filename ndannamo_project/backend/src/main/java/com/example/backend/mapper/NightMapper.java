@@ -18,6 +18,7 @@ public interface NightMapper {
     @Mapping(target = "name", ignore = true)
     @Mapping(target = "address", ignore = true)
     @Mapping(target = "info", ignore = true)
+    @Mapping(target = "tripId", source="trip.id")
     EventDTO toDTO(Night night);
 
     // Da EventDTO a Night

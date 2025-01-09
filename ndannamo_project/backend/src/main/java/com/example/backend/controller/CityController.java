@@ -83,4 +83,23 @@ public class CityController {
                 .body(ex.getMessage());
         }
     }
+
+    // Ottieni coordinate di una city dal nome e country
+    @GetMapping(value={"/coordinates", "/coordinates/"})
+    public ResponseEntity<?> getCoordinatesByNameAndCountry(@RequestParam("name") String name, @RequestParam("country") String country) {
+        try {
+            // ottieni cities
+            City city = cityService.getCityByNameAndCountry(name, country);
+            return ResponseEntity.ok().body(city.getLatitude() + "," + city.getLongitude());
+        }
+        catch (ResourceNotFoundException ex) {
+            // restituisci la stringa "-" -> necessario in caso un utente metta una destinazione non riconosciuta
+            return ResponseEntity.ok().body("");
+        }
+        catch (Exception ex) {
+            return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(ex.getMessage());
+        }
+    }
 }

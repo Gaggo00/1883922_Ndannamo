@@ -24,6 +24,7 @@ public class EventDTO {
 
     // Per tutti e tre
     private Long id;
+    private Long tripId;
     private String place;
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
@@ -42,10 +43,10 @@ public class EventDTO {
     private LocalTime startTime;        // sarebbe "startTime" in Activity, e "departureTime" in Travel
     @JsonFormat(pattern = "HH:mm")
     private LocalTime endTime;          // sarebbe "endTime" in Activity, e "arrivalTime" in Travel
+    private String info;
 
     // Per Activity
     private String name;
-    private String info;
 
     // Per Night
     private OvernightStayDTO overnightStay = null;

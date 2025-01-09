@@ -57,8 +57,8 @@ class TripService{
             throw error; // L'errore sarà gestito all'esterno
         }
     }
-    static async deleteTrip(token, tripId) {
 
+    static async deleteTrip(token, tripId) {
         try {
             const response = await axios.delete(
                 `${TripService.BASE_URL}/${tripId}`,
@@ -73,7 +73,8 @@ class TripService{
             throw error; // L'errore sarà gestito all'esterno
         }
     }
-    static async getTrip(tripId,token) {
+    
+    static async getTrip(token, tripId) {
         try {
             const response = await axios.get(
                 `${TripService.BASE_URL}/${tripId}`,

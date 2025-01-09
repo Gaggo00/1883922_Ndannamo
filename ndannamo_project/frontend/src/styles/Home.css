@@ -40,10 +40,8 @@ body{
 }
 
 #logo{
-    height:50vh;
-    margin-left:30px;
-    width:50vh;
-    margin-left:15%;
+    width: 25vw;
+    margin-left: 15%;
     background-color: transparent;
 }
 @font-face {
@@ -56,11 +54,11 @@ body{
     color:#004b3f;
     font-family: 'Sergio Trendy', sans-serif;
     font-weight: bold;
-    font-size:30px;
+    font-size: 30px;
     text-align:center;
     flex:1;
-    margin-left:50px;
-    margin-top:-4vh;
+    margin-left: 3vw;
+    margin-top: -4vh;
     align-items: center;
     justify-content: center;
 }
@@ -68,8 +66,8 @@ body{
     border: none;
     background-color: #004b3f;
     width: auto;
-    padding: 15px 25px; /* Margini interni */
-    border-radius: 40px;
+    padding: 2vh 1.3vw; /* Margini interni */
+    border-radius: 2vw;
     box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     display: flex; /* Usa Flexbox */
     justify-content: center; /* Centra il contenuto orizzontalmente */
@@ -78,7 +76,7 @@ body{
     margin-top: 5%;
     color: white;
     font-weight: bold;
-    font-size: 16px; /* Imposta la dimensione del testo */
+    font-size: 1.1vw; /* Imposta la dimensione del testo */
     cursor: pointer; /* Aggiunge il puntatore */
     text-align: center; /* Centra il testo */
     height: auto; /* Rimuovi l'altezza fissa */

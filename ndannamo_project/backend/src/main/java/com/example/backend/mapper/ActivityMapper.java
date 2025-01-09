@@ -15,6 +15,7 @@ public interface ActivityMapper {
     @Mapping(target = "destination", ignore = true)
     @Mapping(target = "arrivalDate", ignore = true)
     @Mapping(target = "overnightStay", ignore = true)
+    @Mapping(target = "tripId", source="trip.id")
     EventDTO toDTO(Activity activity);
 
     // Da EventDTO a Activity

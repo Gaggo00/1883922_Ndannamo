@@ -28,4 +28,5 @@ public class TravelCreationRequest {
     private LocalTime departureTime;
     @JsonFormat(pattern = "HH:mm")
     private LocalTime arrivalTime;
+    private String info;
 }

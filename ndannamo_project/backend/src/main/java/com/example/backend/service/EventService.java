@@ -73,6 +73,23 @@ public class EventService {
     }
 
 
+    /*************** Per eliminare tutta la schedule ***************/
+
+    public void deleteSchedule(List<Event> schedule) {
+        for (Event event: schedule) {
+            if (event.getClass() == Night.class) {
+                nightRepository.delete((Night) event);
+            }
+            else if (event.getClass() == Activity.class) {
+                activityRepository.delete((Activity) event);
+            }
+            else if (event.getClass() == Travel.class) {
+                travelRepository.delete((Travel) event);
+            }
+        }
+    }
+
+
     /*************** NIGHT ***************/
 
     // Crea una nuova night
@@ -98,6 +115,7 @@ public class EventService {
         activity.setDate(activityCreationRequest.getDate());
         activity.setStartTime(activityCreationRequest.getStartTime());
         activity.setEndTime(activityCreationRequest.getEndTime());
+        activity.setAddress(activityCreationRequest.getAddress());
         activity.setInfo(activityCreationRequest.getInfo());
         activity.setTrip(trip);
 
@@ -116,15 +134,28 @@ public class EventService {
             throw new ResourceNotFoundException("Activity not found!");
         }
 
-        // Rimuovi l'activity dalla schedule
-        List<Event> schedule = trip.getSchedule();
-        schedule.remove(activity);
-        trip.setSchedule(schedule);
-
         // Elimina l'activity
         activityRepository.delete(activity);
 
         return true;
+    }
+
+
+    // Cambia info activity
+    public void changeActivityInfo(Trip trip, long activityId, String newInfo) {
+        // Trova l'activity
+        Activity activity = getActivityById(activityId);
+
+        // Controlla che l'activity faccia parte della trip
+        if (activity.getTrip() != trip) {
+            throw new ResourceNotFoundException("Activity not found!");
+        }
+
+        // Cambia info
+        activity.setInfo(newInfo);
+
+        // Aggiorna l'activity
+        activityRepository.save(activity);
     }
 
 
@@ -143,6 +174,7 @@ public class EventService {
         travel.setArrivalDate(travelCreationRequest.getArrivalDate());
         travel.setDepartureTime(travelCreationRequest.getDepartureTime());
         travel.setArrivalTime(travelCreationRequest.getArrivalTime());
+        travel.setInfo(travelCreationRequest.getInfo());
         travel.setTrip(trip);
 
         // Salva travel
@@ -159,11 +191,6 @@ public class EventService {
         if (travel.getTrip() != trip) {
             throw new ResourceNotFoundException("Travel not found!");
         }
-
-        // Rimuovi il travel dalla schedule
-        List<Event> schedule = trip.getSchedule();
-        schedule.remove(travel);
-        trip.setSchedule(schedule);
 
         // Elimina il travel
         travelRepository.delete(travel);

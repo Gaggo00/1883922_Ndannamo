@@ -6,6 +6,9 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import {Dropdown} from "react-bootstrap";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
+import valigiaLogo from "../static/valigia logo.png";
+import scrittaLogo from "../static/scritta logo.png";
+
 
 function Navbar() {
     const { isAuthenticated, logout } = useAuth();
@@ -25,8 +28,8 @@ function Navbar() {
         <div className="navbar">
             <Link to="/">
                 <div className="logo">
-                    <div id="valigia-logo"></div>
-                    <div id="scritta-logo"></div>
+                    <img id="valigia-logo" src={valigiaLogo}></img>
+                    <img id="scritta-logo" src={scrittaLogo}></img>
                 </div>
             </Link>
             {isAuthenticated && (

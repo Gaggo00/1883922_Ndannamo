@@ -202,8 +202,8 @@ public class TripController {
             String email = authentication.getName();
 
             // crea activity
-            String res = tripService.createActivity(email, id, activityCreationRequest);
-            return ResponseEntity.ok().body(res);
+            Long activityId = tripService.createActivity(email, id, activityCreationRequest);
+            return ResponseEntity.ok().body(activityId);
         }
         catch (Exception ex) {
             return ResponseEntity
@@ -242,8 +242,8 @@ public class TripController {
             String email = authentication.getName();
 
             // crea travel
-            String res = tripService.createTravel(email, id, travelCreationRequest);
-            return ResponseEntity.ok().body(res);
+            Long travelId = tripService.createTravel(email, id, travelCreationRequest);
+            return ResponseEntity.ok().body(travelId);
         }
         catch (Exception ex) {
             return ResponseEntity
@@ -401,4 +401,33 @@ public class TripController {
                 .body(ex.getMessage());
         }
     }
+
+
+
+    
+    
+    
+    /****************************************** CAMBIAMENTO DATI EVENTI ******************************************/
+
+    // Cambia info activity
+    @PutMapping(value={"/{id}/schedule/activity/{activity_id}/info", "/{id}/schedule/activity/{activity_id}/info/"})
+    public ResponseEntity<?> changeActivityInfo(@PathVariable Long id, @PathVariable Long activity_id, @Valid @RequestBody GenericType<String> newTitle) {
+
+        try {
+            // prendi l'utente dal token
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String email = authentication.getName();
+
+            // cambia le info
+            tripService.changeActivityInfo(email, id, activity_id, newTitle.getValue());
+            return ResponseEntity.ok().body("Activity info changed");
+        }
+        catch (Exception ex) {
+            return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(ex.getMessage());
+        }
+    }
+
+
 }

@@ -34,7 +34,10 @@ export default function TripPreview({trip, reloadProfile}) {
 
     const mainLocation = trip.locations[0].split(",");
     const mainLocationName = mainLocation[0].trim();
-    const  mainLocationCountry = mainLocation[1].trim();
+    var  mainLocationCountry = "";
+    if (mainLocation.length > 1) {
+        mainLocationCountry = mainLocation[1].trim();
+    }
 
     fecthImage(mainLocationName, mainLocationCountry);
 
