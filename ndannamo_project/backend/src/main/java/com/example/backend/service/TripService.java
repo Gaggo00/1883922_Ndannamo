@@ -107,11 +107,19 @@ public class TripService {
         // Prendo le trip dell'utente loggato
         List<Trip> trips = logged_user.getTrips();
 
-        // Converto la lista di Trip in lista di TripDTO
-        List<TripDTO> tripsDTO = trips.stream()
-            .map(trip -> tripMapper.toDTO(trip))
-            .collect(Collectors.toList());
+        // Lista da restituire
+        List<TripDTO> tripsDTO = new ArrayList<TripDTO>();
 
+        // Converto la lista di Trip in lista di TripDTO
+        for (Trip trip : trips) {
+            TripDTO tripDTO = tripMapper.toDTO(trip);
+            // se l'utente loggato e' il creatore
+            if (userIsTheCreator(logged_user, trip)) {
+                tripDTO.setCreator(true);
+            }
+            tripsDTO.add(tripDTO);
+        }
+        
         return tripsDTO;
     }
 
