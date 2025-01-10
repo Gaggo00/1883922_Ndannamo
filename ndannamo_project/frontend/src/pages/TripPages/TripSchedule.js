@@ -1,7 +1,6 @@
-import React from 'react';
-import {useLocation} from 'react-router-dom';
+import React, {useEffect, useState} from 'react';
+import {useLocation, useNavigate, useParams} from 'react-router-dom';
 
-import TripService from "../../services/TripService";
 import ScheduleService from '../../services/ScheduleService';
 import MapService from '../../services/MapService';
 
@@ -23,6 +22,7 @@ class Event {
         this.date = date;
     }
 }
+
 class Night extends Event {
     constructor(id, tripId, place, date, overnightStay) {
         super(id, tripId, place, date);
@@ -61,16 +61,12 @@ class Day {
     }
 }
 
-
-
-
 export default function TripSchedule() {
 
     // Per il campo "type" negli elementi di schedule
     const NIGHT = "NIGHT";
     const ACTIVITY = "ACTIVITY";
     const TRAVEL = "TRAVEL";
-
 
     // Per gestire il pop-up da cui creare nuovi activity/travel
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -90,8 +86,6 @@ export default function TripSchedule() {
         }
     };
 
-
-
     // Per ricaricare l'elenco a sinistra quando vengono modificati gli eventi
     const [seedSchedule, setSeedSchedule] = useState(1);
 
@@ -103,25 +97,14 @@ export default function TripSchedule() {
         setSeedSchedule(Math.random());
     }
 
-
-
     // Per gestire la selezione di un evento
     const [selectedEvent, setSelectedEvent] = useState(null);
     const [selectedEventLatitude, setSelectedEventLatitude] = useState("");
     const [selectedEventLongitude, setSelectedEventLongitude] = useState("");
 
-
     const { id } = useParams();
-    const [tripInfo, setTripInfo] = useState({
-        id:'',
-        title: '',
-        locations: [],
-        creationDate:'',
-        startDate : '',
-        endDate : '',
-        createdBy:'',
-        list_participants: []
-    });
+    const location = useLocation();
+    const tripInfo = location.state?.trip; // Recupera il tripInfo dallo stato
     // Struttura elementi EventDTO ricevuti dal backend
     const [schedule, setSchedule] = useState( [
         {
@@ -156,30 +139,8 @@ export default function TripSchedule() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        fetchTripInfo();
+        fetchSchedule(tripInfo.startDate, tripInfo.endDate);
     }, []);
-
-    const fetchTripInfo = async () => {
-        try {
-            const token = localStorage.getItem('token'); // Recuperiamo il token da localStorage
-            if (!token) {
-                navigate("/login");
-            }
-            const response = await TripService.getTrip(token, id);
-
-            if (response) {
-                setTripInfo(response);
-
-                // NOTA PER GAVRIEL: se levi la funzione fetchTripInfo bisogna comunque eseguire fetchSchedule da qualche parte, dopo aver ottenuto le info della trip:
-                fetchSchedule(response.startDate, response.endDate);
-
-            } else {
-                console.error('Invalid response data');
-            }
-        } catch (error) {
-            console.error('Error fetching profile information:', error);
-        }
-    };
 
     const fetchSchedule = async (startDate, endDate, eventToSelectId=null) => {
         try {
@@ -200,7 +161,6 @@ export default function TripSchedule() {
             console.error('Error fetching schedule:', error);
         }
     };
-
 
     // startDate e endDate devono essere nel formato "yyyy-mm-dd"
     const createTripDays = (schedule, startDate, endDate, eventToSelectId=null) => {
@@ -225,7 +185,7 @@ export default function TripSchedule() {
             if (event.type === NIGHT) {
                 const night = new Night(event.id, event.tripId, event.place, event.date, event.overnightStay);     // DA SISTEMARE overnightStay forse
                 days[index].night = night;
-                if (event.id == eventToSelectId) {
+                if (event.id === eventToSelectId) {
                     changeSelectedEvent(night);
                 }
             }
@@ -234,7 +194,7 @@ export default function TripSchedule() {
                     event.startTime, event.endTime, event.info, event.name
                 );
                 days[index].activitiesAndTravels.push(activity);
-                if (event.id == eventToSelectId) {
+                if (event.id === eventToSelectId) {
                     changeSelectedEvent(activity);
                 }
             }
@@ -243,7 +203,7 @@ export default function TripSchedule() {
                     event.startTime, event.endTime, event.info, event.destination, event.arrivalDate
                 );
                 days[index].activitiesAndTravels.push(travel);
-                if (event.id == eventToSelectId) {
+                if (event.id === eventToSelectId) {
                     changeSelectedEvent(travel);
                 }
             }
@@ -267,7 +227,6 @@ export default function TripSchedule() {
 
         return days;
     }
-
 
     const changeSelectedEvent = async (event) => {
         var coords = await fetchCoordinatesFromBackend(event);
@@ -328,7 +287,6 @@ export default function TripSchedule() {
             //console.error('Error fetching coordinates:', error);
         }
     }
-
 
     return (
         <div className="trip-info">

@@ -8,24 +8,19 @@ import coin_icon from "../../static/svg/icons/coin_icon.svg";
 import message_icon from "../../static/svg/icons/message_icon.svg";
 import './InternalMenu.css';
 import TripService from "../../services/TripService";
+import MultiStepForm from "../../components/TripCreationForm/MultiStepForm";
+import ConfirmDelete from "../../common/ConfirmDelete";
+import ScheduleService from "../../services/ScheduleService";
 
 export default function InternalMenu() {
     const navigate = useNavigate();
     const { id } = useParams(); // Ottieni l'ID dinamico dalla URL
-    const location = useLocation(); // Ottieni la URL corrente
+    const location = useLocation();
+    const tripInfo = location.state?.trip; // Recupera il tripInfo dallo stato
     const [selectedOption, setSelectedOption] = useState(null);
     const [hoveredOption, setHoveredOption] = useState(null); // Stato per l'hover
-    const [tripInfo, setTripInfo] = useState({
-        id: '',
-        title: '',
-        locations: [],
-        creationDate: '',
-        startDate: '',
-        endDate: '',
-        createdBy: '',
-        list_participants: [],
-        creator: '',
-    });
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
 
     const options = [
         /*
@@ -45,10 +40,7 @@ export default function InternalMenu() {
     ];
 
     useEffect(() => {
-        fetchTripInfo();
-    }, []);
 
-    useEffect(() => {
         const currentPath = location.pathname;
         const activeOption = options.find((option) => currentPath.includes(option.id));
         if (activeOption) {
@@ -58,7 +50,6 @@ export default function InternalMenu() {
 
     const handleNavigation = (optionId, path) => {
         setSelectedOption(optionId);
-        //navigate(path);
         navigate(path, { state: { trip: tripInfo } });
     };
 
@@ -69,24 +60,37 @@ export default function InternalMenu() {
     const handleMouseLeave = () => {
         setHoveredOption(null);
     };
-    const fetchTripInfo = async () => {
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+    };
+    const handleExit = () =>{
+        setIsModalOpen(true);
+    }
+    const handleConfirm = async () => {
         try {
-            const token = localStorage.getItem('token'); // Recuperiamo il token da localStorage
+            const token = localStorage.getItem('token');
             if (!token) {
                 navigate("/login");
             }
-            const response = await TripService.getTrip(id, token);
+            let response;
+            if (tripInfo.creator) {
+                response = await TripService.deleteTrip(token, tripInfo.id);
+            } else {
+                response = await TripService.leaveTrip(token, tripInfo.id);
+            }
 
             if (response) {
-                setTripInfo(response);
-
+                setIsModalOpen(false)
             } else {
                 console.error('Invalid response data');
             }
         } catch (error) {
-            console.error('Error fetching profile information:', error);
+            console.error('Error fetching schedule:', error);
         }
-    };
+    }
+
+
 
     return (
         <div className="internal-menu">
@@ -99,10 +103,38 @@ export default function InternalMenu() {
                     onMouseLeave={handleMouseLeave}
                 >
                     <i className={option.icon}/>
-                    {/*<img src={option.icon} alt={`${option.id}-icon`} />*/}
                     {(selectedOption === option.id || hoveredOption === option.id) && <p>{option.label}</p>}
                 </div>
             ))}
+            {tripInfo.creator &&
+                <div
+                className={'internal-option'} id={"exit"}
+                onMouseEnter={()=> handleMouseEnter("delete")}
+                onClick={() => handleExit("delete")}
+                onMouseLeave={handleMouseLeave}
+                >
+                <i className="bi bi-trash3 h3"></i>
+                {hoveredOption === "delete" && <p>Delete trip</p>}
+            </div>}
+            {!tripInfo.creator &&
+                <div
+                    className={'internal-option'} id={"exit"}
+                    onMouseEnter={() => handleMouseEnter("leave")}
+                    onClick={() => handleExit("leave")}
+                    onMouseLeave={handleMouseLeave}>
+                <i className="bi bi-box-arrow-right h3"></i>
+                {hoveredOption === "leave" && <p>Leave trip</p>}
+            </div>}
+            {isModalOpen && (
+                <div className="modal-overlay">
+                    <div className="trip-box">
+                        <ConfirmDelete
+                            onConfirm={handleConfirm}
+                            onClose={closeModal}/>
+                    </div>
+                </div>
+            )}
         </div>
+
     );
 }

@@ -7,7 +7,7 @@ import Success from './Success';
 import './TripCreation.css';
 import TripService from "../../services/TripService";
 import {useNavigate} from "react-router-dom";
-import DateUtilities from '../../utils/DateUtilities';
+
 
 const MultiStepForm = () => {
     const [step, setStep] = useState(1);

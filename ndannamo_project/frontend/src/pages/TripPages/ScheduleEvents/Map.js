@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
 
 export default function Map({latitude, longitude, message}) {
@@ -12,7 +12,6 @@ export default function Map({latitude, longitude, message}) {
       center[1] = +(longitude);    // parse float
       coordinatesReady = true;
   }
-
 
   const RecenterAutomatically = ({lat,lng}) => {
     const map = useMap();
