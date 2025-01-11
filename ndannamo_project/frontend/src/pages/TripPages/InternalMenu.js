@@ -8,15 +8,14 @@ import coin_icon from "../../static/svg/icons/coin_icon.svg";
 import message_icon from "../../static/svg/icons/message_icon.svg";
 import './InternalMenu.css';
 import TripService from "../../services/TripService";
-import MultiStepForm from "../../components/TripCreationForm/MultiStepForm";
 import ConfirmDelete from "../../common/ConfirmDelete";
-import ScheduleService from "../../services/ScheduleService";
 
 export default function InternalMenu() {
     const navigate = useNavigate();
     const { id } = useParams(); // Ottieni l'ID dinamico dalla URL
     const location = useLocation();
     const tripInfo = location.state?.trip; // Recupera il tripInfo dallo stato
+    const profileInfo = location.state?.profile; // Recupera il tripInfo dallo stato
     const [selectedOption, setSelectedOption] = useState(null);
     const [hoveredOption, setHoveredOption] = useState(null); // Stato per l'hover
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -50,7 +49,7 @@ export default function InternalMenu() {
 
     const handleNavigation = (optionId, path) => {
         setSelectedOption(optionId);
-        navigate(path, { state: { trip: tripInfo } });
+        navigate(path, { state: { trip: tripInfo,profile:profileInfo } });
     };
 
     const handleMouseEnter = (optionId) => {
@@ -81,7 +80,8 @@ export default function InternalMenu() {
             }
 
             if (response) {
-                setIsModalOpen(false)
+                setIsModalOpen(false);
+                navigate("/main");
             } else {
                 console.error('Invalid response data');
             }
@@ -89,8 +89,6 @@ export default function InternalMenu() {
             console.error('Error fetching schedule:', error);
         }
     }
-
-
 
     return (
         <div className="internal-menu">
@@ -129,6 +127,7 @@ export default function InternalMenu() {
                 <div className="modal-overlay">
                     <div className="trip-box">
                         <ConfirmDelete
+                            message={tripInfo.creator ? "delete the trip" : "leave the trip"}
                             onConfirm={handleConfirm}
                             onClose={closeModal}/>
                     </div>

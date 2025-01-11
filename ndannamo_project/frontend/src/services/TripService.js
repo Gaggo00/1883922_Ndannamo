@@ -90,6 +90,23 @@ class TripService{
             throw error; // L'errore sarà gestito all'esterno
         }
     }
+    static async updateDates(token, tripId,startDate, endDate) {
+        try {
+            const response = await axios.put(
+                `${TripService.BASE_URL}/${tripId}/dates`,
+                [startDate, endDate],
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization" : `Bearer ${token}`
+                    }
+                }
+            );
+            return response.data;
+        } catch (error) {
+            throw error; // L'errore sarà gestito all'esterno
+        }
+    }
 
 }
 
