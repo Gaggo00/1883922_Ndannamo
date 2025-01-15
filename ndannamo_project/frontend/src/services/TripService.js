@@ -91,10 +91,11 @@ class TripService{
         }
     }
     static async updateDates(token, tripId,startDate, endDate) {
+        var value = [startDate,endDate];
         try {
             const response = await axios.put(
                 `${TripService.BASE_URL}/${tripId}/dates`,
-                [startDate, endDate],
+                {value},
                 {
                     headers: {
                         "Content-Type": "application/json",

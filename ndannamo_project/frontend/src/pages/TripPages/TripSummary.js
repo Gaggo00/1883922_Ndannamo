@@ -37,7 +37,7 @@ export default function TripSummary() {
                         navigate("/login");
                     }
                     const response = await TripService.updateDates(token, tripInfo.id, newStartDate, newEndDate);
-
+                    
                     if (response) {
                         setChangeDate(false)
                         tripInfo.startDate=newStartDate;

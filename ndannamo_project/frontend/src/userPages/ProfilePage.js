@@ -139,7 +139,7 @@ function ProfilePage() {
                         <div className='flex-space-between'>
                             <div className='tripPreviewBlocksContainer'>
                                 {profileInfo.trips.slice(0, 3).map((trip, index) =>
-                                    <TripPreview key={index} trip={trip} reloadProfile={fetchProfileInfo}></TripPreview>
+                                    <TripPreview key={index} trip={trip} reloadProfile={profileInfo}></TripPreview>
                                 )}
                             </div>
                             <button id="all-trips-button" onClick={goToTrips}>
