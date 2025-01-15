@@ -9,61 +9,59 @@ import { GoPencil } from "react-icons/go";
  * splitValue i valori
 ***/
 function TCForm({
-    title="",
-    amount=0.00,
-    date=new Date(),
-    users = [""],
-    paidBy=users[0],
-    split=users.map(() => false),
-    splitMethod="In modo equo",
-    splitValue=users.map(() => 0),
+    expenseData={},
     status=0,
+    users=[],
     filled=false,
+    onSubmit= () => {},
     onClose= () => {}},
 ) {
 
-    const [sTitle, setTitle] = useState(title);
-    const [sAmount, setAmount] = useState(amount);
-    const [sPaidBy, setPaidBy] = useState(paidBy);
-    const [sDate, setDate] = useState(date);
-    const [sSplitMethod, setSplitMethod] = useState(splitMethod);
-    const [sSplitValue, setSplitValue] = useState(splitValue);
-    const [sSplit, setSplit] = useState(split);
+    const [sTitle, setTitle] = useState(expenseData.title);
+    const [sAmount, setAmount] = useState(expenseData.amount);
+    const [sPaidBy, setPaidBy] = useState(expenseData.paidByNickname);
+    const [sDate, setDate] = useState(expenseData.date);
+    const [sSplitMethod, setSplitMethod] = useState(expenseData.splitMethod);
+    const [sSplitValue, setSplitValue] = useState([]);
     const [sStatus, setStatus] = useState(status); // 0: new, 1: filled, 2: modify
 
     useEffect(() => {
-        setTitle(title);
-        setAmount(amount);
-        setPaidBy(paidBy);
-        setSplit(split);
-        setSplitValue(splitValue);
+        setTitle(expenseData.title);
+        setAmount(expenseData.amount);
+        setPaidBy(expenseData.paidByNickname);
+        setSplitValue(expenseData.amountPerUser);
         setStatus(status);
-    }, [title, amount, paidBy, split, splitValue, status]);
+    }, [expenseData, status]);
 
     function doSplit(value) {
-        if (sSplitMethod === "In modo equo") {
-            const countNonZero = sSplit.filter(value => value !== false).length;
-            const newSplitValue = users.map(() => 0);
-            for (let i = 0; i < sSplit.length; i++) {
-                if (sSplit[i])
-                    newSplitValue[i] = value / countNonZero;
-                else
-                    newSplitValue[i] = 0
-            }
-            setSplitValue(newSplitValue);
+        let newSplitValue = [...sSplitValue];
+        const countNonZero = newSplitValue.length;
+        const newValue = countNonZero ? (value / countNonZero) : 0;
+        for (let i = 0; i < newSplitValue.length; i++) {
+            newSplitValue[i].amount = newValue;
         }
+        setSplitValue(newSplitValue);
     }
 
-    function handleCheck(index) {
-        const updatedSplit = [...sSplit];
-        updatedSplit[index] = !updatedSplit[index];
-        setSplit(updatedSplit);
+    function handleCheck(user) {
+        if (sSplitValue.find(split => split.userNickname === user)) {
+            let indexToRemove = sSplitValue.findIndex(split => split.userNickname === user);
+            sSplitValue.splice(indexToRemove, 1);
+        }
+        else
+            sSplitValue.push({userNickname: user, amount: 0});
         doSplit(sAmount);
     }
 
     function changeAmount(value) {
         setAmount(value);
         doSplit(value);
+    }
+
+    function submit() {
+        onSubmit({
+        });
+        close();
     }
 
     function close() {
@@ -98,21 +96,21 @@ function TCForm({
                         <div className="tc-list-left">
                             <input
                                 type="checkbox"
-                                checked={sSplit[index]}
+                                checked={!!sSplitValue.find(expense => expense.userNickname === user)}
                                 id={`item-${index}`}
-                                onChange={() => handleCheck(index)}
+                                onChange={() => handleCheck(user)}
                                 disabled={sStatus == 1}
                             />
                             <label htmlFor={`item-${index}`}>{user}</label>
                         </div>
-                        <div className="tc-list-right">{sSplitValue[index]}</div>
+                        <div className="tc-list-right">{sSplitValue.find(expense => expense.userNickname === user)?.amount ?? 0}</div>
                     </div>
                 ))}
             </div>
             <div className="tc-button-container">
                 {
                     sStatus != 1 &&
-                    <div className="tc-add-button">{sStatus == 0 ? "Send" : "Save"}</div>
+                    <div className="tc-add-button" onClick={() => submit()}>{sStatus == 0 ? "Send" : "Save"}</div>
                 }
             </div>
         </div>

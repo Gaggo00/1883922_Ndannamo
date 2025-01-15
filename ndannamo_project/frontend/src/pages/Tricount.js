@@ -3,20 +3,32 @@ import TCListItem, {TCListHeader} from "./TripPages/Tricount/TriListItem";
 import TCForm from "./TripPages/Tricount/TriForm"
 import "../styles/Main.css";
 
+class ExpenseDto {
+    constructor(params = {}) {
+        this.id = params.id || -1;
+        this.tripId = params.tripId || -1;
+        this.paidBy = params.paidBy || -1;
+        this.paidByNickname = params.paidByNickname || "";
+        this.title = params.title || "";
+        this.date = params.date || "";
+        this.amount = params.amount || 0;
+        this.splitEven = params.splitEven || true;
+        this.amountPerUser = params.amountPerUser || [];
+    }
+}
+
 function Tricount() {
+    const tripInfo = {users: ["Sara", "Anna", "Pino"]};
+    const userId = 1;
 
     const [activeText, setActiveText] = useState("list");
     const [formVisibility, setFormVisibility] = useState(true);
     const [formData, setFormData] = useState({
-        title: "",
-        amount: 0,
-        date: "",
-        users: [],
-        paidBy: "",
-        splitValue: 0,
-        split: [],
+        expenseData: new ExpenseDto,
+        users: tripInfo.users,
         filled: false,
         status: 0,
+        onSubmit: submit,
         onClose: () => setFormVisibility(false),
     });
     const itemsRefs = useRef([]);
@@ -24,8 +36,28 @@ function Tricount() {
 
     function retrieveTricounts() {
         return [
-            {name:"Ristorante", total:"100", by:"Sara", expense:"20", date: new Date(), splitValue: [20, 80], split: [true, true]},
-            {name:"Ristorante cinese buono", total:"100", by:"Luca", expense:"60", date: new Date(), splitValue: [60, 40], split: [true, true]},
+            new ExpenseDto(
+                {
+                    title:"Ristorante",
+                    amount: 42.10,
+                    paidBy: 1,
+                    paidByNickname:"Pino",
+                    expense:"20",
+                    date: new Date(),
+                    amountPerUser: [
+                        {
+                            "user": 2,
+                            "userNickname": "Anna",
+                            "amount": 21.05
+                        },
+                        {
+                            "user": 1,
+                            "userNickname": "Pino",
+                            "amount": 21.05,
+                        }
+                    ],
+                }
+            ),
         ]
     };
 
@@ -37,15 +69,11 @@ function Tricount() {
 
     const handleTricountSelection = (index) => {
         setFormData({
-            title: data[index].name,
-            amount: data[index].total,
-            date: data[index].date,
-            users: ["Luca", "Damiana"],
-            paidBy: data[index].by,
-            splitValue: data[index].splitValue,
-            split: data[index].split,
+            expenseData: data[index],
+            users: tripInfo.users,
             filled: true,
             status: 1,
+            onSubmit: submit,
             onClose: () => setFormVisibility(false),
         });
         if (!formVisibility)
@@ -58,15 +86,11 @@ function Tricount() {
     function addSale() {
         if (formData.status == 1 || !formVisibility) {
             setFormData({
-                title: "",
-                amount: 0,
-                date: "",
-                users: [],
-                paidBy: "",
-                splitValue: 0,
-                split: [],
+                expenseData: new ExpenseDto,
+                users: tripInfo.users,
                 filled: false,
                 status: 0,
+                onSubmit: submit,
                 onClose: () => setFormVisibility(false),
             });
             setFormVisibility(true);
@@ -75,6 +99,17 @@ function Tricount() {
             setSelected(-1);
         }
     }
+
+    function createNewExpense(data) {
+        const newExpenseDto = new ExpenseDto(data);
+        data.push(newExpenseDto);
+    }
+
+    function submit(data) {
+        console.log(data);
+        createNewExpense(data);
+    }
+
 
     return (
         <div className="main">
@@ -94,11 +129,8 @@ function Tricount() {
                         {data.map((item, index) => (
                             <TCListItem
                                 key={index}
-                                name={item.name}
-                                total={item.total}
-                                by={item.by}
-                                expense={item.expense}
-                                date={item.date.toDateString()}
+                                userId={userId}
+                                expenseData={item}
                                 onClick={()=>handleTricountSelection(index)}
                                 ref={(el) => (itemsRefs.current[index] = el)}
                             />
