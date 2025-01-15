@@ -62,6 +62,9 @@ class Day {
 }
 
 export default function TripSchedule() {
+    const { id } = useParams();
+    const location = useLocation();
+    const tripInfo = location.state?.trip; // Recupera il tripInfo dallo stato
 
     // Per il campo "type" negli elementi di schedule
     const NIGHT = "NIGHT";
@@ -104,9 +107,7 @@ export default function TripSchedule() {
     const [selectedEventLatitude, setSelectedEventLatitude] = useState("");
     const [selectedEventLongitude, setSelectedEventLongitude] = useState("");
 
-    const { id } = useParams();
-    const location = useLocation();
-    const tripInfo = location.state?.trip; // Recupera il tripInfo dallo stato
+
     // Struttura elementi EventDTO ricevuti dal backend
     const [schedule, setSchedule] = useState( [
         {
