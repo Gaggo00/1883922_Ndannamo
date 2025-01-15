@@ -4,7 +4,7 @@
     gap: 3vh;
     align-items: baseline;
     margin-right: 60px;
-    margin-top: 3vh;
+    margin-top: 2vh;
 }
 .internal-menu img{
     width: 4vh;
@@ -70,4 +70,8 @@
     margin-right: 5px;
     border-radius: 10px;
     padding:3px;
+}
+.internal-menu #exit{
+    background-color: #F25B5B;
+    margin-top:25px;
 }

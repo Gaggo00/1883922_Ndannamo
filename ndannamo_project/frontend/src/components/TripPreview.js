@@ -59,33 +59,8 @@ export default function TripPreview({trip, reloadProfile}) {
     }
 
     const handleClick = () => {
-        navigate(`/trips/${trip.id}/summary`); // Modifica questa rotta in base alla struttura della tua applicazione
+        navigate(`/trips/${trip.id}/summary`, {state: {trip: trip, profile:reloadProfile}}); // Modifica questa rotta in base alla struttura della tua applicazione
     };
-
-
-
-    // TEMPORANEA, andra' spostata nella pagina specifica di questa trip
-    const leaveTrip = async () => {
-        try {
-            const token = localStorage.getItem('token'); // Recuperiamo il token da localStorage
-            if (!token) {
-                navigate("/login");
-            }
-            // Chiamata al servizio per accettare
-            const response = await TripService.leaveTrip(token, trip.id);
-
-            if (response) {
-                //setProfileInfo(response);  // Aggiorniamo lo stato con le informazioni del profilo
-                reloadProfile();
-                console.log("Invitation accepted!")
-            } else {
-                console.error('Invalid response data');
-            }
-        } catch (error) {
-            console.error('Error fetching profile information:', error);
-        }
-    };
-
 
     return (
         <div className="tripBlock" onClick={handleClick}>

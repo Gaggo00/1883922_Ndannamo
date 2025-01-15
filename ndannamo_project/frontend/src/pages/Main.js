@@ -11,6 +11,7 @@ import "../styles/Main.css";
 import '../components/TripCreationForm/TripCreation.css';
 import banner from "../static/svg/trips-banner.svg"
 import arrowDown from "../static/icons/arrow-down.svg"
+import UserService from "../services/UserService";
 
 
 function Main() {
@@ -25,10 +26,18 @@ function Main() {
 
     const [showingUpcomingTrips, setShowingUpcomingTrips] = useState(true);
     const [showingPastTrips, setShowingPastTrips] = useState(true);
+
+    const [profileInfo, setProfileInfo] = useState({
+        nickname: '',
+        email: '',
+        trips: [],
+        invitations : []
+    });
     
 
     useEffect(() => {
         fetchTripsInfo();
+        fetchProfileInfo();
     }, []);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -39,6 +48,25 @@ function Main() {
 
     const closeModal = () => {
         setIsModalOpen(false);
+    };
+    const fetchProfileInfo = async () => {
+        try {
+            const token = localStorage.getItem('token'); // Recuperiamo il token da localStorage
+            if (!token) {
+                navigate("/login");
+            }
+
+            // Chiamata al servizio per ottenere le informazioni del profilo
+            const response = await UserService.getProfile(token);
+
+            if (response) {
+                setProfileInfo(response);  // Aggiorniamo lo stato con le informazioni del profilo
+            } else {
+                console.error('Invalid response data');
+            }
+        } catch (error) {
+            console.error('Error fetching profile information:', error);
+        }
     };
 
     const handleOverlayClick = (e) => {
@@ -185,7 +213,7 @@ function Main() {
                     {showingUpcomingTrips &&
                         <div className='tripPreviewBlocksContainer'>
                             {upcomingTrips.map((trip, index) =>
-                                <TripPreview key={index} trip={trip} reloadProfile={null}></TripPreview>
+                                <TripPreview key={index} trip={trip} reloadProfile={profileInfo}></TripPreview>
                             )}
                             {// se ci sono meno di 4 elementi (ma piu di 0), aggiungi elementi trasparenti fino ad arrivare a 4 cosi' la riga viene fatta bene
                             (upcomingTrips.length > 0) && (upcomingTrips.length < 4) && <div className='transparent-tripBlock'></div>}
@@ -206,7 +234,7 @@ function Main() {
                             {
                             // TEMPORANEO per test, poi andra' cambiato "upcomingTrips" con "pastTrips"
                             pastTrips.map((trip, index) =>
-                                <TripPreview key={index} trip={trip} reloadProfile={null}></TripPreview>
+                                <TripPreview key={index} trip={trip} reloadProfile={profileInfo}></TripPreview>
                             )}
                             {// se ci sono meno di 4 elementi (ma piu di 0), aggiungi elementi trasparenti fino ad arrivare a 4 cosi' la riga viene fatta bene
                             (pastTrips.length > 0) && (pastTrips.length < 4) && <div className='transparent-tripBlock'></div>}

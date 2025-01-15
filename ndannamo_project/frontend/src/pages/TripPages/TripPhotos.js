@@ -1,48 +1,19 @@
-import React, {useEffect, useState} from 'react';
-import {useNavigate, useParams} from 'react-router-dom';
-import TripService from "../../services/TripService";
+import React from 'react';
 import InternalMenu from "./InternalMenu";
 import './InternalMenu.css'
+import {useLocation} from "react-router-dom";
 
 export default function TripPhotos() {
-    const { id } = useParams();
-    const [tripInfo, setTripInfo] = useState({
-        id:'',
-        title: '',
-        locations: [],
-        creationDate:'',
-        startDate : '',
-        endDate : '',
-        createdBy:'',
-        list_participants: []
-    });
-    const navigate = useNavigate();
+    const location = useLocation();
+    const tripInfo = location.state?.trip; // Recupera il tripInfo dallo stato
 
-    useEffect(() => {
-        fetchTripInfo();
-    }, []);
-
-    const fetchTripInfo = async () => {
-        try {
-            const token = localStorage.getItem('token'); // Recuperiamo il token da localStorage
-            if (!token) {
-                navigate("/login");
-            }
-            const response = await TripService.getTrip(token, id);
-
-            if (response) {
-                setTripInfo(response);
-            } else {
-                console.error('Invalid response data');
-            }
-        } catch (error) {
-            console.error('Error fetching profile information:', error);
-        }
-    };
+    if (!tripInfo) {
+        return <p>Loading trip details...</p>;
+    }
 
     return (
         <div className="trip-info">
-            <InternalMenu/>
+            <InternalMenu />
             <div className="trip-content">
                 <div className="trip-top">
                     <span> <strong>{tripInfo.title}</strong> {tripInfo.startDate} {tripInfo.endDate}</span>
@@ -53,9 +24,9 @@ export default function TripPhotos() {
                         <p>Showing details for trip ID: {tripInfo.id}</p>
                     </div>
                     <div className="sezione2"></div>
-
                 </div>
             </div>
         </div>
     );
 }
+

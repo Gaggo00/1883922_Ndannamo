@@ -1,7 +1,6 @@
 import React, {useEffect, useState, useRef} from 'react';
-import {useNavigate, useParams} from 'react-router-dom';
+import {useLocation, useNavigate} from 'react-router-dom';
 
-import TripService from "../../services/TripService";
 import ExpenseService from '../../services/ExpenseService';
 import InternalMenu from "./InternalMenu";
 import TCForm from './Tricount/TriForm';
@@ -12,18 +11,8 @@ import "../../styles/Main.css";
 
 
 export default function TripExpenses() {
-    const { id } = useParams();
-    const [tripInfo, setTripInfo] = useState({
-        id:'',
-        title: '',
-        locations: [],
-        creationDate:'',
-        startDate : '',
-        endDate : '',
-        createdBy:'',
-        list_participants: []
-    });
-    const navigate = useNavigate();
+    const location = useLocation();
+    const tripInfo = location.state?.trip; // Recupera il tripInfo dallo stato
 
 
     const [data, setData] = useState([]);
@@ -54,35 +43,9 @@ export default function TripExpenses() {
     }
     */
 
-
-
     useEffect(() => {
-        fetchTripInfo();
+        retrieveTricounts();
     }, []);
-
-    const fetchTripInfo = async () => {
-        try {
-            const token = localStorage.getItem('token'); // Recuperiamo il token da localStorage
-            if (!token) {
-                navigate("/login");
-            }
-            const response = await TripService.getTrip(token, id);
-
-            if (response) {
-                setTripInfo(response);
-
-                // Ottieni le spese
-                retrieveTricounts();
-
-            } else {
-                console.error('Invalid response data');
-            }
-        } catch (error) {
-            console.error('Error fetching profile information:', error);
-        }
-    };
-
-
 
     const [activeText, setActiveText] = useState("list");
     const [formVisibility, setFormVisibility] = useState(true);
@@ -100,6 +63,7 @@ export default function TripExpenses() {
     });
     const itemsRefs = useRef([]);
     const [selected, setSelected] = useState(-1);
+    const navigate = useNavigate();
 
 
     const retrieveTricounts = async () => {
@@ -110,7 +74,7 @@ export default function TripExpenses() {
             }
 
             // Chiamata al servizio per ottenere le informazioni del profilo
-            const response = await ExpenseService.getExpenses(token, id);
+            const response = await ExpenseService.getExpenses(token, tripInfo.id);
 
             if (response) {
                 setData(response);
@@ -152,7 +116,7 @@ export default function TripExpenses() {
         });
         if (!formVisibility)
             setFormVisibility(true);
-        if (selected != -1 && itemsRefs.current[selected])
+        if (selected !== -1 && itemsRefs.current[selected])
             itemsRefs.current[selected].setClicked(false);
         setSelected(index);
     };
@@ -160,7 +124,7 @@ export default function TripExpenses() {
 
 
     function addSale() {
-        if (formData.status == 1 || !formVisibility) {
+        if (formData.status === 1 || !formVisibility) {
             setFormData({
                 title: "",
                 amount: 0,
@@ -174,7 +138,7 @@ export default function TripExpenses() {
                 onClose: () => setFormVisibility(false),
             });
             setFormVisibility(true);
-            if (selected != -1 && itemsRefs.current[selected])
+            if (selected !== -1 && itemsRefs.current[selected])
                 itemsRefs.current[selected].setClicked(false);
             setSelected(-1);
         }
@@ -184,7 +148,7 @@ export default function TripExpenses() {
 
     return (
         <div className="trip-info">
-            <InternalMenu/>
+            <InternalMenu />
             <div className="trip-content">
                 <div className="trip-top">
                     <span> <strong>{tripInfo.title}</strong> {tripInfo.startDate} {tripInfo.endDate}</span>
@@ -220,10 +184,11 @@ export default function TripExpenses() {
                         </div>
                     </div>
                     <div className="tc-right">
-                        {formVisibility == true && <TCForm {...formData}/>}
+                        {formVisibility === true && <TCForm {...formData}/>}
                     </div>
                 </div>
             </div>
         </div>
     );
 }
+
