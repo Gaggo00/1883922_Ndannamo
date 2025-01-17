@@ -58,7 +58,7 @@ export default function EventOpenActivity({activity, latitude, longitude, reload
 
         // manda richiesta al server
         try {
-            const token = localStorage.getItem('token'); // Recuperiamo il token da localStorage
+            const token = localStorage.getItem('token');
             if (!token) {
                 navigate("/login");
             }
@@ -83,6 +83,88 @@ export default function EventOpenActivity({activity, latitude, longitude, reload
             alert("Couldn't modify title: " + error.message);
         }
     }
+
+
+    // Per modificare indirizzo
+    const [editingAddress, setEditingAddress] = useState(false);
+    const [newAddress, setNewAddress] = useState(activity.address);
+
+
+    const saveNewAddress = async () => {
+    
+        // Se e' una stringa vuota o e' uguale a prima, non fare nulla
+        if (newAddress.trim() == "" || activity.address == newAddress) {
+            setEditingAddress(false);
+            return;
+        }
+
+        // manda richiesta al server
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                navigate("/login");
+            }
+    
+            // cambia nome nel backend
+            const response = await ScheduleService.changeActivityAddress(token, activity.tripId, activity.id, newAddress);
+    
+            if (response) {
+                // aggiorna in locale
+                activity.address = newAddress;
+                setEditingName(false);
+        
+                // ricarica la schedule a sinistra
+                reloadSchedule(null, false, false);
+            }
+            else {
+                console.error('Invalid response data');
+                alert("Server error");
+            }
+        } catch (error) {
+            console.error('Error modifying address:', error);
+            alert("Couldn't modify address: " + error.message);
+        }
+    }
+
+
+
+    // Per modificare l'orario
+    const [editingTime, setEditingTime] = useState(false);
+    const [newStartTime, setNewStartTime] = useState(activity.startTime);
+    const [newEndTime, setNewEndTime] = useState(activity.endTime);
+
+
+    const saveNewTime = async () => {
+
+        // manda richiesta al server
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                navigate("/login");
+            }
+    
+            // cambia nome nel backend
+            const response = await ScheduleService.changeActivityTime(token, activity.tripId, activity.id, newStartTime, newEndTime);
+
+            if (response) {
+                // aggiorna in locale
+                activity.startTime = newStartTime;
+                activity.endTime = newEndTime;
+                setEditingTime(false);
+        
+                // ricarica la schedule a sinistra
+                reloadSchedule(null, false, true);
+            }
+            else {
+                console.error('Invalid response data');
+                alert("Server error");
+            }
+        } catch (error) {
+            console.error('Error modifying start time:', error);
+            alert("Couldn't modify start time: " + error.message);
+        }
+    }
+
 
 
     // Per modificare info
@@ -176,13 +258,13 @@ export default function EventOpenActivity({activity, latitude, longitude, reload
                 </div>
                 <div>
                     {!editingName ? (
-                        <div className='title'>
+                        <div className='title hidden-btn-parent'>
                             {/* Titolo */}
                             <div id="activity-name">
                                 {activity.name}
                             </div>
                             {/* Pulsante per modificare il titolo */}
-                            <button onClick={() => {setNewName(activity.name);setEditingName(true);}} title='Edit name' className='no-background no-border flex-column'>
+                            <button onClick={() => {setNewName(activity.name);setEditingName(true);}} title='Edit name' className='no-background no-border flex-column hidden-btn'>
                                 <i className="bi bi-pencil-fill h5 gray-icon spaced"/>
                             </button>
                         </div>
@@ -209,13 +291,59 @@ export default function EventOpenActivity({activity, latitude, longitude, reload
 
             <div className='event-info'>
                 <div className='event-info-top-row'>
-                    <div className='row-element'>
-                        <div className='label'>Address</div>
-                        <div className='value'>{activity.address}</div>
+                    <div className='row-element hidden-btn-parent'>
+                        <div className='flex-row'>
+                            <div className='label'>Address</div>
+                            {!editingAddress ? (
+                                <button onClick={() => {setNewAddress(activity.address);setEditingAddress(true);}} title='Edit address'
+                                className='no-background no-border flex-column hidden-btn'>
+                                    <i className="bi bi-pencil-fill gray-icon spaced"/>
+                                </button>
+                            ) : (
+                                <button onClick={saveNewAddress} title='Save' className='no-background no-border flex-column'>
+                                    <i className="bi bi-floppy-fill gray-icon spaced"/>
+                                </button>
+                            )}
+                        </div>
+                        {!editingAddress ? (
+                            <div className='address'>
+                                {/* Indirizzo */}
+                                <div className='value'>{activity.address}</div>
+                            </div>
+                        ) : (
+                            <div className='address'>
+                                {/* Campo editabile dove modificare l'indirizzo */}
+                                <input type="text" 
+                                    className="value edit-address-input"
+                                    value={newAddress}
+                                    onChange={(e) => {handleInputChange(e, true, ADDRESS_MAX_CHARACTERS, setNewAddress);}}
+                                    onKeyDown={(e) => {handleKeyDown(e, saveNewAddress);}}/>
+                            </div>
+                        )}
                     </div>
-                    <div className='row-element'>
-                        <div className='label'>Time</div>
-                        <div className='value'>{activity.startTime}</div>
+                    <div className='row-element hidden-btn-parent'>
+                        <div className='flex-row'>
+                            <div className='label'>Time</div>
+                            {!editingTime ? (
+                                <button onClick={() => {setNewStartTime(activity.startTime);setEditingTime(true);}} title='Edit time'
+                                className='no-background no-border flex-column hidden-btn'>
+                                    <i className="bi bi-pencil-fill gray-icon spaced"/>
+                                </button>
+                            ) : (
+                                <button onClick={saveNewTime} title='Save' className='no-background no-border flex-column'>
+                                    <i className="bi bi-floppy-fill gray-icon spaced"/>
+                                </button>
+                            )}
+                        </div>
+                        {!editingTime ? (
+                            <div className='value'>{activity.startTime}</div>
+                        ) : (
+                            <input type="time" 
+                                className="value edit-time-input"
+                                value={newStartTime}
+                                onChange={(e) => {handleInputChange(e, false, 10, setNewStartTime);}}
+                                onKeyDown={(e) => {handleKeyDown(e, saveNewTime);}}/>
+                        )}
                     </div>
                     <div className='row-element'>
                         <div className='label'>End</div>
@@ -228,9 +356,9 @@ export default function EventOpenActivity({activity, latitude, longitude, reload
                 </div>
 
                 {!editingInfo ? (
-                    <div className='event-info-other'>
+                    <div className='event-info-other hidden-btn-parent'>
                         {/* Pulsante per modificare le info */}
-                        <button onClick={() => {setNewInfo(activity.info);setEditingInfo(true);}} title='Edit info' className='float-right no-background no-border'>
+                        <button onClick={() => {setNewInfo(activity.info);setEditingInfo(true);}} title='Edit info' className='float-right no-background no-border hidden-btn'>
                             <i className="bi bi-pencil-fill"></i>
                         </button>
                         {/* Info */}

@@ -85,7 +85,7 @@
     justify-content: space-between;
     */
     display: grid;
-    grid-template-columns: 18% auto auto auto;
+    grid-template-columns: 22% auto auto auto;
     justify-content: space-between;
     padding: 2vh 0;
 }
@@ -98,6 +98,10 @@
     font-size: 1.1vw;
     font-weight: 600;
     color: rgb(100, 100, 100);
+}
+
+#event-open .event-info-top-row .address {
+    display: flex;
 }
 
 #event-open .event-info-top-row .value {
@@ -159,6 +163,12 @@ button.flex-column {
     flex-direction: column;
 }
 
+.flex-row {
+    display:flex;
+    flex-direction: row;
+    align-items: center;
+}
+
 .edit-info-button i {
     color: #000000;
 }
@@ -175,6 +185,18 @@ button.flex-column {
 
 .edit-title-input {
     width: 31vw;
+}
+
+.edit-address-input {
+    width: 20vw;
+}
+
+
+.hidden-btn {
+    visibility: hidden;
+}
+.hidden-btn-parent:hover .hidden-btn {
+    visibility: visible;
 }
 
 

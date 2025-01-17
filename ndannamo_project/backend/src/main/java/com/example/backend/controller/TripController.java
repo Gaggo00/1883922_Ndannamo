@@ -452,6 +452,26 @@ public class TripController {
         }
     }
 
+    // Cambia orario activity
+    @PutMapping(value={"/{id}/schedule/activity/{activity_id}/time", "/{id}/schedule/activity/{activity_id}/time/"})
+    public ResponseEntity<?> changeActivityTime(@PathVariable Long id, @PathVariable Long activity_id, @Valid @RequestBody GenericList<String> time) {
+
+        try {
+            // prendi l'utente dal token
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String email = authentication.getName();
+
+            // cambia le info
+            tripService.changeActivityTime(email, id, activity_id, time.getValue());
+            return ResponseEntity.ok().body("Activity time changed");
+        }
+        catch (Exception ex) {
+            return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(ex.getMessage());
+        }
+    }
+
     // Cambia info activity
     @PutMapping(value={"/{id}/schedule/activity/{activity_id}/info", "/{id}/schedule/activity/{activity_id}/info/"})
     public ResponseEntity<?> changeActivityInfo(@PathVariable Long id, @PathVariable Long activity_id, @Valid @RequestBody GenericType<String> newInfo) {

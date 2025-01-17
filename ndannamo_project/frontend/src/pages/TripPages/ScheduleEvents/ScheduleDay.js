@@ -89,8 +89,8 @@ export default function ScheduleDay({day, selectEvent, reloadSchedule}) {
         <div className="day">
             <div className="day-date">{DateUtilities.yyyymmdd_To_ddMONTH(day.date)}</div>
             <div className="hidden-button-parent">
-                <button className="hidden-button" title='New activity' onClick={()=>{createActivity("04:55")}}><i className="bi bi-plus-lg h4"></i></button>
-                <button className="hidden-button" title='New travel' onClick={()=>{createTravel("04:55")}}><i className="bi bi-airplane h4"></i></button>
+                <button className="hidden-button" title='New activity' onClick={()=>{createActivity("4:55")}}><i className="bi bi-plus-lg h4"></i></button>
+                <button className="hidden-button" title='New travel' onClick={()=>{createTravel("4:55")}}><i className="bi bi-airplane h4"></i></button>
             </div>
             {day.activitiesAndTravels.map((event, index) => {
                     if (event.constructor.name === "Activity") {

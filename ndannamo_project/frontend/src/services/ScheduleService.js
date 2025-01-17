@@ -125,11 +125,32 @@ class ScheduleService {
     }
 
     // Cambia indirizzo activity
-    static async changeActivityName(token, tripId, activityId, address) {
+    static async changeActivityAddress(token, tripId, activityId, address) {
         const value = address;
         try{
             const response = await axios.put(
                 `${ScheduleService.BASE_URL}/${tripId}/schedule/activity/${activityId}/address`,
+                { value },
+                {
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                        "Content-Type": "application/json"
+                    }
+                });
+            console.log(response);
+            return response.data;
+        }
+        catch(err) {
+            throw (err);
+        }
+    }
+
+    // Cambia time activity
+    static async changeActivityTime(token, tripId, activityId, startTime, endTime) {
+        const value = [startTime, endTime];
+        try{
+            const response = await axios.put(
+                `${ScheduleService.BASE_URL}/${tripId}/schedule/activity/${activityId}/time`,
                 { value },
                 {
                     headers: {

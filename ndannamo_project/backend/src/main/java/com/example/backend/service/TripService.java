@@ -1,9 +1,12 @@
 package com.example.backend.service;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -566,7 +569,7 @@ public class TripService {
             throw new ResourceNotFoundException("Trip not found");
         }
 
-        // Cambio le info
+        // Cambio valore
         eventService.changeActivityName(trip, activityId, newName);
     }
 
@@ -579,7 +582,7 @@ public class TripService {
             throw new ResourceNotFoundException("Trip not found");
         }
 
-        // Cambio le info
+        // Cambio valore
         eventService.changeActivityPlace(trip, activityId, newPlace);
     }
 
@@ -592,7 +595,7 @@ public class TripService {
             throw new ResourceNotFoundException("Trip not found");
         }
 
-        // Cambio le info
+        // Cambio valore
         eventService.changeActivityDate(trip, activityId, newDate);
     }
 
@@ -605,8 +608,34 @@ public class TripService {
             throw new ResourceNotFoundException("Trip not found");
         }
 
-        // Cambio le info
+        // Cambio valore
         eventService.changeActivityAddress(trip, activityId, newAddress);
+    }
+
+    // Cambia orario activity
+    public void changeActivityTime(String email, long tripId, long activityId, List<String> time) {
+        Trip trip = getTripById(tripId);
+
+        // Controllo che l'utente loggato faccia parte della trip
+        if (!userIsAParticipant(email, trip)) {
+            throw new ResourceNotFoundException("Trip not found");
+        }
+
+        // Controllo che siano stati passati due valori
+        if (time.size() != 2) {
+            throw new ResourceNotFoundException("Must provide exactly two values, start time and end time");
+        }
+
+        // Ottieni oggetti time
+        DateTimeFormatter parser = DateTimeFormatter.ofPattern("HH:mm", Locale.ITALIAN);
+        LocalTime startTime = LocalTime.parse(time.get(0), parser);
+        LocalTime endTime = null;
+        if (time.get(1) != null) {                                     // endtime e' opzionale, puo' essere null
+            endTime = LocalTime.parse(time.get(1), parser);
+        }
+
+        // Cambio valore
+        eventService.changeActivityTime(trip, activityId, startTime, endTime);
     }
 
     // Cambia info activity

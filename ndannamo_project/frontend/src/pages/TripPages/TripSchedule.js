@@ -102,6 +102,10 @@ export default function TripSchedule() {
         setSeedSchedule(Math.random());
     }
 
+    // Per ricaricare l'evento aperto quando apri un nuovo evento
+    const [seedEventOpen, setSeedEventOpen] = useState(1);
+
+
     // Per gestire la selezione di un evento
     const [selectedEvent, setSelectedEvent] = useState(null);
     const [selectedEventLatitude, setSelectedEventLatitude] = useState("");
@@ -239,6 +243,9 @@ export default function TripSchedule() {
     }
 
     const changeSelectedEvent = async (event) => {
+
+        setSeedEventOpen(Math.random());
+
         var coords = await fetchCoordinatesFromBackend(event);
         if (coords) {
             setSelectedEventLatitude(coords[0]);
@@ -320,7 +327,7 @@ export default function TripSchedule() {
                         </div>
                     </div>
                     <div id="event-info">
-                        <EventOpen event={selectedEvent} latitude={selectedEventLatitude} longitude={selectedEventLongitude} reloadSchedule={reloadScheduleOnLeft}/>
+                        <EventOpen key={seedEventOpen} event={selectedEvent} latitude={selectedEventLatitude} longitude={selectedEventLongitude} reloadSchedule={reloadScheduleOnLeft}/>
                     </div>
                 </div>
             </div>
