@@ -6,6 +6,9 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import {Dropdown} from "react-bootstrap";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
+import valigiaLogo from "../static/valigia logo.png";
+import scrittaLogo from "../static/scritta logo.png";
+
 
 function Navbar() {
     const { isAuthenticated, logout } = useAuth();
@@ -23,25 +26,25 @@ function Navbar() {
 
     return (
         <div className="navbar">
-            <div className="logo">
-                <span id="title">NDANNAMO</span>
-                <span id="subtitle">WHERE ARE WE GOING</span>
-            </div>
-            <div className="center">
-                <Link to="/" className="centerEl">Home</Link>
-                <Link to="/trips" className="centerEl">Trip</Link>
-            </div>
+            <Link to="/">
+                <div className="logo">
+                    <img id="valigia-logo" src={valigiaLogo}></img>
+                    <img id="scritta-logo" src={scrittaLogo}></img>
+                </div>
+            </Link>
             {isAuthenticated && (
                 <Dropdown drop="down">
                     <Dropdown.Toggle variant="success" id="dropdown-basic">
-                        <i className="bi bi-passport"></i>
+                        {/*<i className="bi bi-passport"></i>*/}
+                        <i className="bi bi-person-fill"></i>
                     </Dropdown.Toggle>
 
                     {/* Usa la classe CSS personalizzata per il menu */}
                     <Dropdown.Menu className="dropdown-menu-custom">
-                        <Dropdown.Item> <Link to="/profile">My profile</Link> </Dropdown.Item>
+                        <Dropdown.Item as={Link} to="/profile">My profile</Dropdown.Item>
+                        <Dropdown.Item as={Link} to="/main">My trips</Dropdown.Item>
                         <Dropdown.Divider />
-                        <Dropdown.Item><Link to="/" onClick={handleLogout}>Logout</Link></Dropdown.Item>
+                        <Dropdown.Item as={Link} to="/" onClick={handleLogout}>Logout</Dropdown.Item>
                     </Dropdown.Menu>
                 </Dropdown>
             )}

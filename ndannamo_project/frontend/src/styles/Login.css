@@ -6,15 +6,10 @@
     justify-content: center; /* Centra orizzontalmente */
     align-items: center; /* Centra verticalmente */
     width: 100%;
-    /*background-color: #7dc39f;
-    background-image: url("../static/sfondo_home.png");
-    background-size: 100% 100%;
-    background-position: center;
-    background-repeat: no-repeat;*/
 }
 
 .log-container {
-    height: 53%;
+    /*height: 53%;*/
     width: 55%;
     min-width: fit-content;
     min-height: fit-content;
@@ -36,15 +31,17 @@
 
 }
 .form-box p {
-    font-size: 20px;
+    font-size: 0.9vw;
 }
+/*
 .image-box {
     width: 70%;
     height:100%;
 }
+*/
 img{
-    width: 300px;
-    height: 300px;
+    width: 18vw;
+    /*height: 300px;*/
 
 }
 
@@ -55,11 +52,11 @@ img{
 }
 .form-box #title{
     font-weight: bold;
-    font-size: 20px;
+    font-size: 1.5vw;
 }
 .form-box #subtitle{
-    margin-top:20px;
-    font-size: 15px;
+    margin-top:2vh;
+    font-size: 0.8vw;
     text-decoration: none;
     color:#004b3f;
 }
@@ -71,31 +68,35 @@ img{
 
 }
 .error-message {
-    font-size: 16px;
-    margin-top: 10px;
-    margin-bottom: -10px;
+    font-size: 0.8vw;
+    margin-top: 1.5vh;
     color: #a94442;
 }
 form {
     display: flex;
     flex-direction: column;
     align-items:center;
-    margin-top: 20px;
+    margin-top: 2vh;
 }
 
 form input {
-    padding: 10px;
-    margin-bottom: 10px;
+    padding: 1vh 0.5vw;
+    margin: 1vh 0;
     border:none;
-    width: 220px;
-    background:#eee5d4;
+    width: 12vw;
+    background:none;
     border-radius:60px;
+    font-size: 0.9vw;
+}
+
+form .wrong-input {
+    border: 2px solid #a94442;
 }
 
 form button {
     padding: 10px 20px;
     background-color: #004b3f;
-    width:220px;
+    width: 12vw;
     color: #fff;
     border: none;
     border-radius: 25px;
@@ -104,8 +105,28 @@ form button {
 
 }
 #logo{
-    height: 150px;
-    width:150px;
+    /*height: 150px;*/
+    width:10vw;
     margin-right:20px;
     margin:40px;
+}
+
+
+#form-fields {
+    display: flex;
+    flex-direction: column;
+}
+
+#password-and-eye {
+    display: flex;
+    margin-bottom: 2vh;
+}
+
+.clickable {
+    cursor: pointer;
+}
+.bi-eye-fill, .bi-eye-slash-fill {
+    align-self: center;
+    padding: 0 0.4vw;
+    margin-bottom: 0 !important;
 }

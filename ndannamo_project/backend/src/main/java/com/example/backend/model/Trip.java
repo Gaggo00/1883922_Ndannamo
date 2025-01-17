@@ -33,4 +33,15 @@ public class Trip {
         joinColumns = @JoinColumn(name = "trip_id"), 
         inverseJoinColumns = @JoinColumn(name = "user_id"))
     private List<User> participants = new ArrayList<>();
+
+
+    // attivita'/viaggi/notti della trip
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "trip")
+    private List<Event> schedule = new ArrayList<>();
+
+
+    // spese della trip
+    @OneToMany
+    private List<Expense> expenses = new ArrayList<>();
+
 }

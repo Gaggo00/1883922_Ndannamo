@@ -4,26 +4,21 @@ package com.example.backend.model;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.*;
 
-import java.time.LocalTime;
 
 @Entity
 @Data
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name="nights")
 public class Night extends Event {
 
+    // Per EventDTO
+    private EventType type = EventType.NIGHT;
 
     @ManyToOne
-    @JoinColumn(name = "overnightStay_id", nullable = false)
-    private OvernightStay overnightStay;
-
-    private LocalTime startCheckInTime;
-    private LocalTime endCheckInTime;
-    private LocalTime startCheckOutTime;
-    private LocalTime endCheckOutTime;
-
+    @JoinColumn(name = "overnightStay_id", nullable = true)
+    private OvernightStay overnightStay = null;
 }

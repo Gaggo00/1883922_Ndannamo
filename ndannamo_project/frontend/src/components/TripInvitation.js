@@ -5,11 +5,30 @@ import UserService from '../services/UserService';
 
 import logo from '../static/Logo app.png'
 import "../styles/TripPreview.css";
+import DateUtilities from '../utils/DateUtilities';
 
 
 export default function TripInvitation({trip, reloadProfile}) {
 
     const navigate = useNavigate();
+
+    const startDate = DateUtilities.yyyymmdd_To_ddmmyy(trip.startDate, "-", "/");
+    const endDate = DateUtilities.yyyymmdd_To_ddmmyy(trip.startDate, "-", "/");
+
+    var locationString = trip.locations[0];
+    if (trip.locations.length > 1) {
+        locationString += ", ...";
+    }
+
+    var participantsStr = trip.list_participants[0];
+    if (trip.list_participants.length > 1) {
+        participantsStr += ", " + trip.list_participants[1];
+    }
+    if (trip.list_participants.length > 2) {
+        const quantity = trip.list_participants.length - 2;
+        participantsStr += " and " + quantity + " more";
+    }
+
 
     const acceptInvitation = async () => {
         try {
@@ -54,11 +73,13 @@ export default function TripInvitation({trip, reloadProfile}) {
     };
 
     return (
-        <div className="tripBlock">
-            <p id="title">{trip.title}</p>
-            <p id="date">{trip.startDate} - {trip.endDate}</p>
-            <p>{trip.locations.toString()}</p>
-            <p>{trip.list_participants.length} participants</p>
+        <div className="tripBlock invitation">
+            <div id="tripBlockContent">
+                <div id="title">{trip.title}</div>
+                <div id="date"><i className="bi bi-calendar3 icon-with-margin"></i>{startDate} - {endDate}</div>
+                <div id="location"><i className="bi bi-geo-alt icon-with-margin"></i>{locationString}</div>
+                <div id="participants"><i className="bi bi-people icon-with-margin"></i>{participantsStr}</div>
+            </div>
             <div id="buttonRow">
                 <button onClick={acceptInvitation}>Accept</button>
                 <button onClick={refuseInvitation}>Refuse</button>
