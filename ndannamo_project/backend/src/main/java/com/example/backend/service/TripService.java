@@ -654,6 +654,46 @@ public class TripService {
 
     //***** TRAVEL:
 
+
+    // Cambia indirizzo travel
+    public void changeTravelAddress(String email, long tripId, long travelId, String newAddress) {
+        Trip trip = getTripById(tripId);
+
+        // Controllo che l'utente loggato faccia parte della trip
+        if (!userIsAParticipant(email, trip)) {
+            throw new ResourceNotFoundException("Trip not found");
+        }
+
+        // Cambio valore
+        eventService.changeTravelAddress(trip, travelId, newAddress);
+    }
+
+    // Cambia orario travel
+    public void changeTravelTime(String email, long tripId, long travelId, List<String> time) {
+        Trip trip = getTripById(tripId);
+
+        // Controllo che l'utente loggato faccia parte della trip
+        if (!userIsAParticipant(email, trip)) {
+            throw new ResourceNotFoundException("Trip not found");
+        }
+
+        // Controllo che siano stati passati due valori
+        if (time.size() != 2) {
+            throw new ResourceNotFoundException("Must provide exactly two values, start time and end time");
+        }
+
+        // Ottieni oggetti time
+        DateTimeFormatter parser = DateTimeFormatter.ofPattern("HH:mm", Locale.ITALIAN);
+        LocalTime startTime = LocalTime.parse(time.get(0), parser);
+        LocalTime endTime = null;
+        if (time.get(1) != null) {                                     // endtime e' opzionale, puo' essere null
+            endTime = LocalTime.parse(time.get(1), parser);
+        }
+
+        // Cambio valore
+        eventService.changeTravelTime(trip, travelId, startTime, endTime);
+    }
+
     // Cambia info travel
     public void changeTravelInfo(String email, long tripId, long travelId, String newInfo) {
         Trip trip = getTripById(tripId);

@@ -190,6 +190,48 @@ class ScheduleService {
 
     //***** TRAVEL:
 
+    // Cambia indirizzo travel
+    static async changeTravelAddress(token, tripId, travelId, address) {
+        const value = address;
+        try{
+            const response = await axios.put(
+                `${ScheduleService.BASE_URL}/${tripId}/schedule/travel/${travelId}/address`,
+                { value },
+                {
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                        "Content-Type": "application/json"
+                    }
+                });
+            console.log(response);
+            return response.data;
+        }
+        catch(err) {
+            throw (err);
+        }
+    }
+
+    // Cambia time travel
+    static async changeTravelTime(token, tripId, travelId, startTime, endTime) {
+        const value = [startTime, endTime];
+        try{
+            const response = await axios.put(
+                `${ScheduleService.BASE_URL}/${tripId}/schedule/travel/${travelId}/time`,
+                { value },
+                {
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                        "Content-Type": "application/json"
+                    }
+                });
+            console.log(response);
+            return response.data;
+        }
+        catch(err) {
+            throw (err);
+        }
+    }
+
     // Cambia info travel
     static async changeTravelInfo(token, tripId, travelId, value) {
         try{

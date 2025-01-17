@@ -86,7 +86,7 @@ export default function ScheduleDay({day, selectEvent, reloadSchedule}) {
 
 
     return (
-        <div className="day">
+        <div className="day" id={"day-"+day.date}>
             <div className="day-date">{DateUtilities.yyyymmdd_To_ddMONTH(day.date)}</div>
             <div className="hidden-button-parent">
                 <button className="hidden-button" title='New activity' onClick={()=>{createActivity("4:55")}}><i className="bi bi-plus-lg h4"></i></button>

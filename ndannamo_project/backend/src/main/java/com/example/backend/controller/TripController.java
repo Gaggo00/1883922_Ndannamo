@@ -495,6 +495,48 @@ public class TripController {
 
     //***** TRAVEL:
 
+
+    // Cambia indirizzo travel
+    @PutMapping(value={"/{id}/schedule/travel/{travel_id}/address", "/{id}/schedule/travel/{travel_id}/address/"})
+    public ResponseEntity<?> changeTravelAddress(@PathVariable Long id, @PathVariable Long travel_id, @Valid @RequestBody GenericType<String> newAddress) {
+
+        try {
+            // prendi l'utente dal token
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String email = authentication.getName();
+
+            // cambia le info
+            tripService.changeTravelAddress(email, id, travel_id, newAddress.getValue());
+            return ResponseEntity.ok().body("Travel info changed");
+        }
+        catch (Exception ex) {
+            return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(ex.getMessage());
+        }
+    }
+
+    // Cambia orario travel
+    @PutMapping(value={"/{id}/schedule/travel/{travel_id}/time", "/{id}/schedule/travel/{travel_id}/time/"})
+    public ResponseEntity<?> changeTravelTime(@PathVariable Long id, @PathVariable Long travel_id, @Valid @RequestBody GenericList<String> time) {
+
+        try {
+            // prendi l'utente dal token
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String email = authentication.getName();
+
+            // cambia le info
+            tripService.changeTravelTime(email, id, travel_id, time.getValue());
+            return ResponseEntity.ok().body("Travel time changed");
+        }
+        catch (Exception ex) {
+            return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(ex.getMessage());
+        }
+    }
+
+
     // Cambia info travel
     @PutMapping(value={"/{id}/schedule/travel/{travel_id}/info", "/{id}/schedule/travel/{travel_id}/info/"})
     public ResponseEntity<?> changeTravelInfo(@PathVariable Long id, @PathVariable Long travel_id, @Valid @RequestBody GenericType<String> newTitle) {

@@ -5,6 +5,7 @@ import Map from './Map';
 import DateUtilities from '../../../utils/DateUtilities';
 
 import ScheduleService from '../../../services/ScheduleService';
+import ConfirmDelete from '../../../common/ConfirmDelete';
 
 import '../TripSchedule.css'
 
@@ -15,6 +16,15 @@ export default function EventOpenActivity({activity, latitude, longitude, reload
     const INFO_MAX_CHARACTERS = 500;
 
     const navigate = useNavigate();
+
+    // Per il pop up di conferma
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const handleOverlayClick = (e) => {
+        // Verifica se l'utente ha cliccato sull'overlay e non sul contenuto del modal
+        if (e.target.className === "modal-overlay") {
+            setIsModalOpen(false);
+        }
+    };
 
 
     // Per eliminare l'activity
@@ -111,7 +121,7 @@ export default function EventOpenActivity({activity, latitude, longitude, reload
             if (response) {
                 // aggiorna in locale
                 activity.address = newAddress;
-                setEditingName(false);
+                setEditingAddress(false);
         
                 // ricarica la schedule a sinistra
                 reloadSchedule(null, false, false);
@@ -129,12 +139,22 @@ export default function EventOpenActivity({activity, latitude, longitude, reload
 
 
     // Per modificare l'orario
+    const getEndTime = () => {
+        if (activity.endTime != null) return activity.endTime;
+        return activity.startTime;
+    }
     const [editingTime, setEditingTime] = useState(false);
     const [newStartTime, setNewStartTime] = useState(activity.startTime);
-    const [newEndTime, setNewEndTime] = useState(activity.endTime);
+    const [newEndTime, setNewEndTime] = useState(getEndTime());
 
 
     const saveNewTime = async () => {
+
+        // Se e' tutto uguale a prima, non fare nulla
+        if (newStartTime == activity.startTime && newEndTime == activity.endTime) {
+            setEditingTime(false);
+            return;
+        }
 
         // manda richiesta al server
         try {
@@ -234,22 +254,14 @@ export default function EventOpenActivity({activity, latitude, longitude, reload
         }
     };
 
-    const validateEditableContent = (e, divId, maxCharacters) => {
-        const div = document.getElementById(divId);
-        var content = div.textContent;
-
-        // Limita numero di caratteri
-        if (content.length >= maxCharacters) {
-            div.textContent = content.substring(0, maxCharacters);
-        }
-        console.log(div.textContent);
-    }
+    
 
 
     return (
         <div id="event-open">
             <div className='top-row'>
-                <button onClick={deleteActivity} id="delete-button" title='Delete activity' className='float-right no-background no-border delete-button'><i className="bi bi-trash3-fill h5"/></button>
+                {/* Pulsante per eliminare l'activity */}
+                <button onClick={()=>{setIsModalOpen(true);}} id="delete-button" title='Delete activity' className='float-right no-background no-border delete-button'><i className="bi bi-trash3-fill h5"/></button>
                 <div className='date'>
                     {DateUtilities.yyyymmdd_To_WEEKDAYddMONTH(activity.date)}
                 </div>
@@ -291,6 +303,7 @@ export default function EventOpenActivity({activity, latitude, longitude, reload
 
             <div className='event-info'>
                 <div className='event-info-top-row'>
+                    {/* Address */}
                     <div className='row-element hidden-btn-parent'>
                         <div className='flex-row'>
                             <div className='label'>Address</div>
@@ -305,22 +318,19 @@ export default function EventOpenActivity({activity, latitude, longitude, reload
                                 </button>
                             )}
                         </div>
-                        {!editingAddress ? (
-                            <div className='address'>
-                                {/* Indirizzo */}
+                        <div className='address'>
+                            {!editingAddress ? (
                                 <div className='value'>{activity.address}</div>
-                            </div>
-                        ) : (
-                            <div className='address'>
-                                {/* Campo editabile dove modificare l'indirizzo */}
+                            ) : (
                                 <input type="text" 
                                     className="value edit-address-input"
                                     value={newAddress}
                                     onChange={(e) => {handleInputChange(e, true, ADDRESS_MAX_CHARACTERS, setNewAddress);}}
                                     onKeyDown={(e) => {handleKeyDown(e, saveNewAddress);}}/>
-                            </div>
-                        )}
+                            )}
+                        </div>
                     </div>
+                    {/* Start time */}
                     <div className='row-element hidden-btn-parent'>
                         <div className='flex-row'>
                             <div className='label'>Time</div>
@@ -345,9 +355,30 @@ export default function EventOpenActivity({activity, latitude, longitude, reload
                                 onKeyDown={(e) => {handleKeyDown(e, saveNewTime);}}/>
                         )}
                     </div>
-                    <div className='row-element'>
-                        <div className='label'>End</div>
-                        <div className='value'>{activity.endTime}</div>
+                    {/* End time */}
+                    <div className='row-element hidden-btn-parent'>
+                        <div className='flex-row'>
+                            <div className='label'>End</div>
+                            {!editingTime ? (
+                                <button onClick={() => {setNewEndTime(activity.endTime);setEditingTime(true);}} title='Edit time'
+                                className='no-background no-border flex-column hidden-btn'>
+                                    <i className="bi bi-pencil-fill gray-icon spaced"/>
+                                </button>
+                            ) : (
+                                <button onClick={saveNewTime} title='Save' className='no-background no-border flex-column'>
+                                    <i className="bi bi-floppy-fill gray-icon spaced"/>
+                                </button>
+                            )}
+                        </div>
+                        {!editingTime ? (
+                            <div className='value'>{activity.endTime}</div>
+                        ) : (
+                            <input type="time" 
+                                className="value edit-time-input"
+                                value={newEndTime}
+                                onChange={(e) => {handleInputChange(e, false, 10, setNewEndTime);}}
+                                onKeyDown={(e) => {handleKeyDown(e, saveNewTime);}}/>
+                        )}
                     </div>
                     <div className='row-element'>
                         <div className='label'>Weather</div>
@@ -382,6 +413,16 @@ export default function EventOpenActivity({activity, latitude, longitude, reload
                 <div className='attachments'>
                     <div className='label'>Attachments</div>
                 </div>
+                {isModalOpen && (
+                    <div className="modal-overlay">
+                        <div className="trip-box">
+                            <ConfirmDelete
+                                message={"Do you really want to delete activity \"" + activity.name + "\"?"}
+                                onConfirm={deleteActivity}
+                                onClose={()=>{setIsModalOpen(false);}}/>
+                        </div>
+                    </div>
+                )} 
             </div>
         </div>
     );

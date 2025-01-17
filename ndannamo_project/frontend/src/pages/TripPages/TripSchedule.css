@@ -131,6 +131,13 @@
 }
 
 
+.no-selected-events {
+    font-size: 1.5vw;
+    height: 100%;
+    align-content: center;
+    color: rgb(122, 122, 122);
+}
+
 
 /* Pulsante per eliminare un evento */
 .delete-button {

@@ -71,23 +71,7 @@ export default function TripSchedule() {
     const ACTIVITY = "ACTIVITY";
     const TRAVEL = "TRAVEL";
 
-    // Per gestire il pop-up da cui creare nuovi activity/travel
-    const [isModalOpen, setIsModalOpen] = useState(false);
-
-    const openModal = () => {
-        setIsModalOpen(true);
-    };
-
-    const closeModal = () => {
-        setIsModalOpen(false);
-    };
-
-    const handleOverlayClick = (e) => {
-        // Verifica se l'utente ha cliccato sull'overlay e non sul contenuto del modal
-        if (e.target.className === "modal-overlay") {
-            closeModal();
-        }
-    };
+    
 
     // Per ricaricare l'elenco a sinistra quando vengono modificati gli eventi
     const [seedSchedule, setSeedSchedule] = useState(1);
@@ -308,6 +292,13 @@ export default function TripSchedule() {
         }
     }
 
+
+    // Per scrollare a un certo giorno, la data deve essere passata come "2025-01-21"
+    const scrollToDay = (date) => {
+        const id = "day-" +  date;
+        document.getElementById(id).scrollIntoView({behavior: 'smooth'});
+    }
+
     return (
         <div className="trip-info">
             <InternalMenu />
@@ -318,7 +309,8 @@ export default function TripSchedule() {
                 <div className="trip-details trip-details-schedule">
                     <div id="schedule" key={seedSchedule}>
                         <div id="calendar">
-                            Qui metteremo il calendario
+                            Qui metteremo il calendario<br/>
+                            <button onClick={() => scrollToDay("2025-01-25")}>scrolla a 25 gennaio (temporaneo)</button>
                         </div>
                         <div id="events">
                             {tripDays.map((day, index) =>
@@ -331,14 +323,6 @@ export default function TripSchedule() {
                     </div>
                 </div>
             </div>
-            {/* Qui c'era il form pop-up per creare le activity/travel, l'ho rimosso. Pero' possiamo mettere qua sotto i messaggi di conferma
-            prima di eliminare qualcosa */}
-            {isModalOpen && (
-                <div className="modal-overlay" onClick={handleOverlayClick}>
-                    <div className="new-event-box">
-                    </div>
-                </div>
-            )}
         </div>
     );
 }

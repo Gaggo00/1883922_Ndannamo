@@ -172,6 +172,23 @@ public class EventService {
         changeEventDate(EventType.ACTIVITY, trip, activityId, newDate);
     }
 
+    // Cambia indirizzo activity
+    public void changeActivityAddress(Trip trip, long activityId, String newAddress) {
+        // Trova l'activity
+        Activity activity = getActivityById(activityId);
+
+        // Controlla che l'activity faccia parte della trip
+        if (activity.getTrip() != trip) {
+            throw new ResourceNotFoundException("Activity not found!");
+        }
+
+        // Cambia valore
+        activity.setAddress(newAddress);
+
+        // Aggiorna l'activity
+        activityRepository.save(activity);
+    }
+
     // Cambia orario activity
     public void changeActivityTime(Trip trip, long activityId, LocalTime newStartTime, LocalTime newEndTime) {
         // Trova l'activity
@@ -185,23 +202,6 @@ public class EventService {
         // Cambia valore
         activity.setStartTime(newStartTime);
         activity.setEndTime(newEndTime);
-
-        // Aggiorna l'activity
-        activityRepository.save(activity);
-    }
-
-    // Cambia indirizzo activity
-    public void changeActivityAddress(Trip trip, long activityId, String newAddress) {
-        // Trova l'activity
-        Activity activity = getActivityById(activityId);
-
-        // Controlla che l'activity faccia parte della trip
-        if (activity.getTrip() != trip) {
-            throw new ResourceNotFoundException("Activity not found!");
-        }
-
-        // Cambia valore
-        activity.setAddress(newAddress);
 
         // Aggiorna l'activity
         activityRepository.save(activity);
@@ -270,9 +270,66 @@ public class EventService {
         changeEventPlace(EventType.TRAVEL, trip, travelId, newPlace);
     }
 
-    // Cambia data travel
+    // Cambia data partenza travel
     public void changeTravelDate(Trip trip, long travelId, LocalDate newDate) {
         changeEventDate(EventType.TRAVEL, trip, travelId, newDate);
+    }
+
+    // Cambia data arrivo travel
+    public void changeTravelArrivalDate(Trip trip, long travelId, LocalDate newArrivalDate) {
+        // Trova travel
+        Travel travel = getTravelById(travelId);
+
+        // Controlla che l'activity faccia parte della trip
+        if (travel.getTrip() != trip) {
+            throw new ResourceNotFoundException("Travel not found!");
+        }
+
+        // Controlla che la data di arrivo non sia prima di quella di partenza
+        if (travel.getDate().isAfter(newArrivalDate)) {
+            throw new ResourceNotFoundException("Arrival date can't be before departure date!");
+        }
+
+        // Cambia info
+        travel.setArrivalDate(newArrivalDate);
+
+        // Aggiorna travel
+        travelRepository.save(travel);
+    }
+
+    // Cambia indirizzo activity
+    public void changeTravelAddress(Trip trip, long travelId, String newAddress) {
+        // Trova travel
+        Travel travel = getTravelById(travelId);
+
+        // Controlla che il travel faccia parte della trip
+        if (travel.getTrip() != trip) {
+            throw new ResourceNotFoundException("Travel not found!");
+        }
+
+        // Cambia valore
+        travel.setAddress(newAddress);
+
+        // Aggiorna l'activity
+        travelRepository.save(travel);
+    }
+
+    // Cambia orario activity
+    public void changeTravelTime(Trip trip, long travelId, LocalTime newStartTime, LocalTime newEndTime) {
+        // Trova travel
+        Travel travel = getTravelById(travelId);
+
+        // Controlla che l'activity faccia parte della trip
+        if (travel.getTrip() != trip) {
+            throw new ResourceNotFoundException("Travel not found!");
+        }
+
+        // Cambia valore
+        travel.setDepartureTime(newStartTime);
+        travel.setArrivalTime(newEndTime);
+
+        // Aggiorna l'activity
+        travelRepository.save(travel);
     }
 
     // Cambia info travel
