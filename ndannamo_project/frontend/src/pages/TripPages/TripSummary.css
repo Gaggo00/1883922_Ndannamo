@@ -149,7 +149,7 @@
     justify-content: center;
 
 }
-.date{
+.dates .date{           /* non levate ".dates" se no si incasina il CSS della data della sezione Schedule */
     width: 185px;
     height: 55px;
     background: #FFBC70;

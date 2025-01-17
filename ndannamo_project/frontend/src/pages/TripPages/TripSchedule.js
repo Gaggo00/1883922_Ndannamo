@@ -6,7 +6,6 @@ import MapService from '../../services/MapService';
 
 import InternalMenu from "./InternalMenu";
 import ScheduleDay from "./ScheduleEvents/ScheduleDay"
-import CreateEventForm from './ScheduleEvents/CreateEventForm';
 import EventOpen from './ScheduleEvents/EventOpen';
 
 import DateUtilities from '../../utils/DateUtilities';
@@ -53,15 +52,19 @@ class Travel extends ActivityAndTravel {
     }
 }
 class Day {
-    constructor(tripId, date, activitiesAndTravels, night) {
+    constructor(tripId, date, activitiesAndTravels, night, mainPlace) {
         this.tripId = tripId;
         this.date = date;                                      // stringa tipo: "1 Ottobre"
         this.activitiesAndTravels = activitiesAndTravels;      // array di oggetti Activity e oggetti Travel  
         this.night = night;                                    // singolo oggetto Night
+        this.mainPlace = mainPlace;                             // citta' della night, o citta' della night del giorno prima (se e' l'ultimo giorno)
     }
 }
 
 export default function TripSchedule() {
+    const { id } = useParams();
+    const location = useLocation();
+    const tripInfo = location.state?.trip; // Recupera il tripInfo dallo stato
 
     // Per il campo "type" negli elementi di schedule
     const NIGHT = "NIGHT";
@@ -89,11 +92,13 @@ export default function TripSchedule() {
     // Per ricaricare l'elenco a sinistra quando vengono modificati gli eventi
     const [seedSchedule, setSeedSchedule] = useState(1);
 
-    const reloadScheduleOnLeft = async (eventToSelectId=null, deselectEvent=false) => {
+    const reloadScheduleOnLeft = async (eventToSelectId=null, deselectEvent=false, fetchFromBackend=true) => {
         if (deselectEvent) {
             setSelectedEvent(null);
         }
-        await fetchSchedule(tripInfo.startDate, tripInfo.endDate, eventToSelectId);
+        if (fetchFromBackend) {
+            await fetchSchedule(tripInfo.startDate, tripInfo.endDate, eventToSelectId);
+        }
         setSeedSchedule(Math.random());
     }
 
@@ -102,9 +107,7 @@ export default function TripSchedule() {
     const [selectedEventLatitude, setSelectedEventLatitude] = useState("");
     const [selectedEventLongitude, setSelectedEventLongitude] = useState("");
 
-    const { id } = useParams();
-    const location = useLocation();
-    const tripInfo = location.state?.trip; // Recupera il tripInfo dallo stato
+
     // Struttura elementi EventDTO ricevuti dal backend
     const [schedule, setSchedule] = useState( [
         {
@@ -173,7 +176,7 @@ export default function TripSchedule() {
         // Inizializza array "days" con le date, poi riempio gli altri campi dopo
         var currentDay = startDate;
         for (var i=0; i<howManyDays; i++) {
-            days.push(new Day(tripId, currentDay, [], null));
+            days.push(new Day(tripId, currentDay, [], null, "Place"));
             currentDay = DateUtilities.getNextDay(currentDay);
         }
 
@@ -185,7 +188,8 @@ export default function TripSchedule() {
             if (event.type === NIGHT) {
                 const night = new Night(event.id, event.tripId, event.place, event.date, event.overnightStay);     // DA SISTEMARE overnightStay forse
                 days[index].night = night;
-                if (event.id === eventToSelectId) {
+                days[index].mainPlace = night.place;
+                if (event.id == eventToSelectId) {
                     changeSelectedEvent(night);
                 }
             }
@@ -209,6 +213,12 @@ export default function TripSchedule() {
             }
             
         });
+
+        // Imposta il posto dell'ultimo giorno, che non ha una notte, copiandolo dal giorno prima
+        // (Prima assicurati che ci siano almeno due giorni, anche se dovrebbe essere sempre cosi')
+        if (howManyDays > 1) {
+            days[howManyDays-1].mainPlace = days[howManyDays-2].mainPlace;
+        }
 
         const compareEventsByTime = (event1, event2) => {
             if ( event1.startTime < event2.startTime ){
@@ -243,6 +253,9 @@ export default function TripSchedule() {
 
 
     const fetchCoordinatesFromBackend = async (event) => {
+        if (!event.place) {
+            return;
+        }
         const placeArray = event.place.split(",");
         const city = placeArray[0].trim();
         var country = "";
@@ -272,7 +285,7 @@ export default function TripSchedule() {
     }
 
     const fetchCoordinatesFromExternalAPI = async (address, cityLat, cityLon, setLat, setLon) => {
-        console.log("fetching better coordinates");
+        //console.log("fetching better coordinates");
         try {
             const response = await MapService.getCoordinates(address, cityLat, cityLon);
 
@@ -302,7 +315,7 @@ export default function TripSchedule() {
                         </div>
                         <div id="events">
                             {tripDays.map((day, index) =>
-                                <ScheduleDay key={index} day={day} selectEvent={changeSelectedEvent} openCreateEventForm={openModal} reloadSchedule={reloadScheduleOnLeft}/>
+                                <ScheduleDay key={index} day={day} selectEvent={changeSelectedEvent} reloadSchedule={reloadScheduleOnLeft}/>
                             )}
                         </div>
                     </div>
@@ -311,10 +324,11 @@ export default function TripSchedule() {
                     </div>
                 </div>
             </div>
+            {/* Qui c'era il form pop-up per creare le activity/travel, l'ho rimosso. Pero' possiamo mettere qua sotto i messaggi di conferma
+            prima di eliminare qualcosa */}
             {isModalOpen && (
                 <div className="modal-overlay" onClick={handleOverlayClick}>
                     <div className="new-event-box">
-                        <CreateEventForm/>
                     </div>
                 </div>
             )}

@@ -14,6 +14,7 @@
 #event-info {
     width: 70%;
     height: 100%;
+    overflow-y: auto;
 }
 
 #calendar {
@@ -39,17 +40,22 @@
     margin: 0 3vw;
 }
 
-#event-open .date {
+#event-open .date, #event-open .place {
     font-size: 1.4vw;
-    margin-top: 2vh;
     color: rgb(100, 100, 100);
     font-weight: 550;
+}
+
+#event-open .date {
+    margin-top: 2vh;
 }
 
 #event-open .title {
     font-size: 2vw;
     font-weight: 650;
     margin-bottom: 2vh;
+    display: flex;
+    flex-direction: row;
 }
 
 #event-open .top-row {
@@ -110,6 +116,10 @@
     overflow-wrap: break-word;
 }
 
+#event-open .event-info-other .info-content {
+    width: 96%;
+}
+
 #event-open .attachments {
     width: 90%;
     text-align: left;
@@ -127,6 +137,13 @@
 
 /* Per modificare i campi di un evento */
 
+.bi.gray-icon {
+    color: rgb(95, 95, 95);
+}
+.bi.spaced {
+    margin: 0 0.5vw;
+}
+
 button.float-right {
     position: relative;
     float: right;
@@ -136,6 +153,10 @@ button.no-background {
 }
 button.no-border {
     border: none;
+}
+button.flex-column {
+    display:flex;
+    flex-direction: column;
 }
 
 .edit-info-button i {
@@ -151,8 +172,9 @@ button.no-border {
     border: 1px solid;
     padding: 2px;
 }
-.info-content {
-    width: 96%;
+
+.edit-title-input {
+    width: 31vw;
 }
 
 

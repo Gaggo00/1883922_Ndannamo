@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -553,6 +554,61 @@ public class TripService {
 
     /********************** FUNZIONI PER CAMBIARE I DATI DEGLI EVENTI **********************/
 
+    //***** ACTIVITY:
+
+
+    // Cambia nome activity
+    public void changeActivityName(String email, long tripId, long activityId, String newName) {
+        Trip trip = getTripById(tripId);
+
+        // Controllo che l'utente loggato faccia parte della trip
+        if (!userIsAParticipant(email, trip)) {
+            throw new ResourceNotFoundException("Trip not found");
+        }
+
+        // Cambio le info
+        eventService.changeActivityName(trip, activityId, newName);
+    }
+
+    // Cambia posto activity
+    public void changeActivityPlace(String email, long tripId, long activityId, String newPlace) {
+        Trip trip = getTripById(tripId);
+
+        // Controllo che l'utente loggato faccia parte della trip
+        if (!userIsAParticipant(email, trip)) {
+            throw new ResourceNotFoundException("Trip not found");
+        }
+
+        // Cambio le info
+        eventService.changeActivityPlace(trip, activityId, newPlace);
+    }
+
+    // Cambia data activity
+    public void changeActivityDate(String email, long tripId, long activityId, LocalDate newDate) {
+        Trip trip = getTripById(tripId);
+
+        // Controllo che l'utente loggato faccia parte della trip
+        if (!userIsAParticipant(email, trip)) {
+            throw new ResourceNotFoundException("Trip not found");
+        }
+
+        // Cambio le info
+        eventService.changeActivityDate(trip, activityId, newDate);
+    }
+
+    // Cambia indirizzo activity
+    public void changeActivityAddress(String email, long tripId, long activityId, String newAddress) {
+        Trip trip = getTripById(tripId);
+
+        // Controllo che l'utente loggato faccia parte della trip
+        if (!userIsAParticipant(email, trip)) {
+            throw new ResourceNotFoundException("Trip not found");
+        }
+
+        // Cambio le info
+        eventService.changeActivityAddress(trip, activityId, newAddress);
+    }
+
     // Cambia info activity
     public void changeActivityInfo(String email, long tripId, long activityId, String newInfo) {
         Trip trip = getTripById(tripId);
@@ -566,6 +622,21 @@ public class TripService {
         eventService.changeActivityInfo(trip, activityId, newInfo);
     }
 
+
+    //***** TRAVEL:
+
+    // Cambia info travel
+    public void changeTravelInfo(String email, long tripId, long travelId, String newInfo) {
+        Trip trip = getTripById(tripId);
+
+        // Controllo che l'utente loggato faccia parte della trip
+        if (!userIsAParticipant(email, trip)) {
+            throw new ResourceNotFoundException("Trip not found");
+        }
+
+        // Cambio le info
+        eventService.changeTravelInfo(trip, travelId, newInfo);
+    }
 
 
 

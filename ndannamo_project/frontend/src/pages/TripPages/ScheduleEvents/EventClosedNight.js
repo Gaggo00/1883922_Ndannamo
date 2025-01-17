@@ -2,7 +2,7 @@
 import "./ScheduleEvents.css";
 
 
-export default function NightEvent({night, selectEvent}) {
+export default function EventClosedNight({night, selectEvent}) {
 
     return (
         <div className="event-block night" onClick={() => {selectEvent(night)}}>

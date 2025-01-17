@@ -1,7 +1,9 @@
 package com.example.backend.service;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
+import java.util.function.Function;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,7 @@ import com.example.backend.model.Night;
 import com.example.backend.model.OvernightStay;
 import com.example.backend.model.Travel;
 import com.example.backend.model.Trip;
+import com.example.backend.model.Event.EventType;
 import com.example.backend.repositories.ActivityRepository;
 import com.example.backend.repositories.NightRepository;
 import com.example.backend.repositories.TravelRepository;
@@ -90,6 +93,7 @@ public class EventService {
     }
 
 
+
     /*************** NIGHT ***************/
 
     // Crea una nuova night
@@ -141,6 +145,68 @@ public class EventService {
     }
 
 
+    // Cambia nome activity
+    public void changeActivityName(Trip trip, long activityId, String newName) {
+        // Trova l'activity
+        Activity activity = getActivityById(activityId);
+
+        // Controlla che l'activity faccia parte della trip
+        if (activity.getTrip() != trip) {
+            throw new ResourceNotFoundException("Activity not found!");
+        }
+
+        // Cambia valore
+        activity.setName(newName);
+
+        // Aggiorna l'activity
+        activityRepository.save(activity);
+    }
+
+    // Cambia posto activity
+    public void changeActivityPlace(Trip trip, long activityId, String newPlace) {
+        changeEventPlace(EventType.ACTIVITY, trip, activityId, newPlace);
+    }
+
+    // Cambia data activity
+    public void changeActivityDate(Trip trip, long activityId, LocalDate newDate) {
+        changeEventDate(EventType.ACTIVITY, trip, activityId, newDate);
+    }
+
+    // Cambia orario activity
+    public void changeActivityTime(Trip trip, long activityId, LocalTime newStartTime, LocalTime newEndTime) {
+        // Trova l'activity
+        Activity activity = getActivityById(activityId);
+
+        // Controlla che l'activity faccia parte della trip
+        if (activity.getTrip() != trip) {
+            throw new ResourceNotFoundException("Activity not found!");
+        }
+
+        // Cambia valore
+        activity.setStartTime(newStartTime);
+        activity.setEndTime(newEndTime);
+
+        // Aggiorna l'activity
+        activityRepository.save(activity);
+    }
+
+    // Cambia indirizzo activity
+    public void changeActivityAddress(Trip trip, long activityId, String newAddress) {
+        // Trova l'activity
+        Activity activity = getActivityById(activityId);
+
+        // Controlla che l'activity faccia parte della trip
+        if (activity.getTrip() != trip) {
+            throw new ResourceNotFoundException("Activity not found!");
+        }
+
+        // Cambia valore
+        activity.setAddress(newAddress);
+
+        // Aggiorna l'activity
+        activityRepository.save(activity);
+    }
+
     // Cambia info activity
     public void changeActivityInfo(Trip trip, long activityId, String newInfo) {
         // Trova l'activity
@@ -151,7 +217,7 @@ public class EventService {
             throw new ResourceNotFoundException("Activity not found!");
         }
 
-        // Cambia info
+        // Cambia valore
         activity.setInfo(newInfo);
 
         // Aggiorna l'activity
@@ -198,4 +264,138 @@ public class EventService {
         return true;
     }
 
+
+    // Cambia posto travel
+    public void changeTravelPlace(Trip trip, long travelId, String newPlace) {
+        changeEventPlace(EventType.TRAVEL, trip, travelId, newPlace);
+    }
+
+    // Cambia data travel
+    public void changeTravelDate(Trip trip, long travelId, LocalDate newDate) {
+        changeEventDate(EventType.TRAVEL, trip, travelId, newDate);
+    }
+
+    // Cambia info travel
+    public void changeTravelInfo(Trip trip, long travelId, String newInfo) {
+        // Trova travel
+        Travel travel = getTravelById(travelId);
+
+        // Controlla che l'activity faccia parte della trip
+        if (travel.getTrip() != trip) {
+            throw new ResourceNotFoundException("Travel not found!");
+        }
+
+        // Cambia info
+        travel.setInfo(newInfo);
+
+        // Aggiorna travel
+        travelRepository.save(travel);
+    }
+
+
+
+    /*************** NIGHT ***************/
+
+    // Cambia posto night
+    public void changeNightPlace(Trip trip, long nightId, String newPlace) {
+        changeEventPlace(EventType.NIGHT, trip, nightId, newPlace);
+    }
+
+    // Cambia data night
+    public void changeNightDate(Trip trip, long nightId, LocalDate newDate) {
+        changeEventDate(EventType.NIGHT, trip, nightId, newDate);
+    }
+
+
+
+    
+
+    /*************** Per modificare i campi in comune a tutti e tre gli eventi ***************/
+
+    // Cambia posto evento
+    private void changeEventPlace(EventType eventType, Trip trip, long eventId, String newPlace) {
+        
+        // Trova l'evento
+        Event event;
+        switch(eventType) {
+            case ACTIVITY:
+                event = getActivityById(eventId);
+                break;
+            case TRAVEL:
+                event = getTravelById(eventId);
+                break;
+            case NIGHT:
+                event = getNightById(eventId);
+                break;
+            default:
+                throw new ResourceNotFoundException("Event not found!");
+        }
+
+        // Controlla che l'evento faccia parte della trip
+        if (event.getTrip() != trip) {
+            throw new ResourceNotFoundException("Event not found!");
+        }
+
+        // Cambia valore
+        event.setPlace(newPlace);
+
+        // Aggiorna l'evento
+        switch(eventType) {
+            case ACTIVITY:
+                activityRepository.save((Activity) event);
+                break;
+            case TRAVEL:
+                travelRepository.save((Travel) event);
+                break;
+            case NIGHT:
+                nightRepository.save((Night) event);
+                break;
+            default:
+                throw new ResourceNotFoundException("Event not found!");
+        }
+    }
+
+
+    // Cambia data evento
+    private void changeEventDate(EventType eventType, Trip trip, long eventId, LocalDate newDate) {
+        
+        // Trova l'evento
+        Event event;
+        switch(eventType) {
+            case ACTIVITY:
+                event = getActivityById(eventId);
+                break;
+            case TRAVEL:
+                event = getTravelById(eventId);
+                break;
+            case NIGHT:
+                event = getNightById(eventId);
+                break;
+            default:
+                throw new ResourceNotFoundException("Event not found!");
+        }
+
+        // Controlla che l'evento faccia parte della trip
+        if (event.getTrip() != trip) {
+            throw new ResourceNotFoundException("Event not found!");
+        }
+
+        // Cambia valore
+        event.setDate(newDate);
+
+        // Aggiorna l'evento
+        switch(eventType) {
+            case ACTIVITY:
+                activityRepository.save((Activity) event);
+                break;
+            case TRAVEL:
+                travelRepository.save((Travel) event);
+                break;
+            case NIGHT:
+                nightRepository.save((Night) event);
+                break;
+            default:
+                throw new ResourceNotFoundException("Event not found!");
+        }
+    }
 }
