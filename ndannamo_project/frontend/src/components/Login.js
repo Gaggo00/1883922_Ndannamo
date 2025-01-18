@@ -44,11 +44,11 @@ function Login() {
 
         // Controlla se nei campi c'e' scritto qualcosa
         var fieldsOk = true;
-        if (email.trim() == "") {
+        if (email.trim() === "") {
             setInvalidField("email-field");
             fieldsOk = false;
         }
-        if (password.trim() == "") {
+        if (password.trim() === "") {
             setInvalidField("password-field");
             fieldsOk = false;
         }

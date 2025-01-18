@@ -50,13 +50,13 @@ function Tricount() {
         });
         if (!formVisibility)
             setFormVisibility(true);
-        if (selected != -1 && itemsRefs.current[selected])
+        if (selected !== -1 && itemsRefs.current[selected])
             itemsRefs.current[selected].setClicked(false);
         setSelected(index);
     };
 
     function addSale() {
-        if (formData.status == 1 || !formVisibility) {
+        if (formData.status === 1 || !formVisibility) {
             setFormData({
                 title: "",
                 amount: 0,
@@ -70,7 +70,7 @@ function Tricount() {
                 onClose: () => setFormVisibility(false),
             });
             setFormVisibility(true);
-            if (selected != -1 && itemsRefs.current[selected])
+            if (selected !== -1 && itemsRefs.current[selected])
                 itemsRefs.current[selected].setClicked(false);
             setSelected(-1);
         }
@@ -109,7 +109,7 @@ function Tricount() {
                     </div>
                 </div>
                 <div className="tc-right">
-                    {formVisibility == true && <TCForm {...formData}/>}
+                    {formVisibility === true && <TCForm {...formData}/>}
                 </div>
             </div>
         </div>

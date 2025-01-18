@@ -35,12 +35,12 @@ export default class Trip {
         var month = date.getMonth().toString().padStart(2, '0');
         var year = date.getFullYear().toString()
 
-        if (format == 0) {
+        if (format === 0) {
             dateStr = month + separator + day
             if (yearB)
                 dateStr = year.concat(separator, dateStr)
         }
-        else if (format == 1) {
+        else if (format === 1) {
             dateStr = day + separator + month
             if (yearB)
                 dateStr = dateStr.concat(separator, year)

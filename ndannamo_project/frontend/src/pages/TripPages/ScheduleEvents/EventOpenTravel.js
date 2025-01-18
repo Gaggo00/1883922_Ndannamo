@@ -49,7 +49,7 @@ export default function EventOpenTravel({travel, latitude, longitude, reloadSche
 
     const saveNewInfo = async () => {
         // se non è cambiato niente, non fare nulla
-        if (travel.info == newInfo) {
+        if (travel.info === newInfo) {
             setEditingInfo(false);
             return;
         }
