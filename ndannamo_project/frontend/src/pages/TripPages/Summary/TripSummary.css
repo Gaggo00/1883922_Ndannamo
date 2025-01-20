@@ -9,6 +9,8 @@
 }
 .header-section{
     display: flex;
+    height: 6vh;
+    overflow: hidden; /* Nasconde il contenuto in eccesso */
     flex-direction: row;
     border-radius: 20px 20px 0px 0px;
     justify-content: space-between;
@@ -126,7 +128,7 @@
     justify-content: space-between;
 }
 .mini-section{
-    width: 32vw;
+    width: calc(35vw - 15px);
     height: 42vh;
     box-shadow: 0px 10px 4px 0px rgba(0, 0, 0, 0.25);
     border-radius: 20px;
@@ -140,6 +142,8 @@
     font-style: normal;
     font-weight: 600;
     line-height: normal;
+    display: flex;
+    flex-direction: column;
 }
 .dates{
     display: flex;
@@ -162,4 +166,11 @@
     width: 1vw;
     height: 1vw;
     margin: 10px 0 10px 0;
+}
+.undo-change #editable{
+    cursor: pointer;
+}
+.delete-location{
+    display: flex;
+    flex-direction: row;
 }
