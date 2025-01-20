@@ -7,59 +7,20 @@ import MapService from '../../services/MapService';
 import InternalMenu from "./InternalMenu";
 import ScheduleDay from "./ScheduleEvents/ScheduleDay"
 import EventOpen from './ScheduleEvents/EventOpen';
+import OvernightStayForm from './ScheduleEvents/OvernightStayForm';
+
+import Day from '../../models/Day';
+import Night from '../../models/Night';
+import Activity from '../../models/Activity';
+import Travel from '../../models/Travel';
+import OvernightStay from '../../models/OvernightStay';
 
 import DateUtilities from '../../utils/DateUtilities';
 
 import './InternalMenu.css'
 import './TripSchedule.css'
 
-class Event {
-    constructor(id, tripId, place, date) {
-        this.id = id;
-        this.tripId = tripId;
-        this.place = place;
-        this.date = date;
-    }
-}
 
-class Night extends Event {
-    constructor(id, tripId, place, date, overnightStay) {
-        super(id, tripId, place, date);
-        this.overnightStay = overnightStay;
-    }
-}
-class ActivityAndTravel extends Event {
-    constructor(id, tripId, place, date, address, startTime, endTime, info) {
-        super(id, tripId, place, date);
-        this.address = address;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.info = info;
-    }
-}
-class Activity extends ActivityAndTravel {
-    constructor(id, tripId, place, date, address, startTime, endTime, info, name) {
-        super(id, tripId, place, date, address, startTime, endTime, info);
-        this.name = name;
-
-    }
-}
-class Travel extends ActivityAndTravel {
-    constructor(id, tripId, place, date, address, startTime, endTime, info, destination, arrivalDate) {
-        super(id, tripId, place, date, address, startTime, endTime, info);
-        this.destination = destination;
-        this.arrivalDate = arrivalDate;
-    }
-}
-class Day {
-    constructor(tripId, date, activitiesAndTravels, night, mainPlace) {
-        this.tripId = tripId;
-        this.date = date;                                      // stringa tipo: "1 Ottobre"
-        this.activitiesAndTravels = activitiesAndTravels;      // array di oggetti Activity e oggetti Travel  
-        this.night = night;                                    // singolo oggetto Night
-        this.mainPlace = mainPlace;                             // citta' della night, o citta' della night del giorno prima (se e' l'ultimo giorno)
-    }
-}
 
 export default function TripSchedule() {
     const { id } = useParams();
@@ -71,7 +32,56 @@ export default function TripSchedule() {
     const ACTIVITY = "ACTIVITY";
     const TRAVEL = "TRAVEL";
 
+
+    const [overnightStayForForm, setOvernightStayForForm] = useState(null);
+
     
+    // Per il pop-up da cui creare un'accomodation (= OvernightStay nel backend)
+    const [isCreateAccomodationModalOpen, setIsCreateAccomodationModalOpen] = useState(false);
+    const openCreateAccomodationModal = (date) => {
+
+        // Campi per oggetto overnightStay
+        const id = null;    // stiamo creando una nuova accomodation, non abbiamo l'id
+        const startDate = null;
+        const endDate = null;
+        const startCheckInTime = null;
+        const endCheckInTime = null;
+        const startCheckOutTime = null;
+        const endCheckOutTime = null;
+        const address = "";
+        const contact = "";
+        const name = "";
+        const overnightStay = new OvernightStay(id, startDate, endDate, startCheckInTime, endCheckInTime, startCheckOutTime, endCheckOutTime, address, contact, name);
+
+        // Imposta use state
+        setOvernightStayForForm(overnightStay);
+
+        // TODO: settare la data "date" gia' spuntata nel form
+
+        setIsCreateAccomodationModalOpen(true);
+    };
+    const closeCreateAccomodationModal = () => {
+        setIsCreateAccomodationModalOpen(false);
+    };
+
+    // Per il pop-up da cui modificare un'accomodation (= OvernightStay nel backend)
+    const [isEditAccomodationModalOpen, setIsEditAccomodationModalOpen] = useState(false);
+    const openEditAccomodationModal = (overnightStay) => {
+        setIsEditAccomodationModalOpen(true);
+    };
+    const closeEditAccomodationModal = () => {
+        setIsEditAccomodationModalOpen(false);
+    };
+
+    const handleOverlayClick = (e) => {
+        // Verifica se l'utente ha cliccato sull'overlay e non sul contenuto del modal
+        if (e.target.className === "modal-overlay") {
+            closeCreateAccomodationModal();
+            closeEditAccomodationModal();
+        }
+    };
+
+
 
     // Per ricaricare l'elenco a sinistra quando vengono modificati gli eventi
     const [seedSchedule, setSeedSchedule] = useState(1);
@@ -319,10 +329,27 @@ export default function TripSchedule() {
                         </div>
                     </div>
                     <div id="event-info">
-                        <EventOpen key={seedEventOpen} event={selectedEvent} latitude={selectedEventLatitude} longitude={selectedEventLongitude} reloadSchedule={reloadScheduleOnLeft}/>
+                        <EventOpen key={seedEventOpen} event={selectedEvent} latitude={selectedEventLatitude} longitude={selectedEventLongitude} reloadSchedule={reloadScheduleOnLeft}
+                        openCreateAccomodationModal={openCreateAccomodationModal} openEditAccomodationModal={openEditAccomodationModal}/>
                     </div>
                 </div>
             </div>
+            {/* Pop up per creare una nuova accomodation */}
+            {isCreateAccomodationModalOpen && (
+                <div className="modal-overlay" onClick={handleOverlayClick}>
+                    <div className="new-event-box">
+                        <OvernightStayForm tripStartDate={tripInfo.startDate} tripEndDate={tripInfo.endDate} overnightStay={overnightStayForForm}/>
+                    </div>
+                </div>
+            )}
+            {/* Pop up per modificare una accomodation */}
+            {isEditAccomodationModalOpen && (
+                <div className="modal-overlay" onClick={handleOverlayClick}>
+                    <div className="new-event-box">
+                        <OvernightStayForm tripStartDate={tripInfo.startDate} tripEndDate={tripInfo.endDate} overnightStay={overnightStayForForm}/>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

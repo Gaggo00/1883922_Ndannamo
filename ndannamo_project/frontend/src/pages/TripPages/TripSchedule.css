@@ -165,14 +165,16 @@ button.no-background {
 button.no-border {
     border: none;
 }
-button.flex-column {
-    display:flex;
-    flex-direction: column;
-}
 
 .flex-row {
     display:flex;
     flex-direction: row;
+}
+.flex-column {
+    display:flex;
+    flex-direction: column;
+}
+.align-items-center {
     align-items: center;
 }
 

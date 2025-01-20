@@ -60,6 +60,7 @@
     color: black;
     font-weight: 600;
     font-size: 1vw;
+    cursor: pointer;
 }
 .internal-option p {
     margin: auto;

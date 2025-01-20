@@ -232,7 +232,7 @@ export default function EventOpenTravel({travel, latitude, longitude, reloadSche
                 <div className='event-info-top-row'>
                     {/* Address */}
                     <div className='row-element hidden-btn-parent'>
-                        <div className='flex-row'>
+                        <div className='flex-row align-items-center'>
                             <div className='label'>Address</div>
                             {!editingAddress ? (
                                 <button onClick={() => {setNewAddress(travel.address);setEditingAddress(true);}} title='Edit address'
@@ -259,7 +259,7 @@ export default function EventOpenTravel({travel, latitude, longitude, reloadSche
                     </div>
                     {/* Departure time */}
                     <div className='row-element hidden-btn-parent'>
-                        <div className='flex-row'>
+                        <div className='flex-row align-items-center'>
                             <div className='label'>Departure</div>
                             {!editingTime ? (
                                 <button onClick={() => {setNewStartTime(travel.startTime);setEditingTime(true);}} title='Edit time'
@@ -284,7 +284,7 @@ export default function EventOpenTravel({travel, latitude, longitude, reloadSche
                     </div>
                     {/* Arrival time */}
                     <div className='row-element hidden-btn-parent'>
-                        <div className='flex-row'>
+                        <div className='flex-row align-items-center'>
                             <div className='label'>Arrival</div>
                             {!editingTime ? (
                                 <button onClick={() => {setNewEndTime(travel.endTime);setEditingTime(true);}} title='Edit time'

@@ -4,6 +4,9 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { BsChevronDown } from "react-icons/bs";
 
+import DateUtilities from '../../utils/DateUtilities';
+
+
 export function DateField({
     value,
     setValue,
@@ -11,8 +14,27 @@ export function DateField({
     style={},
     titleStyle={},
     disabled=false,
+    minDate=null,
+    maxDate=null,
     ...rest
 }) {
+
+
+    // serve perche' quando si seleziona una data per la prima volta, per problemi di time zone, imposta il giorno
+    // prima rispetto al giorno selezionato
+    const fix_UTC_problem = (date) => {
+        const dateString = date.toLocaleString('default', {
+            year: "numeric",
+            month: "numeric",
+            day: "numeric"
+        });
+        const dateArray = dateString.split("/");
+        const day = dateArray[0];
+        const month = dateArray[1];
+        const year = dateArray[2];
+        const res = year + "-" + month + "-" + day;
+        return res;
+    }
 
     return (
         <div className="field-container" style={style}>
@@ -20,8 +42,12 @@ export function DateField({
             <DatePicker
                 className={disabled ? 'field-input f-disabled' : 'field-input'}
                 selected={value}
-                onChange={(date) => setValue(date)}
+                onChange={(date) =>  setValue(fix_UTC_problem(date))/*setValue(DateUtilities.date_To_yyyymmdd(fix_UTC_problem(date)))*/}
                 disabled={disabled}
+                /*includeDates={includeDates}*/
+                minDate={minDate}
+                maxDate={maxDate}    
+                dateFormat="dd/MM/YYYY"
                 {...rest}
             />
         </div>

@@ -1,9 +1,24 @@
 import React, { useState } from 'react';
 import DateUtilities from '../../utils/DateUtilities';
 
+import TextField, { DateField, PickedField, PickField } from "../../components/Fields/Fields";
 
 const SecondStep = ({ nextStep, prevStep, handleChange, values }) => {
     const [error, setError] = useState('');
+
+    const initializeStartDate = () => {
+        if (values.startDate != null) return values.startDate;
+        return new Date();
+    }
+    const [startDate, setStartDate] = useState(initializeStartDate());
+
+    const initializeEndDate = () => {
+        if (values.endDate != null) return values.endDate;
+        else if (values.startDate != null) return DateUtilities.getNextDay(values.startDate);
+        return DateUtilities.getNextDay(new Date());
+    }
+    const [endDate, setEndDate] = useState(initializeEndDate());
+
 
     const handleNext = () => {
         if (!values.startDate || !values.endDate) {
@@ -22,6 +37,7 @@ const SecondStep = ({ nextStep, prevStep, handleChange, values }) => {
         }
     };
 
+    /*
     const setMinStartDate = () => {
         var today = DateUtilities.date_To_yyyymmdd(new Date());
         document.getElementById("startDate").setAttribute('min', today);
@@ -41,6 +57,15 @@ const SecondStep = ({ nextStep, prevStep, handleChange, values }) => {
             document.getElementById("endDate").setAttribute('min', DateUtilities.getNextDay(today));
         }
     }
+    */
+
+    const setMinStartDate = () => {
+        return new Date();
+    }
+    const setMinEndDate = () => {
+        if (values.startDate) return DateUtilities.getNextDay(values.startDate);
+        return DateUtilities.getNextDay(new Date());
+    }
 
     return (
         <div className="trip-creation-page" onKeyDown={handleKeyDown} tabIndex="0">
@@ -53,19 +78,26 @@ const SecondStep = ({ nextStep, prevStep, handleChange, values }) => {
                         <div className="date-input" >
                             <label id="left">
                                 <div className='label-text'>Start date:</div>
-                                <input
-                                    type="date"
-                                    name="startDate"
-                                    id="startDate"
-                                    value={values.startDate}
-                                    onClick={setMinStartDate}
-                                    onChange={handleChange}
-                                />
+                                <DateField id="startDate" value={startDate} setValue={(date) => {setStartDate(date); handleChange("startDate", date);}} name=""
+                                minDate={setMinStartDate()}/>
+                                {/*
+                                    <input
+                                        type="date"
+                                        name="startDate"
+                                        id="startDate"
+                                        value={values.startDate}
+                                        onClick={setMinStartDate}
+                                        onChange={handleChange}
+                                    />
+                                 */}
                             </label>
                         </div>
                         <div className="date-input" >
                             <label id="right">
                             <div className='label-text'>End date:</div>
+                                <DateField id="endDate" value={endDate} setValue={(date) => {setEndDate(date); handleChange("endDate", date);}} name=""
+                                minDate={setMinEndDate()}/>
+                                {/*
                                 <input
                                     type="date"
                                     name="endDate"
@@ -74,6 +106,7 @@ const SecondStep = ({ nextStep, prevStep, handleChange, values }) => {
                                     onClick={setMinEndDate}
                                     onChange={handleChange}
                                 />
+                                */}
                             </label>
 
                         </div>

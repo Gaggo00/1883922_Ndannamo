@@ -305,7 +305,7 @@ export default function EventOpenActivity({activity, latitude, longitude, reload
                 <div className='event-info-top-row'>
                     {/* Address */}
                     <div className='row-element hidden-btn-parent'>
-                        <div className='flex-row'>
+                        <div className='flex-row align-items-center'>
                             <div className='label'>Address</div>
                             {!editingAddress ? (
                                 <button onClick={() => {setNewAddress(activity.address);setEditingAddress(true);}} title='Edit address'
@@ -332,7 +332,7 @@ export default function EventOpenActivity({activity, latitude, longitude, reload
                     </div>
                     {/* Start time */}
                     <div className='row-element hidden-btn-parent'>
-                        <div className='flex-row'>
+                        <div className='flex-row align-items-center'>
                             <div className='label'>Time</div>
                             {!editingTime ? (
                                 <button onClick={() => {setNewStartTime(activity.startTime);setEditingTime(true);}} title='Edit time'
@@ -357,7 +357,7 @@ export default function EventOpenActivity({activity, latitude, longitude, reload
                     </div>
                     {/* End time */}
                     <div className='row-element hidden-btn-parent'>
-                        <div className='flex-row'>
+                        <div className='flex-row align-items-center'>
                             <div className='label'>End</div>
                             {!editingTime ? (
                                 <button onClick={() => {setNewEndTime(activity.endTime);setEditingTime(true);}} title='Edit time'

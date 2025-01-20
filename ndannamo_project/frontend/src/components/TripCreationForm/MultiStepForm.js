@@ -27,8 +27,7 @@ const MultiStepForm = () => {
         setStep(step - 1);
     };
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
+    const handleChange = (name, value) => {
         setFormData({ ...formData, [name]: value });
     };
 

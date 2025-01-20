@@ -67,7 +67,7 @@ const ThirdStep = ({ nextStep, prevStep, handleChange, values }) => {
 
         setError('');
         const updatedCities = [...values.city, searchTerm];
-        handleChange({ target: { name: 'city', value: updatedCities } });
+        handleChange('city', updatedCities);
         
         setSearchTerm("");
     };
@@ -87,7 +87,7 @@ const ThirdStep = ({ nextStep, prevStep, handleChange, values }) => {
 
         setError('');
         const updatedCities = [...values.city, cityToAdd];
-        handleChange({ target: { name: 'city', value: updatedCities } });
+        handleChange('city', updatedCities);
         
         setSearchTerm("");
     };
@@ -96,7 +96,7 @@ const ThirdStep = ({ nextStep, prevStep, handleChange, values }) => {
     // Per rimuovere una destinazione dalla lista di destinazioni scelte
     const removeCity = (index) => {
         const updatedCities = values.city.filter((_, i) => i !== index);
-        handleChange({ target: { name: 'city', value: updatedCities } });
+        handleChange('city', updatedCities);
     };
 
 

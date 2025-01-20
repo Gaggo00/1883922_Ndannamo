@@ -105,7 +105,7 @@ export default function TripSummary() {
                                 <img src={globe} alt="globe"/>
                                 <div className="list-destination">
                                     {tripInfo.locations.map((location, index) => (
-                                            <p>{location}</p>
+                                            <p key={index}>{location}</p>
                                     ))}
                                 </div>
                             </div>
@@ -116,8 +116,8 @@ export default function TripSummary() {
                                     <img src={calendar_icon} alt="calendar_icon"/>
                                     <p>Destinations</p>
                                 </div>
-                                {!changeDate && <img id="edit" class="editable" onClick={handleEditDates} src={edit_icon} alt="edit_icon"/>}
-                                {changeDate && <i class="editable" onClick={handleChangeDates} className="bi bi-floppy-fill"></i>}
+                                {!changeDate && <img id="edit" className="editable" onClick={handleEditDates} src={edit_icon} alt="edit_icon"/>}
+                                {changeDate && <i onClick={handleChangeDates} className="bi bi-floppy-fill editable"></i>}
                             </div>
                             <div className="internal-section">
                                 <img src={calendar} alt="globe"/>

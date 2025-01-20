@@ -232,7 +232,6 @@ function Main() {
                     {showingPastTrips &&
                         <div className='tripPreviewBlocksContainer'>
                             {
-                            // TEMPORANEO per test, poi andra' cambiato "upcomingTrips" con "pastTrips"
                             pastTrips.map((trip, index) =>
                                 <TripPreview key={index} trip={trip} reloadProfile={profileInfo}></TripPreview>
                             )}

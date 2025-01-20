@@ -6,6 +6,7 @@ export default class DateUtilities {
     // date_To_yyyymmdd(Date.now())
     // restituisce "2025-01-02"
     static date_To_yyyymmdd(date, separator="-") {
+        if (date == null) return null;
         var res = date.toISOString().split('T')[0];
         res = res.replaceAll("-", separator);
         return res;
@@ -15,8 +16,8 @@ export default class DateUtilities {
     // date_To_ddmmyyyy(Date.now(), "/")
     // restituisce "02/01/2025"
     static date_To_ddmmyyyy(date, separator) {
+        if (date == null) return null;
         var res = DateUtilities.yyyymmdd_To_ddmmyyyy(DateUtilities.date_To_yyyymmdd(date), "-", separator);
-        console.log(res);
         return res;
     }
 
@@ -24,6 +25,7 @@ export default class DateUtilities {
     // date_To_ddmmyy(Date.now(), "/")
     // restituisce "02/01/25"
     static date_To_ddmmyy(date, separator) {
+        if (date == null) return null;
         var res = DateUtilities.yyyymmdd_To_ddmmyy(DateUtilities.date_To_yyyymmdd(date), "-", separator);
         return res;
     }
@@ -33,6 +35,7 @@ export default class DateUtilities {
     // date_To_ddmmyy(Date.now(), "/")
     // restituisce "02/01"
     static date_To_ddmm(date, separator) {
+        if (date == null) return null;
         var res = DateUtilities.yyyymmdd_To_ddmm(DateUtilities.date_To_yyyymmdd(date), "-", separator);
         return res;
     }
@@ -145,6 +148,15 @@ export default class DateUtilities {
         var nextDayDate = new Date(Date.parse(day) + (24 * 60 * 60 * 1000));
         var nextDay = nextDayDate.toISOString().split('T')[0];
         return nextDay;
+    };
+
+    // Prende in input una stringa tipo "yyyy-mm-dd" e restituisce il giorno dopo nello stesso formato
+    static getPreviousDay(day) {
+        var prevDayDate = new Date(Date.parse(day) - (24 * 60 * 60 * 1000));
+        var prevDay = prevDayDate.toISOString().split('T')[0];
+        //console.log("day: " + day);
+        //console.log("previous day: " + prevDay);
+        return prevDay;
     };
 
 }

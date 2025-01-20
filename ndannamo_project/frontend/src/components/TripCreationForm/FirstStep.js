@@ -29,7 +29,7 @@ const FirstStep = ({ nextStep, handleChange, values }) => {
                         type="text"
                         name="title"
                         value={values.title}
-                        onChange={handleChange}
+                        onChange={(e) => {handleChange(e.target.name, e.target.value)}}
                         onKeyDown={handleKeyDown}
                         placeholder='Title'
                     />
