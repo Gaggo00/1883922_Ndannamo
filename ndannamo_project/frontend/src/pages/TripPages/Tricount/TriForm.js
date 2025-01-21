@@ -12,9 +12,11 @@ function TCForm({
     expenseData={},
     status=0,
     users=[],
+    startingData=new Date(),
+    itemIndex = -1,
     filled=false,
     onSubmit= () => {},
-    onClose= () => {}},
+    onClose= () => {}}
 ) {
 
     const [sTitle, setTitle] = useState(expenseData.title);
@@ -33,34 +35,75 @@ function TCForm({
         setStatus(status);
     }, [expenseData, status]);
 
+
+    function divideMoney(total, people) {
+        const baseAmount = Math.floor((total / people) * 100) / 100;
+        const remainder = Math.round((total - baseAmount * people) * 100);
+        const shares = Array(people).fill(baseAmount);
+      
+        for (let i = 0; i < remainder; i++) {
+          shares[i] += 0.01;
+        }
+
+        return shares;
+    }
+
     function doSplit(value) {
         let newSplitValue = [...sSplitValue];
         const countNonZero = newSplitValue.length;
-        const newValue = countNonZero ? (value / countNonZero) : 0;
+        if (countNonZero != 0)
+            var shares = divideMoney(value, countNonZero);
+        else
+            var shares = Array(newSplitValue.length).fill(0);
         for (let i = 0; i < newSplitValue.length; i++) {
-            newSplitValue[i].amount = newValue;
+            newSplitValue[i].amount = shares[i];
         }
         setSplitValue(newSplitValue);
     }
 
-    function handleCheck(user) {
-        if (sSplitValue.find(split => split.userNickname === user)) {
-            let indexToRemove = sSplitValue.findIndex(split => split.userNickname === user);
+    function handleCheck(userId, userNickname) {
+        if (sSplitValue.find(split => split.user === userId)) {
+            let indexToRemove = sSplitValue.findIndex(split => split.user === userId);
             sSplitValue.splice(indexToRemove, 1);
         }
         else
-            sSplitValue.push({userNickname: user, amount: 0});
+            sSplitValue.push({user: userId, userNickname: userNickname, amount: 0});
         doSplit(sAmount);
     }
 
     function changeAmount(value) {
+        console.log("L'amount è: ", value);
         setAmount(value);
         doSplit(value);
     }
 
+    function checkSubmit() {
+        if (sTitle == "" || sTitle == undefined)
+            return false;
+        if (sAmount <= 0 || sTitle == undefined)
+            return false;
+        if (sPaidBy == "" || sPaidBy == undefined)
+            return false;
+        if (sDate < Date.now() || sDate == undefined)
+            return false;
+        if (sSplitValue == [] || sSplitValue == undefined)
+            return false;
+        return true;
+    }
+
     function submit() {
-        onSubmit({
-        });
+        if (!checkSubmit())
+            return;
+        console.log("Tipo di sAmount:", typeof sAmount);
+        const newExpense = {
+            title: sTitle,
+            amount: sAmount,
+            date: sDate,
+            paidByNickname: sPaidBy,
+            amountPerUser: sSplitValue,           
+        }
+        console.log("Tipo di sAmount:", typeof newExpense.amount);
+        onSubmit(newExpense, itemIndex);
         close();
     }
 
@@ -72,19 +115,31 @@ function TCForm({
         setStatus(2);
     }
 
+    function notEmpty(titleValue) {
+        if (titleValue == "")
+            return false;
+        return true;
+    }
+
+    function validateAmount(amountValue) {
+        if (amountValue <= 0)
+            return false;
+        return true;
+    }
+
     return (
         <div className="tc-form">
             <div className="tc-button-line">
                 {sStatus > 0 && <GoPencil className="tc-button" onClick={() => modify()} />}
                 <BsXLg className="tc-button" onClick={() => close()}/>
             </div>
-            <TextField value={sTitle} setValue={setTitle} name="Title" disabled={sStatus == 1}/>
+            <TextField value={sTitle} setValue={setTitle} name="Title" disabled={sStatus == 1} validate={notEmpty}/>
             <div>
-                <TextField value={sAmount} setValue={changeAmount} name="Amount" type="number" disabled={sStatus == 1}/>
+                <TextField value={sAmount} setValue={changeAmount} name="Amount" type="number" disabled={sStatus == 1} validate={validateAmount}/>
             </div>
             <div className="tc-form-line">
-                <PickField value={sPaidBy} setValue={setPaidBy} name="Paid By" options={users} style={{flex: "3"}} disabled={sStatus == 1}/>
-                <DateField value={sDate} setValue={setDate} name="When" style={{flex: "2"}} disabled={sStatus == 1}/>
+                <PickField value={sPaidBy} setValue={setPaidBy} name="Paid By" options={users.map(user => user[1])} style={{flex: "3"}} disabled={sStatus == 1} validate={notEmpty}/>
+                <DateField value={sDate} setValue={setDate} name="When" style={{flex: "2"}} disabled={sStatus == 1} minDate={startingData} validate={() => {return true}}/>
             </div>
             <div className="tc-form-line">
                 <div>Split</div>
@@ -96,14 +151,14 @@ function TCForm({
                         <div className="tc-list-left">
                             <input
                                 type="checkbox"
-                                checked={!!sSplitValue.find(expense => expense.userNickname === user)}
+                                checked={!!sSplitValue.find(expense => expense.user === user[0])}
                                 id={`item-${index}`}
-                                onChange={() => handleCheck(user)}
+                                onChange={() => handleCheck(user[0], user[1])}
                                 disabled={sStatus == 1}
                             />
-                            <label htmlFor={`item-${index}`}>{user}</label>
+                            <label htmlFor={`item-${index}`}>{user[1]}</label>
                         </div>
-                        <div className="tc-list-right">{sSplitValue.find(expense => expense.userNickname === user)?.amount ?? 0}</div>
+                        <div className="tc-list-right">{sSplitValue.find(expense => expense.user === user[0])?.amount ?? 0}</div>
                     </div>
                 ))}
             </div>

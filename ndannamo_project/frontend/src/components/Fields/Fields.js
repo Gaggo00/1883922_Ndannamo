@@ -11,16 +11,34 @@ export function DateField({
     style={},
     titleStyle={},
     disabled=false,
+    validate=undefined,
     ...rest
 }) {
+
+    const [valid, setIsValid] = useState(-1);
+
+
+    function changeValue(newValue) {
+        setValue(newValue);
+        if (validate != undefined) {
+            const valid = validate(value);
+            if (valid)
+                setIsValid(1);
+            else
+                setIsValid(0);
+        }
+    }
 
     return (
         <div className="field-container" style={style}>
             <div className="field-title" style={titleStyle}>{name}</div>
             <DatePicker
-                className={disabled ? 'field-input f-disabled' : 'field-input'}
+                className={
+                    `field-input ${disabled ? "f-disabled" : ""}
+                    ${valid === 1 ? "f-valid" : valid === 0 ? "f-nvalid" : ""}`
+                }
                 selected={value}
-                onChange={(date) => setValue(date)}
+                onChange={(date) => changeValue(date)}
                 disabled={disabled}
                 {...rest}
             />
@@ -35,10 +53,12 @@ export function PickField({
     options=[],
     style={},
     titleStyle={},
+    validate=undefined,
     disabled=false,
 }) {
 
     const [flag, setFlag] = useState(0);
+    const [valid, setIsValid] = useState(-1);
 
     const handleClick = () => {
         if (!disabled)
@@ -48,12 +68,36 @@ export function PickField({
     const handleSelect = (suggestion) => {
         setValue(suggestion);
         setFlag(0);
+        if (validate != undefined) {
+            const valid = validate(value);
+            if (valid)
+                setIsValid(1);
+            else
+                setIsValid(0);
+        }
+    };
+
+    const handleBlur = () => {
+        if (validate != undefined) {
+            const valid = validate(value);
+            if (valid)
+                setIsValid(1);
+            else
+                setIsValid(0);
+        }
     };
 
     return (
         <div className="field-container" style={style}>
             <div className="field-title" style={titleStyle}>{name}</div>
-            <div className={disabled ? "field-input f-pick f-disabled" : "field-input f-pick"} onClick={() => handleClick()}>
+            <div
+                className={
+                    `field-input ${disabled ? "f-disabled" : ""}
+                    ${valid === 1 ? "f-valid" : valid === 0 ? "f-nvalid" : ""}`
+                }
+                onClick={() => handleClick()}
+                onBlur={handleBlur}
+                >
                 {value}
                 <BsChevronDown/>
             </div>
@@ -143,21 +187,56 @@ export function TextField({
     name="",
     type="text",
     placeholder=name,
+    validate=undefined,
     titleStyle={},
     formStyle={},
     disabled=false,
 }) {
 
+    const [valid, setIsValid] = useState(-1);
+
+    const handleKeyPress = (e) => {
+        if (e.key === "Enter" && validate != undefined) {
+          const valid = validate(value);
+          if (valid)
+            setIsValid(1);
+          else
+            setIsValid(0);
+        }
+    };
+
+    const handleBlur = () => {
+        if (validate != undefined) {
+            const valid = validate(value);
+            if (valid)
+                setIsValid(1);
+            else
+                setIsValid(0);
+        }
+    };
+
+    function handleChange(newValue) {
+        if (type == "number")
+            setValue(Number(newValue));
+        else
+            setValue(newValue);
+    }
+
     return (
         <div className="field-container">
             <div className="field-title" style={titleStyle}>{name}</div>
             <input
-                className={disabled ? "field-input f-disabled" : "field-input"}
+                className={
+                    `field-input ${disabled ? "f-disabled" : ""}
+                    ${valid === 1 ? "f-valid" : valid === 0 ? "f-nvalid" : ""}`
+                }
                 type={type}
                 style={formStyle}
                 placeholder={placeholder}
                 value={value}
-                onChange={(e) => setValue(e.target.value)}
+                onChange={(e) => handleChange(e.target.value)}
+                onKeyDown={handleKeyPress}
+                onBlur={handleBlur}
                 disabled={disabled}
             />
         </div>

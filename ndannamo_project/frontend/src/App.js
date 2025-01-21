@@ -38,7 +38,7 @@ export default function App() {
                             <Route path="/trips/:id/photos" element={<TripPhotos />} />
                             <Route path="/trips/:id/tickets" element={<TripTickets />} />
                             <Route path="/change-password" element={<ChangePassword/>} />
-                            <Route path="/tricount" element={<Tricount/>} />
+                            <Route path="/tricount" element={<Tricount />} />
                         </Routes>
                     </main>
                     <FooterComponent/>

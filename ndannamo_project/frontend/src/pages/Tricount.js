@@ -1,6 +1,8 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import TCListItem, {TCListHeader} from "./TripPages/Tricount/TriListItem";
-import TCForm from "./TripPages/Tricount/TriForm"
+import SearchBar from "../components/SearchBar";
+import TCForm from "./TripPages/Tricount/TriForm";
+import TriRefund, {ScrollableRow} from "./TripPages/Tricount/TriRefund";
 import "../styles/Main.css";
 
 class ExpenseDto {
@@ -17,8 +19,16 @@ class ExpenseDto {
     }
 }
 
+class Refound {
+    constructor(params = {}) {
+        this.amount = params.amount || 0;
+        this.by = params.by || -1;
+        this.to = params.to || -1;
+    }
+}
+
 function Tricount() {
-    const tripInfo = {users: ["Sara", "Anna", "Pino"]};
+    const tripInfo = {users: [[0, "Sara"], [2, "Anna"], [1, "Pino"]], startingData: new Date()};
     const userId = 1;
 
     const [activeText, setActiveText] = useState("list");
@@ -28,21 +38,32 @@ function Tricount() {
         users: tripInfo.users,
         filled: false,
         status: 0,
+        startingData: tripInfo.startingData,
         onSubmit: submit,
         onClose: () => setFormVisibility(false),
     });
     const itemsRefs = useRef([]);
     const [selected, setSelected] = useState(-1);
+    const [myTotalExpenses, setMyTotalExpenses] = useState(0);
+    const [totalExpenses, setTotalExpenses] = useState(0);
+    const [data, setData] = useState(retrieveTricounts());
+    const [searchData, setSearchData] = useState([...data]);
+    const [balance, setBalance] = useState(calcBalance(data));
+    const [refund, setRefund] = useState(calcRefund(balance));
+
+    useEffect(() => {
+        retriveExpenses(data);
+    }, [data]);
 
     function retrieveTricounts() {
-        return [
+        const retrievedData = [
             new ExpenseDto(
                 {
                     title:"Ristorante",
                     amount: 42.10,
                     paidBy: 1,
                     paidByNickname:"Pino",
-                    expense:"20",
+                    expense: 21.05,
                     date: new Date(),
                     amountPerUser: [
                         {
@@ -58,14 +79,13 @@ function Tricount() {
                     ],
                 }
             ),
-        ]
+        ];
+        return retrievedData;
     };
 
     const handleClick = (id) => {
         setActiveText(id);
     };
-
-    const data = retrieveTricounts();
 
     const handleTricountSelection = (index) => {
         setFormData({
@@ -73,6 +93,8 @@ function Tricount() {
             users: tripInfo.users,
             filled: true,
             status: 1,
+            startingData: tripInfo.startingData,
+            itemIndex: index,
             onSubmit: submit,
             onClose: () => setFormVisibility(false),
         });
@@ -90,6 +112,7 @@ function Tricount() {
                 users: tripInfo.users,
                 filled: false,
                 status: 0,
+                startingData: tripInfo.startingData,
                 onSubmit: submit,
                 onClose: () => setFormVisibility(false),
             });
@@ -100,14 +123,104 @@ function Tricount() {
         }
     }
 
-    function createNewExpense(data) {
-        const newExpenseDto = new ExpenseDto(data);
-        data.push(newExpenseDto);
+    function createNewExpense(newExpense) {
+        const newExpenseDto = new ExpenseDto(newExpense);
+        const newData = [...data];
+        newData.push(newExpenseDto);
+        const now = new Date();
+        newData.sort((a, b) => Math.abs(b.date - now) - Math.abs(a.date - now));
+        setData(newData);
     }
 
-    function submit(data) {
-        console.log(data);
-        createNewExpense(data);
+    function submit(newExpense, itemIndex = -1) {
+        if (itemIndex == -1)
+            createNewExpense(newExpense);
+        else if (itemIndex < data.length)
+        {
+            const newExpenseDto = new ExpenseDto(newExpense);
+            const newData = [...data];
+            newData[itemIndex] = newExpenseDto;
+            setData(newData);
+        }
+    }
+
+
+    function checkExpensesSearch(value, searchTerm) {
+        if (!value || !searchTerm) return false;
+        return value.title.toLowerCase().includes(searchTerm.toLowerCase());
+    }
+
+
+    function retriveExpenses(expensesData) {
+        let totExpenses = 0;
+        let myExpenses = 0;
+
+        expensesData.map((expense) => {
+            totExpenses += expense.amount;
+            expense.amountPerUser.map((e) => {
+                if (e.user == userId)
+                    myExpenses += e.amount;
+            })
+        })
+
+        setTotalExpenses(totExpenses);
+        setMyTotalExpenses(myExpenses);
+    }
+
+    function calcBalance(expenses) {
+        var dict = {}
+        const balances = []
+
+        expenses.map((e) => {
+            if (!(e.paidBy in dict))
+                dict[e.paidBy] = 0;
+            dict[e.paidBy] +=  e.amount;
+            e.amountPerUser.map((userAmount) => {
+                if (!(userAmount.user in dict))
+                    dict[userAmount.user] = 0;
+                dict[userAmount.user] -= userAmount.amount;
+            })
+        })
+
+        const sorted = Object.entries(dict).sort(([, valueA], [, valueB]) => valueB - valueA);
+        sorted.map((value) => {
+            balances.push({amount: value[1], id: value[0], nickname: tripInfo.users[value[0]][1]});
+        })
+
+        return balances;
+    }
+
+    function calcRefund(balances) {
+        const refounds = [];
+        const copyBalances = [...balances];
+
+        var lastValue = copyBalances.pop();
+        lastValue.amount *= -1;
+        let i = 0;
+        while (balances[i].amount > 0) {
+            var toRefound = balances[i].amount;
+            while (toRefound > 0) {
+                if (lastValue.amount == 0) {
+                    lastValue = copyBalances.pop();
+                    lastValue.amount *= -1;
+                }
+                if (lastValue.amount < 0)
+                    break;
+                var refoundValue = 0
+                if (toRefound > lastValue.amount)
+                    refoundValue = lastValue.amount;
+                else
+                    refoundValue = toRefound;
+                toRefound -= refoundValue;
+                lastValue.amount -= refoundValue;
+                const refound = new Refound({to: balances[i].id, amount: refoundValue, by: lastValue.id})
+                refounds.push(refound);
+            }
+
+            i += 1;
+        }
+
+        return refounds;
     }
 
 
@@ -121,12 +234,24 @@ function Tricount() {
                         <div className={`tc-top-text ${activeText === "sales" ? "active" : "inactive"}`}
                             id="sales" onClick={()=>handleClick("sales")}>Saldi</div>
                     </div>
+                    {activeText === "list" && ( <>
+                    <div className="tc-main-recap">
+                        <div className="tc-recap">
+                            <div>Le mie spese</div>
+                            <div className="tc-recap-expenses">{myTotalExpenses.toFixed(2)}</div>
+                        </div>
+                        <div className="tc-recap">
+                            <div>Spese totali</div>
+                            <div className="tc-recap-expenses">{totalExpenses.toFixed(2)}</div>
+                        </div>
+                    </div>
                     <div className="tc-middle">
                         <div className="tc-title">Spese</div>
+                        <SearchBar items={searchData} setItems={setSearchData} itemsAll={data} checkItemSearch={checkExpensesSearch}/>
                     </div>
                     <div className="tc-list">
-                        <TCListHeader/>
-                        {data.map((item, index) => (
+                        <TCListHeader names={["Name", "Expense", "Total", "Date", "Paid by"]}/>
+                        {searchData.map((item, index) => (
                             <TCListItem
                                 key={index}
                                 userId={userId}
@@ -139,10 +264,33 @@ function Tricount() {
                     <div className="tc-button-container">
                         <div className="tc-add-button" onClick={() => addSale()}>+ Add Spesa</div>
                     </div>
+                    </>)}
+                    {activeText === "sales" && (<>
+                        <ScrollableRow blocks={balance}/>
+                        <div className="tc-middle">
+                            <div className="tc-title">Refund</div>
+                        </div>
+                        <div className="tc-list">
+                            <TCListHeader names={["By", "To", "Amount", ""]}/>
+                            {refund.map((r, index) => (
+                                <TriRefund
+                                    key={index}
+                                    by={r.by}
+                                    to={r.to}
+                                    amount={r.amount}
+                                    toNick={tripInfo.users[r.to][1]}
+                                    byNick={tripInfo.users[r.by][1]}
+                                />
+                            ))}
+                        </div>
+                    </>)}
                 </div>
-                <div className="tc-right">
-                    {formVisibility == true && <TCForm {...formData}/>}
-                </div>
+                {
+                    formVisibility == true &&
+                    <div className="tc-right">
+                        <TCForm {...formData}/>
+                    </div>
+                }
             </div>
         </div>
     )

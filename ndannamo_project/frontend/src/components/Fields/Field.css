@@ -33,6 +33,14 @@
     align-items: center;
 }
 
+.f-valid {
+    border-color: green;
+}
+
+.f-nvalid {
+    border-color: red;
+}
+
 .field-input:focus {
     border-color: black;
     outline: none;

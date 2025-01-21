@@ -1,0 +1,20 @@
+.sb-search-bar{
+    border-radius: 22px;
+    border: none;
+    width: fit-content;
+    background: #f2f2f2;
+    height: 3vh;
+    min-height: fit-content;
+    display: flex;
+    align-items: center;
+    /*justify-content: center;*/
+    padding-left: 1vw;
+}
+
+.sb-search-bar input {
+    background: transparent;
+    border: none;
+    outline: none;
+    width: 30vw;
+    margin-left: 0.5vw;
+}

@@ -1,14 +1,16 @@
 import "./Tricount.css"
 import { useState, useEffect, forwardRef, useImperativeHandle} from "react";
 
-export function TCListHeader() {
+export function TCListHeader({names = []}) {
     return (
         <div className="tc-header">
-            <div className="tc-column tc-name h">Name</div>
-            <div className="tc-column tc-expense h">Expense</div>
-            <div className="tc-column tc-total h">Total</div>
-            <div className="tc-column tc-date h">Date</div>
-            <div className="tc-column tc-by h">Paid by</div>
+            {names.map((value, key) => (
+                key === 0 ?
+                    <div key={key} className="tc-column tc-name h">{value}</div>
+                :
+                    <div key={key} className="tc-column tc-expense h">{value}</div>
+            )
+            )}
         </div>
     )
 }
