@@ -153,7 +153,7 @@ const ThirdStep = ({ nextStep, prevStep, handleChange, values }) => {
                         <input
                             id = "text-input"
                             type="text"
-                            className='long-input'
+                            className='input-long'
                             value={searchTerm}
                             onChange={handleInputChange}
                             onKeyDown={handleKeyDown}

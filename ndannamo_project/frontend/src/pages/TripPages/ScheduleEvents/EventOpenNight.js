@@ -20,7 +20,7 @@ export default function EventOpenNight({night, latitude, longitude, reloadSchedu
                 </div>
                 <div className='no-selected-events flex-column align-items-center'>
                     You don't have an accomodation for this night
-                    <button onClick={()=> {openCreateAccomodationModal(night.date)}}>Add accomodation</button>
+                    <button onClick={()=> {openCreateAccomodationModal(night.id, night.date)}}>Add accomodation</button>
                 </div>
             </div>
         );
@@ -29,6 +29,34 @@ export default function EventOpenNight({night, latitude, longitude, reloadSchedu
 
     // Se c'e' un'accomodation, mostra le info e il pulsante per modificarla
     else {
+
+        const overnightStay = night.overnightStay;
+
+        // Componi le stringhe del check-in time e check-out time
+        var checkInTime = "";
+        var checkOutTime = "";
+
+        if (overnightStay.startCheckInTime != null && overnightStay.endCheckInTime != null) {
+            checkInTime = overnightStay.startCheckInTime + " - " + overnightStay.endCheckInTime;
+        }
+        else if (overnightStay.startCheckInTime != null) {
+            checkInTime = "From " + overnightStay.startCheckInTime
+        }
+        else if (overnightStay.endCheckInTime != null) {
+            checkInTime = "Until " + overnightStay.endCheckInTime
+        }
+
+        if (overnightStay.startCheckOutTime != null && overnightStay.endCheckOutTime != null) {
+            checkOutTime = overnightStay.startCheckOutTime + " - " + overnightStay.endCheckOutTime;
+        }
+        else if (overnightStay.startCheckOutTime != null) {
+            checkOutTime = "From " + overnightStay.startCheckOutTime
+        }
+        else if (overnightStay.endCheckOutTime != null) {
+            checkOutTime = "Until " + overnightStay.endCheckOutTime
+        }
+
+
         return (
             <div id="event-open">
                 <div className='top-row'>
@@ -36,8 +64,9 @@ export default function EventOpenNight({night, latitude, longitude, reloadSchedu
                         {DateUtilities.yyyymmdd_To_WEEKDAYddMONTH(night.date)}
                     </div>
                     <div className='title'>
-                        Stay at {night.overnightStay.name}
+                        Stay at "{overnightStay.name}"
                     </div>
+                    <button onClick={()=> {openEditAccomodationModal(night.id, overnightStay)}}>Edit accomodation</button>
                 </div>
                 
                 <div className="map-banner">
@@ -49,25 +78,25 @@ export default function EventOpenNight({night, latitude, longitude, reloadSchedu
                         <div className='row-element'>
                             <div className='label'>Address</div>
                             <div className='value'>
-                                {night.overnightStay.address}{!night.overnightStay && "-"}
+                                {overnightStay.address}
                             </div>
                         </div>
                         <div className='row-element'>
                             <div className='label'>Check-in</div>
                             <div className='value'>
-                                {night.overnightStay.startCheckInTime + " - " + night.overnightStay.endCheckInTime}{!night.overnightStay && "-"}
+                                {checkInTime}
                             </div>
                         </div>
                         <div className='row-element'>
                         <div className='label'>Check-out</div>
                             <div className='value'>
-                                {night.overnightStay.startCheckOutTime + " - " + night.overnightStay.startCheckOutTime}{!night.overnightStay && "-"}
+                                {checkOutTime}
                             </div>
                         </div>
                         <div className='row-element'>
                             <div className='label'>Contacts</div>
                             <div className='value'>
-                                {night.overnightStay.contact}{!night.overnightStay && "-"}
+                                {overnightStay.contact}
                             </div>
                         </div>
                     </div>

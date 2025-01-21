@@ -1,6 +1,7 @@
 export default class OvernightStay {
-    constructor(id, startDate, endDate, startCheckInTime, endCheckInTime, startCheckOutTime, endCheckOutTime, address, contact, name) {
+    constructor(id, name, startDate, endDate, startCheckInTime, endCheckInTime, startCheckOutTime, endCheckOutTime, address, contact) {
         this.id = id;
+        this.name = name;
         this.startDate = startDate;
         this.endDate = endDate;
         this.startCheckInTime = startCheckInTime;
@@ -9,7 +10,6 @@ export default class OvernightStay {
         this.endCheckOutTime = endCheckOutTime;
         this.address = address;
         this.contact = contact;
-        this.name = name;
     }
 }
 

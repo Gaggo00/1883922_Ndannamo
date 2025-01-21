@@ -98,6 +98,44 @@ class ScheduleService {
 
 
 
+    // Per creare una accomodation
+    static async createOvernightStay(token, tripId, name, startDate, endDate, startCheckInTime, endCheckInTime, startCheckOutTime, endCheckOutTime, address, contact) {
+        try {
+            const response = await axios.post(
+                `${ScheduleService.BASE_URL}/${tripId}/schedule/overnightstay`,
+                { name, startDate, endDate, startCheckInTime, endCheckInTime, startCheckOutTime, endCheckOutTime, address, contact },
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`
+                    }
+                }
+            );
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    // Per modificare una accomodation
+    static async editOvernightStay(token, tripId, id, name, startDate, endDate, startCheckInTime, endCheckInTime, startCheckOutTime, endCheckOutTime, address, contact) {
+        try {
+            const response = await axios.put(
+                `${ScheduleService.BASE_URL}/${tripId}/schedule/overnightstay`,
+                { id, name, startDate, endDate, startCheckInTime, endCheckInTime, startCheckOutTime, endCheckOutTime, address, contact },
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`
+                    }
+                }
+            );
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    }
+
 
     /****************** Funzioni per modificare i vari campi degli eventi ******************/
 

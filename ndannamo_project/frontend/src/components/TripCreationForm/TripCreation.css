@@ -45,14 +45,16 @@
     letter-spacing: -1px;
 }
 .fill-flex2 input {
-    width: 20vw;
     font-size: 1.2vw;
-    padding-left: 20px;
+    padding-left: 1vw;
     background: #f3f3f3;
     border: none;
-    border-radius: 5px;
+    border-radius: 1vw;
 }
-.fill-flex2 .long-input {
+.fill-flex2 .input-medium {
+    width: 20vw;
+}
+.fill-flex2 .input-long {
     width: 22vw;
 }
 .input-and-error {
@@ -123,7 +125,7 @@
 }
 
 .date #left, .date #right {
-    padding: 10px;
+    padding: 1vw;
     width: 100%;
 }
 .date #left{

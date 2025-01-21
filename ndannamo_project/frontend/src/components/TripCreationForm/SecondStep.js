@@ -75,40 +75,13 @@ const SecondStep = ({ nextStep, prevStep, handleChange, values }) => {
                 </div>
                 <div className="input-and-error">
                     <div className="date">
-                        <div className="date-input" >
-                            <label id="left">
-                                <div className='label-text'>Start date:</div>
-                                <DateField id="startDate" value={startDate} setValue={(date) => {setStartDate(date); handleChange("startDate", date);}} name=""
-                                minDate={setMinStartDate()}/>
-                                {/*
-                                    <input
-                                        type="date"
-                                        name="startDate"
-                                        id="startDate"
-                                        value={values.startDate}
-                                        onClick={setMinStartDate}
-                                        onChange={handleChange}
-                                    />
-                                 */}
-                            </label>
+                        <div className="date-input" id="left" >
+                            <DateField id="startDate" value={startDate} setValue={(date) => {setStartDate(date); handleChange("startDate", date);}}
+                            name="Start date:" minDate={setMinStartDate()}/>
                         </div>
-                        <div className="date-input" >
-                            <label id="right">
-                            <div className='label-text'>End date:</div>
-                                <DateField id="endDate" value={endDate} setValue={(date) => {setEndDate(date); handleChange("endDate", date);}} name=""
-                                minDate={setMinEndDate()}/>
-                                {/*
-                                <input
-                                    type="date"
-                                    name="endDate"
-                                    id="endDate"
-                                    value={values.endDate}
-                                    onClick={setMinEndDate}
-                                    onChange={handleChange}
-                                />
-                                */}
-                            </label>
-
+                        <div className="date-input" id="right">
+                            <DateField id="endDate" value={endDate} setValue={(date) => {setEndDate(date); handleChange("endDate", date);}} name="End date:"
+                            minDate={setMinEndDate()}/>
                         </div>
                     </div>
                     {error && <p style={{ color: 'red' }}>{error}</p>}

@@ -19,12 +19,15 @@ import org.springframework.stereotype.Service;
 import com.example.backend.mapper.ExpenseMapperImpl;
 import com.example.backend.mapper.TripMapperImpl;
 import com.example.backend.repositories.TripRepository;
+import com.example.backend.utils.OvernightstayValidation;
 import com.example.backend.utils.TripValidation;
 import com.example.backend.exception.ResourceNotFoundException;
 import com.example.backend.model.Activity;
 import com.example.backend.model.Event;
+import com.example.backend.model.Event.EventType;
 import com.example.backend.model.Expense;
 import com.example.backend.model.Night;
+import com.example.backend.model.OvernightStay;
 import com.example.backend.model.Travel;
 import com.example.backend.model.Trip;
 import com.example.backend.model.User;
@@ -33,6 +36,7 @@ import com.example.backend.dto.AmountUserDTO;
 import com.example.backend.dto.EventDTO;
 import com.example.backend.dto.ExpenseCreationRequest;
 import com.example.backend.dto.ExpenseDTO;
+import com.example.backend.dto.OvernightStayDTO;
 import com.example.backend.dto.TravelCreationRequest;
 import com.example.backend.dto.TripCreationRequest;
 import com.example.backend.dto.TripDTO;
@@ -345,6 +349,46 @@ public class TripService {
     }
 
 
+    // Crea una overnight stay
+    public OvernightStay createOvernightStay(String email, long tripId, OvernightStayDTO overnightStayDTO) {
+        Trip trip = getTripById(tripId);
+
+        // Controllo che l'utente loggato faccia parte della trip
+        if (!userIsAParticipant(email, trip)) {
+            throw new ResourceNotFoundException("Trip not found");
+        }
+        
+        // Controlla validita' dei campi
+        OvernightstayValidation.overnightStayValid(trip, overnightStayDTO);
+
+        // Crea la lista di notti da passargli
+        List<Night> nights = new ArrayList<Night>();
+        LocalDate startDate = overnightStayDTO.getStartDate();
+        LocalDate endDate = overnightStayDTO.getEndDate();
+
+        // Trova le notti la cui data rientra tra startDate e endDate (endDate esclusa perche' fai il check out)
+        List<Event> schedule = trip.getSchedule();
+        for (Event event : schedule) {
+            if (event.getType() == EventType.NIGHT) {
+                LocalDate eventDate = event.getDate();
+                if (eventDate.isEqual(startDate) || (eventDate.isAfter(startDate) && eventDate.isBefore(endDate))) {
+                    nights.add((Night) event);
+                }
+            }
+        }
+
+        // Creo l'overnight stay
+        OvernightStay overnightStay = eventService.createOvernightStay(nights, overnightStayDTO);
+
+        // Aggiungo l'overnight alle notti
+        for (Night night : nights) {
+            night.setOvernightStay(overnightStay);
+            eventService.saveNight(night);
+        }
+
+        return (overnightStay);
+    }
+
 
     /********************** FUNZIONI PER LE SPESE **********************/
 
@@ -556,6 +600,59 @@ public class TripService {
 
 
     /********************** FUNZIONI PER CAMBIARE I DATI DEGLI EVENTI **********************/
+
+
+
+    // Modifica una overnight stay
+    public OvernightStay editOvernightStay(String email, long tripId, OvernightStayDTO overnightStayDTO) {
+        Trip trip = getTripById(tripId);
+
+        // Controllo che l'utente loggato faccia parte della trip
+        if (!userIsAParticipant(email, trip)) {
+            throw new ResourceNotFoundException("Trip not found");
+        }
+        
+        // Controlla validita' dei campi
+        OvernightstayValidation.overnightStayValid(trip, overnightStayDTO);
+
+        // Trova overnight stay
+        OvernightStay overnightStay = eventService.getOvernightStayById(overnightStayDTO.getId());
+
+        // Crea la lista di notti da passargli
+        List<Night> nights = new ArrayList<Night>();
+        LocalDate startDate = overnightStayDTO.getStartDate();
+        LocalDate endDate = overnightStayDTO.getEndDate();
+
+        // Trova le notti la cui data rientra tra startDate e endDate (endDate esclusa perche' fai il check out)
+        List<Event> schedule = trip.getSchedule();
+
+        for (Event event : schedule) {
+        
+            if (event.getType() == EventType.NIGHT) {
+        
+                LocalDate eventDate = event.getDate();
+                Night night = (Night) event;
+        
+                // Se la notte e' nelle date giuste, aggiungigli l'overnight stay
+                if (eventDate.isEqual(startDate) || (eventDate.isAfter(startDate) && eventDate.isBefore(endDate))) {
+                    nights.add(night);
+                    night.setOvernightStay(overnightStay);
+                    eventService.saveNight(night);
+                }
+                // Altrimenti, se la notte non e' tra le date giuste ma ha questa come overnight stay, rimuovila
+                else if (night.getOvernightStay() == overnightStay) {
+                    night.setOvernightStay(null);
+                    eventService.saveNight(night);
+                }
+            }
+        }
+
+        // Modifica l'overnight stay
+        overnightStay = eventService.editOvernightStay(nights, overnightStayDTO);
+
+        return overnightStay;
+    }
+
 
     //***** ACTIVITY:
 

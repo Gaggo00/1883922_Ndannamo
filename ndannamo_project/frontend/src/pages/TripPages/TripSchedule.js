@@ -36,12 +36,16 @@ export default function TripSchedule() {
     const [overnightStayForForm, setOvernightStayForForm] = useState(null);
 
     
-    // Per il pop-up da cui creare un'accomodation (= OvernightStay nel backend)
-    const [isCreateAccomodationModalOpen, setIsCreateAccomodationModalOpen] = useState(false);
-    const openCreateAccomodationModal = (date) => {
+    // Per il pop-up da cui creare/modificare un'accomodation (= OvernightStay nel backend)
+    const [isAccomodationModalOpen, setIsAccomodationModalOpen] = useState(false);
+    const [accomodationEditing, setAccomodationEditing] = useState(false);      // false quando crei un'overnight, true quando modifichi
+    const [accomodationNightId, setAccomodationNightId] = useState(-1);
+
+    const openCreateAccomodationModal = (nightId, date) => {
 
         // Campi per oggetto overnightStay
         const id = null;    // stiamo creando una nuova accomodation, non abbiamo l'id
+        const name = "";
         const startDate = null;
         const endDate = null;
         const startCheckInTime = null;
@@ -50,34 +54,34 @@ export default function TripSchedule() {
         const endCheckOutTime = null;
         const address = "";
         const contact = "";
-        const name = "";
-        const overnightStay = new OvernightStay(id, startDate, endDate, startCheckInTime, endCheckInTime, startCheckOutTime, endCheckOutTime, address, contact, name);
+        const overnightStay = new OvernightStay(id, name, startDate, endDate, startCheckInTime, endCheckInTime, startCheckOutTime, endCheckOutTime, address, contact);
 
         // Imposta use state
         setOvernightStayForForm(overnightStay);
+        setAccomodationEditing(false);
+        setAccomodationNightId(nightId);
 
-        // TODO: settare la data "date" gia' spuntata nel form
-
-        setIsCreateAccomodationModalOpen(true);
-    };
-    const closeCreateAccomodationModal = () => {
-        setIsCreateAccomodationModalOpen(false);
+        setIsAccomodationModalOpen(true);
     };
 
     // Per il pop-up da cui modificare un'accomodation (= OvernightStay nel backend)
-    const [isEditAccomodationModalOpen, setIsEditAccomodationModalOpen] = useState(false);
-    const openEditAccomodationModal = (overnightStay) => {
-        setIsEditAccomodationModalOpen(true);
+    const openEditAccomodationModal = (nightId, overnightStay) => {
+
+        setOvernightStayForForm(overnightStay);
+        setAccomodationEditing(true);
+        setAccomodationNightId(nightId);
+
+        setIsAccomodationModalOpen(true);
     };
-    const closeEditAccomodationModal = () => {
-        setIsEditAccomodationModalOpen(false);
+
+    const closeAccomodationModal = () => {
+        setIsAccomodationModalOpen(false);
     };
 
     const handleOverlayClick = (e) => {
         // Verifica se l'utente ha cliccato sull'overlay e non sul contenuto del modal
         if (e.target.className === "modal-overlay") {
-            closeCreateAccomodationModal();
-            closeEditAccomodationModal();
+            closeAccomodationModal();
         }
     };
 
@@ -334,19 +338,13 @@ export default function TripSchedule() {
                     </div>
                 </div>
             </div>
-            {/* Pop up per creare una nuova accomodation */}
-            {isCreateAccomodationModalOpen && (
+            {/* Pop up per creare/modificare una nuova accomodation */}
+            {isAccomodationModalOpen && (
                 <div className="modal-overlay" onClick={handleOverlayClick}>
                     <div className="new-event-box">
-                        <OvernightStayForm tripStartDate={tripInfo.startDate} tripEndDate={tripInfo.endDate} overnightStay={overnightStayForForm}/>
-                    </div>
-                </div>
-            )}
-            {/* Pop up per modificare una accomodation */}
-            {isEditAccomodationModalOpen && (
-                <div className="modal-overlay" onClick={handleOverlayClick}>
-                    <div className="new-event-box">
-                        <OvernightStayForm tripStartDate={tripInfo.startDate} tripEndDate={tripInfo.endDate} overnightStay={overnightStayForForm}/>
+                        <OvernightStayForm tripId={id} tripStartDate={tripInfo.startDate} tripEndDate={tripInfo.endDate} editing={accomodationEditing}
+                        overnightStay={overnightStayForForm} closeModal={closeAccomodationModal} reloadSchedule={reloadScheduleOnLeft}
+                        nightId={accomodationNightId}/>
                     </div>
                 </div>
             )}

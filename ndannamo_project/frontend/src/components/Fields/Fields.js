@@ -42,7 +42,7 @@ export function DateField({
             <DatePicker
                 className={disabled ? 'field-input f-disabled' : 'field-input'}
                 selected={value}
-                onChange={(date) =>  setValue(fix_UTC_problem(date))/*setValue(DateUtilities.date_To_yyyymmdd(fix_UTC_problem(date)))*/}
+                onChange={(date) =>  setValue(fix_UTC_problem(date))}
                 disabled={disabled}
                 /*includeDates={includeDates}*/
                 minDate={minDate}

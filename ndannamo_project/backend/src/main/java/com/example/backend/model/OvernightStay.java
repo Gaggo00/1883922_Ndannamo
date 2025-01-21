@@ -19,10 +19,10 @@ public class OvernightStay {
 
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @OneToMany(mappedBy = "overnightStay", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "overnightStay")
     private List<Night> travelDays;
 
     @NotNull

@@ -17,10 +17,12 @@ import com.example.backend.dto.ExpenseCreationRequest;
 import com.example.backend.dto.ExpenseDTO;
 import com.example.backend.dto.GenericList;
 import com.example.backend.dto.GenericType;
+import com.example.backend.dto.OvernightStayDTO;
 import com.example.backend.dto.TravelCreationRequest;
 import com.example.backend.dto.TripCreationRequest;
 import com.example.backend.dto.TripDTO;
 import com.example.backend.dto.TripInviteList;
+import com.example.backend.model.OvernightStay;
 import com.example.backend.model.Trip;
 import com.example.backend.service.TripService;
 import com.example.backend.service.UserService;
@@ -274,6 +276,26 @@ public class TripController {
 
 
 
+    // Crea overnight stay
+    @PostMapping(value={"/{id}/schedule/overnightstay", "/{id}/schedule/overnightstay/"})
+    public ResponseEntity<?> createOvernightStay(@PathVariable Long id, @Valid @RequestBody OvernightStayDTO overnightStayDTO) {
+        try {
+            // prendi l'utente dal token
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String email = authentication.getName();
+
+            // crea overnight stay
+            OvernightStay overnightStay = tripService.createOvernightStay(email, id, overnightStayDTO);
+            return ResponseEntity.ok().body(overnightStay.getId());
+        }
+        catch (Exception ex) {
+            return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(ex.getMessage());
+        }
+    }
+
+
     /****************************************** GESTIONE SPESE ******************************************/
 
 
@@ -408,6 +430,27 @@ public class TripController {
     
     
     /****************************************** CAMBIAMENTO DATI EVENTI ******************************************/
+
+    //***** OVERNIGHT STAY:
+
+    // Crea overnight stay
+    @PutMapping(value={"/{id}/schedule/overnightstay", "/{id}/schedule/overnightstay/"})
+    public ResponseEntity<?> editOvernightStay(@PathVariable Long id, @Valid @RequestBody OvernightStayDTO overnightStayDTO) {
+        try {
+            // prendi l'utente dal token
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String email = authentication.getName();
+
+            // modifica overnight stay
+            OvernightStay overnightStay = tripService.editOvernightStay(email, id, overnightStayDTO);
+            return ResponseEntity.ok().body(overnightStay.getId());
+        }
+        catch (Exception ex) {
+            return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(ex.getMessage());
+        }
+    }
 
 
     //***** ACTIVITY:
