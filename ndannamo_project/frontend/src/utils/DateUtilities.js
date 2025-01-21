@@ -124,6 +124,25 @@ export default class DateUtilities {
     }
 
 
+    // Esempio:
+    // yyyymmdd_To_ddMONTH("2020-05-13")
+    // restituisce "13"
+    static yyyymmdd_To_dd(date, oldSeparator="-") {
+        var dateObject = new Date(date.replaceAll(oldSeparator, "-"));
+        return dateObject.toLocaleString('default', {
+            day: "numeric"
+        });
+    }
+
+    // Esempio:
+    // yyyymmdd_To_ddMONTH("2020-05-13")
+    // restituisce "13"
+    static yyyymmdd_To_MONTH(date, oldSeparator="-") {
+        var dateObject = new Date(date.replaceAll(oldSeparator, "-"));
+        return dateObject.toLocaleString('default', {
+            month: "long"
+        });
+    }
 
     /***************** ALTRE OPERAZIONI SULLE DATE *****************/
 

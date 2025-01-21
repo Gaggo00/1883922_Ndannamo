@@ -8,6 +8,7 @@ import InternalMenu from "./InternalMenu";
 import ScheduleDay from "./ScheduleEvents/ScheduleDay"
 import EventOpen from './ScheduleEvents/EventOpen';
 import OvernightStayForm from './ScheduleEvents/OvernightStayForm';
+import Calendar from './ScheduleEvents/Calendar';
 
 import Day from '../../models/Day';
 import Night from '../../models/Night';
@@ -33,10 +34,12 @@ export default function TripSchedule() {
     const TRAVEL = "TRAVEL";
 
 
-    const [overnightStayForForm, setOvernightStayForForm] = useState(null);
+    // Per il calendario
+    const [dates, setDates] = useState([]);
 
-    
+
     // Per il pop-up da cui creare/modificare un'accomodation (= OvernightStay nel backend)
+    const [overnightStayForForm, setOvernightStayForForm] = useState(null);
     const [isAccomodationModalOpen, setIsAccomodationModalOpen] = useState(false);
     const [accomodationEditing, setAccomodationEditing] = useState(false);      // false quando crei un'overnight, true quando modifichi
     const [accomodationNightId, setAccomodationNightId] = useState(-1);
@@ -182,6 +185,10 @@ export default function TripSchedule() {
             currentDay = DateUtilities.getNextDay(currentDay);
         }
 
+        // Imposta array dates per il calendario
+        setDates(days.map((day) => day.date));
+
+
         // Itera gli eventi e assegnali alle date giuste dentro l'array "days"
         schedule.forEach(event => {
             // Indice di questo evento nell'array "days", e' uguale alla distanza della data dell'evento da startDate
@@ -322,10 +329,7 @@ export default function TripSchedule() {
                 </div>
                 <div className="trip-details trip-details-schedule">
                     <div id="schedule" key={seedSchedule}>
-                        <div id="calendar">
-                            Qui metteremo il calendario<br/>
-                            <button onClick={() => scrollToDay("2025-01-25")}>scrolla a 25 gennaio (temporaneo)</button>
-                        </div>
+                        <Calendar dates={dates} scrollFunction={scrollToDay}/>
                         <div id="events">
                             {tripDays.map((day, index) =>
                                 <ScheduleDay key={index} day={day} selectEvent={changeSelectedEvent} reloadSchedule={reloadScheduleOnLeft}/>

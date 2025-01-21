@@ -19,9 +19,30 @@
 
 #calendar {
     width: 100%;
-    height: 10vh;
-    background-color: rgb(201, 145, 145);
+    min-height: 13vh;
     margin: 1vh 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    justify-content: center;
+}
+
+#calendar .calendar-element {
+    margin: 0 0.3vw;
+    border: none;
+    border-radius: 10px;
+    background-color: #FAD8B2;
+}
+
+#calendar .calendar-element .calendar-element-content {
+    padding: 0.2vh 0.4vw;
+}
+
+#calendar .date-day {
+
+}
+
+#calendar h3 {
+    margin-bottom: 0;
 }
 
 #events {
