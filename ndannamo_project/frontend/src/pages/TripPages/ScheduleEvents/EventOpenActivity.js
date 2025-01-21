@@ -261,13 +261,15 @@ export default function EventOpenActivity({activity, latitude, longitude, reload
         <div id="event-open">
             <div className='top-row'>
                 {/* Pulsante per eliminare l'activity */}
-                <button onClick={()=>{setIsModalOpen(true);}} id="delete-button" title='Delete activity' className='float-right no-background no-border delete-button'><i className="bi bi-trash3-fill h5"/></button>
+                <button onClick={()=>{setIsModalOpen(true);}} id="delete-button" title='Delete activity' className='float-right no-background no-border top-row-button'>
+                    <i className="bi bi-trash3-fill h5 red-icon"/>
+                </button>
                 <div className='date'>
-                    {DateUtilities.yyyymmdd_To_WEEKDAYddMONTH(activity.date)}
+                    {DateUtilities.yyyymmdd_To_WEEKDAYddMONTH(activity.date)} - {activity.place}
                 </div>
-                <div className='place'>
+                {/*<div className='place'>
                     {activity.place}
-                </div>
+                </div>*/}
                 <div>
                     {!editingName ? (
                         <div className='title hidden-btn-parent'>
@@ -390,7 +392,7 @@ export default function EventOpenActivity({activity, latitude, longitude, reload
                     <div className='event-info-other hidden-btn-parent'>
                         {/* Pulsante per modificare le info */}
                         <button onClick={() => {setNewInfo(activity.info);setEditingInfo(true);}} title='Edit info' className='float-right no-background no-border hidden-btn'>
-                            <i className="bi bi-pencil-fill"></i>
+                            <i className="bi bi-pencil-fill gray-icon"></i>
                         </button>
                         {/* Info */}
                         <div className='info-content'>{activity.info}</div>
@@ -405,7 +407,7 @@ export default function EventOpenActivity({activity, latitude, longitude, reload
                             onKeyDown={(e) => {handleKeyDown(e, saveNewInfo);}}/>
                         {/* Pulsante per salvare le info */}
                         <button onClick={saveNewInfo} title='Save' className='float-right no-background no-border'>
-                            <i className="bi bi-floppy-fill"></i>
+                            <i className="bi bi-floppy-fill gray-icon"></i>
                         </button>
                     </div>
                 )}

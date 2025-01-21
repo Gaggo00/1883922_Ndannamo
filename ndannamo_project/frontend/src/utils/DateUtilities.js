@@ -136,13 +136,17 @@ export default class DateUtilities {
 
     // Esempio:
     // yyyymmdd_To_ddMONTH("2020-05-13")
-    // restituisce "13"
-    static yyyymmdd_To_MONTH(date, oldSeparator="-") {
+    // restituisce "Maggio"
+    static yyyymmdd_To_MONTH(date, length="long", oldSeparator="-") {
         var dateObject = new Date(date.replaceAll(oldSeparator, "-"));
-        return dateObject.toLocaleString('default', {
-            month: "long"
+        var month = dateObject.toLocaleString('default', {
+            month: length
         });
+        month = month.charAt(0).toUpperCase() + month.slice(1);
+        return month;
     }
+
+
 
     /***************** ALTRE OPERAZIONI SULLE DATE *****************/
 

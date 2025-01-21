@@ -201,7 +201,8 @@ export default function OvernightStayForm({tripId, tripStartDate, tripEndDate, o
                     </div>
 
                     <div className='form-row'>
-                        <button onClick={createAccomodation}>{editing ? ("Save") : ("Create")}</button>
+                        {editing && <button className='custom-button red-button'>Delete</button>}
+                        <button className='custom-button' onClick={createAccomodation}>{editing ? ("Save") : ("Create")}</button>
                     </div>
                 </div>
             </div>}

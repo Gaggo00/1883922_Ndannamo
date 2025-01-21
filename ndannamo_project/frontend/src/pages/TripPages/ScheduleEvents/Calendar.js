@@ -12,7 +12,7 @@ export default function Calendar({dates, scrollFunction}) {
                             <h3>{DateUtilities.yyyymmdd_To_dd(date)}</h3>
                         </div>
                         <div className="flex-column align-items-center date-month">
-                            {DateUtilities.yyyymmdd_To_MONTH(date)}
+                            <h6>{DateUtilities.yyyymmdd_To_MONTH(date, "short")}</h6>
                         </div>
                     </div>             
                 </button>

@@ -465,8 +465,8 @@ public class TripController {
             String email = authentication.getName();
 
             // cambia le info
-            tripService.changeActivityInfo(email, id, activity_id, newName.getValue());
-            return ResponseEntity.ok().body("Activity info changed");
+            tripService.changeActivityName(email, id, activity_id, newName.getValue());
+            return ResponseEntity.ok().body("Activity name changed");
         }
         catch (Exception ex) {
             return ResponseEntity
@@ -486,7 +486,7 @@ public class TripController {
 
             // cambia le info
             tripService.changeActivityAddress(email, id, activity_id, newAddress.getValue());
-            return ResponseEntity.ok().body("Activity info changed");
+            return ResponseEntity.ok().body("Activity address changed");
         }
         catch (Exception ex) {
             return ResponseEntity

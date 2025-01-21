@@ -10,7 +10,10 @@ export default function EventOpen({event, latitude, longitude, reloadSchedule, o
 
     return (
         <div style={{width: "100%", height: "100%"}}>
-            {(!event) && <div className='no-selected-events'>Select an event on the left</div>}
+            {(!event) && 
+            <div id="event-open">
+                <div className='no-selected-events'>Select an event on the left</div>
+            </div>}
             {(event && event.constructor.name === "Night") && <EventOpenNight night={event} latitude={latitude} longitude={longitude} reloadSchedule={reloadSchedule}
              openCreateAccomodationModal={openCreateAccomodationModal} openEditAccomodationModal={openEditAccomodationModal}/>}
             {(event && event.constructor.name === "Activity") && <EventOpenActivity activity={event} latitude={latitude} longitude={longitude} reloadSchedule={reloadSchedule}/>}

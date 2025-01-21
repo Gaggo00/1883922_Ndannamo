@@ -19,8 +19,8 @@ export default function EventOpenNight({night, latitude, longitude, reloadSchedu
                     </div>
                 </div>
                 <div className='no-selected-events flex-column align-items-center'>
-                    You don't have an accomodation for this night
-                    <button onClick={()=> {openCreateAccomodationModal(night.id, night.date)}}>Add accomodation</button>
+                    <p>You don't have an accomodation for this night</p>
+                    <button className='custom-button' onClick={()=> {openCreateAccomodationModal(night.id, night.date)}}>Create</button>
                 </div>
             </div>
         );
@@ -60,13 +60,15 @@ export default function EventOpenNight({night, latitude, longitude, reloadSchedu
         return (
             <div id="event-open">
                 <div className='top-row'>
+                    {/* Pulsante per modificare l'accomodation */}
+                    <button onClick={()=>{openEditAccomodationModal(night.id, overnightStay)}} title='Edit accomodation'
+                    className='float-right no-background no-border top-row-button'><i className="bi bi-pencil-fill h5 gray-icon"/></button>
                     <div className='date'>
                         {DateUtilities.yyyymmdd_To_WEEKDAYddMONTH(night.date)}
                     </div>
                     <div className='title'>
                         Stay at "{overnightStay.name}"
                     </div>
-                    <button onClick={()=> {openEditAccomodationModal(night.id, overnightStay)}}>Edit accomodation</button>
                 </div>
                 
                 <div className="map-banner">

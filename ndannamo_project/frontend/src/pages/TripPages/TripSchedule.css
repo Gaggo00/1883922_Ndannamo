@@ -1,14 +1,13 @@
 .trip-details-schedule {
     display: flex;
     flex-direction: row;
+    margin-bottom: -2.5vh;
 }
 
 #schedule {
     width: 30%;
     height: 100%;
     border-right: 1px solid gray;
-    display: flex;
-    flex-direction: column;
 }
 
 #event-info {
@@ -18,12 +17,13 @@
 }
 
 #calendar {
-    width: 100%;
-    min-height: 13vh;
+    max-width: 100%;
+    min-height: 11vh;
     margin: 1vh 0;
     overflow-x: auto;
     overflow-y: hidden;
-    justify-content: center;
+    /*justify-content: center;*/
+    scrollbar-width: thin;
 }
 
 #calendar .calendar-element {
@@ -34,21 +34,43 @@
 }
 
 #calendar .calendar-element .calendar-element-content {
-    padding: 0.2vh 0.4vw;
+    padding: 1vh 0.4vw;
+    width: 3.7vw;
 }
 
 #calendar .date-day {
-
+    font-weight: bolder;
 }
 
-#calendar h3 {
+#calendar .date-month {
+    padding-bottom: 0.5vh;
+}
+
+#calendar h3, #calendar h6 {
     margin-bottom: 0;
 }
 
 #events {
+    width: 100%;
     overflow-y: auto;
+    scrollbar-width: thin;
+    padding-top: 2vh;
+    padding-bottom: 6vh;
 }
 
+.custom-button {
+    height: fit-content;
+    width: fit-content;
+    margin: auto 0.5vw;
+    padding: 0.2vh 0.6vw;
+    border-radius: 1vw;
+    font-size: 1.1vw;
+    background-color: #FFD694;
+}
+.red-button {
+    background-color: #dd3434;
+    color: white;
+}
 
 
 /* Sezione a destra */
@@ -62,8 +84,8 @@
 }
 
 #event-open .date, #event-open .place {
-    font-size: 1.4vw;
     color: rgb(100, 100, 100);
+    font-size: 1.4vw;
     font-weight: 550;
 }
 
@@ -154,21 +176,23 @@
 
 .no-selected-events {
     font-size: 1.5vw;
-    height: 100%;
+    margin: auto;
     align-content: center;
     color: rgb(122, 122, 122);
 }
 
 
-/* Pulsante per eliminare un evento */
-.delete-button {
+/* Pulsante in alto a destra */
+.top-row-button {
     top: 2.8vh;
-    color: rgb(182, 3, 3);
 }
 
 
 /* Per modificare i campi di un evento */
 
+.bi.red-icon {
+    color: rgb(182, 3, 3);
+}
 .bi.gray-icon {
     color: rgb(95, 95, 95);
 }

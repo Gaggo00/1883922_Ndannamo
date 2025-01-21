@@ -258,8 +258,15 @@ export default function TripSchedule() {
         }
         setSelectedEvent(event);
 
-        if (event.address && coords) {
-            fetchCoordinatesFromExternalAPI(event.address + ", " + event.place, coords[0], coords[1], setSelectedEventLatitude, setSelectedEventLongitude);
+        if (coords) {
+            // per activity e travel
+            if (event.address) {
+                fetchCoordinatesFromExternalAPI(event.address + ", " + event.place, coords[0], coords[1], setSelectedEventLatitude, setSelectedEventLongitude);
+            }
+            // per night
+            else if (event.overnightStay && event.overnightStay.address) {
+                fetchCoordinatesFromExternalAPI(event.overnightStay.address + ", " + event.place, coords[0], coords[1], setSelectedEventLatitude, setSelectedEventLongitude);
+            }
         }
     }
 
@@ -328,7 +335,7 @@ export default function TripSchedule() {
                     <span> <strong>{tripInfo.title}:</strong> {DateUtilities.yyyymmdd_To_ddMONTH(tripInfo.startDate)} - {DateUtilities.yyyymmdd_To_ddMONTH(tripInfo.endDate)}</span>
                 </div>
                 <div className="trip-details trip-details-schedule">
-                    <div id="schedule" key={seedSchedule}>
+                    <div id="schedule" className='flex-column align-items-center' key={seedSchedule}>
                         <Calendar dates={dates} scrollFunction={scrollToDay}/>
                         <div id="events">
                             {tripDays.map((day, index) =>
