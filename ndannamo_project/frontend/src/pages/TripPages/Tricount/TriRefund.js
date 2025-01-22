@@ -1,63 +1,88 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
+import { BsChevronCompactLeft, BsChevronCompactRight } from "react-icons/bs";
 import "./Tricount.css"
 
 
 export const ScrollableRow = ({ blocks=[] }) => {
-    const [scrollPosition, setScrollPosition] = useState(0);
-  
-    const handleScrollLeft = () => {
-      setScrollPosition((prev) => Math.max(prev - 200, 0)); // Scroll indietro di 200px
+    const containerRef = useRef(null);
+    const [showLeftArrow, setShowLeftArrow] = useState(false);
+    const [showRightArrow, setShowRightArrow] = useState(false);
+
+    useEffect(() => {
+        checkArrows();
+    }, [blocks]);
+
+    const checkArrows = () => {
+        const container = containerRef.current;
+        if (!container) return;
+
+        const { scrollLeft, scrollWidth, clientWidth } = container;
+        console.log({ scrollLeft, scrollWidth, clientWidth });
+        setShowLeftArrow(scrollLeft > 0);
+        setShowRightArrow(scrollLeft + clientWidth < scrollWidth);
     };
   
-    const handleScrollRight = () => {
-      setScrollPosition((prev) => prev + 200); // Scroll avanti di 200px
+    const scroll = (direction) => {
+        const container = containerRef.current;
+        if (!container) return;
+
+        const scrollAmount = 200; // Adjust the scroll distance as needed
+        const newScrollPosition = direction === "left"
+            ? container.scrollLeft - scrollAmount
+            : container.scrollLeft + scrollAmount;
+
+        container.scrollTo({
+            left: newScrollPosition,
+            behavior: "smooth",
+        });
+
+        setTimeout(() => {
+            checkArrows();
+        }, 200);
     };
   
+    const stylePositive = {fontWeight: '600', color: 'green'}
+    const styleNegative = {fontWeight: '600', color: 'red'}
+    const styleZero = {fontWeight: '600'}
+
     return (
-      <div style={{ display: 'flex', alignItems: 'center', fontFamily: 'Arial, sans-serif', padding: '20px' }}>
-        {/* Freccia sinistra */}
-        <button onClick={handleScrollLeft} style={{ marginRight: '10px', padding: '10px', cursor: 'pointer' }}>
-          ◀
-        </button>
-  
-        {/* Contenitore scrollabile */}
-        <div
-          style={{
-            overflowX: 'hidden',
-            display: 'flex',
-            flexDirection: 'row',
-            whiteSpace: 'nowrap',
-            width: '80%',
-            transform: `translateX(-${scrollPosition}px)`,
-            transition: 'transform 0.3s ease-in-out',
-          }}
-        >
-          {blocks.map((block, index) => (
-            <div
-              key={index}
-              style={{
-                display: 'inline-block',
-                width: '150px',
-                margin: '0 10px',
-                padding: '10px',
-                textAlign: 'center',
-                border: '1px solid #ccc',
-                borderRadius: '8px',
-              }}
-            >
-              <div style={{ fontWeight: 'bold', marginBottom: '10px' }}>{block.nickname}</div>
-              <div style={{ fontSize: '24px', color: '#555' }}>{block.amount}</div>
+        <div className="tc-balance-container">
+            {/* Freccia sinistra */}
+            <button onClick={() => scroll('left')} className='tc-arrows'>
+                <BsChevronCompactLeft style={showLeftArrow ? {} : {visibility: 'hidden'}}/>
+            </button>
+            <div className="tc-scrollable-b-container" ref={containerRef}>
+                {blocks.map((block, index) => (
+                    <div key={index} className='tc-balance-item'>
+                        <div>{block.nickname}</div>
+                        <div style={block.amount < 0 ? styleNegative : block.amount > 0 ? stylePositive : styleZero}>
+                            {block.amount}
+                        </div>
+                    </div>
+                ))}
             </div>
-          ))}
+            {/* Freccia destra */}
+            <button onClick={() => scroll('rigth')} className='tc-arrows'>
+                <BsChevronCompactRight style={showRightArrow ? {} : {visibility: 'hidden'}}/>
+            </button>
         </div>
-  
-        {/* Freccia destra */}
-        <button onClick={handleScrollRight} style={{ marginLeft: '10px', padding: '10px', cursor: 'pointer' }}>
-          ▶
-        </button>
-      </div>
     );
 };
+
+
+export const TriBalance = ({ id, nickname, amount }) => {
+
+    function handleClick() {
+        console.log(id);
+    }
+
+    return (
+      <div className='tc-item' onClick={handleClick}>
+          <div className="tc-column tc-name">{nickname}</div>
+          <div className="tc-column tc-total">{amount}</div>
+      </div>
+    )
+}
   
 
 const TriRefund = ({ by, to, amount, toNick, byNick }) => {

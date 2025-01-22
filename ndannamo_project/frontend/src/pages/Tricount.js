@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import TCListItem, {TCListHeader} from "./TripPages/Tricount/TriListItem";
 import SearchBar from "../components/SearchBar";
 import TCForm from "./TripPages/Tricount/TriForm";
-import TriRefund, {ScrollableRow} from "./TripPages/Tricount/TriRefund";
+import TriRefund, {ScrollableRow, TriBalance} from "./TripPages/Tricount/TriRefund";
 import "../styles/Main.css";
 
 class ExpenseDto {
@@ -28,8 +28,8 @@ class Refound {
 }
 
 function Tricount() {
-    const tripInfo = {users: [[0, "Sara"], [2, "Anna"], [1, "Pino"]], startingData: new Date()};
-    const userId = 1;
+    const tripInfo = {users: [[0, "Sara"], [1, "Pino"], [2, "Anna"], [3, "Piero"], [4, "Marta"], [5, "Mari grace"]], startingData: new Date()};
+    const userId = 3;
 
     const [activeText, setActiveText] = useState("list");
     const [formVisibility, setFormVisibility] = useState(true);
@@ -48,11 +48,14 @@ function Tricount() {
     const [totalExpenses, setTotalExpenses] = useState(0);
     const [data, setData] = useState(retrieveTricounts());
     const [searchData, setSearchData] = useState([...data]);
-    const [balance, setBalance] = useState(calcBalance(data));
-    const [refund, setRefund] = useState(calcRefund(balance));
+    const [balance, setBalance] = useState([]);
+    const [refund, setRefund] = useState([]);
 
     useEffect(() => {
         retriveExpenses(data);
+        const newBalance = calcBalance(data);
+        setBalance(newBalance);
+        setRefund(calcRefund(newBalance));
     }, [data]);
 
     function retrieveTricounts() {
@@ -171,20 +174,23 @@ function Tricount() {
         var dict = {}
         const balances = []
 
+        tripInfo.users.map((u) => {
+            dict[u[0]] = 0;
+        })
+
         expenses.map((e) => {
-            if (!(e.paidBy in dict))
-                dict[e.paidBy] = 0;
-            dict[e.paidBy] +=  e.amount;
+            dict[e.paidBy] += e.amount;
             e.amountPerUser.map((userAmount) => {
-                if (!(userAmount.user in dict))
-                    dict[userAmount.user] = 0;
                 dict[userAmount.user] -= userAmount.amount;
             })
         })
 
-        const sorted = Object.entries(dict).sort(([, valueA], [, valueB]) => valueB - valueA);
+        const sorted = Object.entries(dict)
+            .map(([key, value]) => [Number(key), value])
+            .sort(([, valueA], [, valueB]) => valueB - valueA);
         sorted.map((value) => {
-            balances.push({amount: value[1], id: value[0], nickname: tripInfo.users[value[0]][1]});
+            const newBalance = {amount: value[1], id: value[0], nickname: tripInfo.users[value[0]][1]};
+            balances.push(newBalance);
         })
 
         return balances;
@@ -192,7 +198,10 @@ function Tricount() {
 
     function calcRefund(balances) {
         const refounds = [];
-        const copyBalances = [...balances];
+        const copyBalances = balances.map(balance => ({ ...balance }));
+
+        if (balances.length <= 0)
+            return [];
 
         var lastValue = copyBalances.pop();
         lastValue.amount *= -1;
@@ -266,7 +275,21 @@ function Tricount() {
                     </div>
                     </>)}
                     {activeText === "sales" && (<>
-                        <ScrollableRow blocks={balance}/>
+                        <TCListHeader names={["Nickname", "Balance"]}/>
+                        <div className="tc-list">
+                            <div className="tc-list-inner" style={{maxHeight: '150px'}}>
+                                {balance
+                                    .sort((a, b) => (a.id === userId ? -1 : b.id === userId ? 1 : 0)) // Porta l'elemento con id === user.id in cima
+                                    .map((b, index) => (
+                                        <TriBalance
+                                            key={index}
+                                            id={b.id}
+                                            nickname={b.nickname}
+                                            amount={b.amount}
+                                        />
+                                ))}
+                            </div>
+                        </div>
                         <div className="tc-middle">
                             <div className="tc-title">Refund</div>
                         </div>
