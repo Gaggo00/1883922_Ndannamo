@@ -83,14 +83,20 @@
     margin: 0 3vw;
 }
 
-#event-open .date, #event-open .place {
+#event-open .date-place {
+    margin-top: 2vh;
     color: rgb(100, 100, 100);
     font-size: 1.4vw;
     font-weight: 550;
+    margin-bottom: 0;
 }
 
-#event-open .date {
-    margin-top: 2vh;
+#event-open .date.margin-right {
+    margin-right: 2vw;
+}
+
+#event-open .place {
+    margin-left: 2vw;
 }
 
 #event-open .title {
@@ -110,6 +116,7 @@
     width: 90%;
     height: 20vh;
     border: 1px solid black;
+    z-index: 0;
 }
 
 #event-open .event-info {
@@ -199,6 +206,9 @@
 .bi.spaced {
     margin: 0 0.5vw;
 }
+.bi.margin-bottom {
+    margin-bottom: 1vh;
+}
 
 button.float-right {
     position: relative;
@@ -235,6 +245,18 @@ button.no-border {
     overflow-wrap: break-word;
     border: 1px solid;
     padding: 2px;
+}
+
+.edit-place-input {
+    width: 20vw;
+}
+#event-open .place .suggestions {
+    z-index: 99;
+    position: relative;
+}
+#event-open .place .suggestions .suggestions-items {
+    width: 20vw;
+    transform: translateX(0);
 }
 
 .edit-title-input {

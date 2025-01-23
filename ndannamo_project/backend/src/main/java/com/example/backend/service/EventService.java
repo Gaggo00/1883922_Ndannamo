@@ -286,6 +286,23 @@ public class EventService {
         changeEventPlace(EventType.TRAVEL, trip, travelId, newPlace);
     }
 
+    // Cambia destinazione travel
+    public void changeTravelDestination(Trip trip, long travelId, String newDestination) {
+        // Trova travel
+        Travel travel = getTravelById(travelId);
+
+        // Controlla che il travel faccia parte della trip
+        if (travel.getTrip() != trip) {
+            throw new ResourceNotFoundException("Travel not found!");
+        }
+
+        // Cambia valore
+        travel.setDestination(newDestination);
+
+        // Aggiorna l'activity
+        travelRepository.save(travel);
+    }
+
     // Cambia data partenza travel
     public void changeTravelDate(Trip trip, long travelId, LocalDate newDate) {
         changeEventDate(EventType.TRAVEL, trip, travelId, newDate);
@@ -313,7 +330,7 @@ public class EventService {
         travelRepository.save(travel);
     }
 
-    // Cambia indirizzo activity
+    // Cambia indirizzo travel
     public void changeTravelAddress(Trip trip, long travelId, String newAddress) {
         // Trova travel
         Travel travel = getTravelById(travelId);
@@ -326,16 +343,16 @@ public class EventService {
         // Cambia valore
         travel.setAddress(newAddress);
 
-        // Aggiorna l'activity
+        // Aggiorna travel
         travelRepository.save(travel);
     }
 
-    // Cambia orario activity
+    // Cambia orario travel
     public void changeTravelTime(Trip trip, long travelId, LocalTime newStartTime, LocalTime newEndTime) {
         // Trova travel
         Travel travel = getTravelById(travelId);
 
-        // Controlla che l'activity faccia parte della trip
+        // Controlla che il travel faccia parte della trip
         if (travel.getTrip() != trip) {
             throw new ResourceNotFoundException("Travel not found!");
         }
@@ -344,7 +361,7 @@ public class EventService {
         travel.setDepartureTime(newStartTime);
         travel.setArrivalTime(newEndTime);
 
-        // Aggiorna l'activity
+        // Aggiorna travel
         travelRepository.save(travel);
     }
 
@@ -353,7 +370,7 @@ public class EventService {
         // Trova travel
         Travel travel = getTravelById(travelId);
 
-        // Controlla che l'activity faccia parte della trip
+        // Controlla che il travel faccia parte della trip
         if (travel.getTrip() != trip) {
             throw new ResourceNotFoundException("Travel not found!");
         }

@@ -3,9 +3,14 @@ import React, {useEffect, useState} from 'react';
 import Map from './Map';
 import DateUtilities from '../../../utils/DateUtilities';
 
+import ScheduleService from '../../../services/ScheduleService';
+
+import EventOpenDatePlace from './EventOpenDatePlace';
+
 import '../TripSchedule.css'
 
-export default function EventOpenNight({night, latitude, longitude, reloadSchedule, openCreateAccomodationModal, openEditAccomodationModal}) {
+export default function EventOpenNight({night, latitude, longitude, reloadSchedule, openCreateAccomodationModal, openEditAccomodationModal,
+    tripStartDate, tripEndDate}) {
 
 
     // Se non c'e' una accomodation per questa notte, mostra il pulsante per crearne una
@@ -63,9 +68,11 @@ export default function EventOpenNight({night, latitude, longitude, reloadSchedu
                     {/* Pulsante per modificare l'accomodation */}
                     <button onClick={()=>{openEditAccomodationModal(night.id, overnightStay)}} title='Edit accomodation'
                     className='float-right no-background no-border top-row-button'><i className="bi bi-pencil-fill h5 gray-icon"/></button>
-                    <div className='date'>
-                        {DateUtilities.yyyymmdd_To_WEEKDAYddMONTH(night.date)}
-                    </div>
+
+                    <EventOpenDatePlace event={night} reloadSchedule={reloadSchedule} saveDateFunction={null}
+                    savePlaceFunction={ScheduleService.changeNightPlace} tripStartDate={tripStartDate} tripEndDate={tripEndDate}
+                    canEditDate={false}/>
+
                     <div className='title'>
                         Stay at "{overnightStay.name}"
                     </div>

@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import com.example.backend.mapper.ExpenseMapperImpl;
 import com.example.backend.mapper.TripMapperImpl;
 import com.example.backend.repositories.TripRepository;
+import com.example.backend.utils.EventValidation;
 import com.example.backend.utils.OvernightstayValidation;
 import com.example.backend.utils.TripValidation;
 import com.example.backend.exception.ResourceNotFoundException;
@@ -666,6 +667,9 @@ public class TripService {
             throw new ResourceNotFoundException("Trip not found");
         }
 
+        // Controllo che sia valido
+        EventValidation.nameValid(newName);
+
         // Cambio valore
         eventService.changeActivityName(trip, activityId, newName);
     }
@@ -678,6 +682,9 @@ public class TripService {
         if (!userIsAParticipant(email, trip)) {
             throw new ResourceNotFoundException("Trip not found");
         }
+
+        // Controllo che sia valido
+        EventValidation.placeValid(newPlace);
 
         // Cambio valore
         eventService.changeActivityPlace(trip, activityId, newPlace);
@@ -692,6 +699,9 @@ public class TripService {
             throw new ResourceNotFoundException("Trip not found");
         }
 
+        // Controllo che la data sia nel range giusto
+        EventValidation.dateValid(trip, newDate);
+
         // Cambio valore
         eventService.changeActivityDate(trip, activityId, newDate);
     }
@@ -704,6 +714,9 @@ public class TripService {
         if (!userIsAParticipant(email, trip)) {
             throw new ResourceNotFoundException("Trip not found");
         }
+
+        // Controllo che sia valido
+        EventValidation.addressValid(newAddress);
 
         // Cambio valore
         eventService.changeActivityAddress(trip, activityId, newAddress);
@@ -744,6 +757,9 @@ public class TripService {
             throw new ResourceNotFoundException("Trip not found");
         }
 
+        // Controllo che sia valido
+        EventValidation.infoValid(newInfo);
+
         // Cambio le info
         eventService.changeActivityInfo(trip, activityId, newInfo);
     }
@@ -751,6 +767,70 @@ public class TripService {
 
     //***** TRAVEL:
 
+    // Cambia posto travel
+    public void changeTravelPlace(String email, long tripId, long travelId, String newPlace) {
+        Trip trip = getTripById(tripId);
+
+        // Controllo che l'utente loggato faccia parte della trip
+        if (!userIsAParticipant(email, trip)) {
+            throw new ResourceNotFoundException("Trip not found");
+        }
+
+        // Controllo che sia valido
+        EventValidation.placeValid(newPlace);
+
+        // Cambio valore
+        eventService.changeTravelPlace(trip, travelId, newPlace);
+    }
+
+
+    // Cambia destinazione travel
+    public void changeTravelDestination(String email, long tripId, long travelId, String newDestination) {
+        Trip trip = getTripById(tripId);
+
+        // Controllo che l'utente loggato faccia parte della trip
+        if (!userIsAParticipant(email, trip)) {
+            throw new ResourceNotFoundException("Trip not found");
+        }
+
+        // Controllo che sia valido
+        EventValidation.placeValid(newDestination);
+
+        // Cambio valore
+        eventService.changeTravelDestination(trip, travelId, newDestination);
+    }
+
+    // Cambia data travel
+    public void changeTravelDate(String email, long tripId, long travelId, LocalDate newDate) {
+        Trip trip = getTripById(tripId);
+
+        // Controllo che l'utente loggato faccia parte della trip
+        if (!userIsAParticipant(email, trip)) {
+            throw new ResourceNotFoundException("Trip not found");
+        }
+
+        // Controllo che la data sia nel range giusto
+        EventValidation.dateValid(trip, newDate);
+
+        // Cambio valore
+        eventService.changeTravelDate(trip, travelId, newDate);
+    }
+
+    // Cambia data arrivo travel
+    public void changeTravelArrivalDate(String email, long tripId, long travelId, LocalDate newArrivalDate) {
+        Trip trip = getTripById(tripId);
+
+        // Controllo che l'utente loggato faccia parte della trip
+        if (!userIsAParticipant(email, trip)) {
+            throw new ResourceNotFoundException("Trip not found");
+        }
+
+        // Controllo che la data sia nel range giusto
+        EventValidation.dateValid(trip, newArrivalDate);
+
+        // Cambio valore
+        eventService.changeTravelArrivalDate(trip, travelId, newArrivalDate);
+    }
 
     // Cambia indirizzo travel
     public void changeTravelAddress(String email, long tripId, long travelId, String newAddress) {
@@ -760,6 +840,9 @@ public class TripService {
         if (!userIsAParticipant(email, trip)) {
             throw new ResourceNotFoundException("Trip not found");
         }
+
+        // Controllo che sia valido
+        EventValidation.addressValid(newAddress);
 
         // Cambio valore
         eventService.changeTravelAddress(trip, travelId, newAddress);
@@ -800,10 +883,47 @@ public class TripService {
             throw new ResourceNotFoundException("Trip not found");
         }
 
+        // Controllo che sia valido
+        EventValidation.infoValid(newInfo);
+
         // Cambio le info
         eventService.changeTravelInfo(trip, travelId, newInfo);
     }
 
+
+
+    //***** NIGHT:
+
+    // Cambia posto night
+    public void changeNightPlace(String email, long tripId, long nightId, String newPlace) {
+        Trip trip = getTripById(tripId);
+
+        // Controllo che l'utente loggato faccia parte della trip
+        if (!userIsAParticipant(email, trip)) {
+            throw new ResourceNotFoundException("Trip not found");
+        }
+
+        // Controllo che sia valido
+        EventValidation.placeValid(newPlace);
+
+        // Cambio valore
+        eventService.changeNightPlace(trip, nightId, newPlace);
+    }
+
+    /*
+    // Cambia data night => NON E' VERO NON SI PUO' CAMBIARE LA DATA DI UNA NIGHT
+    public void changeNightDate(String email, long tripId, long nightId, LocalDate newDate) {
+        Trip trip = getTripById(tripId);
+
+        // Controllo che l'utente loggato faccia parte della trip
+        if (!userIsAParticipant(email, trip)) {
+            throw new ResourceNotFoundException("Trip not found");
+        }
+
+        // Cambio valore
+        eventService.changeNightDate(trip, nightId, newDate);
+    }
+    */
 
 
     /****************** FUNZIONI PER CONTROLLARE I PERMESSI DEGLI UTENTI ******************/

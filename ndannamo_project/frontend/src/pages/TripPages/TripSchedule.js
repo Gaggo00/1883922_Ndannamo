@@ -345,7 +345,8 @@ export default function TripSchedule() {
                     </div>
                     <div id="event-info">
                         <EventOpen key={seedEventOpen} event={selectedEvent} latitude={selectedEventLatitude} longitude={selectedEventLongitude} reloadSchedule={reloadScheduleOnLeft}
-                        openCreateAccomodationModal={openCreateAccomodationModal} openEditAccomodationModal={openEditAccomodationModal}/>
+                        openCreateAccomodationModal={openCreateAccomodationModal} openEditAccomodationModal={openEditAccomodationModal}
+                        tripStartDate={tripInfo.startDate} tripEndDate={tripInfo.endDate}/>
                     </div>
                 </div>
             </div>

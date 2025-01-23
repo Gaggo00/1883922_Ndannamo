@@ -433,7 +433,7 @@ public class TripController {
 
     //***** OVERNIGHT STAY:
 
-    // Crea overnight stay
+    // Modifica overnight stay
     @PutMapping(value={"/{id}/schedule/overnightstay", "/{id}/schedule/overnightstay/"})
     public ResponseEntity<?> editOvernightStay(@PathVariable Long id, @Valid @RequestBody OvernightStayDTO overnightStayDTO) {
         try {
@@ -454,6 +454,46 @@ public class TripController {
 
 
     //***** ACTIVITY:
+
+    // Cambia posto activity
+    @PutMapping(value={"/{id}/schedule/activity/{activity_id}/place", "/{id}/schedule/activity/{activity_id}/place/"})
+    public ResponseEntity<?> changeActivityPlace(@PathVariable Long id, @PathVariable Long activity_id, @Valid @RequestBody GenericType<String> newPlace) {
+
+        try {
+            // prendi l'utente dal token
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String email = authentication.getName();
+
+            // cambia le info
+            tripService.changeActivityPlace(email, id, activity_id, newPlace.getValue());
+            return ResponseEntity.ok().body("Activity place changed");
+        }
+        catch (Exception ex) {
+            return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(ex.getMessage());
+        }
+    }
+
+    // Cambia data activity
+    @PutMapping(value={"/{id}/schedule/activity/{activity_id}/date", "/{id}/schedule/activity/{activity_id}/date/"})
+    public ResponseEntity<?> changeActivityDate(@PathVariable Long id, @PathVariable Long activity_id, @Valid @RequestBody GenericType<LocalDate> newDate) {
+
+        try {
+            // prendi l'utente dal token
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String email = authentication.getName();
+
+            // cambia le info
+            tripService.changeActivityDate(email, id, activity_id, newDate.getValue());
+            return ResponseEntity.ok().body("Activity date changed");
+        }
+        catch (Exception ex) {
+            return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(ex.getMessage());
+        }
+    }
 
     // Cambia nome activity
     @PutMapping(value={"/{id}/schedule/activity/{activity_id}/name", "/{id}/schedule/activity/{activity_id}/name/"})
@@ -538,6 +578,85 @@ public class TripController {
 
     //***** TRAVEL:
 
+    // Cambia posto travel
+    @PutMapping(value={"/{id}/schedule/travel/{travel_id}/place", "/{id}/schedule/travel/{travel_id}/place/"})
+    public ResponseEntity<?> changeTravelPlace(@PathVariable Long id, @PathVariable Long travel_id, @Valid @RequestBody GenericType<String> newPlace) {
+
+        try {
+            // prendi l'utente dal token
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String email = authentication.getName();
+
+            // cambia le info
+            tripService.changeTravelPlace(email, id, travel_id, newPlace.getValue());
+            return ResponseEntity.ok().body("Travel place changed");
+        }
+        catch (Exception ex) {
+            return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(ex.getMessage());
+        }
+    }
+
+    // Cambia destinazione travel
+    @PutMapping(value={"/{id}/schedule/travel/{travel_id}/destination", "/{id}/schedule/travel/{travel_id}/destination/"})
+    public ResponseEntity<?> changeTravelDestination(@PathVariable Long id, @PathVariable Long travel_id, @Valid @RequestBody GenericType<String> newDestination) {
+
+        try {
+            // prendi l'utente dal token
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String email = authentication.getName();
+
+            // cambia le info
+            tripService.changeTravelDestination(email, id, travel_id, newDestination.getValue());
+            return ResponseEntity.ok().body("Travel destination changed");
+        }
+        catch (Exception ex) {
+            return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(ex.getMessage());
+        }
+    }
+
+    // Cambia data travel
+    @PutMapping(value={"/{id}/schedule/travel/{travel_id}/date", "/{id}/schedule/travel/{travel_id}/date/"})
+    public ResponseEntity<?> changeTravelDate(@PathVariable Long id, @PathVariable Long travel_id, @Valid @RequestBody GenericType<LocalDate> newDate) {
+
+        try {
+            // prendi l'utente dal token
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String email = authentication.getName();
+
+            // cambia le info
+            tripService.changeTravelDate(email, id, travel_id, newDate.getValue());
+            return ResponseEntity.ok().body("Travel date changed");
+        }
+        catch (Exception ex) {
+            return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(ex.getMessage());
+        }
+    }
+
+    // Cambia data di arrivo travel
+    @PutMapping(value={"/{id}/schedule/travel/{travel_id}/arrivaldate", "/{id}/schedule/travel/{travel_id}/arrivaldate/"})
+    public ResponseEntity<?> changeTravelArrivalDate(@PathVariable Long id, @PathVariable Long travel_id, @Valid @RequestBody GenericType<LocalDate> newDate) {
+
+        try {
+            // prendi l'utente dal token
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String email = authentication.getName();
+
+            // cambia le info
+            tripService.changeTravelArrivalDate(email, id, travel_id, newDate.getValue());
+            return ResponseEntity.ok().body("Travel arrival date changed");
+        }
+        catch (Exception ex) {
+            return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(ex.getMessage());
+        }
+    }
 
     // Cambia indirizzo travel
     @PutMapping(value={"/{id}/schedule/travel/{travel_id}/address", "/{id}/schedule/travel/{travel_id}/address/"})
@@ -579,7 +698,6 @@ public class TripController {
         }
     }
 
-
     // Cambia info travel
     @PutMapping(value={"/{id}/schedule/travel/{travel_id}/info", "/{id}/schedule/travel/{travel_id}/info/"})
     public ResponseEntity<?> changeTravelInfo(@PathVariable Long id, @PathVariable Long travel_id, @Valid @RequestBody GenericType<String> newTitle) {
@@ -600,5 +718,28 @@ public class TripController {
         }
     }
 
+
+    //***** NIGHT:
+
+
+    // Cambia posto night
+    @PutMapping(value={"/{id}/schedule/night/{night_id}/place", "/{id}/schedule/night/{night_id}/place/"})
+    public ResponseEntity<?> changeNightPlace(@PathVariable Long id, @PathVariable Long night_id, @Valid @RequestBody GenericType<String> newPlace) {
+
+        try {
+            // prendi l'utente dal token
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String email = authentication.getName();
+
+            // cambia le info
+            tripService.changeNightPlace(email, id, night_id, newPlace.getValue());
+            return ResponseEntity.ok().body("Night place changed");
+        }
+        catch (Exception ex) {
+            return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(ex.getMessage());
+        }
+    }
 
 }

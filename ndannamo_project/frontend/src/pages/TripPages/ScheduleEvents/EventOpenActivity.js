@@ -5,12 +5,18 @@ import Map from './Map';
 import DateUtilities from '../../../utils/DateUtilities';
 
 import ScheduleService from '../../../services/ScheduleService';
+import CityService from '../../../services/CityService';
 import ConfirmDelete from '../../../common/ConfirmDelete';
+
+import EventOpenDatePlace from './EventOpenDatePlace';
+import { DateField } from '../../../components/Fields/Fields';
 
 import '../TripSchedule.css'
 
-export default function EventOpenActivity({activity, latitude, longitude, reloadSchedule}) {
+export default function EventOpenActivity({activity, latitude, longitude, reloadSchedule, tripStartDate, tripEndDate}) {
 
+    // Questi parametri devono essere gli stessi anche nel backend, dentro EventValidation.java
+    //const PLACE_MAX_CHARACTERS = 60;
     const TITLE_MAX_CHARACTERS = 30;
     const ADDRESS_MAX_CHARACTERS = 60;
     const INFO_MAX_CHARACTERS = 500;
@@ -51,6 +57,142 @@ export default function EventOpenActivity({activity, latitude, longitude, reload
             document.getElementById("delete-button").disabled = false;  // se non sei riuscito a eliminare l'attivita' ri-abilita il pulsante
         }
     }
+
+
+    /*
+    // Per modificare data
+    const [editingDate, setEditingDate] = useState(false);
+    const [newDate, setNewDate] = useState(activity.date);
+
+    const saveNewDate = async () => {
+        // se non è cambiato niente, non fare nulla
+        if (activity.date == newDate) {
+            setEditingDate(false);
+            return;
+        }
+
+        try {
+            // manda richiesta al server
+            const token = localStorage.getItem('token'); // Recuperiamo il token da localStorage
+            if (!token) {
+                navigate("/login");
+            }
+
+            // cambia data nel backend
+            const response = await ScheduleService.changeActivityDate(token, activity.tripId, activity.id, newDate);
+            console.log(newDate);
+
+            if (response) {
+                // aggiorna in locale
+                activity.date = newDate;
+                setEditingDate(false);
+
+                // ricarica la schedule a sinistra
+                reloadSchedule(null, false, true);
+            } 
+            else {
+                console.error('Invalid response data');
+                alert("Server error");
+            }
+        } catch (error) {
+            console.error('Error modifying date:', error);
+            alert("Couldn't modify date: " + error.message);
+        }
+    }
+
+
+    
+    // Per modificare posto
+    const [editingPlace, setEditingPlace] = useState(false);
+    const [newPlace, setNewPlace] = useState(activity.place);
+    const [suggestions, setSuggestions] = useState([]);
+    const [searchTerm, setSearchTerm] = useState("");
+
+    const saveNewPlace = async () => {
+        // se non è cambiato niente, non fare nulla
+        if (activity.place == newPlace) {
+            setEditingPlace(false);
+            return;
+        }
+
+        try {
+            // manda richiesta al server
+            const token = localStorage.getItem('token'); // Recuperiamo il token da localStorage
+            if (!token) {
+                navigate("/login");
+            }
+
+            // cambia posto nel backend
+            const response = await ScheduleService.changeActivityPlace(token, activity.tripId, activity.id, newPlace);
+            //const response = "ok";
+            console.log(newPlace);
+
+            if (response) {
+                // aggiorna in locale
+                activity.place = newPlace;
+                setEditingPlace(false);
+
+                // ricarica la schedule a sinistra
+                reloadSchedule(null, false, false);
+            } 
+            else {
+                console.error('Invalid response data');
+                alert("Server error");
+            }
+        } catch (error) {
+            console.error('Error modifying place:', error);
+            alert("Couldn't modify place: " + error.message);
+        }
+    }
+
+    // Quando inserisci delle lettere, per aggiornare i suggerimenti
+    const handleInputChangePlace = async (event) => {
+
+        // Limita numero di caratteri
+        var input = event.target.value.substring(0, PLACE_MAX_CHARACTERS);
+
+        setNewPlace(input);
+
+        const input_trim = input.trim();
+
+        // se ci sono meno di tre caratteri, resetta i suggerimenti
+        if (input_trim.length < 3) {
+            setSuggestions([]);
+            return;
+        }
+
+        // ottieni suggerimenti dal server
+        await updateLocationsFromServer(input_trim);
+    };
+
+    // Per richiedere al server tutte le citta' che iniziano con la stringa start
+    const updateLocationsFromServer = async (start) => {
+        try {
+            // Chiamata al servizio per ottenere le informazioni del profilo
+            const response = await CityService.getCitiesStartingWith(start);
+
+            if (response) {
+                //console.log(response);
+                setSuggestions(response.map(city => city.name + ", " + city.country));
+                
+            } else {
+                console.error('Invalid response data');
+            }
+        } catch (error) {
+            console.error('Error fetching cities:', error);
+        }
+    };
+
+    // Per quando clicchi su una destinazione dai suggerimenti
+    const handleSelect = (index) => {
+        //console.log("selected location: " + suggestions[index]);
+
+        setSuggestions([]);     // Nasconde i suggerimenti
+        setNewPlace(suggestions[index]);
+    };
+    */
+
+
 
 
     // Per modificare nome attivita'
@@ -264,39 +406,37 @@ export default function EventOpenActivity({activity, latitude, longitude, reload
                 <button onClick={()=>{setIsModalOpen(true);}} id="delete-button" title='Delete activity' className='float-right no-background no-border top-row-button'>
                     <i className="bi bi-trash3-fill h5 red-icon"/>
                 </button>
-                <div className='date'>
-                    {DateUtilities.yyyymmdd_To_WEEKDAYddMONTH(activity.date)} - {activity.place}
-                </div>
-                {/*<div className='place'>
-                    {activity.place}
-                </div>*/}
-                <div>
-                    {!editingName ? (
-                        <div className='title hidden-btn-parent'>
-                            {/* Titolo */}
-                            <div id="activity-name">
-                                {activity.name}
-                            </div>
-                            {/* Pulsante per modificare il titolo */}
-                            <button onClick={() => {setNewName(activity.name);setEditingName(true);}} title='Edit name' className='no-background no-border flex-column hidden-btn'>
-                                <i className="bi bi-pencil-fill h5 gray-icon spaced"/>
-                            </button>
+                
+                <EventOpenDatePlace event={activity} reloadSchedule={reloadSchedule} saveDateFunction={ScheduleService.changeActivityDate}
+                savePlaceFunction={ScheduleService.changeActivityPlace} tripStartDate={tripStartDate} tripEndDate={tripEndDate}
+                canEditDate={true}/>
+                
+                {!editingName ? (
+                    <div className='title hidden-btn-parent'>
+                        {/* Titolo */}
+                        <div id="activity-name">
+                            {activity.name}
                         </div>
-                    ) : (
-                        <div className='title'>
-                            {/* Campo editabile dove modificare il titolo */}
-                            <input type="text" 
-                                className="edit-title-input"
-                                value={newName}
-                                onChange={(e) => {handleInputChange(e, true, TITLE_MAX_CHARACTERS, setNewName);}}
-                                onKeyDown={(e) => {handleKeyDown(e, saveNewName);}}/>
-                            {/* Pulsante per salvare il titolo */}
-                            <button onClick={saveNewName} title='Save' className='no-background no-border flex-column'>
-                                <i className="bi bi-floppy-fill h5 gray-icon spaced"/>
-                            </button>
-                        </div>
-                    )}
-                </div>
+                        {/* Pulsante per modificare il titolo */}
+                        <button onClick={() => {setNewName(activity.name);setEditingName(true);}} title='Edit name'
+                        className='no-background no-border flex-row align-items-center hidden-btn'>
+                            <i className="bi bi-pencil-fill h5 gray-icon spaced margin-bottom"/>
+                        </button>
+                    </div>
+                ) : (
+                    <div className='title'>
+                        {/* Campo editabile dove modificare il titolo */}
+                        <input type="text" 
+                            className="edit-title-input"
+                            value={newName}
+                            onChange={(e) => {handleInputChange(e, true, TITLE_MAX_CHARACTERS, setNewName);}}
+                            onKeyDown={(e) => {handleKeyDown(e, saveNewName);}}/>
+                        {/* Pulsante per salvare il titolo */}
+                        <button onClick={saveNewName} title='Save' className='no-background no-border flex-row align-items-center'>
+                            <i className="bi bi-floppy-fill h5 gray-icon spaced margin-bottom"/>
+                        </button>
+                    </div>
+                )}
             </div>
             
             <div className="map-banner">

@@ -7,9 +7,11 @@ import DateUtilities from '../../../utils/DateUtilities';
 import ScheduleService from '../../../services/ScheduleService';
 import ConfirmDelete from '../../../common/ConfirmDelete';
 
+import EventOpenDatePlace from './EventOpenDatePlace';
+
 import '../TripSchedule.css'
 
-export default function EventOpenTravel({travel, latitude, longitude, reloadSchedule}) {
+export default function EventOpenTravel({travel, latitude, longitude, reloadSchedule, tripStartDate, tripEndDate}) {
 
     const ADDRESS_MAX_CHARACTERS = 60;
     const INFO_MAX_CHARACTERS = 500;
@@ -217,9 +219,11 @@ export default function EventOpenTravel({travel, latitude, longitude, reloadSche
             {/* Pulsante per eliminare il travel */}
             <button onClick={()=>{setIsModalOpen(true);}} id="delete-button" title='Delete travel' className='float-right no-background no-border top-row-button'>
                 <i className="bi bi-trash3-fill h5 red-icon"/></button>
-                <div className='date'>
-                    {DateUtilities.yyyymmdd_To_WEEKDAYddMONTH(travel.date)}
-                </div>
+
+                <EventOpenDatePlace event={travel} reloadSchedule={reloadSchedule} saveDateFunction={ScheduleService.changeTravelDate}
+                savePlaceFunction={ScheduleService.changeTravelPlace} tripStartDate={tripStartDate} tripEndDate={tripEndDate}
+                canEditDate={true}/>
+
                 <div className='title'>
                     Travel to {travel.destination.split(",")[0]}
                 </div>
