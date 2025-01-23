@@ -21,9 +21,9 @@ const TCListItem = forwardRef(({userId, expenseData, onClick}, ref) => {
     const [clicked, setClicked] = useState(false);
     const [myExpense, setMyExpense] = useState(0);
 
-    function handleClick() {
+    function handleClick(event) {
         setClicked(true);
-        onClick();
+        onClick(event);
     }
 
     useEffect(() => {
@@ -42,7 +42,7 @@ const TCListItem = forwardRef(({userId, expenseData, onClick}, ref) => {
     
 
     return (
-        <div className={!clicked ? "tc-item" : "tc-item tc-item-clicked"} onClick={handleClick}>
+        <div className={!clicked ? "tc-item" : "tc-item tc-item-clicked"} onClick={(event) => handleClick(event)}>
             <div className="tc-column tc-name">{expenseData.title}</div>
             <div className="tc-column tc-expense">{myExpense}</div>
             <div className="tc-column tc-total">{expenseData.amount}</div>

@@ -2,6 +2,8 @@ import React, { useRef } from "react";
 import "./SearchBar.css";
 
 function SearchBar({
+    value,
+    setValue=()=>{},
     items = [],
     itemsAll = [],
     setItems = () => {},
@@ -14,19 +16,17 @@ function SearchBar({
     style={},
   }) {
 
-    // Per gestire la ricerca
     const handleSearch = async (event) => {
-        const value = event.target.value;
+        const newValue = event.target.value
+        setValue(newValue);
 
-        // resetta le trip se il campo e' vuoto
-        if (!value) {
+        if (!newValue || newValue === "") {
             setItems(itemsAll);
         }
 
-        // se c'e' almeno un carattere
         else {
             const filteredItems = items.filter(
-                (item) => checkItemSearch(item, value.toLowerCase())
+                (item) => checkItemSearch(item, newValue.toLowerCase())
             );
             setItems(filteredItems);
         }
@@ -36,7 +36,7 @@ function SearchBar({
     return (
         <div className="sb-search-bar" style={style}>
             <i className="bi bi-search"></i>
-            <input type={type} placeholder={placeholder} onChange={handleSearch}/>
+            <input type={type} value={value} placeholder={placeholder} onChange={handleSearch}/>
         </div>
     )
 }

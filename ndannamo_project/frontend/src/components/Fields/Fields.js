@@ -1,4 +1,4 @@
-import { forwardRef, useImperativeHandle, useState } from 'react';
+import { useRef, forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 import './Field.css'
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -17,6 +17,24 @@ export function DateField({
 
     const [valid, setIsValid] = useState(-1);
 
+    useEffect(() => {
+        checkValidation();
+    }, [value]);
+
+    function checkValidation() {
+        if (validate) {
+            if (!value)
+                setIsValid(-1);
+            else
+            {
+                const valid = validate(value);
+                if (valid)
+                    setIsValid(1);
+                else
+                    setIsValid(0);
+            }
+        }
+    }
 
     function changeValue(newValue) {
         setValue(newValue);
@@ -59,10 +77,45 @@ export function PickField({
 
     const [flag, setFlag] = useState(0);
     const [valid, setIsValid] = useState(-1);
+    const dropdownRef = useRef(null);
+
+    useEffect(() => {
+        checkValidation();
+    }, [value]);
+
+
+    const handleClickOutside = (event) => {
+        if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+          setFlag(0);
+        }
+    };
+    
+
+    useEffect(() => {
+        document.addEventListener("click", handleClickOutside);
+        return () => {
+          document.removeEventListener("click", handleClickOutside); // Cleanup
+        };
+    }, []);
+
+    function checkValidation() {
+        if (validate) {
+            if (!value)
+                setIsValid(-1);
+            else
+            {
+                const valid = validate(value);
+                if (valid)
+                    setIsValid(1);
+                else
+                    setIsValid(0);
+            }
+        }
+    }
 
     const handleClick = () => {
         if (!disabled)
-            setFlag(1);
+            flag == 0 ? setFlag(1) : setFlag(0);
     }
 
     const handleSelect = (suggestion) => {
@@ -88,7 +141,7 @@ export function PickField({
     };
 
     return (
-        <div className="field-container" style={style}>
+        <div className="field-container" style={style} ref={dropdownRef}>
             <div className="field-title" style={titleStyle}>{name}</div>
             <div
                 className={
@@ -124,11 +177,14 @@ export const PickedField = forwardRef(({
     formStyle = {}
 }, ref) => {
 
-    const [suggestions, setSuggestions] = useState([])
-    const [search, setSearch] = useState("")
+    const [suggestions, setSuggestions] = useState([]);
+    const [search, setSearch] = useState("");
 
     const handleClick = () => {
-        setSuggestions(options);
+        if (suggestions != [])
+            setSuggestions([]);
+        else
+            setSuggestions(options);
     }
 
     const handleChange = (event) => {
@@ -193,7 +249,26 @@ export function TextField({
     disabled=false,
 }) {
 
-    const [valid, setIsValid] = useState(-1);
+    const [valid, setIsValid] = useState(-1); //0: non valid, 1 valid, else not defined
+
+    useEffect(() => {
+        checkValidation();
+    }, [value]);
+
+    function checkValidation() {
+        if (validate) {
+            if (!value)
+                setIsValid(-1);
+            else
+            {
+                const valid = validate(value);
+                if (valid)
+                    setIsValid(1);
+                else
+                    setIsValid(0);
+            }
+        }
+    }
 
     const handleKeyPress = (e) => {
         if (e.key === "Enter" && validate != undefined) {
@@ -216,10 +291,10 @@ export function TextField({
     };
 
     function handleChange(newValue) {
-        if (type == "number")
-            setValue(Number(newValue));
-        else
-            setValue(newValue);
+        //if (type == "number")
+        //    setValue(Number(newValue));
+        //else
+        setValue(newValue);
     }
 
     return (
@@ -235,8 +310,8 @@ export function TextField({
                 placeholder={placeholder}
                 value={value}
                 onChange={(e) => handleChange(e.target.value)}
-                onKeyDown={handleKeyPress}
-                onBlur={handleBlur}
+                //onKeyDown={handleKeyPress}
+                //onBlur={handleBlur}
                 disabled={disabled}
             />
         </div>

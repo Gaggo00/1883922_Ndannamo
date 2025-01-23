@@ -1,6 +1,7 @@
 import React, {useState, useEffect, useRef} from 'react';
 import { BsChevronCompactLeft, BsChevronCompactRight } from "react-icons/bs";
 import "./Tricount.css"
+import { TCListHeader } from './TriListItem';
 
 
 export const ScrollableRow = ({ blocks=[] }) => {
@@ -70,10 +71,10 @@ export const ScrollableRow = ({ blocks=[] }) => {
 };
 
 
-export const TriBalance = ({ id, nickname, amount }) => {
+export const TriBalance = ({ id, nickname, amount, onClick = ()=>{} }) => {
 
     function handleClick() {
-        console.log(id);
+        onClick(id);
     }
 
     return (
@@ -99,5 +100,151 @@ const TriRefund = ({ by, to, amount, toNick, byNick }) => {
         </div>
     );
 };
+
+class Refound {
+    constructor(params = {}) {
+        this.amount = params.amount || 0;
+        this.by = params.by || -1;
+        this.to = params.to || -1;
+    }
+}
+
+export const TCRefundPage = ({user, expenses, users=[]}) => {
+
+    const [refunds, setRefunds] = useState([]);
+    const [balances, setBalances] = useState([]);
+
+
+    useEffect(() => {
+        const newBalances = calcBalance(expenses);
+        setBalances(newBalances);
+        setRefunds(calcRefund(newBalances));
+    }, [expenses]);
+
+
+    function calcBalance(newExpenses) {
+        var dict = {}
+        const balances = []
+
+        users.map((u) => {
+            dict[u[0]] = 0;
+        })
+
+        newExpenses.map((e) => {
+            dict[e.paidBy] += e.amount;
+            e.amountPerUser.map((userAmount) => {
+                dict[userAmount.user] -= userAmount.amount;
+            })
+        })
+
+        const sorted = Object.entries(dict)
+            .map(([key, value]) => [Number(key), value])
+            .sort(([, valueA], [, valueB]) => valueB - valueA);
+        sorted.map((value) => {
+            const newBalance = {amount: value[1], id: value[0], nickname: users[value[0]][1]};
+            balances.push(newBalance);
+        })
+
+        return balances;
+    }
+
+
+    function calcRefund(newBalances) {
+        const refounds = [];
+        const copyBalances = newBalances.map(balance => ({ ...balance }));
+
+        if (newBalances.length <= 0)
+            return [];
+
+        var lastValue = copyBalances.pop();
+        lastValue.amount *= -1;
+        let i = 0;
+        while (newBalances[i].amount > 0) {
+            var toRefound = newBalances[i].amount;
+            while (toRefound > 0) {
+                if (lastValue.amount == 0) {
+                    lastValue = copyBalances.pop();
+                    lastValue.amount *= -1;
+                }
+                if (lastValue.amount < 0)
+                    break;
+                var refoundValue = 0
+                if (toRefound > lastValue.amount)
+                    refoundValue = lastValue.amount;
+                else
+                    refoundValue = toRefound;
+                toRefound -= refoundValue;
+                lastValue.amount -= refoundValue;
+                const refound = new Refound({to: newBalances[i].id, amount: refoundValue, by: lastValue.id})
+                refounds.push(refound);
+            }
+
+            i += 1;
+        }
+
+        return refounds;
+    }
+
+    function retriveSalesByUser(userId, expenses) {
+        const expenseByUser = [];
+
+        expenses.map((e) => {
+            if (e.paidBy == userId) {
+                expenseByUser.push(e);
+            }
+            else {
+                for (let i = 0; i < e.amountPerUser.length; i++) {
+                    if (e.amountPerUser[i].user == userId)
+                        expenseByUser.push(e);
+                }
+            }
+        })
+
+        return expenseByUser;
+    }
+
+
+    function onBalanceClik(userId) {
+        console.log(userId);
+    }
+
+
+    return (
+        <div className="tc-left">
+            <TCListHeader names={["Nickname", "Balance"]}/>
+            <div className="tc-list">
+                <div className="tc-list-inner" style={{maxHeight: '150px'}}>
+                    {balances
+                        .sort((a, b) => (a.id === user ? -1 : b.id === user ? 1 : 0))
+                        .map((b, index) => (
+                            <TriBalance
+                                key={index}
+                                id={b.id}
+                                nickname={b.nickname}
+                                amount={b.amount}
+                                onClick={onBalanceClik}
+                            />
+                    ))}
+                </div>
+            </div>
+            <div className="tc-middle">
+                <div className="tc-title">Refund</div>
+            </div>
+            <div className="tc-list">
+                <TCListHeader names={["By", "To", "Amount", ""]}/>
+                {refunds.map((r, index) => (
+                    <TriRefund
+                        key={index}
+                        by={r.by}
+                        to={r.to}
+                        amount={r.amount}
+                        toNick={users[r.to][1]}
+                        byNick={users[r.by][1]}
+                    />
+                ))}
+            </div>
+        </div>
+    );
+}
 
 export default TriRefund;

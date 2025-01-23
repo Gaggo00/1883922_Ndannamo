@@ -1,6 +1,6 @@
 import TextField, { DateField, PickedField, PickField } from "../../../components/Fields/Fields";
 import "./Tricount.css"
-import {state, useState, useEffect} from 'react'
+import {useState, useEffect, useRef} from 'react'
 import { BsXLg } from "react-icons/bs";
 import { GoPencil } from "react-icons/go";
 
@@ -26,12 +26,15 @@ function TCForm({
     const [sSplitMethod, setSplitMethod] = useState(expenseData.splitMethod);
     const [sSplitValue, setSplitValue] = useState([]);
     const [sStatus, setStatus] = useState(status); // 0: new, 1: filled, 2: modify
+    const [showBanner, setShowBanner] = useState(false);
+    const timeoutRef = useRef(null);
 
     useEffect(() => {
         setTitle(expenseData.title);
         setAmount(expenseData.amount);
         setPaidBy(expenseData.paidByNickname);
         setSplitValue(expenseData.amountPerUser);
+        setDate(expenseData.date);
         setStatus(status);
     }, [expenseData, status]);
 
@@ -68,11 +71,10 @@ function TCForm({
         }
         else
             sSplitValue.push({user: userId, userNickname: userNickname, amount: 0});
-        doSplit(sAmount);
+        doSplit(Number(sAmount));
     }
 
     function changeAmount(value) {
-        console.log("L'amount è: ", value);
         setAmount(value);
         doSplit(value);
     }
@@ -80,7 +82,7 @@ function TCForm({
     function checkSubmit() {
         if (sTitle == "" || sTitle == undefined)
             return false;
-        if (sAmount <= 0 || sTitle == undefined)
+        if (Number(sAmount) <= 0 || sTitle == undefined)
             return false;
         if (sPaidBy == "" || sPaidBy == undefined)
             return false;
@@ -92,19 +94,46 @@ function TCForm({
     }
 
     function submit() {
-        if (!checkSubmit())
+        if (!checkSubmit()) {
+
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth",
+            });
+
+            setShowBanner(true);
+
+            if (timeoutRef.current) {
+                clearTimeout(timeoutRef.current);
+                timeoutRef.current = null;
+            }
+            timeoutRef.current = setTimeout(() => {
+                setShowBanner(false);
+            }, 3000);
+
             return;
-        console.log("Tipo di sAmount:", typeof sAmount);
+        }
+
+        const paidByUser = users.find((u) => u[1] == sPaidBy);
         const newExpense = {
             title: sTitle,
-            amount: sAmount,
+            amount: Number(sAmount),
             date: sDate,
+            paidBy: paidByUser === undefined ? -1 : paidByUser[0],
             paidByNickname: sPaidBy,
             amountPerUser: sSplitValue,           
         }
-        console.log("Tipo di sAmount:", typeof newExpense.amount);
         onSubmit(newExpense, itemIndex);
-        close();
+        reset();
+        //close();
+    }
+
+    function reset() {
+        setTitle("");
+        setAmount("");
+        setPaidBy("");
+        setDate("");
+        setSplitValue([]);
     }
 
     function close() {
@@ -134,18 +163,16 @@ function TCForm({
                 <BsXLg className="tc-button" onClick={() => close()}/>
             </div>
             <TextField value={sTitle} setValue={setTitle} name="Title" disabled={sStatus == 1} validate={notEmpty}/>
-            <div>
-                <TextField value={sAmount} setValue={changeAmount} name="Amount" type="number" disabled={sStatus == 1} validate={validateAmount}/>
-            </div>
-            <div className="tc-form-line">
+            <TextField value={sAmount} setValue={changeAmount} name="Amount" type="number" disabled={sStatus == 1} validate={validateAmount}/>
+            <div className="tc-form-line" style={{gap: '15px'}}>
                 <PickField value={sPaidBy} setValue={setPaidBy} name="Paid By" options={users.map(user => user[1])} style={{flex: "3"}} disabled={sStatus == 1} validate={notEmpty}/>
                 <DateField value={sDate} setValue={setDate} name="When" style={{flex: "2"}} disabled={sStatus == 1} minDate={startingData} validate={() => {return true}}/>
             </div>
-            <div className="tc-form-line">
+            <div className="tc-form-line" style={{alignItems: "center"}}>
                 <div>Split</div>
-                <PickField value={sSplitMethod} setValue={setSplitMethod} options={["In modo equo"]} disabled={sStatus == 1}/>
+                <PickField value={sSplitMethod} setValue={setSplitMethod} options={["In modo equo"]} disabled={sStatus == 1} style={{width: '60%'}}/>
             </div>
-            <div className="list">
+            <div className="tc-form-list">
                 {users.map((user, index) => (
                     <div className="tc-list-item" key={index}>
                         <div className="tc-list-left">
@@ -168,6 +195,12 @@ function TCForm({
                     <div className="tc-add-button" onClick={() => submit()}>{sStatus == 0 ? "Send" : "Save"}</div>
                 }
             </div>
+            {showBanner && (
+                <div className="tc-form-banner">
+                    <p>Campi vuoti o errati</p>
+                    <BsXLg className="tc-button" onClick={() => setShowBanner(false)}/>
+                </div>
+            )}
         </div>
     )
 }
