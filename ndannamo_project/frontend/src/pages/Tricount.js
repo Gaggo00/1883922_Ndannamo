@@ -8,7 +8,6 @@ import "../styles/Main.css";
 
 class ExpenseDto {
     constructor(params = {}) {
-        console.log("I paramentri: ", params);
         this.id = params.id ?? -1;
         this.tripId = params.tripId ?? -1;
         this.paidBy = params.paidBy ?? -1;
@@ -363,6 +362,7 @@ function Tricount() {
         startingData: tripInfo.startingData,
         onSubmit: submit,
         onClose: () => setFormVisibility(false),
+        onDestroy: destroy,
     });
     const itemsRefs = useRef([]);
     const [selected, setSelected] = useState(-1);
@@ -372,6 +372,7 @@ function Tricount() {
         const retrievedData = [
             new ExpenseDto(
                 {
+                    id: 1,
                     title:"Ristorante",
                     amount: 42.10,
                     paidBy: 1,
@@ -410,6 +411,7 @@ function Tricount() {
             itemIndex: -1,
             onSubmit: submit,
             onClose: () => setFormVisibility(false),
+            onDestroy: destroy,
         });
         if (!formVisibility)
             setFormVisibility(true);
@@ -428,6 +430,7 @@ function Tricount() {
                 startingData: tripInfo.startingData,
                 onSubmit: submit,
                 onClose: () => setFormVisibility(false),
+                onDestroy: destroy,
             });
             setFormVisibility(true);
             if (selected != -1 && itemsRefs.current[selected])
@@ -436,8 +439,15 @@ function Tricount() {
         }
     }
 
+    function getNewExpenseId() {
+        const max = Math.max(...data.map(expense => expense.id));
+        return max + 1;
+    }
+
     function createNewExpense(newExpense) {
         const newExpenseDto = new ExpenseDto(newExpense);
+        const newId = getNewExpenseId();
+        newExpenseDto.id = newId;
         const newData = [...data];
         newData.push(newExpenseDto);
         const now = new Date();
@@ -445,102 +455,34 @@ function Tricount() {
         setData(newData);
     }
 
-    function submit(newExpense, itemIndex = -1) {
-        if (itemIndex == -1)
+    function submit(newExpense, expenseId = -1) {
+        console.log("Expense id: ", expenseId);
+        if (expenseId == -1)
             createNewExpense(newExpense);
-        else if (itemIndex < data.length)
+        else
         {
-            const newExpenseDto = new ExpenseDto(newExpense);
+            const oldExpenseIndex = data.findIndex((expense) => expense.id == expenseId);
+            if (oldExpenseIndex >= 0) {
+                const newData = [...data];
+                const oldExpense = data[oldExpenseIndex];
+                const newExpenseDto = {
+                    ...oldExpense,
+                    ...newExpense,
+                }
+                newData[oldExpenseIndex] = newExpenseDto;
+                setData(newData);
+            }
+        }
+    }
+
+    
+    function destroy(expenseId) {
+        const index = data.findIndex(expense => expense.id == expenseId);
+        if (index >= 0) {
             const newData = [...data];
-            newData[itemIndex] = newExpenseDto;
+            newData.splice(index, 1);
             setData(newData);
         }
-    }
-
-
-    function checkExpensesSearch(value, searchTerm) {
-        if (!value || !searchTerm) return false;
-        return value.title.toLowerCase().includes(searchTerm.toLowerCase());
-    }
-
-    function calcBalance(expenses) {
-        var dict = {}
-        const balances = []
-
-        tripInfo.users.map((u) => {
-            dict[u[0]] = 0;
-        })
-
-        expenses.map((e) => {
-            dict[e.paidBy] += e.amount;
-            e.amountPerUser.map((userAmount) => {
-                dict[userAmount.user] -= userAmount.amount;
-            })
-        })
-
-        const sorted = Object.entries(dict)
-            .map(([key, value]) => [Number(key), value])
-            .sort(([, valueA], [, valueB]) => valueB - valueA);
-        sorted.map((value) => {
-            const newBalance = {amount: value[1], id: value[0], nickname: tripInfo.users[value[0]][1]};
-            balances.push(newBalance);
-        })
-
-        return balances;
-    }
-
-    function calcRefund(balances) {
-        const refounds = [];
-        const copyBalances = balances.map(balance => ({ ...balance }));
-
-        if (balances.length <= 0)
-            return [];
-
-        var lastValue = copyBalances.pop();
-        lastValue.amount *= -1;
-        let i = 0;
-        while (balances[i].amount > 0) {
-            var toRefound = balances[i].amount;
-            while (toRefound > 0) {
-                if (lastValue.amount == 0) {
-                    lastValue = copyBalances.pop();
-                    lastValue.amount *= -1;
-                }
-                if (lastValue.amount < 0)
-                    break;
-                var refoundValue = 0
-                if (toRefound > lastValue.amount)
-                    refoundValue = lastValue.amount;
-                else
-                    refoundValue = toRefound;
-                toRefound -= refoundValue;
-                lastValue.amount -= refoundValue;
-                const refound = new Refound({to: balances[i].id, amount: refoundValue, by: lastValue.id})
-                refounds.push(refound);
-            }
-
-            i += 1;
-        }
-
-        return refounds;
-    }
-
-    function retriveSalesByUser(userId, expenses) {
-        const expenseByUser = [];
-
-        expenses.map((e) => {
-            if (e.paidBy == userId) {
-                expenseByUser.push(e);
-            }
-            else {
-                for (let i = 0; i < e.amountPerUser.length; i++) {
-                    if (e.amountPerUser[i].user == userId)
-                        expenseByUser.push(e);
-                }
-            }
-        })
-
-        return expenseByUser;
     }
 
 

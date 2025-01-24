@@ -192,6 +192,22 @@
     z-index: 20;
 }
 
+.tc-form-destroy-banner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(255, 0, 0, 0.8);
+    color: white;
+    padding: 10px 10px;
+    border-radius: 10px;
+    font-size: 18px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    z-index: 20;
+}
+
 .tc-list {
     display: flex;
     flex-direction: column;

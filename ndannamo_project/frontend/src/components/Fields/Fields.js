@@ -14,11 +14,12 @@ export function DateField({
     validate=undefined,
     ...rest
 }) {
-
+    const [changed, setIsChanged] = useState(false);
     const [valid, setIsValid] = useState(-1);
 
     useEffect(() => {
-        checkValidation();
+        if (changed)
+            checkValidation();
     }, [value]);
 
     function checkValidation() {
@@ -37,6 +38,7 @@ export function DateField({
     }
 
     function changeValue(newValue) {
+        setIsChanged(true);
         setValue(newValue);
         if (validate != undefined) {
             const valid = validate(value);
@@ -74,13 +76,14 @@ export function PickField({
     validate=undefined,
     disabled=false,
 }) {
-
+    const [changed, setIsChanged] = useState(false);
     const [flag, setFlag] = useState(0);
     const [valid, setIsValid] = useState(-1);
     const dropdownRef = useRef(null);
 
     useEffect(() => {
-        checkValidation();
+        if (changed)
+            checkValidation();
     }, [value]);
 
 
@@ -111,9 +114,12 @@ export function PickField({
                     setIsValid(0);
             }
         }
+        else
+            setIsValid(-1);
     }
 
     const handleClick = () => {
+        setIsChanged(true);
         if (!disabled)
             flag == 0 ? setFlag(1) : setFlag(0);
     }
@@ -249,10 +255,12 @@ export function TextField({
     disabled=false,
 }) {
 
+    const [changed, setIsChanged] = useState(false);
     const [valid, setIsValid] = useState(-1); //0: non valid, 1 valid, else not defined
 
     useEffect(() => {
-        checkValidation();
+        if (changed)
+            checkValidation();
     }, [value]);
 
     function checkValidation() {
@@ -291,9 +299,7 @@ export function TextField({
     };
 
     function handleChange(newValue) {
-        //if (type == "number")
-        //    setValue(Number(newValue));
-        //else
+        setIsChanged(true);
         setValue(newValue);
     }
 

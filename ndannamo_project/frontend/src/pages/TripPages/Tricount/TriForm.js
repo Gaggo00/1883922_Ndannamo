@@ -1,7 +1,7 @@
 import TextField, { DateField, PickedField, PickField } from "../../../components/Fields/Fields";
 import "./Tricount.css"
 import {useState, useEffect, useRef} from 'react'
-import { BsXLg } from "react-icons/bs";
+import { BsXLg, BsTrash3 } from "react-icons/bs";
 import { GoPencil } from "react-icons/go";
 
 /***
@@ -16,7 +16,8 @@ function TCForm({
     itemIndex = -1,
     filled=false,
     onSubmit= () => {},
-    onClose= () => {}}
+    onDestroy= () => {},
+    onClose= () => {}},
 ) {
 
     const [sTitle, setTitle] = useState(expenseData.title);
@@ -25,8 +26,10 @@ function TCForm({
     const [sDate, setDate] = useState(expenseData.date);
     const [sSplitMethod, setSplitMethod] = useState(expenseData.splitMethod);
     const [sSplitValue, setSplitValue] = useState([]);
-    const [sStatus, setStatus] = useState(status); // 0: new, 1: filled, 2: modify
+    const [sStatus, setStatus] = useState(status); //0: new, 1: filled, 2: modify
+    const [expenseId, setId] = useState(expenseData.id);
     const [showBanner, setShowBanner] = useState(false);
+    const [showDestroyBanner, setShowDestroyBanner] = useState(false);
     const timeoutRef = useRef(null);
 
     useEffect(() => {
@@ -35,6 +38,7 @@ function TCForm({
         setPaidBy(expenseData.paidByNickname);
         setSplitValue(expenseData.amountPerUser);
         setDate(expenseData.date);
+        setId(expenseData.id);
         setStatus(status);
     }, [expenseData, status]);
 
@@ -121,9 +125,9 @@ function TCForm({
             date: sDate,
             paidBy: paidByUser === undefined ? -1 : paidByUser[0],
             paidByNickname: sPaidBy,
-            amountPerUser: sSplitValue,           
+            amountPerUser: sSplitValue,         
         }
-        onSubmit(newExpense, itemIndex);
+        onSubmit(newExpense, expenseId);
         reset();
         //close();
     }
@@ -134,6 +138,8 @@ function TCForm({
         setPaidBy("");
         setDate("");
         setSplitValue([]);
+        setId(-1);
+        setStatus(0);
     }
 
     function close() {
@@ -142,6 +148,12 @@ function TCForm({
 
     function modify() {
         setStatus(2);
+    }
+
+    function destroy () {
+        setShowDestroyBanner(false);
+        onDestroy(expenseId);
+        reset();
     }
 
     function notEmpty(titleValue) {
@@ -159,14 +171,15 @@ function TCForm({
     return (
         <div className="tc-form">
             <div className="tc-button-line">
+                {sStatus > 0 && <BsTrash3 className="tc-button" onClick={() => setShowDestroyBanner(true)}/>}
                 {sStatus > 0 && <GoPencil className="tc-button" onClick={() => modify()} />}
                 <BsXLg className="tc-button" onClick={() => close()}/>
             </div>
-            <TextField value={sTitle} setValue={setTitle} name="Title" disabled={sStatus == 1} validate={notEmpty}/>
-            <TextField value={sAmount} setValue={changeAmount} name="Amount" type="number" disabled={sStatus == 1} validate={validateAmount}/>
+            <TextField value={sTitle} setValue={setTitle} name="Title" disabled={sStatus == 1} validate={sStatus != 1 ? notEmpty : undefined}/>
+            <TextField value={sAmount} setValue={changeAmount} name="Amount" type="number" disabled={sStatus == 1} validate={sStatus != 1 ? validateAmount : undefined}/>
             <div className="tc-form-line" style={{gap: '15px'}}>
-                <PickField value={sPaidBy} setValue={setPaidBy} name="Paid By" options={users.map(user => user[1])} style={{flex: "3"}} disabled={sStatus == 1} validate={notEmpty}/>
-                <DateField value={sDate} setValue={setDate} name="When" style={{flex: "2"}} disabled={sStatus == 1} minDate={startingData} validate={() => {return true}}/>
+                <PickField value={sPaidBy} setValue={setPaidBy} name="Paid By" options={users.map(user => user[1])} style={{flex: "3"}} disabled={sStatus == 1} validate={sStatus != 1 ? notEmpty : undefined}/>
+                <DateField value={sDate} setValue={setDate} name="When" style={{flex: "2"}} disabled={sStatus == 1} minDate={startingData} validate={sStatus != 1 ? () => {return true} : undefined}/>
             </div>
             <div className="tc-form-line" style={{alignItems: "center"}}>
                 <div>Split</div>
@@ -199,6 +212,15 @@ function TCForm({
                 <div className="tc-form-banner">
                     <p>Campi vuoti o errati</p>
                     <BsXLg className="tc-button" onClick={() => setShowBanner(false)}/>
+                </div>
+            )}
+            {showDestroyBanner && (
+                <div className="tc-form-destroy-banner">
+                    <p>Vuoi eliminare {sTitle}?</p>
+                    <div>
+                        <button onClick={() => destroy()}>Si</button>
+                        <button onClick={() => setShowDestroyBanner(false)}>No</button>
+                    </div>
                 </div>
             )}
         </div>

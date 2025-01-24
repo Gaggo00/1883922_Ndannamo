@@ -55,6 +55,14 @@ const TCSales = ({data, userId, handleSelection=()=>{}, handleAdd=()=>{}}) => {
         handleSelection(event, item);
     }
 
+    function addClicked () {
+        if (selected != -1 && itemsRefs.current[selected]) {
+            itemsRefs.current[selected].setClicked(false);
+            setSelected(-1);
+        }
+        handleAdd();
+    }
+
 
     return (
         <div className="tc-bottom">
@@ -92,7 +100,7 @@ const TCSales = ({data, userId, handleSelection=()=>{}, handleAdd=()=>{}}) => {
                 ))}
             </div>
             <div className="tc-button-container">
-                <div className="tc-add-button" onClick={handleAdd}>+ Add Spesa</div>
+                <div className="tc-add-button" onClick={addClicked}>+ Add Spesa</div>
             </div>
         </div>
     )
