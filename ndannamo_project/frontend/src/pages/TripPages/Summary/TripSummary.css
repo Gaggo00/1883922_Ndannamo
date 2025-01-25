@@ -46,6 +46,12 @@
 .internal-section img{
     width: 30vh;
     height: 30vh;
+
+}
+.internal-section #globe{
+    width: 30vh;
+    height: 30vh;
+    margin-left: 5vh;
 }
 .header-section img{
     width: 1.2vw;
@@ -173,4 +179,42 @@
 .delete-location{
     display: flex;
     flex-direction: row;
+}
+.destinations{
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    justify-content: space-evenly;
+    list-style: none;
+    height: 100%;
+    align-items: center;
+}
+.destinations #1{
+    justify-content: center;
+}
+.destinations button{
+    border:none;
+    background-color: transparent;
+}
+.destinations #input{
+    width: 14vw;
+    align-items: center;
+}
+.suggestions-destination {
+    position: relative;
+    border: 1px solid #d4d4d4;
+    z-index: 99;
+    overflow-y: auto;
+    max-height: 12vh;
+    width: 14vw;
+    margin: 0 auto;
+    text-align: left;
+    font-size: 1vw;
+
+}
+.suggestions-destination .data {
+    padding: 8px;
+    cursor: pointer;
+    background-color: #fff;
+    border-bottom: 1px solid #eee;
 }

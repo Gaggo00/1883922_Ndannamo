@@ -109,6 +109,9 @@ class TripService{
         }
     }
 
+    static async updateDestination(token, id, newDestination) {
+
+    }
 }
 
 export default TripService;

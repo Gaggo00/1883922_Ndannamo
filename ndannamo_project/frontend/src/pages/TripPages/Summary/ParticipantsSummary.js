@@ -2,16 +2,14 @@ import "./TripSummary.css";
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import UndoConfirm from "../../../common/UndoConfirm";
-import calendar_icon from "../../../static/svg/icons/calendar_icon.svg";
-import calendar from "../../../static/calendar.png";
-import arrow_down from "../../../static/svg/icons/arrow-down2.svg";
-import DateUtilities from "../../../utils/DateUtilities";
 import edit_icon from "../../../static/svg/icons/edit_icon.svg";
 import TripService from "../../../services/TripService";
 import { useLocation } from 'react-router-dom';
+import participants_icon from "../../../static/svg/icons/partecipants_icon.svg";
+import participant_icon from "../../../static/svg/icons/partecipant_icon.svg";
 
 
-export default function DateSummary() {
+export default function ParticipantsSummary() {
 
     const [changeDate, setChangeDate] = useState(false);
     const [newEndDate, setNewEndDate] = useState(null);
@@ -66,39 +64,25 @@ export default function DateSummary() {
     }
 
     return (
-        <div className="mini-section" id="mini2">
-            <div className="header-section" id="section3">
+        <div className="sezione1">
+            <div className="header-section" id="section1">
                 <div className="icon-label">
-                    <img src={calendar_icon} alt="calendar_icon" />
-                    <p>Dates</p>
+                    <img src={participants_icon} alt="participants_icon" />
+                    <p>Participants</p>
                 </div>
-                {!changeDate &&
-                    <img id="edit" class="editable" onClick={handleEditDates} src={edit_icon} alt="edit_icon" />}
-                {changeDate && <UndoConfirm
-                    onConfirm={handleChangeDates}
-                    onUndo={undoChangeDates} />}
+                <img id="edit" src={edit_icon} alt="edit_icon" />
             </div>
-            <div className="internal-section">
-                <img src={calendar} alt="globe" />
-                <div className="dates">
-                    {!changeDate && <p className="date">{DateUtilities.yyyymmdd_To_ddMONTHyyyy(tripInfo.startDate)}</p>}
-                    {changeDate && <input
-                        className="date"
-                        type="date"
-                        name="startDate"
-                        onChange={handleStartDateChange}
-                        value={newStartDate}
-                    ></input>}
-                    <img src={arrow_down} alt="arrow_down" />
-                    {!changeDate && <p className="date">{DateUtilities.yyyymmdd_To_ddMONTHyyyy(tripInfo.endDate)}</p>}
-                    {changeDate && <input
-                        className="date"
-                        type="date"
-                        name="endDate"
-                        value={newEndDate}
-                        onChange={handleEndDateChange}
-                    ></input>}
+            <div className="partecipants-section">
+                <div className="partecipants">
+                    {tripInfo.list_participants.map((participant, index) => (
+                        <div className="partecipant" key={index}>
+                            {<img src={participant_icon} alt="participant_icon" />}
+                            {participant !== profileInfo.nickname && <p>{participant}</p>}
+                            {participant === profileInfo.nickname && <p>you</p>}
+                        </div>
+                    ))}
                 </div>
+                <button>+</button>
             </div>
         </div>
     );
