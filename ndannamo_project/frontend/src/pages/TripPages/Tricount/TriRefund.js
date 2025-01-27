@@ -73,15 +73,28 @@ export const ScrollableRow = ({ blocks=[] }) => {
 
 export const TriBalance = ({ id, nickname, amount, onClick = ()=>{} }) => {
 
+    const upStyle = {
+        "color": "green",
+    }
+
+    const downStyle = {
+        "color": "red",
+    }
+
     function handleClick() {
         onClick(id);
     }
 
     return (
-      <div className='tc-item' onClick={handleClick}>
-          <div className="tc-column tc-name">{nickname}</div>
-          <div className="tc-column tc-total">{amount}</div>
-      </div>
+        <div className='tc-item' onClick={handleClick}>
+            <div className="tc-column tc-name">{nickname}</div>
+            <div
+                className="tc-column tc-total"
+                style= {amount > 0 ? upStyle : amount < 0 ? downStyle : {}}
+            >
+                {amount}
+            </div>
+        </div>
     )
 }
   
@@ -103,13 +116,13 @@ const TriRefund = ({ by, to, amount, toNick, byNick }) => {
 
 class Refound {
     constructor(params = {}) {
-        this.amount = params.amount || 0;
-        this.by = params.by || -1;
-        this.to = params.to || -1;
+        this.amount = params.amount ?? 0;
+        this.by = params.by ?? -1;
+        this.to = params.to ?? -1;
     }
 }
 
-export const TCRefundPage = ({user, expenses, users=[]}) => {
+export const TCRefund = ({user, expenses, users=[]}) => {
 
     const [refunds, setRefunds] = useState([]);
     const [balances, setBalances] = useState([]);
@@ -118,7 +131,8 @@ export const TCRefundPage = ({user, expenses, users=[]}) => {
     useEffect(() => {
         const newBalances = calcBalance(expenses);
         setBalances(newBalances);
-        setRefunds(calcRefund(newBalances));
+        const newRefunds = calcRefund(newBalances);
+        setRefunds(newRefunds);
     }, [expenses]);
 
 
@@ -127,13 +141,14 @@ export const TCRefundPage = ({user, expenses, users=[]}) => {
         const balances = []
 
         users.map((u) => {
-            dict[u[0]] = 0;
+            dict[u[0]] = 0.0;
         })
 
         newExpenses.map((e) => {
             dict[e.paidBy] += e.amount;
             e.amountPerUser.map((userAmount) => {
                 dict[userAmount.user] -= userAmount.amount;
+                dict[userAmount.user] = parseFloat(dict[userAmount.user].toFixed(2))
             })
         })
 
@@ -150,7 +165,7 @@ export const TCRefundPage = ({user, expenses, users=[]}) => {
 
 
     function calcRefund(newBalances) {
-        const refounds = [];
+        const newRefounds = [];
         const copyBalances = newBalances.map(balance => ({ ...balance }));
 
         if (newBalances.length <= 0)
@@ -176,13 +191,12 @@ export const TCRefundPage = ({user, expenses, users=[]}) => {
                 toRefound -= refoundValue;
                 lastValue.amount -= refoundValue;
                 const refound = new Refound({to: newBalances[i].id, amount: refoundValue, by: lastValue.id})
-                refounds.push(refound);
+                newRefounds.push(refound);
             }
 
             i += 1;
         }
-
-        return refounds;
+        return newRefounds;
     }
 
     function retriveSalesByUser(userId, expenses) {
@@ -210,7 +224,7 @@ export const TCRefundPage = ({user, expenses, users=[]}) => {
 
 
     return (
-        <div className="tc-left">
+        <div className="tc-bottom">
             <TCListHeader names={["Nickname", "Balance"]}/>
             <div className="tc-list">
                 <div className="tc-list-inner" style={{maxHeight: '150px'}}>
