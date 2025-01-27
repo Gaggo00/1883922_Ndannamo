@@ -32,22 +32,29 @@ export default function TripPreview({trip, reloadProfile}) {
         }
     }
 
-    const mainLocation = trip.locations[0].split(",");
-    const mainLocationName = mainLocation[0].trim();
-    var  mainLocationCountry = "";
-    if (mainLocation.length > 1) {
-        mainLocationCountry = mainLocation[1].trim();
+    
+    var locationString = "";
+    if (trip.locations.length > 0) {
+
+        const mainLocation = trip.locations[0].split(",");
+        const mainLocationName = mainLocation[0].trim();
+        var  mainLocationCountry = "";
+        if (mainLocation.length > 1) {
+            mainLocationCountry = mainLocation[1].trim();
+        }
+
+        fecthImage(mainLocationName, mainLocationCountry);
+
+        locationString = trip.locations[0];
+        if (trip.locations.length > 1) {
+            locationString += ", ...";
+        }
     }
 
-    fecthImage(mainLocationName, mainLocationCountry);
-
+    
     const startDate = DateUtilities.yyyymmdd_To_ddmmyy(trip.startDate, "-", "/");
     const endDate = DateUtilities.yyyymmdd_To_ddmmyy(trip.endDate, "-", "/");
 
-    var locationString = trip.locations[0];
-    if (trip.locations.length > 1) {
-        locationString += ", ...";
-    }
 
     var participantsStr = trip.list_participants[0];
     if (trip.list_participants.length > 1) {

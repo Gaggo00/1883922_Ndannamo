@@ -2,7 +2,7 @@
 import "./ScheduleEvents.css";
 
 
-export default function ActivityEvent({activity, selectEvent}) {
+export default function EventClosedActivity({activity, selectEvent}) {
 
     const INFO_MAX_CHARACTERS_SHOWN = 60;
 
@@ -17,7 +17,7 @@ export default function ActivityEvent({activity, selectEvent}) {
             <div className="event-block-left">
                 <div className="info-left bold big">{activity.startTime}</div>
                 <i className="bi bi-sun h1"></i>
-                <div className="info-left bold">{activity.place.split(",")[0]}</div>
+                <div className="info-left bold">{activity.place && activity.place.split(",")[0]}</div>
             </div>
             <div className="event-block-right">
                 <div className="activity-name  event-block-title">

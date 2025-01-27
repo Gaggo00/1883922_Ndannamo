@@ -190,6 +190,7 @@ export const TCRefund = ({user, expenses, users=[]}) => {
                     refoundValue = toRefound;
                 toRefound -= refoundValue;
                 lastValue.amount -= refoundValue;
+                lastValue.amount = parseFloat(lastValue.amount.toFixed(2))
                 const refound = new Refound({to: newBalances[i].id, amount: refoundValue, by: lastValue.id})
                 newRefounds.push(refound);
             }

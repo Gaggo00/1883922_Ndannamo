@@ -43,6 +43,11 @@ function TCForm({
     }, [expenseData, status]);
 
 
+    function setDateToString(dateString) {
+        const newDate = new Date(dateString);
+        setDate(newDate);
+    }
+
     function divideMoney(total, people) {
         const baseAmount = Math.floor((total / people) * 100) / 100;
         const remainder = Math.round((total - baseAmount * people) * 100);
@@ -179,7 +184,7 @@ function TCForm({
             <TextField value={sAmount} setValue={changeAmount} name="Amount" type="number" disabled={sStatus == 1} validate={sStatus != 1 ? validateAmount : undefined}/>
             <div className="tc-form-line" style={{gap: '15px'}}>
                 <PickField value={sPaidBy} setValue={setPaidBy} name="Paid By" options={users.map(user => user[1])} style={{flex: "3"}} disabled={sStatus == 1} validate={sStatus != 1 ? notEmpty : undefined}/>
-                <DateField value={sDate} setValue={setDate} name="When" style={{flex: "2"}} disabled={sStatus == 1} minDate={startingData} validate={sStatus != 1 ? () => {return true} : undefined}/>
+                <DateField value={sDate} setValue={setDateToString} name="When" style={{flex: "2"}} disabled={sStatus == 1} minDate={startingData} validate={sStatus != 1 ? () => {return true} : undefined}/>
             </div>
             <div className="tc-form-line" style={{alignItems: "center"}}>
                 <div>Split</div>

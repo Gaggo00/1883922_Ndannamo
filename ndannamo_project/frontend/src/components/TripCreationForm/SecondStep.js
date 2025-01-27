@@ -1,9 +1,24 @@
 import React, { useState } from 'react';
 import DateUtilities from '../../utils/DateUtilities';
 
+import TextField, { DateField, PickedField, PickField } from "../../components/Fields/Fields";
 
 const SecondStep = ({ nextStep, prevStep, handleChange, values }) => {
     const [error, setError] = useState('');
+
+    const initializeStartDate = () => {
+        if (values.startDate != null) return values.startDate;
+        return new Date();
+    }
+    const [startDate, setStartDate] = useState(initializeStartDate());
+
+    const initializeEndDate = () => {
+        if (values.endDate != null) return values.endDate;
+        else if (values.startDate != null) return DateUtilities.getNextDay(values.startDate);
+        return DateUtilities.getNextDay(new Date());
+    }
+    const [endDate, setEndDate] = useState(initializeEndDate());
+
 
     const handleNext = () => {
         if (!values.startDate || !values.endDate) {
@@ -22,6 +37,7 @@ const SecondStep = ({ nextStep, prevStep, handleChange, values }) => {
         }
     };
 
+    /*
     const setMinStartDate = () => {
         var today = DateUtilities.date_To_yyyymmdd(new Date());
         document.getElementById("startDate").setAttribute('min', today);
@@ -41,6 +57,15 @@ const SecondStep = ({ nextStep, prevStep, handleChange, values }) => {
             document.getElementById("endDate").setAttribute('min', DateUtilities.getNextDay(today));
         }
     }
+    */
+
+    const setMinStartDate = () => {
+        return new Date();
+    }
+    const setMinEndDate = () => {
+        if (values.startDate) return DateUtilities.getNextDay(values.startDate);
+        return DateUtilities.getNextDay(new Date());
+    }
 
     return (
         <div className="trip-creation-page" onKeyDown={handleKeyDown} tabIndex="0">
@@ -50,32 +75,13 @@ const SecondStep = ({ nextStep, prevStep, handleChange, values }) => {
                 </div>
                 <div className="input-and-error">
                     <div className="date">
-                        <div className="date-input" >
-                            <label id="left">
-                                <div className='label-text'>Start date:</div>
-                                <input
-                                    type="date"
-                                    name="startDate"
-                                    id="startDate"
-                                    value={values.startDate}
-                                    onClick={setMinStartDate}
-                                    onChange={handleChange}
-                                />
-                            </label>
+                        <div className="date-input" id="left" >
+                            <DateField id="startDate" value={startDate} setValue={(date) => {setStartDate(date); handleChange("startDate", date);}}
+                            name="Start date:" minDate={setMinStartDate()}/>
                         </div>
-                        <div className="date-input" >
-                            <label id="right">
-                            <div className='label-text'>End date:</div>
-                                <input
-                                    type="date"
-                                    name="endDate"
-                                    id="endDate"
-                                    value={values.endDate}
-                                    onClick={setMinEndDate}
-                                    onChange={handleChange}
-                                />
-                            </label>
-
+                        <div className="date-input" id="right">
+                            <DateField id="endDate" value={endDate} setValue={(date) => {setEndDate(date); handleChange("endDate", date);}} name="End date:"
+                            minDate={setMinEndDate()}/>
                         </div>
                     </div>
                     {error && <p style={{ color: 'red' }}>{error}</p>}

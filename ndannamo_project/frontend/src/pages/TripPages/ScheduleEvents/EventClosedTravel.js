@@ -2,7 +2,15 @@
 import "./ScheduleEvents.css";
 
 
-export default function TravelEvent({travel, selectEvent}) {
+export default function EventClosedTravel({travel, selectEvent}) {
+
+    const INFO_MAX_CHARACTERS_SHOWN = 60;
+
+    var info = travel.info;
+    info = info.substring(0, INFO_MAX_CHARACTERS_SHOWN);
+    if (travel.info.length > INFO_MAX_CHARACTERS_SHOWN) {
+        info += "...";
+    }
 
     return (
         <div className="event-block travel" onClick={() => {selectEvent(travel)}}>
@@ -17,6 +25,9 @@ export default function TravelEvent({travel, selectEvent}) {
                 </div>
                 <div className="address spaced">
                     <i className="bi bi-geo-alt icon-with-margin"></i>{travel.address}
+                </div>
+                <div className="info spaced">
+                    {info}
                 </div>
             </div>
         </div>

@@ -2,15 +2,15 @@
 import React, {useEffect, useState} from 'react';
 import {useNavigate, useParams} from 'react-router-dom';
 
-import NightEvent from "./NightEvent";
-import ActivityEvent from "./ActivityEvent";
-import TravelEvent from "./TravelEvent";
+import EventClosedNight from "./EventClosedNight";
+import EventClosedActivity from "./EventClosedActivity";
+import EventClosedTravel from "./EventClosedTravel";
 
 import ScheduleService from "../../../services/ScheduleService";
 import DateUtilities from '../../../utils/DateUtilities';
 
 
-export default function ScheduleDay({day, selectEvent, openCreateEventForm, reloadSchedule}) {
+export default function ScheduleDay({day, selectEvent, reloadSchedule}) {
 
     const navigate = useNavigate();
 
@@ -23,22 +23,18 @@ export default function ScheduleDay({day, selectEvent, openCreateEventForm, relo
             
             const tripId = day.tripId;
             const name = "New activity";
-            var place = "Choose a place";
-            if (day.night) {
-                place = day.night.place;
-            }
+            const place = day.mainPlace;
             const date = day.date;
             const address = "";
             const info = "Write some info here...";
-            const minsToAdd = 5;
-            const startTime = new Date(new Date("1970/01/01 " + previousEventTime).getTime() + minsToAdd * 60000).toLocaleTimeString('en-UK', { hour: '2-digit', minute: '2-digit', hour12: false });
+            const startTime = addMinutes(previousEventTime, 5);
             const endTime = null;
 
             const activityId = await ScheduleService.createActivity(token, tripId, place, date, name, startTime, endTime, address, info);
 
             if (activityId) {
                 // Ricarica la schedule a sinistra e seleziona la nuova attivita'
-                reloadSchedule(activityId);
+                reloadSchedule(activityId, false, true);
             } else {
                 console.error('Invalid response data');
             }
@@ -47,41 +43,78 @@ export default function ScheduleDay({day, selectEvent, openCreateEventForm, relo
         }
     }
 
-    const createTravel = async (place, previousEventTime) => {
-        openCreateEventForm();
+    const createTravel = async (previousEventTime) => {
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                navigate("/login");
+            }
+            
+            const tripId = day.tripId;
+            const place = day.mainPlace;
+            const date = day.date;
+            const address = "";
+            const destination = "?";
+            const arrivalDate = date;
+            const departureTime = addMinutes(previousEventTime, 5);
+            const arrivalTime = departureTime;
+            const info = "Write some info here...";
+
+            const travelId = await ScheduleService.createTravel(token, tripId, place, date, address, destination, arrivalDate, departureTime, arrivalTime, info);
+
+            if (travelId) {
+                // Ricarica la schedule a sinistra e seleziona la nuova attivita'
+                reloadSchedule(travelId, false, true);
+            } else {
+                console.error('Invalid response data');
+            }
+        } catch (error) {
+            console.error('Error creating travel:', error);
+        }
     }
     
 
+    const addMinutes = (time, minsToAdd) => {
+        const currentDate = new Date("1970/01/01 " + time);
+        const newDate = new Date(currentDate.getTime() + minsToAdd * 60000);
+        return newDate.toLocaleTimeString('en-UK', {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+        });
+    }
+
+
     return (
-        <div className="day">
+        <div className="day" id={"day-"+day.date}>
             <div className="day-date">{DateUtilities.yyyymmdd_To_ddMONTH(day.date)}</div>
             <div className="hidden-button-parent">
-                <button className="hidden-button" onClick={()=>{createActivity("05:00")}}><i className="bi bi-plus-lg h4"></i></button>
-                <button className="hidden-button" onClick={()=>{createTravel("04:55")}}><i className="bi bi-airplane h4"></i></button>
+                <button className="hidden-button" title='New activity' onClick={()=>{createActivity("4:55")}}><i className="bi bi-plus-lg h4"></i></button>
+                <button className="hidden-button" title='New travel' onClick={()=>{createTravel("4:55")}}><i className="bi bi-airplane h4"></i></button>
             </div>
             {day.activitiesAndTravels.map((event, index) => {
                     if (event.constructor.name === "Activity") {
                         return <div key={index}> 
-                            <ActivityEvent activity={event} selectEvent={selectEvent}/>
+                            <EventClosedActivity activity={event} selectEvent={selectEvent}/>
                             <div className="hidden-button-parent">
-                                <button className="hidden-button" onClick={()=>{createActivity(event.startTime)}}><i className="bi bi-plus-lg h4"></i></button>
-                                <button className="hidden-button" onClick={()=>{createTravel(event.startTime)}}><i className="bi bi-airplane h4"></i></button>
+                                <button className="hidden-button" title='New activity' onClick={()=>{createActivity(event.startTime)}}><i className="bi bi-plus-lg h4"></i></button>
+                                <button className="hidden-button" title='New travel' onClick={()=>{createTravel(event.startTime)}}><i className="bi bi-airplane h4"></i></button>
                             </div>
                         </div>;
                     }
                     else if (event.constructor.name === "Travel") {
                         return <div key={index}>
-                            <TravelEvent travel={event} selectEvent={selectEvent}/>
+                            <EventClosedTravel travel={event} selectEvent={selectEvent}/>
                             <div className="hidden-button-parent">
-                                <button className="hidden-button" onClick={()=>{createActivity(event.startTime)}}><i className="bi bi-plus-lg h4"></i></button>
-                                <button className="hidden-button" onClick={()=>{createTravel(event.startTime)}}><i className="bi bi-airplane h4"></i></button>
+                                <button className="hidden-button" title='New activity' onClick={()=>{createActivity(event.startTime)}}><i className="bi bi-plus-lg h4"></i></button>
+                                <button className="hidden-button" title='New travel' onClick={()=>{createTravel(event.startTime)}}><i className="bi bi-airplane h4"></i></button>
                             </div>
                         </div>;
                     }
                     return <div/>
                 })
             }
-            {day.night && <NightEvent night={day.night} selectEvent={selectEvent}/>}
+            {day.night && <EventClosedNight night={day.night} selectEvent={selectEvent}/>}
         </div>
     );
 

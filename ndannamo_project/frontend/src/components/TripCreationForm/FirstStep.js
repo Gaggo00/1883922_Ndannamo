@@ -28,8 +28,9 @@ const FirstStep = ({ nextStep, handleChange, values }) => {
                     <input
                         type="text"
                         name="title"
+                        className='input-medium'
                         value={values.title}
-                        onChange={handleChange}
+                        onChange={(e) => {handleChange(e.target.name, e.target.value)}}
                         onKeyDown={handleKeyDown}
                         placeholder='Title'
                     />
