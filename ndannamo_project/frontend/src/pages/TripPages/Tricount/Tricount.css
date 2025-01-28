@@ -2,7 +2,7 @@
     display: flex;
     flex-direction: row;
     align-items: flex-start;
-    gap: 40px;
+    gap: 0px;
 }
 
 .tc-left {
@@ -11,12 +11,16 @@
     justify-content: flex-start;
     gap: 15px;
     flex: 3;
-    padding: 10px;
-    border-right: 1px solid black;
+    padding: 20px;
+    height: 100%;
+    overflow: hidden;
 }
 
 .tc-right {
     flex: 2;
+    height: 100%;
+    padding: 0 20px;
+    border-left: 1px solid;
 }
 
 .tc-top {
@@ -41,8 +45,40 @@
     color: gray;
 }
 
+.tc-bottom {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 15px;
+    flex: 3;
+    height: 100%;
+    overflow: hidden;
+}
+
 .tc-middle {
     justify-items: flex-start;
+    align-items: center;
+    display: flex;
+    gap: 10px;
+}
+
+.tc-main-recap {
+    display: flex;
+    gap: 5vw;
+}
+
+.tc-recap {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    text-align: center;
+    gap: 20px;
+    width: 140px;
+}
+
+.tc-recap-expenses {
+    font-size: 14px;
+    font-weight: 600;
 }
 
 .tc-title {
@@ -62,6 +98,7 @@
     justify-content: space-between;
     width: 100%;
     border-radius: 10px;
+    padding-right: 16px;
 }
 
 .h {
@@ -75,6 +112,14 @@
     justify-content: space-between;
     width: 100%;
     border-radius: 10px;
+}
+
+.tc-item-n-h {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    border-radius: 10px; 
 }
 
 .tc-item:hover {
@@ -117,15 +162,66 @@
     cursor: pointer;
 }
 
+.tc-form {
+    position: relative;
+}
+
 .tc-form-line {
     display: flex;
     justify-content: space-between;
 }
 
+.tc-form-list {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.tc-form-banner {
+    position: absolute;
+    top: 10%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(255, 0, 0, 0.8);
+    color: white;
+    padding: 10px 10px;
+    border-radius: 10px;
+    font-size: 18px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    z-index: 20;
+}
+
+.tc-form-destroy-banner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(255, 0, 0, 0.8);
+    color: white;
+    padding: 10px 10px;
+    border-radius: 10px;
+    font-size: 18px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    z-index: 20;
+}
+
 .tc-list {
     display: flex;
-    flex-direction: column; /* Elementi disposti verticalmente */
-    gap: 10px; /* Spaziatura tra gli elementi */
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
+    overflow-y: hidden;
+    padding-right: 16px;
+}
+
+.tc-list-inner {
+    overflow-y: auto;
+    overflow-x: hidden;
+    margin-right: -16px;
+    padding-right: 16px;
 }
   
 .tc-list-item {
@@ -156,4 +252,37 @@
 
 .tc-button {
     cursor: pointer;
+}
+
+.tc-balance-container {
+    display: flex;
+    align-items: center;
+    font-family: Arial, sans-serif;
+    padding: 20px;
+}
+
+.tc-balance-item {
+    display: inline-block;
+    width: 150px;
+    margin: 0 10px;
+    padding: 10px;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+}
+
+.tc-arrows {
+    margin-right: 10px;
+    padding: 10px;
+    cursor: pointer;
+    background-color: transparent;
+    border: none;
+}
+
+.tc-scrollable-b-container {
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: row;
+    white-space: nowrap;
+    width: 80%;
 }

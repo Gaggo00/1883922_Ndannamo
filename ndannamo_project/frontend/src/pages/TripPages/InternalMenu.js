@@ -127,7 +127,10 @@ export default function InternalMenu() {
                 <div className="modal-overlay">
                     <div className="trip-box">
                         <ConfirmDelete
-                            message={tripInfo.creator ? "delete the trip" : "leave the trip"}
+                            message={tripInfo.creator ?
+                                "Do you really want to delete the trip \"" + tripInfo.title + "\"?"
+                                :
+                                "Do you really want to leave the trip \"" + tripInfo.title + "\"?"}
                             onConfirm={handleConfirm}
                             onClose={closeModal}/>
                     </div>

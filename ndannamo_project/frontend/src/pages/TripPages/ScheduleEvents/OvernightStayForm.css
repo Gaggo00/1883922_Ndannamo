@@ -1,0 +1,16 @@
+#overnight-stay-form {
+    width: 40vw;
+    height: 74vh;
+    background-color: white;
+    border-radius: 20px;
+    padding: 5vh 3vw;
+    justify-content: center;
+}
+
+.form-content {
+    margin-top: 1vh;
+}
+
+.form-content .form-row {
+    margin: 2vh 0;
+}

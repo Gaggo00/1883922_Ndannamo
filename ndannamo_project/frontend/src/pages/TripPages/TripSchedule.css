@@ -1,14 +1,13 @@
 .trip-details-schedule {
     display: flex;
     flex-direction: row;
+    margin-bottom: -2.5vh;
 }
 
 #schedule {
     width: 30%;
     height: 100%;
     border-right: 1px solid gray;
-    display: flex;
-    flex-direction: column;
 }
 
 #event-info {
@@ -18,16 +17,60 @@
 }
 
 #calendar {
-    width: 100%;
-    height: 10vh;
-    background-color: rgb(201, 145, 145);
+    max-width: 100%;
+    min-height: 11vh;
     margin: 1vh 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    /*justify-content: center;*/
+    scrollbar-width: thin;
+}
+
+#calendar .calendar-element {
+    margin: 0 0.3vw;
+    border: none;
+    border-radius: 10px;
+    background-color: #FAD8B2;
+}
+
+#calendar .calendar-element .calendar-element-content {
+    padding: 1vh 0.4vw;
+    width: 3.7vw;
+}
+
+#calendar .date-day {
+    font-weight: bolder;
+}
+
+#calendar .date-month {
+    padding-bottom: 0.5vh;
+}
+
+#calendar h3, #calendar h6 {
+    margin-bottom: 0;
 }
 
 #events {
+    width: 100%;
     overflow-y: auto;
+    scrollbar-width: thin;
+    padding-top: 2vh;
+    padding-bottom: 6vh;
 }
 
+.custom-button {
+    height: fit-content;
+    width: fit-content;
+    margin: auto 0.5vw;
+    padding: 0.2vh 0.6vw;
+    border-radius: 1vw;
+    font-size: 1.1vw;
+    background-color: #FFD694;
+}
+.red-button {
+    background-color: #dd3434;
+    color: white;
+}
 
 
 /* Sezione a destra */
@@ -40,14 +83,20 @@
     margin: 0 3vw;
 }
 
-#event-open .date, #event-open .place {
-    font-size: 1.4vw;
+#event-open .date-place {
+    margin-top: 2vh;
     color: rgb(100, 100, 100);
+    font-size: 1.4vw;
     font-weight: 550;
+    margin-bottom: 0;
 }
 
-#event-open .date {
-    margin-top: 2vh;
+#event-open .date.margin-right {
+    margin-right: 2vw;
+}
+
+#event-open .place {
+    margin-left: 2vw;
 }
 
 #event-open .title {
@@ -67,6 +116,7 @@
     width: 90%;
     height: 20vh;
     border: 1px solid black;
+    z-index: 0;
 }
 
 #event-open .event-info {
@@ -85,7 +135,7 @@
     justify-content: space-between;
     */
     display: grid;
-    grid-template-columns: 18% auto auto auto;
+    grid-template-columns: 22% auto auto auto;
     justify-content: space-between;
     padding: 2vh 0;
 }
@@ -98,6 +148,10 @@
     font-size: 1.1vw;
     font-weight: 600;
     color: rgb(100, 100, 100);
+}
+
+#event-open .event-info-top-row .address {
+    display: flex;
 }
 
 #event-open .event-info-top-row .value {
@@ -127,21 +181,33 @@
 }
 
 
+.no-selected-events {
+    font-size: 1.5vw;
+    margin: auto;
+    align-content: center;
+    color: rgb(122, 122, 122);
+}
 
-/* Pulsante per eliminare un evento */
-.delete-button {
+
+/* Pulsante in alto a destra */
+.top-row-button {
     top: 2.8vh;
-    color: rgb(182, 3, 3);
 }
 
 
 /* Per modificare i campi di un evento */
 
+.bi.red-icon {
+    color: rgb(182, 3, 3);
+}
 .bi.gray-icon {
     color: rgb(95, 95, 95);
 }
 .bi.spaced {
     margin: 0 0.5vw;
+}
+.bi.margin-bottom {
+    margin-bottom: 1vh;
 }
 
 button.float-right {
@@ -154,9 +220,17 @@ button.no-background {
 button.no-border {
     border: none;
 }
-button.flex-column {
+
+.flex-row {
+    display:flex;
+    flex-direction: row;
+}
+.flex-column {
     display:flex;
     flex-direction: column;
+}
+.align-items-center {
+    align-items: center;
 }
 
 .edit-info-button i {
@@ -173,8 +247,32 @@ button.flex-column {
     padding: 2px;
 }
 
+.edit-place-input {
+    width: 20vw;
+}
+#event-open .place .suggestions {
+    z-index: 99;
+    position: relative;
+}
+#event-open .place .suggestions .suggestions-items {
+    width: 20vw;
+    transform: translateX(0);
+}
+
 .edit-title-input {
     width: 31vw;
+}
+
+.edit-address-input {
+    width: 20vw;
+}
+
+
+.hidden-btn {
+    visibility: hidden;
+}
+.hidden-btn-parent:hover .hidden-btn {
+    visibility: visible;
 }
 
 

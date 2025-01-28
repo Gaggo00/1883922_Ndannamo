@@ -3,11 +3,12 @@
     flex-direction: column;
     align-items: start;
     gap: 2px;
+    position: relative;
 }
 
 .field-title {
-    padding-left: 5px;
-    font-size: 15px;
+    padding-left: 1vw;
+    font-size: 0.9vw;
     font-weight: 400;
 }
 
@@ -19,7 +20,7 @@
     padding-right: 15px;
     background-color: white;
     margin: 0;
-    width: calc(100% - 34px);
+    width: 100%;
 }
 
 .f-disabled {
@@ -31,6 +32,14 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+.f-valid {
+    border-color: green;
+}
+
+.f-nvalid {
+    border-color: red;
 }
 
 .field-input:focus {
@@ -55,6 +64,9 @@
     max-height: 150px;
     overflow-y: auto;
     width: 60%;
+    position: absolute;
+    top: 100%;
+    z-index: 10;
 }
 
 .field-suggestions-data {

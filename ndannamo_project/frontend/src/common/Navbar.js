@@ -10,7 +10,7 @@ import valigiaLogo from "../static/valigia logo.png";
 import scrittaLogo from "../static/scritta logo.png";
 
 
-function Navbar() {
+export default function Navbar() {
     const { isAuthenticated, logout } = useAuth();
     const location = useLocation(); // Ottieni il percorso corrente
 
@@ -23,9 +23,13 @@ function Navbar() {
         logout();
     }
 
+    const style = {
+        boxShadow: "0px 5px 5px rgba(0, 0, 0, 0.35)"
+    };
 
     return (
-        <div className="navbar">
+        <div className="navbar" style={(location.pathname != '/') && (location.pathname != '/profile') && (location.pathname != '/login')
+            && (location.pathname != '/register') ? style  : null}>
             <Link to="/">
                 <div className="logo">
                     <img id="valigia-logo" src={valigiaLogo}></img>
@@ -49,9 +53,7 @@ function Navbar() {
                 </Dropdown>
             )}
             {!isAuthenticated && location.pathname !== '/logout' && (<Link to="/login" className="nav-right">Login</Link>)}
-            </div>
+        </div>
+    );
+}
 
-                );
-            }
-
-export default Navbar;

@@ -27,8 +27,7 @@ const MultiStepForm = () => {
         setStep(step - 1);
     };
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
+    const handleChange = (name, value) => {
         setFormData({ ...formData, [name]: value });
     };
 
@@ -40,9 +39,6 @@ const MultiStepForm = () => {
                 navigate("/login");  // Redirect the user to the login page
                 return;
             }
-
-            //const formattedStartDate = DateUtilities.date_To_yyyymmdd(formData.startDate);  // questo e' il formato che vuole il backend
-            //const formattedEndDate = DateUtilities.date_To_yyyymmdd(formData.endDate);
             const formattedStartDate = formData.startDate.split('T')[0];
             const formattedEndDate = formData.endDate.split('T')[0];
 
@@ -57,8 +53,13 @@ const MultiStepForm = () => {
             if (response) {
                 nextStep();
             }
+            else {
+                console.log(response);
+                alert("Server error");
+            }
         } catch (error) {
             console.log(error);
+            alert("Error creating trip: " + error.message);
         }
     };
 

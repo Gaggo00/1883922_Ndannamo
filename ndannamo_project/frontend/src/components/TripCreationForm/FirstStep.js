@@ -1,12 +1,20 @@
 import React, { useState } from 'react';
 
 const FirstStep = ({ nextStep, handleChange, values }) => {
+
+    // Questi parametri devono essere gli stessi anche nel backend, dentro TripValidation.java
+    const TITLE_MAX_LENGTH = 30;
+
     const [error, setError] = useState('');
 
     const handleNext = () => {
         if (values.title.trim() === '') {
             setError('The title is required!');
-        } else {
+        } 
+        else if (values.title.trim().length > TITLE_MAX_LENGTH) {
+            setError('Title can be at most ' + TITLE_MAX_LENGTH + ' characters long!');
+        }
+        else {
             setError('');
             nextStep();
         }
@@ -18,6 +26,16 @@ const FirstStep = ({ nextStep, handleChange, values }) => {
         }
     };
 
+    // Per quando scrivi qualcosa in un campo editabile
+    const handleInputChange = (e) => {
+        var input = e.target.value;
+
+        // Limita numero di caratteri
+        input = input.substring(0, TITLE_MAX_LENGTH);
+
+        handleChange(e.target.name, input)
+    }
+
     return (
         <div className="trip-creation-page">
             <div className="fill-flex2">
@@ -28,8 +46,9 @@ const FirstStep = ({ nextStep, handleChange, values }) => {
                     <input
                         type="text"
                         name="title"
+                        className='input-medium'
                         value={values.title}
-                        onChange={handleChange}
+                        onChange={handleInputChange}
                         onKeyDown={handleKeyDown}
                         placeholder='Title'
                     />

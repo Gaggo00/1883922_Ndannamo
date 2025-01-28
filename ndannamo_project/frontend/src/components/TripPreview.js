@@ -9,6 +9,9 @@ import DateUtilities from '../utils/DateUtilities';
 
 export default function TripPreview({trip, reloadProfile}) {
 
+    // caratteri max per la riga delle location e per la riga dei partecipanti
+    const MAX_ROW_CHARACTERS = 29;
+
     const navigate = useNavigate();
     const [imgURL, setImgURL] = useState(missingCityImage);
     const [imageKey, setimageKey] = useState(0);    // serve per far aggiornare l'immagine
@@ -32,30 +35,57 @@ export default function TripPreview({trip, reloadProfile}) {
         }
     }
 
-    const mainLocation = trip.locations[0].split(",");
-    const mainLocationName = mainLocation[0].trim();
-    var  mainLocationCountry = "";
-    if (mainLocation.length > 1) {
-        mainLocationCountry = mainLocation[1].trim();
+    
+    var locationString = "";
+    if (trip.locations.length > 0) {
+
+        const mainLocation = trip.locations[0].split(",");
+        const mainLocationName = mainLocation[0].trim();
+        var  mainLocationCountry = "";
+        if (mainLocation.length > 1) {
+            mainLocationCountry = mainLocation[1].trim();
+        }
+
+        fecthImage(mainLocationName, mainLocationCountry);
+
+        locationString = trip.locations[0];
+        if (locationString.length > MAX_ROW_CHARACTERS) {
+            locationString = locationString.substring(0, MAX_ROW_CHARACTERS-3) + "...";
+        }
+        else if (trip.locations.length > 1 && (locationString.length <= MAX_ROW_CHARACTERS-4)) {
+            locationString += ", ...";
+        }
     }
 
-    fecthImage(mainLocationName, mainLocationCountry);
-
+    
     const startDate = DateUtilities.yyyymmdd_To_ddmmyy(trip.startDate, "-", "/");
     const endDate = DateUtilities.yyyymmdd_To_ddmmyy(trip.endDate, "-", "/");
 
-    var locationString = trip.locations[0];
-    if (trip.locations.length > 1) {
-        locationString += ", ...";
-    }
 
     var participantsStr = trip.list_participants[0];
+    var participantsStrShortened = true;
+
     if (trip.list_participants.length > 1) {
-        participantsStr += ", " + trip.list_participants[1];
+        var temp = participantsStr + ", " + trip.list_participants[1];
+        if (temp.length <= MAX_ROW_CHARACTERS) {
+            participantsStr = temp;
+            participantsStrShortened = false;
+        }
+        else if (participantsStr.length <= MAX_ROW_CHARACTERS-4) {
+            participantsStr += ", ...";
+        }
+        else if (participantsStr.length > MAX_ROW_CHARACTERS) {
+            participantsStr = participantsStr.substring(0, MAX_ROW_CHARACTERS-3) + "...";
+        }
     }
-    if (trip.list_participants.length > 2) {
-        const quantity = trip.list_participants.length - 2;
-        participantsStr += " and " + quantity + " more";
+    if (!participantsStrShortened && trip.list_participants.length > 2) {
+        if (participantsStr.length <= MAX_ROW_CHARACTERS-12) {
+            const quantity = trip.list_participants.length - 2;
+            participantsStr += " and " + quantity + " more";
+        }
+        else if (participantsStr.length <= MAX_ROW_CHARACTERS-4) {
+            participantsStr += ", ...";
+        }
     }
 
     const handleClick = () => {

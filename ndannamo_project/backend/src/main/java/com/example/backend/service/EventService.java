@@ -2,6 +2,7 @@ package com.example.backend.service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.backend.dto.ActivityCreationRequest;
 import com.example.backend.dto.EventDTO;
+import com.example.backend.dto.OvernightStayDTO;
 import com.example.backend.dto.TravelCreationRequest;
 import com.example.backend.exception.ResourceNotFoundException;
 import com.example.backend.mapper.ActivityMapperImpl;
@@ -24,7 +26,9 @@ import com.example.backend.model.Trip;
 import com.example.backend.model.Event.EventType;
 import com.example.backend.repositories.ActivityRepository;
 import com.example.backend.repositories.NightRepository;
+import com.example.backend.repositories.OvernightStayRepository;
 import com.example.backend.repositories.TravelRepository;
+import com.example.backend.utils.OvernightstayValidation;
 
 
 @Service
@@ -33,6 +37,7 @@ public class EventService {
     private final NightRepository nightRepository;
     private final ActivityRepository activityRepository;
     private final TravelRepository travelRepository;
+    private final OvernightStayRepository overnightStayRepository;
     private final NightMapperImpl nightMapper;
     private final ActivityMapperImpl activityMapper;
     private final TravelMapperImpl travelMapper;
@@ -40,10 +45,12 @@ public class EventService {
 
     @Autowired
     public EventService(NightRepository nightRepository, ActivityRepository activityRepository, TravelRepository travelRepository,
-                        NightMapperImpl nightMapper, ActivityMapperImpl activityMapper, TravelMapperImpl travelMapper) {
+                    OvernightStayRepository overnightStayRepository, NightMapperImpl nightMapper, ActivityMapperImpl activityMapper,
+                    TravelMapperImpl travelMapper) {
         this.nightRepository = nightRepository;
         this.activityRepository = activityRepository;
         this.travelRepository = travelRepository;
+        this.overnightStayRepository = overnightStayRepository;
         this.nightMapper = nightMapper;
         this.activityMapper = activityMapper;
         this.travelMapper = travelMapper;
@@ -61,7 +68,16 @@ public class EventService {
     public Travel getTravelById(long id) {
         return travelRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Travel not found!"));
     }
+    public OvernightStay getOvernightStayById(long id) {
+        return overnightStayRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("OvernightStay not found!"));
+    }
 
+
+    /*************** SAVE ***************/
+
+    public Night saveNight(Night night) {
+        return nightRepository.save(night);
+    }
 
     /*************** DTO ***************/
 
@@ -172,6 +188,23 @@ public class EventService {
         changeEventDate(EventType.ACTIVITY, trip, activityId, newDate);
     }
 
+    // Cambia indirizzo activity
+    public void changeActivityAddress(Trip trip, long activityId, String newAddress) {
+        // Trova l'activity
+        Activity activity = getActivityById(activityId);
+
+        // Controlla che l'activity faccia parte della trip
+        if (activity.getTrip() != trip) {
+            throw new ResourceNotFoundException("Activity not found!");
+        }
+
+        // Cambia valore
+        activity.setAddress(newAddress);
+
+        // Aggiorna l'activity
+        activityRepository.save(activity);
+    }
+
     // Cambia orario activity
     public void changeActivityTime(Trip trip, long activityId, LocalTime newStartTime, LocalTime newEndTime) {
         // Trova l'activity
@@ -185,23 +218,6 @@ public class EventService {
         // Cambia valore
         activity.setStartTime(newStartTime);
         activity.setEndTime(newEndTime);
-
-        // Aggiorna l'activity
-        activityRepository.save(activity);
-    }
-
-    // Cambia indirizzo activity
-    public void changeActivityAddress(Trip trip, long activityId, String newAddress) {
-        // Trova l'activity
-        Activity activity = getActivityById(activityId);
-
-        // Controlla che l'activity faccia parte della trip
-        if (activity.getTrip() != trip) {
-            throw new ResourceNotFoundException("Activity not found!");
-        }
-
-        // Cambia valore
-        activity.setAddress(newAddress);
 
         // Aggiorna l'activity
         activityRepository.save(activity);
@@ -270,9 +286,83 @@ public class EventService {
         changeEventPlace(EventType.TRAVEL, trip, travelId, newPlace);
     }
 
-    // Cambia data travel
+    // Cambia destinazione travel
+    public void changeTravelDestination(Trip trip, long travelId, String newDestination) {
+        // Trova travel
+        Travel travel = getTravelById(travelId);
+
+        // Controlla che il travel faccia parte della trip
+        if (travel.getTrip() != trip) {
+            throw new ResourceNotFoundException("Travel not found!");
+        }
+
+        // Cambia valore
+        travel.setDestination(newDestination);
+
+        // Aggiorna l'activity
+        travelRepository.save(travel);
+    }
+
+    // Cambia data partenza travel
     public void changeTravelDate(Trip trip, long travelId, LocalDate newDate) {
         changeEventDate(EventType.TRAVEL, trip, travelId, newDate);
+    }
+
+    // Cambia data arrivo travel
+    public void changeTravelArrivalDate(Trip trip, long travelId, LocalDate newArrivalDate) {
+        // Trova travel
+        Travel travel = getTravelById(travelId);
+
+        // Controlla che l'activity faccia parte della trip
+        if (travel.getTrip() != trip) {
+            throw new ResourceNotFoundException("Travel not found!");
+        }
+
+        // Controlla che la data di arrivo non sia prima di quella di partenza
+        if (travel.getDate().isAfter(newArrivalDate)) {
+            throw new ResourceNotFoundException("Arrival date can't be before departure date!");
+        }
+
+        // Cambia info
+        travel.setArrivalDate(newArrivalDate);
+
+        // Aggiorna travel
+        travelRepository.save(travel);
+    }
+
+    // Cambia indirizzo travel
+    public void changeTravelAddress(Trip trip, long travelId, String newAddress) {
+        // Trova travel
+        Travel travel = getTravelById(travelId);
+
+        // Controlla che il travel faccia parte della trip
+        if (travel.getTrip() != trip) {
+            throw new ResourceNotFoundException("Travel not found!");
+        }
+
+        // Cambia valore
+        travel.setAddress(newAddress);
+
+        // Aggiorna travel
+        travelRepository.save(travel);
+    }
+
+    // Cambia orario travel
+    public void changeTravelTime(Trip trip, long travelId, LocalTime newStartTime, LocalTime newEndTime) {
+        // Trova travel
+        Travel travel = getTravelById(travelId);
+
+        // Controlla che il travel faccia parte della trip
+        if (travel.getTrip() != trip) {
+            throw new ResourceNotFoundException("Travel not found!");
+        }
+
+        // Cambia valore
+        travel.setDepartureTime(newStartTime);
+        travel.setArrivalTime(newEndTime);
+
+        // Aggiorna travel
+        travelRepository.save(travel);
     }
 
     // Cambia info travel
@@ -280,7 +370,7 @@ public class EventService {
         // Trova travel
         Travel travel = getTravelById(travelId);
 
-        // Controlla che l'activity faccia parte della trip
+        // Controlla che il travel faccia parte della trip
         if (travel.getTrip() != trip) {
             throw new ResourceNotFoundException("Travel not found!");
         }
@@ -397,5 +487,47 @@ public class EventService {
             default:
                 throw new ResourceNotFoundException("Event not found!");
         }
+    }
+
+
+
+    /************************** OVERNIGHT STAY **************************/
+
+    public OvernightStay createOvernightStay(List<Night> nights, OvernightStayDTO overnightStayDTO) {
+
+        OvernightStay overnightStay = new OvernightStay();
+
+        // Imposta i campi
+        overnightStay.setName(overnightStayDTO.getName());
+        overnightStay.setAddress(overnightStayDTO.getAddress());
+        overnightStay.setContact(overnightStayDTO.getContact());
+        overnightStay.setStartDate(overnightStayDTO.getStartDate());
+        overnightStay.setEndDate(overnightStayDTO.getEndDate());
+        overnightStay.setStartCheckInTime(overnightStayDTO.getStartCheckInTime());
+        overnightStay.setEndCheckInTime(overnightStayDTO.getEndCheckInTime());
+        overnightStay.setStartCheckOutTime(overnightStayDTO.getStartCheckOutTime());
+        overnightStay.setEndCheckOutTime(overnightStayDTO.getEndCheckOutTime());
+        overnightStay.setTravelDays(nights);
+
+        return overnightStayRepository.save(overnightStay);
+    }
+
+    public OvernightStay editOvernightStay(List<Night> nights, OvernightStayDTO overnightStayDTO) {
+
+        OvernightStay overnightStay = getOvernightStayById(overnightStayDTO.getId());
+
+        // Imposta i campi
+        overnightStay.setName(overnightStayDTO.getName());
+        overnightStay.setAddress(overnightStayDTO.getAddress());
+        overnightStay.setContact(overnightStayDTO.getContact());
+        overnightStay.setStartDate(overnightStayDTO.getStartDate());
+        overnightStay.setEndDate(overnightStayDTO.getEndDate());
+        overnightStay.setStartCheckInTime(overnightStayDTO.getStartCheckInTime());
+        overnightStay.setEndCheckInTime(overnightStayDTO.getEndCheckInTime());
+        overnightStay.setStartCheckOutTime(overnightStayDTO.getStartCheckOutTime());
+        overnightStay.setEndCheckOutTime(overnightStayDTO.getEndCheckOutTime());
+        overnightStay.setTravelDays(nights);
+
+        return overnightStayRepository.save(overnightStay);
     }
 }

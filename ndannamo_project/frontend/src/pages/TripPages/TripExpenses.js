@@ -9,11 +9,9 @@ import TCListItem, {TCListHeader} from './Tricount/TriListItem';
 import './InternalMenu.css'
 import "../../styles/Main.css";
 
-
 export default function TripExpenses() {
     const location = useLocation();
     const tripInfo = location.state?.trip; // Recupera il tripInfo dallo stato
-
 
     const [data, setData] = useState([]);
 
@@ -59,6 +57,7 @@ export default function TripExpenses() {
         split: [],
         filled: false,
         status: 0,
+        onSubmit: submit,
         onClose: () => setFormVisibility(false),
     });
     const itemsRefs = useRef([]);
@@ -67,7 +66,7 @@ export default function TripExpenses() {
 
 
     const retrieveTricounts = async () => {
-        try {
+        /*try {
             const token = localStorage.getItem('token');
             if (!token) {
                 navigate("/login");
@@ -83,7 +82,7 @@ export default function TripExpenses() {
             }
         }catch (error) {
             console.error('Error fetching expenses information:', error);
-        }
+        }*/
 
         /*
         return [
@@ -112,6 +111,7 @@ export default function TripExpenses() {
             split: data[index].split,
             filled: true,
             status: 1,
+            onSubmit: submit,
             onClose: () => setFormVisibility(false),
         });
         if (!formVisibility)
@@ -135,6 +135,7 @@ export default function TripExpenses() {
                 split: [],
                 filled: false,
                 status: 0,
+                onSubmit: submit,
                 onClose: () => setFormVisibility(false),
             });
             setFormVisibility(true);
@@ -142,6 +143,15 @@ export default function TripExpenses() {
                 itemsRefs.current[selected].setClicked(false);
             setSelected(-1);
         }
+    }
+
+    function createNewExpense(data) {
+        
+    }
+
+    function submit(data) {
+        console.log(data);
+        createNewExpense(data);
     }
 
 

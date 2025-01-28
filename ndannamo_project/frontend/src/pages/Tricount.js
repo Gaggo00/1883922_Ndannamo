@@ -1,80 +1,177 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import TCListItem, {TCListHeader} from "./TripPages/Tricount/TriListItem";
-import TCForm from "./TripPages/Tricount/TriForm"
+import SearchBar from "../components/SearchBar";
+import TCForm from "./TripPages/Tricount/TriForm";
+import TCSales from './TripPages/Tricount/TriSales';
+import { TCRefund } from "./TripPages/Tricount/TriRefund";
 import "../styles/Main.css";
+import TCUserRecap from "./TripPages/Tricount/TriRecap";
+
+class ExpenseDto {
+    constructor(params = {}) {
+        this.id = params.id ?? -1;
+        this.tripId = params.tripId ?? -1;
+        this.paidBy = params.paidBy ?? -1;
+        this.paidByNickname = params.paidByNickname ?? "";
+        this.title = params.title ?? "";
+        this.date = params.date ?? "";
+        this.amount = params.amount ?? 0;
+        this.splitEven = params.splitEven ?? true;
+        this.amountPerUser = params.amountPerUser ?? [];
+    }
+}
+
 
 function Tricount() {
+    const tripInfo = {users: [[0, "Sara"], [1, "Pino"], [2, "Anna"], [3, "Piero"], [4, "Marta"], [5, "Mari grace"]], startingData: new Date()};
+    const userId = 3;
+    const userNickname = "Piero";
 
     const [activeText, setActiveText] = useState("list");
     const [formVisibility, setFormVisibility] = useState(true);
     const [formData, setFormData] = useState({
-        title: "",
-        amount: 0,
-        date: "",
-        users: [],
-        paidBy: "",
-        splitValue: 0,
-        split: [],
+        expenseData: new ExpenseDto,
+        users: tripInfo.users,
         filled: false,
         status: 0,
+        startingData: tripInfo.startingData,
+        onSubmit: submit,
         onClose: () => setFormVisibility(false),
+        onDestroy: destroy,
     });
     const itemsRefs = useRef([]);
     const [selected, setSelected] = useState(-1);
+    const [data, setData] = useState(retrieveTricounts());
 
     function retrieveTricounts() {
-        return [
-            {name:"Ristorante", total:"100", by:"Sara", expense:"20", date: new Date(), splitValue: [20, 80], split: [true, true]},
-            {name:"Ristorante cinese buono", total:"100", by:"Luca", expense:"60", date: new Date(), splitValue: [60, 40], split: [true, true]},
-        ]
+        const retrievedData = [
+            new ExpenseDto(
+                {
+                    id: 1,
+                    title:"Ristorante",
+                    amount: 42.10,
+                    paidBy: 1,
+                    paidByNickname:"Pino",
+                    expense: 21.05,
+                    date: new Date(),
+                    amountPerUser: [
+                        {
+                            "user": 2,
+                            "userNickname": "Anna",
+                            "amount": 21.05
+                        },
+                        {
+                            "user": 1,
+                            "userNickname": "Pino",
+                            "amount": 21.05,
+                        }
+                    ],
+                }
+            ),
+        ];
+        return retrievedData;
     };
 
     const handleClick = (id) => {
+        if (id == 'sales') {
+            setFormData({
+                expenseData: new ExpenseDto,
+                users: tripInfo.users,
+                filled: false,
+                status: 0,
+                startingData: tripInfo.startingData,
+                onSubmit: submit,
+                onClose: () => setFormVisibility(false),
+                onDestroy: destroy,
+            })
+        }
         setActiveText(id);
     };
 
-    const data = retrieveTricounts();
-
-    const handleTricountSelection = (index) => {
+    const handleTricountSelection = (event, itemData) => {
         setFormData({
-            title: data[index].name,
-            amount: data[index].total,
-            date: data[index].date,
-            users: ["Luca", "Damiana"],
-            paidBy: data[index].by,
-            splitValue: data[index].splitValue,
-            split: data[index].split,
+            expenseData: itemData,
+            users: tripInfo.users,
             filled: true,
             status: 1,
+            startingData: tripInfo.startingData,
+            itemIndex: -1,
+            onSubmit: submit,
             onClose: () => setFormVisibility(false),
+            onDestroy: destroy,
         });
         if (!formVisibility)
             setFormVisibility(true);
-        if (selected !== -1 && itemsRefs.current[selected])
+        /*if (selected != -1 && itemsRefs.current[selected])
             itemsRefs.current[selected].setClicked(false);
-        setSelected(index);
+        setSelected(index);*/
     };
 
     function addSale() {
-        if (formData.status === 1 || !formVisibility) {
+        if (formData.status == 1 || !formVisibility) {
             setFormData({
-                title: "",
-                amount: 0,
-                date: "",
-                users: [],
-                paidBy: "",
-                splitValue: 0,
-                split: [],
+                expenseData: new ExpenseDto,
+                users: tripInfo.users,
                 filled: false,
                 status: 0,
+                startingData: tripInfo.startingData,
+                onSubmit: submit,
                 onClose: () => setFormVisibility(false),
+                onDestroy: destroy,
             });
             setFormVisibility(true);
-            if (selected !== -1 && itemsRefs.current[selected])
+            if (selected != -1 && itemsRefs.current[selected])
                 itemsRefs.current[selected].setClicked(false);
             setSelected(-1);
         }
     }
+
+    function getNewExpenseId() {
+        const max = Math.max(...data.map(expense => expense.id));
+        return max + 1;
+    }
+
+    function createNewExpense(newExpense) {
+        const newExpenseDto = new ExpenseDto(newExpense);
+        const newId = getNewExpenseId();
+        newExpenseDto.id = newId;
+        const newData = [...data];
+        newData.push(newExpenseDto);
+        const now = new Date();
+        newData.sort((a, b) => Math.abs(b.date - now) - Math.abs(a.date - now));
+        setData(newData);
+    }
+
+    function submit(newExpense, expenseId = -1) {
+        console.log("Expense id: ", expenseId);
+        if (expenseId == -1)
+            createNewExpense(newExpense);
+        else
+        {
+            const oldExpenseIndex = data.findIndex((expense) => expense.id == expenseId);
+            if (oldExpenseIndex >= 0) {
+                const newData = [...data];
+                const oldExpense = data[oldExpenseIndex];
+                const newExpenseDto = {
+                    ...oldExpense,
+                    ...newExpense,
+                }
+                newData[oldExpenseIndex] = newExpenseDto;
+                setData(newData);
+            }
+        }
+    }
+
+    
+    function destroy(expenseId) {
+        const index = data.findIndex(expense => expense.id == expenseId);
+        if (index >= 0) {
+            const newData = [...data];
+            newData.splice(index, 1);
+            setData(newData);
+        }
+    }
+
 
     return (
         <div className="main">
@@ -86,31 +183,33 @@ function Tricount() {
                         <div className={`tc-top-text ${activeText === "sales" ? "active" : "inactive"}`}
                             id="sales" onClick={()=>handleClick("sales")}>Saldi</div>
                     </div>
-                    <div className="tc-middle">
-                        <div className="tc-title">Spese</div>
-                    </div>
-                    <div className="tc-list">
-                        <TCListHeader/>
-                        {data.map((item, index) => (
-                            <TCListItem
-                                key={index}
-                                name={item.name}
-                                total={item.total}
-                                by={item.by}
-                                expense={item.expense}
-                                date={item.date.toDateString()}
-                                onClick={()=>handleTricountSelection(index)}
-                                ref={(el) => (itemsRefs.current[index] = el)}
+                    {activeText === "list" &&
+                        <TCSales
+                            data={data}
+                            userId={userId}
+                            handleSelection={handleTricountSelection}
+                            handleAdd={addSale}/>
+                    }
+                    {activeText == "sales" &&
+                        <TCRefund
+                            user={userId}
+                            expenses={data}
+                            users={tripInfo.users}
+                        />
+                    } 
+                </div>
+                {formVisibility == true &&
+                    <div className="tc-right">
+                        <TCForm {...formData}/>
+                        {/***activeText === "sales" &&
+                            <TCUserRecap
+                                user={userId}
+                                userNickname={userNickname}
+                                expenses={data}
                             />
-                        ))}
+                        ***/}
                     </div>
-                    <div className="tc-button-container">
-                        <div className="tc-add-button" onClick={() => addSale()}>+ Add Spesa</div>
-                    </div>
-                </div>
-                <div className="tc-right">
-                    {formVisibility === true && <TCForm {...formData}/>}
-                </div>
+                }
             </div>
         </div>
     )

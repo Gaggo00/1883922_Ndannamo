@@ -98,10 +98,90 @@ class ScheduleService {
 
 
 
+    // Per creare una accomodation
+    static async createOvernightStay(token, tripId, name, startDate, endDate, startCheckInTime, endCheckInTime, startCheckOutTime, endCheckOutTime, address, contact) {
+        try {
+            const response = await axios.post(
+                `${ScheduleService.BASE_URL}/${tripId}/schedule/overnightstay`,
+                { name, startDate, endDate, startCheckInTime, endCheckInTime, startCheckOutTime, endCheckOutTime, address, contact },
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`
+                    }
+                }
+            );
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    // Per modificare una accomodation
+    static async editOvernightStay(token, tripId, id, name, startDate, endDate, startCheckInTime, endCheckInTime, startCheckOutTime, endCheckOutTime, address, contact) {
+        try {
+            const response = await axios.put(
+                `${ScheduleService.BASE_URL}/${tripId}/schedule/overnightstay`,
+                { id, name, startDate, endDate, startCheckInTime, endCheckInTime, startCheckOutTime, endCheckOutTime, address, contact },
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`
+                    }
+                }
+            );
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    }
+
 
     /****************** Funzioni per modificare i vari campi degli eventi ******************/
 
     //***** ACTIVITY:
+
+    // Cambia posto activity
+    static async changeActivityPlace(token, tripId, activityId, place) {
+        const value = place;
+        try{
+            const response = await axios.put(
+                `${ScheduleService.BASE_URL}/${tripId}/schedule/activity/${activityId}/place`,
+                { value },
+                {
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                        "Content-Type": "application/json"
+                    }
+                });
+            console.log(response);
+            return response.data;
+        }
+        catch(err) {
+            throw (err);
+        }
+    }
+
+    // Cambia data activity
+    static async changeActivityDate(token, tripId, activityId, date) {
+        const value = date;
+        try{
+            const response = await axios.put(
+                `${ScheduleService.BASE_URL}/${tripId}/schedule/activity/${activityId}/date`,
+                { value },
+                {
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                        "Content-Type": "application/json"
+                    }
+                });
+            console.log(response);
+            return response.data;
+        }
+        catch(err) {
+            throw (err);
+        }
+    }
 
     // Cambia nome activity
     static async changeActivityName(token, tripId, activityId, name) {
@@ -125,11 +205,32 @@ class ScheduleService {
     }
 
     // Cambia indirizzo activity
-    static async changeActivityName(token, tripId, activityId, address) {
+    static async changeActivityAddress(token, tripId, activityId, address) {
         const value = address;
         try{
             const response = await axios.put(
                 `${ScheduleService.BASE_URL}/${tripId}/schedule/activity/${activityId}/address`,
+                { value },
+                {
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                        "Content-Type": "application/json"
+                    }
+                });
+            console.log(response);
+            return response.data;
+        }
+        catch(err) {
+            throw (err);
+        }
+    }
+
+    // Cambia time activity
+    static async changeActivityTime(token, tripId, activityId, startTime, endTime) {
+        const value = [startTime, endTime];
+        try{
+            const response = await axios.put(
+                `${ScheduleService.BASE_URL}/${tripId}/schedule/activity/${activityId}/time`,
                 { value },
                 {
                     headers: {
@@ -169,6 +270,91 @@ class ScheduleService {
 
     //***** TRAVEL:
 
+
+    // Cambia posto travel
+    static async changeTravelPlace(token, tripId, travelId, place) {
+        const value = place;
+        try{
+            const response = await axios.put(
+                `${ScheduleService.BASE_URL}/${tripId}/schedule/travel/${travelId}/place`,
+                { value },
+                {
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                        "Content-Type": "application/json"
+                    }
+                });
+            console.log(response);
+            return response.data;
+        }
+        catch(err) {
+            throw (err);
+        }
+    }
+
+    // Cambia data travel
+    static async changeTravelDate(token, tripId, travelId, date) {
+        const value = date;
+        try{
+            const response = await axios.put(
+                `${ScheduleService.BASE_URL}/${tripId}/schedule/travel/${travelId}/date`,
+                { value },
+                {
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                        "Content-Type": "application/json"
+                    }
+                });
+            console.log(response);
+            return response.data;
+        }
+        catch(err) {
+            throw (err);
+        }
+    }
+
+    // Cambia indirizzo travel
+    static async changeTravelAddress(token, tripId, travelId, address) {
+        const value = address;
+        try{
+            const response = await axios.put(
+                `${ScheduleService.BASE_URL}/${tripId}/schedule/travel/${travelId}/address`,
+                { value },
+                {
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                        "Content-Type": "application/json"
+                    }
+                });
+            console.log(response);
+            return response.data;
+        }
+        catch(err) {
+            throw (err);
+        }
+    }
+
+    // Cambia time travel
+    static async changeTravelTime(token, tripId, travelId, startTime, endTime) {
+        const value = [startTime, endTime];
+        try{
+            const response = await axios.put(
+                `${ScheduleService.BASE_URL}/${tripId}/schedule/travel/${travelId}/time`,
+                { value },
+                {
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                        "Content-Type": "application/json"
+                    }
+                });
+            console.log(response);
+            return response.data;
+        }
+        catch(err) {
+            throw (err);
+        }
+    }
+
     // Cambia info travel
     static async changeTravelInfo(token, tripId, travelId, value) {
         try{
@@ -188,6 +374,32 @@ class ScheduleService {
             throw (err);
         }
     }
+
+
+
+    //***** NIGHT:
+
+    // Cambia posto night
+    static async changeNightPlace(token, tripId, nightId, place) {
+        const value = place;
+        try{
+            const response = await axios.put(
+                `${ScheduleService.BASE_URL}/${tripId}/schedule/night/${nightId}/place`,
+                { value },
+                {
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                        "Content-Type": "application/json"
+                    }
+                });
+            console.log(response);
+            return response.data;
+        }
+        catch(err) {
+            throw (err);
+        }
+    }
+
 }
 
 export default ScheduleService;
