@@ -4,6 +4,11 @@ import DateUtilities from '../../utils/DateUtilities';
 import TextField, { DateField, PickedField, PickField } from "../../components/Fields/Fields";
 
 const SecondStep = ({ nextStep, prevStep, handleChange, values }) => {
+
+    // Questi parametri devono essere gli stessi anche nel backend, dentro TripValidation.java
+    const TRIP_MAX_DAYS = 31;
+
+
     const [error, setError] = useState('');
 
     const initializeStartDate = () => {
@@ -25,6 +30,8 @@ const SecondStep = ({ nextStep, prevStep, handleChange, values }) => {
             setError('Both start and end dates are required!');
         } else if (new Date(values.startDate) >= new Date(values.endDate)) {
             setError('The start date must be before the end date!');
+        } else if (DateUtilities.daysBetween(values.startDate, values.endDate) > TRIP_MAX_DAYS) {
+            setError('The trip can be at most ' +  TRIP_MAX_DAYS + " days long");
         } else {
             setError('');
             nextStep();
@@ -37,35 +44,32 @@ const SecondStep = ({ nextStep, prevStep, handleChange, values }) => {
         }
     };
 
-    /*
-    const setMinStartDate = () => {
-        var today = DateUtilities.date_To_yyyymmdd(new Date());
-        document.getElementById("startDate").setAttribute('min', today);
-    }
-    const setMinEndDate = () => {
-        if (values.startDate) {
-            var nextDay = DateUtilities.getNextDay(values.startDate);
-            document.getElementById("endDate").setAttribute('min', nextDay);
-            // se endDate non e' ancora stata scelta, la imposto al valore minimo cosi' il calendario si apre su quella data
-            if (!values.endDate) {
-                values.endDate = nextDay;
-            }
-        }
-        else {
-            //console.log("start date not selected yet");
-            var today = DateUtilities.date_To_yyyymmdd(new Date());
-            document.getElementById("endDate").setAttribute('min', DateUtilities.getNextDay(today));
-        }
-    }
-    */
 
+    // Per start date
     const setMinStartDate = () => {
         return new Date();
     }
+    /*
+    const setMaxStartDate = () => {
+        // se endDate e' stata scelta ed e' a piu' di TRIP_MAX_DAYS giorni da oggi
+        var today = new Date();
+        if (values.endDate && (DateUtilities.daysBetween(DateUtilities.date_To_yyyymmdd(today), values.endDate) > TRIP_MAX_DAYS)) {
+            return DateUtilities.getNDaysBefore(values.startDate, TRIP_MAX_DAYS);
+        }
+        return DateUtilities.getNDaysLater(new Date(), TRIP_MAX_DAYS);
+    }
+    */
+
+    // Per end date
     const setMinEndDate = () => {
         if (values.startDate) return DateUtilities.getNextDay(values.startDate);
         return DateUtilities.getNextDay(new Date());
     }
+    const setMaxEndDate = () => {
+        if (values.startDate) return DateUtilities.getNDaysLater(values.startDate, TRIP_MAX_DAYS);
+        return DateUtilities.getNDaysLater(new Date(), TRIP_MAX_DAYS);
+    }
+
 
     return (
         <div className="trip-creation-page" onKeyDown={handleKeyDown} tabIndex="0">
@@ -81,7 +85,7 @@ const SecondStep = ({ nextStep, prevStep, handleChange, values }) => {
                         </div>
                         <div className="date-input" id="right">
                             <DateField id="endDate" value={endDate} setValue={(date) => {setEndDate(date); handleChange("endDate", date);}} name="End date:"
-                            minDate={setMinEndDate()}/>
+                            minDate={setMinEndDate()} maxDate={setMaxEndDate()}/>
                         </div>
                     </div>
                     {error && <p style={{ color: 'red' }}>{error}</p>}

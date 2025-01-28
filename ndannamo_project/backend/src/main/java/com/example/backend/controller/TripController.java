@@ -23,10 +23,9 @@ import com.example.backend.dto.TripCreationRequest;
 import com.example.backend.dto.TripDTO;
 import com.example.backend.dto.TripInviteList;
 import com.example.backend.model.OvernightStay;
-import com.example.backend.model.Trip;
+import com.example.backend.model.Trip;  
 import com.example.backend.service.TripService;
 import com.example.backend.service.UserService;
-import com.example.backend.utils.TripValidation;
 
 
 @RestController
@@ -38,7 +37,7 @@ public class TripController {
     //private final UserService userService;
 
     @Autowired
-    public TripController(TripService tripService, UserService userService) {
+    public TripController(TripService tripService /*, UserService userService*/) {
         this.tripService = tripService;
         //this.userService = userService;
     }
@@ -46,14 +45,6 @@ public class TripController {
     // Crea una trip
     @PostMapping(value={"", "/"})
     public ResponseEntity<?> createTrip(@Valid @RequestBody TripCreationRequest tripRequest) {
-        
-        // controlla validita' dell'input
-        if (!TripValidation.tripValid(tripRequest)) {
-            return ResponseEntity
-                .status(HttpStatus.FORBIDDEN)
-                .body("Invalid dates");
-        }
-        
         try {
             // prendi l'utente dal token
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

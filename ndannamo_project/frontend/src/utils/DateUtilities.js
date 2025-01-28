@@ -173,7 +173,7 @@ export default class DateUtilities {
         return nextDay;
     };
 
-    // Prende in input una stringa tipo "yyyy-mm-dd" e restituisce il giorno dopo nello stesso formato
+    // Prende in input una stringa tipo "yyyy-mm-dd" e restituisce il giorno prima nello stesso formato
     static getPreviousDay(day) {
         var prevDayDate = new Date(Date.parse(day) - (24 * 60 * 60 * 1000));
         var prevDay = prevDayDate.toISOString().split('T')[0];
@@ -182,4 +182,23 @@ export default class DateUtilities {
         return prevDay;
     };
 
+
+    
+    // Prende in input una stringa tipo "yyyy-mm-dd" e restituisce la data N giorni dopo nello stesso formato
+    static getNDaysLater(day, n) {
+        if (n < 1) return day;
+        var nextDayDate = new Date(Date.parse(day) + (n * 24 * 60 * 60 * 1000));
+        var nextDay = nextDayDate.toISOString().split('T')[0];
+        return nextDay;
+    };
+
+    // Prende in input una stringa tipo "yyyy-mm-dd" e restituisce la data N giorni prima nello stesso formato
+    static getNDaysBefore(day, n) {
+        if (n < 1) return day;
+        var prevDayDate = new Date(Date.parse(day) - (n * 24 * 60 * 60 * 1000));
+        var prevDay = prevDayDate.toISOString().split('T')[0];
+        //console.log("day: " + day);
+        //console.log("previous day: " + prevDay);
+        return prevDay;
+    };
 }

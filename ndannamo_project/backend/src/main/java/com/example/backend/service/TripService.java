@@ -70,6 +70,10 @@ public class TripService {
     }
 
     public Trip createTrip(String email, TripCreationRequest tripRequest) {
+
+        // Controlla validita' dei campi
+        TripValidation.tripValid(tripRequest);
+
         // Ottieni user dall'username
         User logged_user = userService.getUserByEmail(email);
 
@@ -541,12 +545,10 @@ public class TripService {
 
         // Controllo validita' titolo
         String titleStripped = newTitle.strip();
-        if (!TripValidation.titleValid(titleStripped)) {
-            throw new ResourceNotFoundException("Title not valid");
-        }
+        TripValidation.titleValid(titleStripped);
 
         // Aggiorna titolo
-        trip.setTitle(newTitle);
+        trip.setTitle(titleStripped);
 
         // Salva trip
         tripRepository.save(trip);
@@ -562,9 +564,7 @@ public class TripService {
         }
 
         // Controllo validita' date
-        if (!TripValidation.datesValid(newStartDate, newEndDate)) {
-            throw new ResourceNotFoundException("Dates not valid");
-        }
+        TripValidation.datesValid(newStartDate, newEndDate);
 
         // TODO:
         // Shiftare le date degli eventi in modo che rientrino tra le nuove date (se la data iniziale e' cambiata),
