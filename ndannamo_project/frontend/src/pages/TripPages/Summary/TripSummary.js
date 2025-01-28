@@ -18,8 +18,7 @@ export default function TripSummary() {
             <div className="trip-content">
                 <div className="trip-top">
                     <span>
-                        <strong>{tripInfo.title}</strong> {DateUtilities.yyyymmdd_To_ddmm(tripInfo.startDate, "-", "/")} - {DateUtilities.yyyymmdd_To_ddmm(tripInfo.endDate, "-", "/")}
-                    </span>
+                        <strong>{tripInfo.title}</strong> </span>
                 </div>
                 <div className="trip-details">
                     <ParticipantsSummary/>

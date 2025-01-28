@@ -125,7 +125,7 @@ export default function DestinationSummary() {
                         setChangeDestination(false)
                         tripInfo.locations= newDestination;
                         navigate(`/trips/${tripInfo.id}/summary`, { state: { trip: tripInfo, profile: profileInfo } })
-                        console.log("dates changed!")
+                        console.log("locations changed!")
                     } else {
                         console.error('Invalid response data');
                     }
