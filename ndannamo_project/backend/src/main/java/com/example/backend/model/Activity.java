@@ -1,6 +1,7 @@
 package com.example.backend.model;
 
 
+import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.*;
@@ -13,6 +14,7 @@ import io.micrometer.common.lang.Nullable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name="activities")
+@DiscriminatorValue("ACTIVITY")
 public class Activity extends Event {
 
     // Per EventDTO
