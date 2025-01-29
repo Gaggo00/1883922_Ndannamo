@@ -7,6 +7,7 @@ import lombok.*;
 @Data
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Attachment {
@@ -19,8 +20,11 @@ public class Attachment {
     private String fileType; // Tipo MIME (es. "image/png", "application/pdf")
     private Long fileSize;   // Dimensione del file in byte
 
-    @Lob
     @Column(columnDefinition = "BYTEA") // Salva il file come blob binario
     private byte[] fileData; // Contenuto del file
+
+    @ManyToOne
+    @JoinColumn(name="event_id", foreignKey = @ForeignKey(name = "fk_attachment_event"))
+    private Event event;
 
 }
