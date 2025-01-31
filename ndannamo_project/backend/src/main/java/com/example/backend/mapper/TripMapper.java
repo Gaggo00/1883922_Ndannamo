@@ -17,15 +17,16 @@ public interface TripMapper {
     // Map Trip entity to TripDTO (mappa i partecipanti senza cicli)
     @Mapping(target = "createdBy", source = "created_by.id") // Mappa solo l'ID del creatore
     @Mapping(target = "list_participants", source = "participants", qualifiedByName = "userListToStringList")
+    @Mapping(target = "list_invitations", source ="invitations", qualifiedByName="userListToStringList")
     TripDTO toDTO(Trip trip);
 
     // Map TripDTO to Trip entity (ignora i dettagli complessi)
     @Mapping(target = "participants", ignore = true)            // Ignora i partecipanti
+    @Mapping(target = "invitations", ignore =true)
     @Mapping(target = "created_by.id", source = "createdBy")    // Mappa l'ID del creatore verso l'entità User
     @Mapping(target = "expenses", ignore = true)                // Ignora le spese
     Trip toEntity(TripDTO tripDTO);
 
-    
     @Named("userToId") 
     public static Long userToId(User user) { 
         return user.getId(); 

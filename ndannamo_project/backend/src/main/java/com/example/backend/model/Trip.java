@@ -34,6 +34,13 @@ public class Trip {
         inverseJoinColumns = @JoinColumn(name = "user_id"))
     private List<User> participants = new ArrayList<>();
 
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "trips_invitations",
+            joinColumns = @JoinColumn(name = "trip_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private List<User> invitations = new ArrayList<>();
+
 
     // attivita'/viaggi/notti della trip
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "trip")
@@ -43,5 +50,21 @@ public class Trip {
     // spese della trip
     @OneToMany
     private List<Expense> expenses = new ArrayList<>();
+
+    public boolean removeInvitation(User user) {
+        if (this.invitations.contains(user)) {
+            this.invitations.remove(user);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean addInvitation(User user) {
+        if (!this.invitations.contains(user)) {
+            this.invitations.add(user);
+            return true;
+        }
+        return false;
+    }
 
 }

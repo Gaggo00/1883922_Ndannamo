@@ -130,7 +130,7 @@ class TripService{
 
     }
 
-    static async updateParticipants(token, id, participants) {
+    static async updateParticipants(token, id, participants,invitations) {
         
     }
 }

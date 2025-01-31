@@ -103,6 +103,8 @@
 }
 .partecipants p{
     margin-bottom: 0;
+    width: 4vw;
+    font-size: medium;
 }
 .partecipants-section button{
     border-radius:45px;
@@ -238,14 +240,20 @@
     padding:0.6vw;
     border-radius: 45px;
 }
+.partecipants #invitation-icon{
+    background: #BCBCBC;
+    height: 4vw;
+    width: 4vw;
+    padding:0.6vw;
+    border-radius: 45px;
+    opacity: 0.5;
+}
 .partecipant #delete{
     z-index: 9;
-    margin-bottom: -15px;
-    margin-left: 42px;
-    width: 20px;
-    height: 10px;
-    background: darkred;
+    background: #f24646;
     border-radius: 30px;
     cursor: pointer;
-
+    position: absolute;
+    margin: -10px -38px 0px 0px;
+    width: 26px;
 }

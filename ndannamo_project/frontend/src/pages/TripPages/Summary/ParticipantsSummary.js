@@ -1,5 +1,5 @@
 import "./TripSummary.css";
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import UndoConfirm from "../../../common/UndoConfirm";
 import edit_icon from "../../../static/svg/icons/edit_icon.svg";
@@ -8,59 +8,72 @@ import { useLocation } from 'react-router-dom';
 import participants_icon from "../../../static/svg/icons/partecipants_icon.svg";
 import participant_icon from "../../../static/svg/icons/partecipant_icon.svg";
 
-
 export default function ParticipantsSummary() {
+    const [changeParticipants, setChangeParticipants] = useState(false);
+    const [newParticipant, setNewParticipant] = useState("");
 
-    const [changeDate, setChangeDate] = useState(false);
-    const [newEndDate, setNewEndDate] = useState(null);
-    const [newStartDate, setNewStartDate] = useState(null);
+    const [invitations, setInvitations] = useState([]);
+    const [participants, setParticipants] = useState([]);
+
     const navigate = useNavigate();
     const location = useLocation();
     const tripInfo = location.state?.trip; // Recupera il tripInfo dallo stato
     const profileInfo = location.state?.profile; // Recupera il tripInfo dallo stato
 
-    const handleEditDates = () => {
-        setNewStartDate(tripInfo.startDate);
-        setNewEndDate(tripInfo.endDate);
-        setChangeDate(true);
+
+    const handleEditParticipants = () => {
+        setChangeParticipants(true);
+        setParticipants(tripInfo.list_participants);
+        setInvitations(tripInfo.list_invitations);
     }
 
-    const handleChangeDates = async () => {
-        if (newEndDate === tripInfo.endDate && newStartDate === tripInfo.startDate) {
-            setChangeDate(false);
+    const handleChangeParticipants = async () => {
+        if (participants === tripInfo.list_invitations || invitations === tripInfo.list_invitations) {
+            setChangeParticipants(false);
         } else {
-            if (newEndDate > newStartDate) {
-                try {
-                    const token = localStorage.getItem('token');
-                    if (!token) {
-                        navigate("/login");
-                    }
-                    const response = await TripService.updateDates(token, tripInfo.id, newStartDate, newEndDate);
-
-                    if (response) {
-                        setChangeDate(false)
-                        tripInfo.startDate = newStartDate;
-                        tripInfo.endDate = newEndDate;
-                        navigate(`/trips/${tripInfo.id}/summary`, { state: { trip: tripInfo, profile: profileInfo } })
-                        console.log("dates changed!")
-                    } else {
-                        console.error('Invalid response data');
-                    }
-                } catch (error) {
-                    console.error('Error fetching schedule:', error);
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    navigate("/login");
                 }
+
+                const response = await TripService.updateParticipants(token, tripInfo.id, participants,invitations);
+
+                if (response) {
+                    setChangeParticipants(false)
+                    navigate(`/trips/${tripInfo.id}/summary`, { state: { trip: tripInfo, profile: profileInfo } })
+                    console.log("Participants updated!");
+                } else {
+                    console.error('Invalid response data');
+                }
+            } catch (error) {
+                console.error('Error updating participants:', error);
             }
         }
+    }
+
+    function undoChangeParticipants() {
+        setChangeParticipants(false);
+    }
+
+    const handleChange = (event) => {
+        setNewParticipant(event.target.value); // Aggiorna lo stato dell'input
+    }
+
+    const handleAddParticipant = () => {
+        if (newParticipant && !invitations.includes(newParticipant)) { // Aggiungi solo se non è già presente
+            setInvitations([...invitations, newParticipant]); // Aggiorna la lista dei partecipanti
+            setNewParticipant(""); // Resetta il campo di input
+        }
+    }
+
+    function removeInvitation(index) {
+        setInvitations(invitations.filter((_, i) => i !== index));
 
     }
-    const handleStartDateChange = (e) => {
-        setNewStartDate(e.target.value); // Aggiorna lo stato quando l'utente modifica la data
-    };
-    const handleEndDateChange = (e) => {
-        setNewEndDate(e.target.value); // Aggiorna lo stato quando l'utente modifica la data
-    };
-    function undoChangeDates() {
-        setChangeDate(false);
+
+    function removeParticipant(index) {
+        setParticipants(participants.filter((_, i) => i !== index));
     }
 
     return (
@@ -70,21 +83,65 @@ export default function ParticipantsSummary() {
                     <img src={participants_icon} alt="participants_icon" />
                     <p>Participants</p>
                 </div>
-                <img id="edit" src={edit_icon} alt="edit_icon" />
+                {!changeParticipants &&
+                    <img id="edit" className="editable" onClick={handleEditParticipants} src={edit_icon} alt="edit_icon" />}
+                {changeParticipants && <UndoConfirm
+                    onConfirm={handleChangeParticipants}
+                    onUndo={undoChangeParticipants} />}
             </div>
             <div className="partecipants-section">
                 <div className="partecipants">
-                    {tripInfo.list_participants.map((participant, index) => (
+                    {/*if you don't want to change the participants */}
+                    {!changeParticipants && tripInfo.list_participants.map((participant, index) => (
                         <div className="partecipant" key={index}>
-                            {<img src={participant_icon} alt="participant_icon" />}
-                            {participant !== profileInfo.nickname && <p>{participant}</p>}
-                            {participant === profileInfo.nickname && <p>you</p>}
+                            <i id="participant-icon" className="bi bi-person-fill h2"></i>
+                            {participant !== profileInfo.nickname ? <p>{participant}</p> : <p>you</p>}
+                        </div>))}
+                    {!changeParticipants && tripInfo.list_invitations.map((participant, index) => (
+                            <div className="partecipant" key={index}>
+                                <i id="invitation-icon" className="bi bi-person-fill-add h2"></i>
+                                {participant !== profileInfo.nickname
+                                    ? <p>{participant.length > 6 ? participant.substring(0, 10) + "..." : participant}</p>
+                                    : <p>you</p>}
+                            </div>))
+                    }
+                    {/* if you want to change the participants */}
+                    {changeParticipants && participants.map((participant, index) => (
+                        <div className="partecipant" key={index}>
+                            {participant !== profileInfo.nickname &&
+                                <div id="delete" onClick={() => removeParticipant(index)}><i
+                                    className="bi bi-trash3 h6"></i></div>}
+                            <i id="participant-icon" className="bi bi-person-fill h2"></i>
+                            {participant !== profileInfo.nickname ? <p>{participant}</p> : <p>you</p>}
+                        </div>
+                    ))}
+                    {/* if you want to change the participants */}
+                    {changeParticipants && invitations.map((participant, index) => (
+                        <div className="partecipant" key={index}>
+                            <div id="delete" onClick={() => removeInvitation(index)}><i
+                                className="bi bi-trash3 h6"></i></div>
+                            <i id="invitation-icon" className="bi bi-person-fill-add h2"></i>
+                            {participant !== profileInfo.nickname
+                                ? <p>{participant.length > 6 ? participant.substring(0, 10) + "..." : participant}</p>
+                                : <p>you</p>}
                         </div>
                     ))}
                 </div>
-                <button>+</button>
+                {changeParticipants && (
+                    <div className="add-part">
+                        <label>
+                            <input
+                                type="text"
+                                name="email"
+                                value={newParticipant}
+                                onChange={handleChange}
+                                placeholder='Enter the email'
+                            />
+                        </label>
+                        <button onClick={handleAddParticipant}>+</button>
+                    </div>
+                )}
             </div>
         </div>
     );
 }
-
