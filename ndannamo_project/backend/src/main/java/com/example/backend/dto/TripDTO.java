@@ -27,6 +27,7 @@ public class TripDTO {
     private long createdBy;
     private String createdByName;
     private List<String> list_participants = new ArrayList<>();
+    private List<String> list_invitations = new ArrayList<>();
     private boolean isCreator = false;
     
     //private List<Expense> expenses = new ArrayList<>();

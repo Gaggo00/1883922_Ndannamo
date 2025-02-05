@@ -91,10 +91,11 @@ class TripService{
         }
     }
     static async updateDates(token, tripId,startDate, endDate) {
+        var value = [startDate,endDate];
         try {
             const response = await axios.put(
                 `${TripService.BASE_URL}/${tripId}/dates`,
-                [startDate, endDate],
+                {value},
                 {
                     headers: {
                         "Content-Type": "application/json",
@@ -108,6 +109,30 @@ class TripService{
         }
     }
 
+    static async updateDestination(token, tripId, newDestination) {
+        var value = newDestination
+        try {
+            console.log("New locations=", value);
+            const response = await axios.put(
+                `${TripService.BASE_URL}/${tripId}/locations`,
+                {value},
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization" : `Bearer ${token}`
+                    }
+                }
+            );
+            return response.data;
+        } catch (error) {
+            throw error; // L'errore sarà gestito all'esterno
+        }
+
+    }
+
+    static async updateParticipants(token, id, participants,invitations) {
+        
+    }
 }
 
 export default TripService;

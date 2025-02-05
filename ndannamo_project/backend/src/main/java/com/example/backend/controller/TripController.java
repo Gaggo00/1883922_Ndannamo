@@ -137,6 +137,25 @@ public class TripController {
                 .body(ex.getMessage());
         }
     }
+    // Aggiungi persone a una trip
+    @PostMapping(value={"/{id}/remove-invitation", "/{id}/remove-invitation/"})
+    public ResponseEntity<?> removeInvitation(@PathVariable Long id, @Valid @RequestBody TripInviteList inviteList) {
+
+        try {
+            // prendi l'utente dal token
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String email = authentication.getName();
+
+            // crea inviti
+            String res = tripService.retireInviteToTrip(email, id, inviteList.getInviteList());
+            return ResponseEntity.ok().body("Invitation revocated, res = " + res);
+        }
+        catch (Exception ex) {
+            return ResponseEntity
+                    .status(HttpStatus.FORBIDDEN)
+                    .body(ex.getMessage());
+        }
+    }
 
 
     // Lascia una trip

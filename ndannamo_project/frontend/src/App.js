@@ -9,7 +9,7 @@ import {BrowserRouter, Route, Routes} from "react-router-dom";
 import {AuthProvider} from "./auth/AuthContext";
 import ProfilePage from "./userPages/ProfilePage";
 import ChangePassword from "./userPages/ChangePassword";
-import TripSummary from "./pages/TripPages/TripSummary";
+import TripSummary from "./pages/TripPages/Summary/TripSummary";
 import TripChat from "./pages/TripPages/TripChat";
 import TripSchedule from "./pages/TripPages/TripSchedule";
 import TripExpenses from "./pages/TripPages/TripExpenses";

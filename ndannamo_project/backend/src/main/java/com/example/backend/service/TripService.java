@@ -167,27 +167,64 @@ public class TripService {
             throw new ResourceNotFoundException("You can't send invitations for this trip");
         }
 
+        int inviteCount = 0;
+
         // Crea inviti
-        for (String invitedEmail: inviteList) {
+        for (String invitedEmail : inviteList) {
             try {
                 User invitedUser = userService.getUserByEmail(invitedEmail);
                 boolean res = invitedUser.addInvitation(trip);
                 userService.saveUser(invitedUser);
-                return "" + res;
 
-                // qua dovremmo mandare per email una notifica tipo "accetta l'invito", ma non lo facciamo
-                // ...
-            }
-            catch (UsernameNotFoundException ex) {
-                // qua dovremmo mandare per email l'invito ad iscriversi al sito, ma non lo facciamo
-                // ...
+                if (res) {
+                    inviteCount++;
+                }
+
+            } catch (UsernameNotFoundException ex) {
+                // Se l'utente non esiste, potremmo inviare un'email di invito a registrarsi
+                // Per ora, ignoriamo questa eccezione e continuiamo con gli altri inviti
                 continue;
             }
         }
-        return "invite list is empty";
+
+        return "Number of invitations sent = " + inviteCount;
     }
 
-    
+    public String retireInviteToTrip(String email, long tripId, List<String> retireInviteList) {
+
+        Trip trip = getTripById(tripId);
+
+        // Controllo che l'utente loggato sia il creatore della trip
+        if (!userIsTheCreator(email, trip)) {
+            throw new ResourceNotFoundException("You can't revoke invitations for this trip");
+        }
+
+        int revokedCount = 0;
+
+        // Rimuovi inviti
+        for (String invitedEmail : retireInviteList) {
+            try {
+                User invitedUser = userService.getUserByEmail(invitedEmail);
+                boolean res = trip.removeInvitation(invitedUser);
+
+                if (res) {
+                    revokedCount++;
+                }
+
+            } catch (UsernameNotFoundException ex) {
+                // Se l'utente non esiste, ignoriamo e passiamo al successivo
+                continue;
+            }
+        }
+        // Salviamo il trip solo se sono stati revocati inviti
+        if (revokedCount > 0) {
+            tripRepository.save(trip);
+        }
+
+        return "Inviti revocati = " + revokedCount;
+    }
+
+
     // Per accettare o rifiutare un invito ad una trip
     public void manageInvitation(String email, long tripId, boolean acceptInvitation) {
 
