@@ -11,8 +11,8 @@ const ConfirmDelete = ({message, onConfirm, onClose }) => {
             <div className="confirmDelete-box">
                 <p><strong>{message}</strong></p>
                 <div className="buttons">
-                    <button id="yes" onClick={onConfirm}>yes</button>
-                    <button id="no" onClick={onClose}>no</button>
+                    <button id="yes" onClick={onConfirm}>Yes</button>
+                    <button id="no" onClick={onClose}>No</button>
                 </div>
             </div>
         </div>

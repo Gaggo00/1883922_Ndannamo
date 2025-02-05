@@ -12,6 +12,7 @@ import EventOpenDatePlace from './EventOpenDatePlace';
 import { DateField } from '../../../components/Fields/Fields';
 
 import '../TripSchedule.css'
+import '../../../styles/Common.css';
 
 export default function EventOpenActivity({activity, latitude, longitude, reloadSchedule, tripStartDate, tripEndDate}) {
 
@@ -420,7 +421,7 @@ export default function EventOpenActivity({activity, latitude, longitude, reload
                     <div className='label'>Attachments</div>
                 </div>
                 {isModalOpen && (
-                    <div className="modal-overlay">
+                    <div className="modal-overlay" onClick={handleOverlayClick}>
                         <div className="trip-box">
                             <ConfirmDelete
                                 message={"Do you really want to delete activity \"" + activity.name + "\"?"}

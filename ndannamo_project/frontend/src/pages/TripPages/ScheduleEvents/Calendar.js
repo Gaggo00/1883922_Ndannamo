@@ -1,6 +1,8 @@
 
 import DateUtilities from "../../../utils/DateUtilities";
 
+import '../../../styles/Common.css';
+
 export default function Calendar({dates, scrollFunction}) {
 
     return (

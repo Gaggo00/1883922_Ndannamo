@@ -221,17 +221,7 @@ button.no-border {
     border: none;
 }
 
-.flex-row {
-    display:flex;
-    flex-direction: row;
-}
-.flex-column {
-    display:flex;
-    flex-direction: column;
-}
-.align-items-center {
-    align-items: center;
-}
+
 
 .edit-info-button i {
     color: #000000;
