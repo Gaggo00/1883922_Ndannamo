@@ -313,9 +313,9 @@ public class TripController {
     // Crea nuova spesa
     @PostMapping(value={"/{id}/expenses", "/{id}/expenses/"})
     public ResponseEntity<?> createExpense(@PathVariable Long id, @Valid @RequestBody ExpenseCreationRequest expenseCreationRequest) {
-
         try {
-            // prendi l'utente dal token
+            // prendi l'utente dal toke
+            System.out.println("Dati ricevuti per creare la spesa: " + expenseCreationRequest);
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String email = authentication.getName();
 
@@ -324,6 +324,7 @@ public class TripController {
             return ResponseEntity.ok().body(res);
         }
         catch (Exception ex) {
+            System.out.println("Error creating expense: " + ex.getMessage());
             return ResponseEntity
                 .status(HttpStatus.FORBIDDEN)
                 .body(ex.getMessage());
@@ -344,6 +345,7 @@ public class TripController {
             return ResponseEntity.ok().body(res);
         }
         catch (Exception ex) {
+            System.out.println("Error creating expense: " + ex.getMessage());
             return ResponseEntity
                 .status(HttpStatus.FORBIDDEN)
                 .body(ex.getMessage());

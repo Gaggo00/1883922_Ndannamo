@@ -25,11 +25,23 @@ class ExpenseService {
 
     
     // Per creare nuove trips
-    static async create(token, title, paidBy, date, amount, splitEven, amountPerUser) {
+    static async create(token, tripId, title, paidByNickname, paidById, date, amount, splitEven, amountPerUser) {
+        let year = date.getFullYear();
+        let month = ("0" + (date.getMonth() + 1)).slice(-2); // Aggiungi lo zero davanti al mese se è inferiore a 10
+        let day = ("0" + date.getDate()).slice(-2);
+        let formattedDate = `${year}-${month}-${day}`;
         try {
             const response = await axios.post(
-                `${ExpenseService.BASE_URL}`,
-                { title, title, paidBy, date, amount, splitEven, amountPerUser },
+                `${ExpenseService.BASE_URL}/${tripId}/expenses`,
+                {
+                    title: title,
+                    paidByNickname: paidByNickname,
+                    paidById: paidById,
+                    date: formattedDate,
+                    amount: amount,
+                    splitEven: splitEven,
+                    amountPerUser: amountPerUser,
+                },
                 {
                     headers: {
                         "Content-Type": "application/json",

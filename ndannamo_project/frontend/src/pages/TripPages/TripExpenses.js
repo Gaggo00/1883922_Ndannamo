@@ -2,7 +2,6 @@ import React, {useEffect, useState, useRef} from 'react';
 import {useLocation, useNavigate} from 'react-router-dom';
 
 import ExpenseService from '../../services/ExpenseService';
-import UserService from '../../services/UserService';
 import TCForm from './Tricount/TriForm';
 import TCSales from './Tricount/TriSales';
 import { TCRefund } from "./Tricount/TriRefund";
@@ -26,6 +25,7 @@ class ExpenseDto {
 }
 
 export default function TripExpenses() {
+
     const location = useLocation();
     const tripInfo = location.state?.trip; // Recupera il tripInfo dallo stato
     const userId = location.state?.profile.id;
@@ -62,9 +62,10 @@ export default function TripExpenses() {
             }
 
             // Chiamata al servizio per ottenere le informazioni del profilo
-            const response = await ExpenseService.getExpenses(token, tripInfo.id);
-
+            //const response = await ExpenseService.getExpenses(token, tripInfo.id);
+            const response = undefined
             if (response) {
+                console.log("E'arrivata una risposta");
                 setData(response);
             } else {
                 console.error('Invalid response data');
@@ -146,10 +147,23 @@ export default function TripExpenses() {
         setData(newData);
     }
 
+    const saveExpense = async (newExpense) => {
+        const token = localStorage.getItem('token');
+        const {title, paidByNickname, paidBy, date, amount, amountPerUser} = newExpense;
+        try {
+            const response = await ExpenseService.create(token, tripInfo.id, title, paidByNickname, paidBy, date, amount, true, amountPerUser);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     function submit(newExpense, expenseId = -1) {
-        console.log("Expense id: ", expenseId);
-        if (expenseId == -1)
+        if (expenseId == -1) {
+            console.log("La new Expense é: ", newExpense);
             createNewExpense(newExpense);
+            console.log("Ragi ci siete?")
+            saveExpense(newExpense);
+        }
         else
         {
             const oldExpenseIndex = data.findIndex((expense) => expense.id == expenseId);
