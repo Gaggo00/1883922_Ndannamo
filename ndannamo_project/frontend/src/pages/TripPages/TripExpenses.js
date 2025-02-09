@@ -3,7 +3,6 @@ import {useLocation, useNavigate} from 'react-router-dom';
 
 import ExpenseService from '../../services/ExpenseService';
 import UserService from '../../services/UserService';
-import TripService from '../../services/TripService';
 import TCForm from './Tricount/TriForm';
 import TCSales from './Tricount/TriSales';
 import { TCRefund } from "./Tricount/TriRefund";
@@ -29,27 +28,23 @@ class ExpenseDto {
 export default function TripExpenses() {
     const location = useLocation();
     const tripInfo = location.state?.trip; // Recupera il tripInfo dallo stato
-    console.log(tripInfo.list_participants);
-    const [userId, setUserId] = useState(-1);
+    const userId = location.state?.profile.id;
+    const users = tripInfo.list_participants_id.map(u => [
+        parseInt(u[0]),  // Trasforma il primo elemento in intero
+        ...u.slice(1)    // Mantieni gli altri elementi invariati
+      ]);
 
     const [data, setData] = useState([]);
 
     useEffect(() => {
         retrieveTricounts();
-        getUserId();
-        retrieveTrip();
     }, []);
 
     const [activeText, setActiveText] = useState("list");
     const [formVisibility, setFormVisibility] = useState(true);
     const [formData, setFormData] = useState({
-        title: "",
-        amount: 0,
-        date: "",
-        users: [],
-        paidBy: "",
-        splitValue: 0,
-        split: [],
+        expenseData: new ExpenseDto,
+        users: users,
         filled: false,
         status: 0,
         onSubmit: submit,
@@ -58,25 +53,6 @@ export default function TripExpenses() {
     const itemsRefs = useRef([]);
     const [selected, setSelected] = useState(-1);
     const navigate = useNavigate();
-
-    const getUserId = async () => {
-        try {
-            const response = await UserService.getProfile(localStorage.getItem('token'))
-            setUserId(response.id);
-        } catch (error) {
-            console.error('Error fetching user information:', error);
-        }
-
-    }
-
-    const retrieveTrip = async () => {
-        try {
-            const trip = await TripService.getTrip(localStorage.getItem('token'), location.state?.trip.id)
-            console.log(trip);
-        } catch (error) {
-            console.error('Error fetching trip information:', error);
-        }
-    }
 
     const retrieveTricounts = async () => {
         try {
@@ -103,7 +79,7 @@ export default function TripExpenses() {
         if (id == 'sales') {
             setFormData({
                 expenseData: new ExpenseDto,
-                users: tripInfo.users,
+                users: users,
                 filled: false,
                 status: 0,
                 startingData: tripInfo.startingData,
@@ -119,7 +95,7 @@ export default function TripExpenses() {
     const handleTricountSelection = (event, itemData) => {
         setFormData({
             expenseData: itemData,
-            users: tripInfo.users,
+            users: users,
             filled: true,
             status: 1,
             startingData: tripInfo.startingData,
@@ -139,7 +115,7 @@ export default function TripExpenses() {
         if (formData.status == 1 || !formVisibility) {
             setFormData({
                 expenseData: new ExpenseDto,
-                users: tripInfo.users,
+                users: users,
                 filled: false,
                 status: 0,
                 startingData: tripInfo.startingData,
@@ -222,7 +198,7 @@ export default function TripExpenses() {
                         <TCRefund
                             user={userId}
                             expenses={data}
-                            users={tripInfo.users}
+                            users={users}
                         />
                     } 
                 </div>
