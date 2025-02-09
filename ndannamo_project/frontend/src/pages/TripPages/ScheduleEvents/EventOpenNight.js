@@ -18,6 +18,8 @@ export default function EventOpenNight({night, latitude, longitude, reloadSchedu
     tripStartDate, tripEndDate}) {
 
 
+    const attachments = [];
+
     // Se non c'e' una accomodation per questa notte, mostra il pulsante per crearne una
     if (night.overnightStay == null) {
 
@@ -66,6 +68,14 @@ export default function EventOpenNight({night, latitude, longitude, reloadSchedu
             checkOutTime = "Until " + overnightStay.endCheckOutTime
         }
 
+
+        function handleFileChange() {
+            
+        }
+
+        function handleUpload() {
+
+        }
 
         return (
             <div id="event-open">

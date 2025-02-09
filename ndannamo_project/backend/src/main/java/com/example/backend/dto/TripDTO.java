@@ -26,6 +26,7 @@ public class TripDTO {
     private LocalDate endDate;
     private long createdBy;
     private List<String> list_participants = new ArrayList<>();
+    private List<String[]> list_participants_id = new ArrayList<>();
     private boolean isCreator = false;
     
     //private List<Expense> expenses = new ArrayList<>();

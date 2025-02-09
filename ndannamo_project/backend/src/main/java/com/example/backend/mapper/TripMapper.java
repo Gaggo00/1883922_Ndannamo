@@ -17,6 +17,7 @@ public interface TripMapper {
     // Map Trip entity to TripDTO (mappa i partecipanti senza cicli)
     @Mapping(target = "createdBy", source = "created_by.id") // Mappa solo l'ID del creatore
     @Mapping(target = "list_participants", source = "participants", qualifiedByName = "userListToStringList")
+    @Mapping(target = "list_participants_id", source = "participants", qualifiedByName = "userListToStringIDList")
     TripDTO toDTO(Trip trip);
 
     // Map TripDTO to Trip entity (ignora i dettagli complessi)
@@ -37,6 +38,14 @@ public interface TripMapper {
             .map(user -> user.getNickname())
             .collect(Collectors.toList());
 
+        return userIds;
+    }
+    @Named("userListToStringIDList") 
+    public static List<String[]> userListToStringIDList(List<User> users) { 
+        List<String[]> userIds = users.stream()
+            .map(user -> new String[]{String.valueOf(user.getId()), user.getNickname()})
+            .collect(Collectors.toList());
+        
         return userIds;
     }
 }

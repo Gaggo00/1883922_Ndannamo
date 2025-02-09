@@ -17,6 +17,7 @@ export function DateField({
     validate=undefined,
     minDate=null,
     maxDate=null,
+    dateFormat="dd/MM/YYYY",
     ...rest
 }) {
     const [changed, setIsChanged] = useState(false);
@@ -58,12 +59,20 @@ export function DateField({
     // serve perche' quando si seleziona una data per la prima volta, per problemi di time zone, imposta il giorno
     // prima rispetto al giorno selezionato
     const fix_UTC_problem = (date) => {
-        const dateString = date.toLocaleString('default', {
+        console.log(date)
+        const dateString = date.toLocaleString('it-IT', {
             year: "numeric",
             month: "numeric",
             day: "numeric"
         });
+        console.log(dateString)
         const dateArray = dateString.split("/");
+        console.log(dateArray);
+        /***if (dateFormat="dd/MM/YYYY") {
+            const day = dateArray[0];
+            const month = dateArray[1];
+            const year = dateArray[2];
+        }***/
         const day = dateArray[0];
         const month = dateArray[1];
         const year = dateArray[2];
