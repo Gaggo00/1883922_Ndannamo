@@ -11,9 +11,9 @@ services:
       - '5432:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./database:/docker-entrypoint-initdb.d
-      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
-      - ./database/cities.csv:/docker-entrypoint-initdb.d/cities.csv
+      #- ./database:/docker-entrypoint-initdb.d
+      #- ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+      #- ./database/cities.csv:/docker-entrypoint-initdb.d/cities.csv
     networks:
       - spring_net
     healthcheck:
@@ -27,6 +27,7 @@ services:
     container_name: backend
     ports:
       - "8080:8080"
+      - "5005:5005"
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/mydatabase
       SPRING_DATASOURCE_USERNAME: myuser

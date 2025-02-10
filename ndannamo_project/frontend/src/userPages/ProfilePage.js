@@ -72,7 +72,7 @@ function ProfilePage() {
     }
     const saveNewNickname = () => {
         // se il nickname non e' cambiato, non fare nulla
-        if (profileInfo.nickname == newNickname) {
+        if (profileInfo.nickname === newNickname) {
             setEditingNickname(false);
             return;
         }

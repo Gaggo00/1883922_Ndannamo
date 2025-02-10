@@ -6,6 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
+import com.example.backend.dto.AttachmentDTO;
+import com.example.backend.model.*;
+import com.example.backend.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,12 +20,7 @@ import com.example.backend.exception.ResourceNotFoundException;
 import com.example.backend.mapper.ActivityMapperImpl;
 import com.example.backend.mapper.NightMapperImpl;
 import com.example.backend.mapper.TravelMapperImpl;
-import com.example.backend.model.Activity;
-import com.example.backend.model.Event;
-import com.example.backend.model.Night;
-import com.example.backend.model.OvernightStay;
-import com.example.backend.model.Travel;
-import com.example.backend.model.Trip;
+import com.example.backend.mapper.AttachmentMapperImpl;
 import com.example.backend.model.Event.EventType;
 import com.example.backend.repositories.ActivityRepository;
 import com.example.backend.repositories.NightRepository;
@@ -37,23 +35,30 @@ public class EventService {
     private final NightRepository nightRepository;
     private final ActivityRepository activityRepository;
     private final TravelRepository travelRepository;
+    private final EventRepository eventRepository;
+    private final AttachmentRepository attachmentRepository;
     private final OvernightStayRepository overnightStayRepository;
     private final NightMapperImpl nightMapper;
     private final ActivityMapperImpl activityMapper;
     private final TravelMapperImpl travelMapper;
+    private final AttachmentMapperImpl attachmentMapper;
 
 
     @Autowired
-    public EventService(NightRepository nightRepository, ActivityRepository activityRepository, TravelRepository travelRepository,
-                    OvernightStayRepository overnightStayRepository, NightMapperImpl nightMapper, ActivityMapperImpl activityMapper,
-                    TravelMapperImpl travelMapper) {
+    public EventService(NightRepository nightRepository, ActivityRepository activityRepository, TravelRepository travelRepository, AttachmentRepository attachmentRepository,
+                        NightMapperImpl nightMapper, ActivityMapperImpl activityMapper, TravelMapperImpl travelMapper,
+                        EventRepository eventRepository, AttachmentMapperImpl attachmentMapper, OvernightStayRepository overnightStayRepository) {
         this.nightRepository = nightRepository;
         this.activityRepository = activityRepository;
         this.travelRepository = travelRepository;
         this.overnightStayRepository = overnightStayRepository;
+        this.attachmentRepository = attachmentRepository;
         this.nightMapper = nightMapper;
         this.activityMapper = activityMapper;
         this.travelMapper = travelMapper;
+        this.eventRepository = eventRepository;
+        this.attachmentMapper = attachmentMapper;
+
     }
 
 
@@ -78,6 +83,12 @@ public class EventService {
     public Night saveNight(Night night) {
         return nightRepository.save(night);
     }
+    public List<AttachmentDTO> getAttachments(long id) {
+        return attachmentRepository.findByEventId(id).stream().map(this::attachmentToAttachmentDTO).toList();
+    }
+
+
+
 
     /*************** DTO ***************/
 
@@ -89,6 +100,9 @@ public class EventService {
     }
     public EventDTO travelToEventDTO(Travel travel) {
         return travelMapper.toDTO(travel);
+    }
+    public AttachmentDTO attachmentToAttachmentDTO(Attachment attachment) {
+        return attachmentMapper.toDTO(attachment);
     }
 
 
@@ -529,5 +543,23 @@ public class EventService {
         overnightStay.setTravelDays(nights);
 
         return overnightStayRepository.save(overnightStay);
+    }
+
+
+    public void addAttachmentToEvent(Long eventId, Long attachmentId) {
+        Event event = eventRepository.findById(eventId).orElseThrow(()-> new ResourceNotFoundException("Event not found!"));
+        Attachment attachment = attachmentRepository.findById(attachmentId).orElseThrow(()-> new ResourceNotFoundException("Attachment not found!"));
+        event.addAttachment(attachment);
+    }
+
+    public void addAttachmentToEvent(Long eventId, List<Long> attachmentIds) {
+        Event event = eventRepository.findById(eventId).orElseThrow(()-> new ResourceNotFoundException("Event not found!"));
+        List<Attachment> attachments = attachmentRepository.findAllById(attachmentIds);
+        if (attachments.isEmpty()){
+            throw new ResourceNotFoundException("no Attachment found!");
+        }
+        event.addAttachments(attachments);
+        eventRepository.save(event);
+        attachmentRepository.saveAll(attachments);
     }
 }

@@ -13,6 +13,7 @@ import java.time.LocalTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name="travels")
+@DiscriminatorValue("TRAVEL")
 public class Travel extends Event {
 
     // Per EventDTO
@@ -20,6 +21,8 @@ public class Travel extends Event {
 
     private String address;         // tipo il nome dell'aeroporto, o della stazione, ecc
     private String destination;
+
+    private LocalDate departureDate;
 
     // La data di partenza gia' ce l'ha perché la prende dalla classe Event
     private LocalDate arrivalDate;      // se non e' un viaggio tra due giorni diversi, sara' uguale alla data di partenza

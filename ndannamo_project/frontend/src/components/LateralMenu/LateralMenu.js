@@ -26,11 +26,11 @@ function LateralMenu({trips_list}) {
 
     trips_list.map((trip) => {
         var status = trip.getStatus()
-        if (status == 0)
+        if (status === 0)
             upcoming_list.push(trip)
-        else if (status == 1)
+        else if (status === 1)
             current_list.push(trip)
-        else if (status == 2)
+        else if (status === 2)
             past_list.push(trip)
     })
 

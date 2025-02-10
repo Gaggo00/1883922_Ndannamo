@@ -1,10 +1,7 @@
 package com.example.backend.model;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
 
@@ -13,6 +10,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name="nights")
+@DiscriminatorValue("NIGHT")
 public class Night extends Event {
 
     // Per EventDTO

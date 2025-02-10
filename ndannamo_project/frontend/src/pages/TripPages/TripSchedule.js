@@ -198,7 +198,7 @@ export default function TripSchedule() {
                 const night = new Night(event.id, event.tripId, event.place, event.date, event.overnightStay);     // DA SISTEMARE overnightStay forse
                 days[index].night = night;
                 days[index].mainPlace = night.place;
-                if (event.id == eventToSelectId) {
+                if (event.id === eventToSelectId) {
                     changeSelectedEvent(night);
                 }
             }

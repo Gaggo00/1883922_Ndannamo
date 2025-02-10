@@ -15,6 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 public class ExpenseCreationRequest {
     private String title;
+    private String paidByNickname;
     private Long paidById;
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;

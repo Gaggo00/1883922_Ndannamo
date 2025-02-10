@@ -2,8 +2,10 @@ import React, {useEffect, useState} from 'react';
 
 import Map from './Map';
 import DateUtilities from '../../../utils/DateUtilities';
+import {useNavigate} from "react-router-dom";
 
 import ScheduleService from '../../../services/ScheduleService';
+import AttachmentService from "../../../services/AttachmentService";
 
 import EventOpenDatePlace from './EventOpenDatePlace';
 
@@ -11,9 +13,13 @@ import '../TripSchedule.css';
 import '../../../styles/Common.css';
 
 
+
+
 export default function EventOpenNight({night, latitude, longitude, reloadSchedule, openCreateAccomodationModal, openEditAccomodationModal,
     tripStartDate, tripEndDate}) {
 
+
+    const attachments = [];
 
     // Se non c'e' una accomodation per questa notte, mostra il pulsante per crearne una
     if (night.overnightStay == null) {
@@ -32,7 +38,7 @@ export default function EventOpenNight({night, latitude, longitude, reloadSchedu
             </div>
         );
     }
-    
+
 
     // Se c'e' un'accomodation, mostra le info e il pulsante per modificarla
     else {
@@ -64,6 +70,14 @@ export default function EventOpenNight({night, latitude, longitude, reloadSchedu
         }
 
 
+        function handleFileChange() {
+            
+        }
+
+        function handleUpload() {
+
+        }
+
         return (
             <div id="event-open">
                 <div className='top-row'>
@@ -79,11 +93,11 @@ export default function EventOpenNight({night, latitude, longitude, reloadSchedu
                         Stay at "{overnightStay.name}"
                     </div>
                 </div>
-                
+
                 <div className="map-banner">
                     <Map latitude={latitude} longitude={longitude} message={"Accomodation"}/>
                 </div>
-                
+
                 <div className='event-info'>
                     <div className='event-info-top-row'>
                         <div className='row-element'>
@@ -111,8 +125,26 @@ export default function EventOpenNight({night, latitude, longitude, reloadSchedu
                             </div>
                         </div>
                     </div>
-                    <div className='attachments'>
-                        <div className='label'>Attachments</div>
+                    <div className="attachments">
+                        <div className="label">Attachments</div>
+                        {/* Pulsante per selezionare e caricare file */}
+                        <input type="file" onChange={handleFileChange} />
+                        <button onClick={handleUpload}>Upload Attachment</button>
+                        <div className="value">
+                            {attachments.length > 0 ? (
+                                <ul>
+                                    {attachments.map((attachment) => (
+                                        <li key={attachment.id}>
+                                            <a href={attachment.url} target="_blank" rel="noopener noreferrer">
+                                                {attachment.name}
+                                            </a>
+                                        </li>
+                                    ))}
+                                </ul>
+                            ) : (
+                                <p>No attachments available</p>
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>

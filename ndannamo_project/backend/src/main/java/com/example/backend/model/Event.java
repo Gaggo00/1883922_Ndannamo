@@ -3,17 +3,20 @@ package com.example.backend.model;
 import java.time.LocalDate;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import java.util.Collection;
+import java.util.Set;
 
 
 @Entity
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS) 
+@Inheritance(strategy = InheritanceType.JOINED)
+@DiscriminatorColumn(name = "event_type")
 @Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-//@MappedSuperclass
 public abstract class Event {
 
     @Id
@@ -31,8 +34,17 @@ public abstract class Event {
     
     private LocalDate date;
 
-//    @OneToMany(mappedBy = "relatedEvent", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private Set<Attachments> attachments;
+    @OneToMany(mappedBy = "event")
+    private Set<Attachment> attachments;
+
+    public void addAttachment(Attachment attachment) {
+        this.attachments.add(attachment);
+    }
+
+    public void addAttachments(Collection<Attachment> attachments) {
+        attachments.forEach(attachment -> attachment.setEvent(this));
+        this.attachments.addAll(attachments);
+    }
 
 
 }

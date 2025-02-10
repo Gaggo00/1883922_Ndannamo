@@ -156,7 +156,8 @@ export const TCRefund = ({user, expenses, users=[]}) => {
             .map(([key, value]) => [Number(key), value])
             .sort(([, valueA], [, valueB]) => valueB - valueA);
         sorted.map((value) => {
-            const newBalance = {amount: value[1], id: value[0], nickname: users[value[0]][1]};
+            const indx = users.findIndex(user => user[0] === value[0]);
+            const newBalance = {amount: value[1], id: value[0], nickname: users[indx][1]};
             balances.push(newBalance);
         })
 

@@ -68,7 +68,7 @@ export default function EventOpenActivity({activity, latitude, longitude, reload
     const saveNewName = async () => {
   
         // Se il titolo e' una stringa vuota o e' uguale a prima, non fare nulla
-        if (newName.trim() == "" || activity.name == newName) {
+        if (newName.trim() === "" || activity.name === newName) {
             setEditingName(false);
             return;
         }
@@ -200,7 +200,7 @@ export default function EventOpenActivity({activity, latitude, longitude, reload
 
     const saveNewInfo = async () => {
         // se non è cambiato niente, non fare nulla
-        if (activity.info == newInfo) {
+        if (activity.info === newInfo) {
             setEditingInfo(false);
             return;
         }
