@@ -224,6 +224,40 @@ public class TripService {
         return "Inviti revocati = " + revokedCount;
     }
 
+    public String removeParticipants(String email, long tripId, List<String> removeList) {
+
+        Trip trip = getTripById(tripId);
+
+        // Controllo che l'utente loggato sia il creatore della trip
+        if (!userIsTheCreator(email, trip)) {
+            throw new ResourceNotFoundException("You can't revoke invitations for this trip");
+        }
+
+        int eliminationCount = 0;
+
+        // Rimuovi inviti
+        for (String participantEmail : removeList) {
+            try {
+                User participant = userService.getUserByEmail(participantEmail);
+                boolean res = trip.removeParticipant(participant);
+
+                if (res) {
+                    eliminationCount++;
+                }
+
+            } catch (UsernameNotFoundException ex) {
+                // Se l'utente non esiste, ignoriamo e passiamo al successivo
+                continue;
+            }
+        }
+        // Salviamo il trip solo se sono stati revocati inviti
+        if (eliminationCount > 0) {
+            tripRepository.save(trip);
+        }
+
+        return "Inviti revocati = " + eliminationCount;
+    }
+
 
     // Per accettare o rifiutare un invito ad una trip
     public void manageInvitation(String email, long tripId, boolean acceptInvitation) {

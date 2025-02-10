@@ -130,9 +130,60 @@ class TripService{
 
     }
 
-    static async updateParticipants(token, id, participants,invitations) {
-        
+    static async updateParticipants(token, tripId, new_participants, new_invitations, old_participants, old_invitations) {
+        let participants_to_delete = old_participants.filter(element => !new_participants.includes(element));
+        let invitations_to_send = new_invitations.filter(element => !old_invitations.includes(element));
+        let invitations_to_revoke = old_invitations.filter(element => !new_invitations.includes(element));
+
+        try {
+            const requests = [];
+
+            if (invitations_to_revoke.length > 0) {
+                requests.push(
+                    axios.post(
+                        `${TripService.BASE_URL}/${tripId}/remove-invitations`,
+                        { inviteList: invitations_to_revoke },
+                        { headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` } }
+                    )
+                );
+            }
+
+            if (participants_to_delete.length > 0) {
+                requests.push(
+                    axios.post(
+                        `${TripService.BASE_URL}/${tripId}/remove-participants`,
+                        { inviteList: participants_to_delete },
+                        { headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` } }
+                    )
+                );
+            }
+
+            if (invitations_to_send.length > 0) {
+                requests.push(
+                    axios.post(
+                        `${TripService.BASE_URL}/${tripId}/invite`,
+                        { inviteList: invitations_to_send },
+                        { headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` } }
+                    )
+                );
+            }
+
+            if (requests.length === 0) {
+                return { message: "No changes to be made." };
+            }
+
+            const responses = await Promise.all(requests);
+
+            return {
+                removedInvitations: responses[0]?.data || [],
+                removedParticipants: responses[1]?.data || [],
+                sentInvitations: responses[2]?.data || []
+            };
+        } catch (error) {
+            throw error; // L'errore sarà gestito all'esterno
+        }
     }
+
 }
 
 export default TripService;

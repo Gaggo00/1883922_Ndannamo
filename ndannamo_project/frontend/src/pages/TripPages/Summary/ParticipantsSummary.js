@@ -28,7 +28,7 @@ export default function ParticipantsSummary() {
     }
 
     const handleChangeParticipants = async () => {
-        if (participants === tripInfo.list_invitations || invitations === tripInfo.list_invitations) {
+        if (participants === tripInfo.list_participants && invitations === tripInfo.list_invitations) {
             setChangeParticipants(false);
         } else {
             try {
@@ -37,10 +37,12 @@ export default function ParticipantsSummary() {
                     navigate("/login");
                 }
 
-                const response = await TripService.updateParticipants(token, tripInfo.id, participants,invitations);
+                const response = await TripService.updateParticipants(token, tripInfo.id, participants,invitations,tripInfo.list_participants, tripInfo.list_invitations);
 
                 if (response) {
-                    setChangeParticipants(false)
+                    setChangeParticipants(false);
+                    tripInfo.list_invitations = invitations;
+                    tripInfo.list_participants = participants;
                     navigate(`/trips/${tripInfo.id}/summary`, { state: { trip: tripInfo, profile: profileInfo } })
                     console.log("Participants updated!");
                 } else {

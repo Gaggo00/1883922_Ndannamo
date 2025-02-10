@@ -59,6 +59,14 @@ public class Trip {
         return false;
     }
 
+    public boolean removeParticipant(User user) {
+        if (this.participants.contains(user)) {
+            this.participants.remove(user);
+            return true;
+        }
+        return false;
+    }
+
     public boolean addInvitation(User user) {
         if (!this.invitations.contains(user)) {
             this.invitations.add(user);

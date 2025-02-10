@@ -138,7 +138,7 @@ public class TripController {
         }
     }
     // Aggiungi persone a una trip
-    @PostMapping(value={"/{id}/remove-invitation", "/{id}/remove-invitation/"})
+    @PostMapping(value={"/{id}/remove-invitations", "/{id}/remove-invitations/"})
     public ResponseEntity<?> removeInvitation(@PathVariable Long id, @Valid @RequestBody TripInviteList inviteList) {
 
         try {
@@ -149,6 +149,25 @@ public class TripController {
             // crea inviti
             String res = tripService.retireInviteToTrip(email, id, inviteList.getInviteList());
             return ResponseEntity.ok().body("Invitation revocated, res = " + res);
+        }
+        catch (Exception ex) {
+            return ResponseEntity
+                    .status(HttpStatus.FORBIDDEN)
+                    .body(ex.getMessage());
+        }
+    }
+
+    @PostMapping(value={"/{id}/remove-participants", "/{id}/remove-participants/"})
+    public ResponseEntity<?> removeParticipants(@PathVariable Long id, @Valid @RequestBody TripInviteList inviteList) {
+
+        try {
+            // prendi l'utente dal token
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String email = authentication.getName();
+
+            // crea inviti
+            String res = tripService.removeParticipants(email, id, inviteList.getInviteList());
+            return ResponseEntity.ok().body("Participants removed, res = " + res);
         }
         catch (Exception ex) {
             return ResponseEntity
