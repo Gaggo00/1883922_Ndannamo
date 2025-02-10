@@ -11,16 +11,18 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = UserMapperSimple.class)
 public interface TripMapper {
 
     // Map Trip entity to TripDTO (mappa i partecipanti senza cicli)
     @Mapping(target = "createdBy", source = "created_by.id") // Mappa solo l'ID del creatore
     @Mapping(target = "createdByName", source = "created_by.nickname") // Mappa solo l'ID del creatore
-    @Mapping(target = "list_participants", source = "participants", qualifiedByName = "userListToStringList")
+    //@Mapping(target = "list_participants", source = "participants", qualifiedByName = "userListToStringList")
+    @Mapping(target = "list_participants", source = "participants")
     @Mapping(target = "creator", ignore = true)
-    @Mapping(target = "list_invitations", source ="invitations", qualifiedByName="userListToStringList")
-    @Mapping(target = "list_participants_id", source = "participants", qualifiedByName = "userListToStringIDList")
+    //@Mapping(target = "list_invitations", source ="invitations", qualifiedByName="userListToStringList")
+    @Mapping(target = "list_invitations", source ="invitations")
+    //@Mapping(target = "list_participants_id", source = "participants", qualifiedByName = "userListToStringIDList")
     TripDTO toDTO(Trip trip);
 
     // Map TripDTO to Trip entity (ignora i dettagli complessi)
