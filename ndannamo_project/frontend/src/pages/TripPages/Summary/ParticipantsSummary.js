@@ -97,24 +97,24 @@ export default function ParticipantsSummary() {
                     {!changeParticipants && tripInfo.list_participants.map((participant, index) => (
                         <div className="partecipant" key={index}>
                             <i id="participant-icon" className="bi bi-person-fill h2"></i>
-                            {participant !== profileInfo.nickname ? <p>{participant}</p> : <p>you</p>}
+                            {participant.nickname !== profileInfo.nickname ? <p>{participant.nickname}</p> : <p>you</p>}
                         </div>))}
                     {!changeParticipants && tripInfo.list_invitations.map((participant, index) => (
                             <div className="partecipant" key={index}>
                                 <i id="invitation-icon" className="bi bi-person-fill-add h2"></i>
-                                {participant !== profileInfo.nickname
-                                    ? <p>{participant.length > 6 ? participant.substring(0, 10) + "..." : participant}</p>
+                                {participant.nickname !== profileInfo.nickname
+                                    ? <p>{participant.length > 6 ? participant.substring(0, 10) + "..." : participant.nickname}</p>
                                     : <p>you</p>}
                             </div>))
                     }
                     {/* if you want to change the participants */}
                     {changeParticipants && participants.map((participant, index) => (
                         <div className="partecipant" key={index}>
-                            {participant !== profileInfo.nickname &&
+                            {participant.nickname !== profileInfo.nickname &&
                                 <div id="delete" onClick={() => removeParticipant(index)}><i
                                     className="bi bi-trash3 h6"></i></div>}
                             <i id="participant-icon" className="bi bi-person-fill h2"></i>
-                            {participant !== profileInfo.nickname ? <p>{participant}</p> : <p>you</p>}
+                            {participant.nickname !== profileInfo.nickname ? <p>{participant.nickname}</p> : <p>you</p>}
                         </div>
                     ))}
                     {/* if you want to change the participants */}
@@ -123,8 +123,8 @@ export default function ParticipantsSummary() {
                             <div id="delete" onClick={() => removeInvitation(index)}><i
                                 className="bi bi-trash3 h6"></i></div>
                             <i id="invitation-icon" className="bi bi-person-fill-add h2"></i>
-                            {participant !== profileInfo.nickname
-                                ? <p>{participant.length > 6 ? participant.substring(0, 10) + "..." : participant}</p>
+                            {participant.nickname !== profileInfo.nickname
+                                ? <p>{participant.length > 6 ? participant.substring(0, 10) + "..." : participant.nickname}</p>
                                 : <p>you</p>}
                         </div>
                     ))}

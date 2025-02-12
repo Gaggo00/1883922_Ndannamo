@@ -134,7 +134,10 @@ class TripService{
         let participants_to_delete = old_participants.filter(element => !new_participants.includes(element));
         let invitations_to_send = new_invitations.filter(element => !old_invitations.includes(element));
         let invitations_to_revoke = old_invitations.filter(element => !new_invitations.includes(element));
-
+        participants_to_delete = participants_to_delete.map(p => p.email);
+        invitations_to_revoke = invitations_to_revoke.map(p => p.email);
+        invitations_to_send = invitations_to_send.map(p => p.email);
+        
         try {
             const requests = [];
 
