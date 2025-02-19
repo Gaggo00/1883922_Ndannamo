@@ -10,11 +10,10 @@ import java.util.Set;
 
 
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
-@DiscriminatorColumn(name = "event_type")
+//@Inheritance(strategy = InheritanceType.JOINED)
+//@DiscriminatorColumn(name = "event_type")
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS) // ALE TI PREGO NON CAMBIARLO DI NUOVO CHE SE NO SMETTE DI FUNZIONARE DI NUOVO ;-; L'HO GIA' CAMBIATO 2 VOLTE
 @Data
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public abstract class Event {
