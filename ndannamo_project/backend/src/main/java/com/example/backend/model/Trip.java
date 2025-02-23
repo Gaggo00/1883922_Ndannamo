@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Set;
 
 @Entity
 @Data
@@ -18,7 +19,7 @@ public class Trip {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     private String title;
-    private List<String> locations;
+    private List<String> locations; // FIXME: list of strings is not a real type in database
     private LocalDate creationDate;
     private LocalDate startDate;
     private LocalDate endDate;
@@ -50,6 +51,9 @@ public class Trip {
     // spese della trip
     @OneToMany
     private List<Expense> expenses = new ArrayList<>();
+
+    @OneToMany(mappedBy = "trip")
+    private Set<Attachment> attachments;
 
     public boolean removeInvitation(User user) {
         if (this.invitations.contains(user)) {

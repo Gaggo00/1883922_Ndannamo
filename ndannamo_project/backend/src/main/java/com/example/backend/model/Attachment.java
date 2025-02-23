@@ -27,4 +27,8 @@ public class Attachment {
     @JoinColumn(name="event_id", foreignKey = @ForeignKey(name = "fk_attachment_event"))
     private Event event;
 
+    @ManyToOne
+    @JoinColumn(name="trip_id", foreignKey = @ForeignKey(name = "fk_attachment_trip"))
+    private Trip trip;
+
 }

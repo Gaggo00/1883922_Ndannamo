@@ -1,8 +1,9 @@
 package com.example.backend.controller;
 
+
+import com.example.backend.dto.AttachmentDTO;
 import com.example.backend.model.Attachment;
 import com.example.backend.service.AttachmentService;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,11 +38,10 @@ public class AttachmentController {
     }
 
     @GetMapping(value={"/{id}", "/{id}/"})
-    public ResponseEntity<?> downloadFile(@PathVariable Long id) {
+    public ResponseEntity<?> getAttachment(@PathVariable Long id) {
         try {
-            Attachment file = attachmentService.getAttachment(id);
+            AttachmentDTO file = attachmentService.getAttachmentDataDTObyId(id);
             return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFileName() + "\"")
                     .body(file);
         }
         catch (Exception ex) {
@@ -50,6 +50,19 @@ public class AttachmentController {
                     .body(ex.getMessage());
         }
 
+    }
+
+    @DeleteMapping(value={"/{id}", "/{id}/"})
+    public ResponseEntity<?> deleteAttachment(@PathVariable Long id) {
+        try {
+            attachmentService.deleteAttachment(id);
+            return ResponseEntity.ok().build();
+        }
+        catch (Exception ex) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(ex.getMessage());
+        }
     }
 
 

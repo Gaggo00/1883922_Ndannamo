@@ -2,20 +2,16 @@ package com.example.backend.service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
-import com.example.backend.dto.AttachmentDTO;
+import com.example.backend.dto.*;
 import com.example.backend.model.*;
 import com.example.backend.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.backend.dto.ActivityCreationRequest;
-import com.example.backend.dto.EventDTO;
-import com.example.backend.dto.OvernightStayDTO;
-import com.example.backend.dto.TravelCreationRequest;
 import com.example.backend.exception.ResourceNotFoundException;
 import com.example.backend.mapper.ActivityMapperImpl;
 import com.example.backend.mapper.NightMapperImpl;
@@ -26,7 +22,6 @@ import com.example.backend.repositories.ActivityRepository;
 import com.example.backend.repositories.NightRepository;
 import com.example.backend.repositories.OvernightStayRepository;
 import com.example.backend.repositories.TravelRepository;
-import com.example.backend.utils.OvernightstayValidation;
 
 
 @Service
@@ -83,8 +78,8 @@ public class EventService {
     public Night saveNight(Night night) {
         return nightRepository.save(night);
     }
-    public List<AttachmentDTO> getAttachments(long id) {
-        return attachmentRepository.findByEventId(id).stream().map(this::attachmentToAttachmentDTO).toList();
+    public List<AttachmentSimpleDTO> getAttachments(long id) {
+        return attachmentRepository.findByEventId(id).stream().map(this::attachmentToAttachmentSimpleDTO).toList();
     }
 
 
@@ -101,8 +96,8 @@ public class EventService {
     public EventDTO travelToEventDTO(Travel travel) {
         return travelMapper.toDTO(travel);
     }
-    public AttachmentDTO attachmentToAttachmentDTO(Attachment attachment) {
-        return attachmentMapper.toDTO(attachment);
+    public AttachmentSimpleDTO attachmentToAttachmentSimpleDTO(Attachment attachment) {
+        return attachmentMapper.toSimpleDTO(attachment);
     }
 
 
@@ -562,4 +557,14 @@ public class EventService {
         eventRepository.save(event);
         attachmentRepository.saveAll(attachments);
     }
+
+    public void unlinkAttachmentFromEvent(Long eventId, Long attachmentId) {
+        Event event = eventRepository.findById(eventId).orElseThrow(()-> new ResourceNotFoundException("Event not found!"));
+        Attachment attachment = attachmentRepository.findById(attachmentId).orElseThrow(()-> new ResourceNotFoundException("Attachment not found!"));
+        event.setAttachments(event.getAttachments().stream().filter(a -> !Objects.equals(a.getId(), attachmentId)).collect(Collectors.toSet()));
+        attachment.setEvent(null);
+        eventRepository.save(event);
+        attachmentRepository.save(attachment);
+    }
+
 }
