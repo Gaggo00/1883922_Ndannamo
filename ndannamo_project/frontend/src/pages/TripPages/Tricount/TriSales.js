@@ -49,14 +49,14 @@ const TCSales = ({data, userId, handleSelection=()=>{}, handleAdd=()=>{}}) => {
 
 
     function handleItemSelection (event, index, item) {
-        if (selected != -1 && itemsRefs.current[selected])
+        if (selected !== -1 && itemsRefs.current[selected])
             itemsRefs.current[selected].setClicked(false);
         setSelected(index);
         handleSelection(event, item);
     }
 
     function addClicked () {
-        if (selected != -1 && itemsRefs.current[selected]) {
+        if (selected !== -1 && itemsRefs.current[selected]) {
             itemsRefs.current[selected].setClicked(false);
             setSelected(-1);
         }

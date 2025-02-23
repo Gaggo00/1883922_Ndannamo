@@ -110,7 +110,7 @@ export default function EventOpenTravel({travel, latitude, longitude, reloadSche
     const saveNewTime = async () => {
 
         // Se e' tutto uguale a prima, non fare nulla
-        if (newStartTime == travel.startTime && newEndTime == travel.endTime) {
+        if (newStartTime === travel.startTime && newEndTime === travel.endTime) {
             setEditingTime(false);
             return;
         }

@@ -73,7 +73,7 @@ function Tricount() {
     };
 
     const handleClick = (id) => {
-        if (id == 'sales') {
+        if (id === 'sales') {
             setFormData({
                 expenseData: new ExpenseDto,
                 users: tripInfo.users,
@@ -108,7 +108,7 @@ function Tricount() {
     };
 
     function addSale() {
-        if (formData.status == 1 || !formVisibility) {
+        if (formData.status === 1 || !formVisibility) {
             setFormData({
                 expenseData: new ExpenseDto,
                 users: tripInfo.users,
@@ -120,7 +120,7 @@ function Tricount() {
                 onDestroy: destroy,
             });
             setFormVisibility(true);
-            if (selected != -1 && itemsRefs.current[selected])
+            if (selected !== -1 && itemsRefs.current[selected])
                 itemsRefs.current[selected].setClicked(false);
             setSelected(-1);
         }
@@ -144,11 +144,11 @@ function Tricount() {
 
     function submit(newExpense, expenseId = -1) {
         console.log("Expense id: ", expenseId);
-        if (expenseId == -1)
+        if (expenseId === -1)
             createNewExpense(newExpense);
         else
         {
-            const oldExpenseIndex = data.findIndex((expense) => expense.id == expenseId);
+            const oldExpenseIndex = data.findIndex((expense) => expense.id === expenseId);
             if (oldExpenseIndex >= 0) {
                 const newData = [...data];
                 const oldExpense = data[oldExpenseIndex];
@@ -164,7 +164,7 @@ function Tricount() {
 
     
     function destroy(expenseId) {
-        const index = data.findIndex(expense => expense.id == expenseId);
+        const index = data.findIndex(expense => expense.id === expenseId);
         if (index >= 0) {
             const newData = [...data];
             newData.splice(index, 1);
@@ -190,7 +190,7 @@ function Tricount() {
                             handleSelection={handleTricountSelection}
                             handleAdd={addSale}/>
                     }
-                    {activeText == "sales" &&
+                    {activeText === "sales" &&
                         <TCRefund
                             user={userId}
                             expenses={data}
@@ -198,7 +198,7 @@ function Tricount() {
                         />
                     } 
                 </div>
-                {formVisibility == true &&
+                {formVisibility === true &&
                     <div className="tc-right">
                         <TCForm {...formData}/>
                         {/***activeText === "sales" &&

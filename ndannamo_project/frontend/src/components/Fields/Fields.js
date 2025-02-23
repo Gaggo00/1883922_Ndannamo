@@ -46,7 +46,7 @@ export function DateField({
     function changeValue(newValue) {
         setIsChanged(true);
         setValue(newValue);
-        if (validate != undefined) {
+        if (validate !== undefined) {
             const valid = validate(value);
             if (valid)
                 setIsValid(1);
@@ -156,13 +156,13 @@ export function PickField({
     const handleClick = () => {
         setIsChanged(true);
         if (!disabled)
-            flag == 0 ? setFlag(1) : setFlag(0);
+            flag === 0 ? setFlag(1) : setFlag(0);
     }
 
     const handleSelect = (suggestion) => {
         setValue(suggestion);
         setFlag(0);
-        if (validate != undefined) {
+        if (validate !== undefined) {
             const valid = validate(value);
             if (valid)
                 setIsValid(1);
@@ -172,7 +172,7 @@ export function PickField({
     };
 
     const handleBlur = () => {
-        if (validate != undefined) {
+        if (validate !== undefined) {
             const valid = validate(value);
             if (valid)
                 setIsValid(1);
@@ -222,7 +222,7 @@ export const PickedField = forwardRef(({
     const [search, setSearch] = useState("");
 
     const handleClick = () => {
-        if (suggestions != [])
+        if (suggestions !== [])
             setSuggestions([]);
         else
             setSuggestions(options);
@@ -314,7 +314,7 @@ export function TextField({
     }
 
     const handleKeyPress = (e) => {
-        if (e.key === "Enter" && validate != undefined) {
+        if (e.key === "Enter" && validate !== undefined) {
           const valid = validate(value);
           if (valid)
             setIsValid(1);
@@ -324,7 +324,7 @@ export function TextField({
     };
 
     const handleBlur = () => {
-        if (validate != undefined) {
+        if (validate !== undefined) {
             const valid = validate(value);
             if (valid)
                 setIsValid(1);

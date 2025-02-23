@@ -28,8 +28,8 @@ export default function Navbar() {
     };
 
     return (
-        <div className="navbar" style={(location.pathname != '/') && (location.pathname != '/login')
-            && (location.pathname != '/register') ? style  : null}>
+        <div className="navbar" style={(location.pathname !== '/') && (location.pathname !== '/login')
+            && (location.pathname !== '/register') ? style  : null}>
             <Link to="/">
                 <div className="logo">
                     <img id="valigia-logo" src={valigiaLogo}></img>
