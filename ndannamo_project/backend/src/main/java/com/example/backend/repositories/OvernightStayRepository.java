@@ -2,9 +2,8 @@ package com.example.backend.repositories;
 
 import com.example.backend.model.OvernightStay;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
 
-public interface OvernightStayRepository  extends JpaRepository<OvernightStay, Long> {
-    Optional<OvernightStay> findById(Long id);
-}
+@Repository
+public interface OvernightStayRepository  extends JpaRepository<OvernightStay, Long> {}

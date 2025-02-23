@@ -1,6 +1,7 @@
 package com.example.backend.mapper;
 
 import com.example.backend.dto.AttachmentDTO;
+import com.example.backend.dto.AttachmentDataDTO;
 import com.example.backend.model.Attachment;
 import org.mapstruct.Mapper;
 
@@ -10,5 +11,7 @@ public interface AttachmentMapper {
 
 
     AttachmentDTO toDTO(Attachment attachment);
+
+    AttachmentDataDTO toDataDTO(Attachment attachment);
 
 }
