@@ -54,13 +54,31 @@ class AttachmentService {
             var attachments = Array.isArray(response.data) ? response.data : [];
 
             return attachments.map(attachment => {
-                const url = `${AttachmentService.FRONT_END_URL}/attachments/${attachment.id}`;
+                const url = `${AttachmentService.BASE_URL}/attachments/${attachment.id}`;
                 return {
                     id: attachment.id,
                     name: attachment.fileName,
                     url: url
                 };
             })
+        } catch (error) {
+            console.error("Error fetching attachments:", error);
+            throw error;
+        }
+    }
+
+    static async getEventAttachmentData(token, url) {
+        try {
+            const response = await axios.get(
+                url,
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization" : `Bearer ${token}`
+                    }
+                }
+            );
+            return response.data;
         } catch (error) {
             console.error("Error fetching attachments:", error);
             throw error;
