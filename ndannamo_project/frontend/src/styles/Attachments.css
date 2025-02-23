@@ -107,3 +107,29 @@
     text-align: center;
     color: #666;
 }
+
+.attachment-actions {
+    display: flex;
+    gap: 5px;
+}
+
+.action-button {
+    padding: 5px 8px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #666;
+    transition: color 0.2s;
+}
+
+.action-button:hover {
+    color: #0066cc;
+}
+
+.action-button[title="Delete attachment"]:hover {
+    color: #dc3545;
+}
+
+.action-button[title="Unlink attachment"]:hover {
+    color: #ffc107;
+}

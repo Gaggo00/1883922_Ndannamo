@@ -84,6 +84,44 @@ class AttachmentService {
             throw error;
         }
     }
+
+    static async unlinkAttachment(token, eventId, attachmentId) {
+        try {
+            const response = await axios.delete(
+                `${AttachmentService.BASE_URL}/events/${eventId}/attachments/${attachmentId}`,
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization" : `Bearer ${token}`
+                    }
+                }
+            );
+            return response.data;
+        } catch (error) {
+            console.error("Error unlinking attachment:", error);
+            throw error;
+        }
+    }
+
+    static async deleteAttachment(token, attachmentId) {
+        try {
+            const response = await axios.delete(
+                `${AttachmentService.BASE_URL}/attachments/${attachmentId}`,
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization" : `Bearer ${token}`
+                    }
+                }
+            );
+            return response.data;
+        } catch (error) {
+            console.error("Error deleting attachment:", error);
+            throw error;
+        }
+    }
+
+
 }
 
 export default AttachmentService;

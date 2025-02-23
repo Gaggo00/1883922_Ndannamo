@@ -10,21 +10,20 @@ import DataManipulationsUtils from "../../../utils/DataManipulationsUtils";
 export default function EventOpenNight({night, latitude, longitude, reloadSchedule, openCreateAccomodationModal, openEditAccomodationModal,
                                            tripStartDate, tripEndDate}) {
 
-    // Add state for attachments and selected files
+    // Existing state management...
     const [attachments, setAttachments] = useState([]);
     const [selectedFiles, setSelectedFiles] = useState([]);
     const [previewUrl, setPreviewUrl] = useState(null);
     const [previewType, setPreviewType] = useState(null);
     const [showPreviewModal, setShowPreviewModal] = useState(false);
 
-    // Load attachments when component mounts or night changes
+    // Existing useEffect and functions...
     useEffect(() => {
         if (night.id) {
             loadAttachments();
         }
     }, [night.id]);
 
-    // Function to load attachments
     const loadAttachments = async () => {
         try {
             const token = localStorage.getItem('token');
@@ -35,12 +34,10 @@ export default function EventOpenNight({night, latitude, longitude, reloadSchedu
         }
     };
 
-    // Handle file selection
     const handleFileChange = (event) => {
         setSelectedFiles(Array.from(event.target.files));
     };
 
-    // Handle file upload
     const handleUpload = async () => {
         if (selectedFiles.length === 0) return;
 
@@ -57,7 +54,34 @@ export default function EventOpenNight({night, latitude, longitude, reloadSchedu
         }
     };
 
-    // Function to handle file preview
+    // New functions for unlink and delete
+    const handleUnlink = async (attachment) => {
+        try {
+            const token = localStorage.getItem('token');
+            await AttachmentService.unlinkAttachment(token, night.id, attachment.id);
+            // Generic function - to be implemented
+            console.log("Unlinking attachment:", attachment.id);
+            // After unlinking, reload the attachments
+            await loadAttachments();
+        } catch (error) {
+            console.error("Error unlinking attachment:", error);
+        }
+    };
+
+    const handleDelete = async (attachment) => {
+        try {
+            const token = localStorage.getItem('token');
+            await AttachmentService.deleteAttachment(token, attachment.id);
+            // Generic function - to be implemented
+            console.log("Deleting attachment:", attachment.id);
+            // After deleting, reload the attachments
+            await loadAttachments();
+        } catch (error) {
+            console.error("Error deleting attachment:", error);
+        }
+    };
+
+    // Existing preview and download functions...
     const handleFilePreview = async (attachment) => {
         try {
             const token = localStorage.getItem('token');
@@ -77,16 +101,12 @@ export default function EventOpenNight({night, latitude, longitude, reloadSchedu
         }
     };
 
-    // Function to handle file download
     const handleFileDownload = async (attachment) => {
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch(attachment.url, {
-                headers: {
-                    "Authorization": `Bearer ${token}`
-                }
-            });
-            const blob = await response.blob();
+            const response = await AttachmentService.getEventAttachmentData(token, attachment.url);
+            const byteArray = DataManipulationsUtils.convertBase64ToBitArray(response.fileData);
+            const blob = new Blob([byteArray], { type: response.fileType });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
@@ -180,6 +200,7 @@ export default function EventOpenNight({night, latitude, longitude, reloadSchedu
     }
 
     return (
+        // ... rest of your JSX remains the same until the attachments list
         <div id="event-open">
             <div className='top-row'>
                 <button onClick={()=>{openEditAccomodationModal(night.id, overnightStay)}} title='Edit accomodation'
@@ -254,12 +275,27 @@ export default function EventOpenNight({night, latitude, longitude, reloadSchedu
                                             {attachment.name}
                                         </span>
                                         <button
-                                            className="download-button"
+                                            className="action-button"
                                             onClick={() => handleFileDownload(attachment)}
                                             title="Download file"
                                         >
                                             <i className="bi bi-download"></i>
                                         </button>
+                                        <button
+                                            className="action-button"
+                                            onClick={() => handleUnlink(attachment)}
+                                            title="Unlink attachment"
+                                        >
+                                            <i className="bi bi-link-45deg"></i>
+                                        </button>
+                                        <button
+                                            className="action-button"
+                                            onClick={() => handleDelete(attachment)}
+                                            title="Delete attachment"
+                                        >
+                                            <i className="bi bi-trash"></i>
+                                        </button>
+
                                     </li>
                                 ))}
                             </ul>
