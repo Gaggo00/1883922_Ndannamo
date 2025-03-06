@@ -51,6 +51,12 @@ public class Trip {
     @OneToMany
     private List<Expense> expenses = new ArrayList<>();
 
+
+    // foto della trip
+    @OneToMany
+    private List<ImageData> photos = new ArrayList<>();
+
+
     public boolean removeInvitation(User user) {
         if (this.invitations.contains(user)) {
             this.invitations.remove(user);

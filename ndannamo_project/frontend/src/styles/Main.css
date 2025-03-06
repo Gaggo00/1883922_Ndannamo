@@ -185,10 +185,25 @@ body {
     cursor: pointer;
     padding: 10px;
     border-radius: 5px;
+    background-color: #ffffff8c;
+    font-size: 0.8vw;
 }
 
 .trip-item:hover {
-    background-color: #e0d8c7;
+    background-color: #ffffffd4;
+}
+
+.trip-item #title {
+    font-weight: bold;
+    font-size: 0.9vw;
+}
+
+.trip-item div {
+    margin: 0.5vh 0;
+}
+
+.trip-item i {
+    margin-right: 8px;
 }
 
 .trip-grid {

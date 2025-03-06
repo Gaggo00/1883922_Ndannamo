@@ -1,5 +1,6 @@
 package com.example.backend.controller;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -8,7 +9,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import jakarta.validation.Valid;
 
 import com.example.backend.dto.ActivityCreationRequest;
@@ -23,7 +27,8 @@ import com.example.backend.dto.TripCreationRequest;
 import com.example.backend.dto.TripDTO;
 import com.example.backend.dto.TripInviteList;
 import com.example.backend.model.OvernightStay;
-import com.example.backend.model.Trip;  
+import com.example.backend.model.Trip;
+import com.example.backend.service.ImageDataService;
 import com.example.backend.service.TripService;
 import com.example.backend.service.UserService;
 
@@ -33,8 +38,12 @@ import com.example.backend.service.UserService;
 @RequestMapping("/trips")
 public class TripController {
 
+    @Autowired
     private final TripService tripService;
     //private final UserService userService;
+
+    @Autowired
+    private ImageDataService imageDataService;
 
     @Autowired
     public TripController(TripService tripService /*, UserService userService*/) {
@@ -137,7 +146,8 @@ public class TripController {
                 .body(ex.getMessage());
         }
     }
-    // Aggiungi persone a una trip
+
+    // Annulla inviti
     @PostMapping(value={"/{id}/remove-invitations", "/{id}/remove-invitations/"})
     public ResponseEntity<?> removeInvitation(@PathVariable Long id, @Valid @RequestBody TripInviteList inviteList) {
 
@@ -157,6 +167,7 @@ public class TripController {
         }
     }
 
+    // Rimuovi persone da una trip
     @PostMapping(value={"/{id}/remove-participants", "/{id}/remove-participants/"})
     public ResponseEntity<?> removeParticipants(@PathVariable Long id, @Valid @RequestBody TripInviteList inviteList) {
 
@@ -765,6 +776,71 @@ public class TripController {
             // cambia le info
             tripService.changeNightPlace(email, id, night_id, newPlace.getValue());
             return ResponseEntity.ok().body("Night place changed");
+        }
+        catch (Exception ex) {
+            return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(ex.getMessage());
+        }
+    }
+
+
+
+
+
+    /********************************* FOTO *********************************/
+
+    // Carica una foto
+    @PostMapping(value={"/{id}/photos", "/{id}/photos/"} /*, consumes = { MediaType.MULTIPART_FORM_DATA_VALUE }*/)
+    public ResponseEntity<?> uploadImage(@PathVariable Long id, @RequestParam("image") MultipartFile file) throws IOException {
+        try {
+            // prendi l'utente dal token
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String email = authentication.getName();
+
+            // carica foto
+            Long imageId = tripService.uploadImage(email, id, file);
+            return ResponseEntity.ok().body(imageId);
+        }
+        catch (Exception ex) {
+            return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(ex.getMessage());
+        }
+    }
+
+    // Ottieni una foto
+    @GetMapping(value={"/{id}/photos/{photo_id}", "/{id}/photos/{photo_id}/"})
+    public ResponseEntity<?> getImageByName(@PathVariable Long id, @PathVariable Long photo_id){
+        try {
+            // prendi l'utente dal token
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String email = authentication.getName();
+
+            // prendi foto
+            byte[] image = tripService.getImageById(email, id, photo_id);
+            return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.valueOf("image/png"))
+                .body(image);
+        }
+        catch (Exception ex) {
+            return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(ex.getMessage());
+        }
+    }
+
+    // Ottieni lista di foto id
+    @GetMapping(value={"/{id}/photos", "/{id}/photos/"})
+    public ResponseEntity<?> getAllImages(@PathVariable Long id){
+        try {
+            // prendi l'utente dal token
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String email = authentication.getName();
+
+            // prendi lista
+            List<Long> photoIds = tripService.getTripPhotos(email, id);
+            return ResponseEntity.status(HttpStatus.OK).body(photoIds);
         }
         catch (Exception ex) {
             return ResponseEntity
