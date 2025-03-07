@@ -2,61 +2,40 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import InternalMenu from "./InternalMenu";
-import './InternalMenu.css'
+
+import PhotoPreview from './Photos/PhotoPreview';
 
 import PhotoService from '../../services/PhotoService';
 import TripService from '../../services/TripService';
 
+import './InternalMenu.css'
+import "./TripPhotos.css"
+
 
 export default function TripPhotos() {
     const navigate = useNavigate();
+    const location = useLocation();
     const { id } = useParams();
 
     const [file, setFile] = useState();
 
-    const location = useLocation();
     const [tripInfo, setTripInfo] = useState(location.state?.trip);
 
     useEffect(() => {
         fetchPhotoIds();
-        //fetchImage(2);
     }, []);
 
-
-    const [imageUrls, setImageUrls] = useState([]);
-
-    // Per far ricaricare le immagini quando gli url vengono ottenuti
-    const [imagesKey, setImagesKey] = useState(0);
-
-    const fetchImage = async (photoId) => {
-        //console.log("fetching image of id: " + photoId);
-        try {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                navigate("/login");
-            }
-
-            const response = await PhotoService.getPhoto(token, id, photoId);
-
-            if (response) {
-                console.log("fetched image of id: " + photoId);
-                const imageObjectURL = URL.createObjectURL(response);
-                var urls = imageUrls;
-                urls[photoId] = imageObjectURL;
-                setImageUrls(urls);
-                setImagesKey(imagesKey+1);
-            } else {
-                console.error('Invalid response data');
-            }
-        } catch (error) {
-            console.error('Error fetching photos:', error);
-        }
-    };
+    const [imageIds, setImageIds] = useState([]);
 
 
     // Per il caricamento dei file
     function handleChange(event) {
-        setFile(event.target.files[0])
+        setFile(event.target.files[0]);
+        /*
+        if (event.target.files[0]) {
+            document.getElementById("upload-button").removeAttribute('disabled');
+        }
+        */
     }
 
     // Per ottenere la lista di id
@@ -68,21 +47,11 @@ export default function TripPhotos() {
             }
 
             // Chiamata al servizio per ottenere le informazioni del profilo
-            const response = await PhotoService.getPhotoIds(token, 452);
+            const response = await PhotoService.getPhotoIds(token, id);
 
             if (response) {
                 console.log(response);
-                // response e' una lista di id, tipo [21, 45]
-
-                // inizializzo imageUrls con una stringa vuota per ogni id
-                setImageUrls([...new Array(response.length)].map(() => ""));
-
-                // poi faccio il fetch delle immagini e quando le ho ottenute sostituisco
-                // gli url con quelli veri
-                response.forEach(photoId => {
-                    fetchImage(photoId);
-                });
-
+                setImageIds(response);
             } else {
                 console.error('Invalid response data');
             }
@@ -91,7 +60,15 @@ export default function TripPhotos() {
         }
     }
 
+
+    // Per caricare una nuova foto
     const uploadPhoto = async () => {
+        if (!file) {
+            console.log("no file selected");
+            alert("Choose a file first");
+            return;
+        }
+        console.log("uploading photo");
         try {
             const token = localStorage.getItem('token');
             if (!token) {
@@ -106,10 +83,15 @@ export default function TripPhotos() {
                 
             } else {
                 console.error('Invalid response data');
+                alert("Server error");
             }
         } catch (error) {
             console.error('Error uploading photos:', error);
+            alert("Couldn't upload photos, error:", error);
         }
+
+        setFile(null);
+        //document.getElementById("upload-button").setAttribute('disabled', '');
     };
 
 
@@ -145,15 +127,16 @@ export default function TripPhotos() {
                     <div className="trip-top">
                         <span> <strong>{tripInfo.title}</strong> {tripInfo.startDate} {tripInfo.endDate}</span>
                     </div>
-                    <div className="trip-details" key={imagesKey}>
-                        <div className='flex-row'>
-                            {imageUrls.map((url, index) =>
-                                <img src={imageUrls[index]} key={index}></img>
+                    <div className="trip-details" >
+                        <div className="gallery">
+                            {imageIds.map((photoId) =>
+                                <PhotoPreview photoId={photoId} tripId={id} key={photoId}/>
                             )}
                         </div>
-                        <input type="file" onChange={handleChange}/>
-                        <button onClick={uploadPhoto}>upload</button>
-
+                        <div id="upload-buttons-row">
+                            <input type="file" onChange={handleChange}/>
+                            <button id="upload-button" onClick={uploadPhoto}>upload</button>
+                        </div>
                     </div>
                 </div>
             ) : (
