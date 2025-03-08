@@ -27,7 +27,7 @@ export default function EventOpenNight({night, latitude, longitude, reloadSchedu
     const loadAttachments = async () => {
         try {
             const token = localStorage.getItem('token');
-            const fetchedAttachments = await AttachmentService.getEventAttachments(token, night.id);
+            const fetchedAttachments = await AttachmentService.getAttachments(token, night.id);
             setAttachments(fetchedAttachments);
         } catch (error) {
             console.error("Error loading attachments:", error);
@@ -44,7 +44,7 @@ export default function EventOpenNight({night, latitude, longitude, reloadSchedu
         try {
             const token = localStorage.getItem('token');
             const uploadedFiles = await AttachmentService.uploadFiles(token, selectedFiles);
-            await AttachmentService.linkAttachmentsToEvent(token, night.id, uploadedFiles);
+            await AttachmentService.linkAttachmentsToAttachable(token, night.id, uploadedFiles);
             await loadAttachments();
             setSelectedFiles([]);
             const fileInput = document.querySelector('input[type="file"]');
@@ -85,7 +85,7 @@ export default function EventOpenNight({night, latitude, longitude, reloadSchedu
     const handleFilePreview = async (attachment) => {
         try {
             const token = localStorage.getItem('token');
-            const response = await AttachmentService.getEventAttachmentData(token, attachment.url);
+            const response = await AttachmentService.getAttachmentData(token, attachment.url);
 
             const byteArray = DataManipulationsUtils.convertBase64ToBitArray(response.fileData);
 
@@ -104,7 +104,7 @@ export default function EventOpenNight({night, latitude, longitude, reloadSchedu
     const handleFileDownload = async (attachment) => {
         try {
             const token = localStorage.getItem('token');
-            const response = await AttachmentService.getEventAttachmentData(token, attachment.url);
+            const response = await AttachmentService.getAttachmentData(token, attachment.url);
             const byteArray = DataManipulationsUtils.convertBase64ToBitArray(response.fileData);
             const blob = new Blob([byteArray], { type: response.fileType });
             const url = URL.createObjectURL(blob);

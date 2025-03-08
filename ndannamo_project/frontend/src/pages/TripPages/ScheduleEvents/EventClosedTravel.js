@@ -18,7 +18,7 @@ export default function EventClosedTravel({travel, selectEvent}) {
             <div className="event-block-left">
                 <div className="info-left bold big">{travel.startTime}</div>
                 <i className="bi bi-airplane-engines h1"></i>
-                <div className="info-left bold">{travel.place.split(",")[0]}</div>
+                <div className="info-left bold">{travel.place}</div>
             </div>
             <div className="event-block-right">
                 <div className="travel-name event-block-title">

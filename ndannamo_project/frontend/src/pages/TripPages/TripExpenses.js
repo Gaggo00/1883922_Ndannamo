@@ -158,7 +158,7 @@ export default function TripExpenses() {
     }
 
     function submit(newExpense, expenseId = -1) {
-        if (expenseId == -1) {
+        if (expenseId === -1) {
             console.log("La new Expense é: ", newExpense);
             createNewExpense(newExpense);
             console.log("Ragi ci siete?")

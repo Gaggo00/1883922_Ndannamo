@@ -25,9 +25,9 @@ class AttachmentService {
         }
     }
 
-    static async linkAttachmentsToEvent(token, eventId, attachmentIds) {
+    static async linkAttachmentsToAttachable(token, attachableId, attachmentIds) {
         try {
-            const response = await axios.post(`${AttachmentService.BASE_URL}/events/${eventId}/attachments`, attachmentIds, {
+            const response = await axios.post(`${AttachmentService.BASE_URL}/attachable/${attachableId}/attachments`, attachmentIds, {
                 headers: {
                     'Content-Type': 'application/json',
                     "Authorization" : `Bearer ${token}`
@@ -40,10 +40,10 @@ class AttachmentService {
         }
     }
 
-    static async getEventAttachments(token, eventId) {
+    static async getAttachments(token, attachableId) {
         try {
             const response = await axios.get(
-                `${AttachmentService.BASE_URL}/events/${eventId}/attachments`,
+                `${AttachmentService.BASE_URL}/attachable/${attachableId}/attachments`,
                 {
                     headers: {
                         "Content-Type": "application/json",
@@ -67,7 +67,7 @@ class AttachmentService {
         }
     }
 
-    static async getEventAttachmentData(token, url) {
+    static async getAttachmentData(token, url) {
         try {
             const response = await axios.get(
                 url,
@@ -85,10 +85,10 @@ class AttachmentService {
         }
     }
 
-    static async unlinkAttachment(token, eventId, attachmentId) {
+    static async unlinkAttachment(token, attachableId, attachmentId) {
         try {
             const response = await axios.delete(
-                `${AttachmentService.BASE_URL}/events/${eventId}/attachments/${attachmentId}`,
+                `${AttachmentService.BASE_URL}/attachable/${attachableId}/attachments/${attachmentId}`,
                 {
                     headers: {
                         "Content-Type": "application/json",

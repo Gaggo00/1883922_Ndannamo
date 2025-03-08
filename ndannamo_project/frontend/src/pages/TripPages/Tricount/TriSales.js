@@ -14,7 +14,7 @@ const TCSales = ({data, userId, handleSelection=()=>{}, handleAdd=()=>{}}) => {
 
     useEffect(() => {
         retriveExpenses(data);
-        if (!searchValue || searchValue == "")
+        if (!searchValue || searchValue === "")
             setSearchData(data);
         else {
             const filteredItems = data.filter(
@@ -32,7 +32,7 @@ const TCSales = ({data, userId, handleSelection=()=>{}, handleAdd=()=>{}}) => {
         expensesData.map((expense) => {
             totExpenses += expense.amount;
             expense.amountPerUser.map((e) => {
-                if (e.user == userId)
+                if (e.user === userId)
                     myExpenses += e.amount;
             })
         })

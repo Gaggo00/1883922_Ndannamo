@@ -110,7 +110,7 @@ export default function EventOpenActivity({activity, latitude, longitude, reload
     const saveNewAddress = async () => {
     
         // Se e' una stringa vuota o e' uguale a prima, non fare nulla
-        if (newAddress.trim() == "" || activity.address == newAddress) {
+        if (newAddress.trim() === "" || activity.address === newAddress) {
             setEditingAddress(false);
             return;
         }
@@ -158,7 +158,7 @@ export default function EventOpenActivity({activity, latitude, longitude, reload
     const saveNewTime = async () => {
 
         // Se e' tutto uguale a prima, non fare nulla
-        if (newStartTime == activity.startTime && newEndTime == activity.endTime) {
+        if (newStartTime === activity.startTime && newEndTime === activity.endTime) {
             setEditingTime(false);
             return;
         }

@@ -178,7 +178,7 @@ export const TCRefund = ({user, expenses, users=[]}) => {
         while (newBalances[i].amount > 0) {
             var toRefound = newBalances[i].amount;
             while (toRefound > 0) {
-                if (lastValue.amount == 0) {
+                if (lastValue.amount === 0) {
                     lastValue = copyBalances.pop();
                     lastValue.amount *= -1;
                 }
@@ -205,12 +205,12 @@ export const TCRefund = ({user, expenses, users=[]}) => {
         const expenseByUser = [];
 
         expenses.map((e) => {
-            if (e.paidBy == userId) {
+            if (e.paidBy === userId) {
                 expenseByUser.push(e);
             }
             else {
                 for (let i = 0; i < e.amountPerUser.length; i++) {
-                    if (e.amountPerUser[i].user == userId)
+                    if (e.amountPerUser[i].user === userId)
                         expenseByUser.push(e);
                 }
             }

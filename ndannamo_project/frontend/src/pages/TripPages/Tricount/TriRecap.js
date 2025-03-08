@@ -13,7 +13,7 @@ const TCListRecapItem = ({userId, expenseData}) => {
 
         if (expense && expense.amountPerUser) {
             expense.amountPerUser.map((e) => {
-                if (e.user == userId) return e.amount;
+                if (e.user === userId) return e.amount;
             })
         }
 

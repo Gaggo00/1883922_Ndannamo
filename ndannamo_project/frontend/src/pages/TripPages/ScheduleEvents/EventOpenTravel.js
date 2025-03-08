@@ -63,7 +63,7 @@ export default function EventOpenTravel({travel, latitude, longitude, reloadSche
     const saveNewAddress = async () => {
     
         // Se e' una stringa vuota o e' uguale a prima, non fare nulla
-        if (newAddress.trim() == "" || travel.address == newAddress) {
+        if (newAddress.trim() === "" || travel.address === newAddress) {
             setEditingAddress(false);
             return;
         }
