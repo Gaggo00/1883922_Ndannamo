@@ -2,15 +2,17 @@ import React, {useEffect, useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import Map from './Map';
-import DateUtilities from '../../../utils/DateUtilities';
 
 import ScheduleService from '../../../services/ScheduleService';
 import ConfirmDelete from '../../../common/ConfirmDelete';
+import AttachmentService from "../../../services/AttachmentService";
+import '../../../styles/Attachments.css'
 
 import EventOpenDatePlace from './EventOpenDatePlace';
 
 import '../TripSchedule.css'
 import '../../../styles/Common.css';
+import DataManipulationsUtils from "../../../utils/DataManipulationsUtils";
 
 export default function EventOpenTravel({travel, latitude, longitude, reloadSchedule, tripStartDate, tripEndDate}) {
 
@@ -19,8 +21,22 @@ export default function EventOpenTravel({travel, latitude, longitude, reloadSche
 
     const navigate = useNavigate();
 
+    const [attachments, setAttachments] = useState([]);
+    const [selectedFiles, setSelectedFiles] = useState([]);
+    const [previewUrl, setPreviewUrl] = useState(null);
+    const [previewType, setPreviewType] = useState(null);
+    const [showPreviewModal, setShowPreviewModal] = useState(false);
+
     // Per il pop up di conferma
     const [isModalOpen, setIsModalOpen] = useState(false);
+
+    useEffect(() => {
+        if (travel.id) {
+            loadAttachments();
+        }
+    }, [travel.id]);
+
+
     const handleOverlayClick = (e) => {
         // Verifica se l'utente ha cliccato sull'overlay e non sul contenuto del modal
         if (e.target.className === "modal-overlay") {
@@ -213,6 +229,174 @@ export default function EventOpenTravel({travel, latitude, longitude, reloadSche
         }
     };
 
+    // ATTACHMENTS ---------------------------------
+
+    const loadAttachments = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            const fetchedAttachments = await AttachmentService.getAttachments(token, travel.id);
+            setAttachments(fetchedAttachments);
+        } catch (error) {
+            console.error("Error loading attachments:", error);
+        }
+    };
+
+    const handleFileChange = (event) => {
+        setSelectedFiles(Array.from(event.target.files));
+    };
+
+    const handleUpload = async () => {
+        if (selectedFiles.length === 0) return;
+
+        try {
+            const token = localStorage.getItem('token');
+            const uploadedFiles = await AttachmentService.uploadFiles(token, selectedFiles);
+            await AttachmentService.linkAttachmentsToAttachable(token, travel.id, uploadedFiles);
+            await loadAttachments();
+            setSelectedFiles([]);
+            const fileInput = document.querySelector('input[type="file"]');
+            if (fileInput) fileInput.value = '';
+        } catch (error) {
+            console.error("Error uploading files:", error);
+        }
+    };
+
+    // New functions for unlink and delete
+    const handleUnlink = async (attachment) => {
+        try {
+            const token = localStorage.getItem('token');
+            await AttachmentService.unlinkAttachment(token, travel.id, attachment.id);
+            // Generic function - to be implemented
+            console.log("Unlinking attachment:", attachment.id);
+            // After unlinking, reload the attachments
+            await loadAttachments();
+        } catch (error) {
+            console.error("Error unlinking attachment:", error);
+        }
+    };
+
+    const handleDelete = async (attachment) => {
+        try {
+            const token = localStorage.getItem('token');
+            await AttachmentService.deleteAttachment(token, attachment.id);
+            // Generic function - to be implemented
+            console.log("Deleting attachment:", attachment.id);
+            // After deleting, reload the attachments
+            await loadAttachments();
+        } catch (error) {
+            console.error("Error deleting attachment:", error);
+        }
+    };
+
+    // Existing preview and download functions...
+    const handleFilePreview = async (attachment) => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await AttachmentService.getAttachmentData(token, attachment.url);
+
+            const byteArray = DataManipulationsUtils.convertBase64ToBitArray(response.fileData);
+
+            const blob = new Blob([byteArray], {type: response.fileType});
+            const fileType = blob.type;
+            const url = URL.createObjectURL(blob);
+
+            setPreviewType(fileType);
+            setPreviewUrl(url);
+            setShowPreviewModal(true);
+        } catch (error) {
+            console.error("Error previewing file:", error);
+        }
+    };
+
+    const handleFileDownload = async (attachment) => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await AttachmentService.getAttachmentData(token, attachment.url);
+            const byteArray = DataManipulationsUtils.convertBase64ToBitArray(response.fileData);
+            const blob = new Blob([byteArray], {type: response.fileType});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = attachment.name;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error("Error downloading file:", error);
+        }
+    };
+
+    // Preview Modal Component
+    // Modifica il componente PreviewModal per aggiungere un pulsante di apertura in nuova scheda
+    const PreviewModal = () => {
+        if (!showPreviewModal) return null;
+
+        const openInNewTab = () => {
+            window.open(previewUrl, '_blank');
+        };
+
+        return (
+            <div className="preview-modal">
+                <div className="preview-modal-content">
+                    <div className="preview-modal-controls">
+                        <button
+                            className="preview-modal-close"
+                            onClick={() => {
+                                setShowPreviewModal(false);
+                                URL.revokeObjectURL(previewUrl);
+                            }}
+                        >
+                            ×
+                        </button>
+                        <button
+                            className="open-new-tab-button"
+                            onClick={openInNewTab}
+                            title="Open in new tab"
+                        >
+                            <i className="bi bi-box-arrow-up-right"></i>
+                        </button>
+                    </div>
+                    {previewType?.startsWith('image/') ? (
+                        <div className="preview-container">
+                            <img
+                                src={previewUrl}
+                                alt="Preview"
+                                className="preview-image"
+                                onClick={openInNewTab}
+                                style={{cursor: 'pointer'}}
+                            />
+                        </div>
+                    ) : previewType?.startsWith('application/pdf') ? (
+                        <div className="preview-container">
+                            <iframe
+                                src={previewUrl}
+                                title="PDF Preview"
+                                className="preview-pdf"
+                            />
+                            <div
+                                className="preview-overlay"
+                                onClick={openInNewTab}
+                                title="Click to open in new tab"
+                            ></div>
+                        </div>
+                    ) : (
+                        <div className="preview-not-available">
+                            <p>Preview not available for this file type</p>
+                            <button
+                                className="custom-button"
+                                onClick={openInNewTab}
+                            >
+                                Open in new tab
+                            </button>
+                        </div>
+                    )}
+                </div>
+            </div>
+        );
+    };
+
+
 
     return (
         <div id="event-open">
@@ -343,8 +527,71 @@ export default function EventOpenTravel({travel, latitude, longitude, reloadSche
                     </div>
                 )}
 
-                <div className='attachments'>
-                    <div className='label'>Tickets</div>
+                <div className="attachments">
+                    <div className="label">Attachments</div>
+                    <div className="attachment-controls">
+                        <label className="custom-file-upload">
+                            <input
+                                type="file"
+                                onChange={handleFileChange}
+                                multiple
+                                className="file-input-hidden"
+                            />
+                            <i className="bi bi-upload"></i> Select Files
+                        </label>
+                        <button
+                            onClick={handleUpload}
+                            className="custom-button"
+                            disabled={selectedFiles.length === 0}
+                        >
+                            Upload Attachment
+                        </button>
+                    </div>
+                    <div className="value">
+                        {selectedFiles.length > 0 && (
+                            <div className="selected-files">
+                                <span>{selectedFiles.length} file(s) selected</span>
+                            </div>
+                        )}
+                        {attachments.length > 0 ? (
+                            <ul className="attachment-list">
+                                {attachments.map((attachment) => (
+                                    <li key={attachment.id} className="attachment-item">
+                                        <span
+                                            className="attachment-name"
+                                            onClick={() => handleFilePreview(attachment)}
+                                        >
+                                            {attachment.name}
+                                        </span>
+                                        <button
+                                            className="action-button"
+                                            onClick={() => handleFileDownload(attachment)}
+                                            title="Download file"
+                                        >
+                                            <i className="bi bi-download"></i>
+                                        </button>
+                                        <button
+                                            className="action-button"
+                                            onClick={() => handleUnlink(attachment)}
+                                            title="Unlink attachment"
+                                        >
+                                            <i className="bi bi-link-45deg"></i>
+                                        </button>
+                                        <button
+                                            className="action-button"
+                                            onClick={() => handleDelete(attachment)}
+                                            title="Delete attachment"
+                                        >
+                                            <i className="bi bi-trash"></i>
+                                        </button>
+
+                                    </li>
+                                ))}
+                            </ul>
+                        ) : (
+                            <p>No attachments available</p>
+                        )}
+                    </div>
                 </div>
                 {isModalOpen && (
                     <div className="modal-overlay" onClick={handleOverlayClick}>
@@ -357,6 +604,7 @@ export default function EventOpenTravel({travel, latitude, longitude, reloadSche
                     </div>
                 )} 
             </div>
+            <PreviewModal/>
         </div>
     );
 
