@@ -5,10 +5,19 @@ import AttachmentService from "../../../services/AttachmentService";
 import EventOpenDatePlace from './EventOpenDatePlace';
 import '../TripSchedule.css';
 import '../../../styles/Common.css';
+import '../../../styles/Attachments.css'
 import DataManipulationsUtils from "../../../utils/DataManipulationsUtils";
 
-export default function EventOpenNight({night, latitude, longitude, reloadSchedule, openCreateAccomodationModal, openEditAccomodationModal,
-                                           tripStartDate, tripEndDate}) {
+export default function EventOpenNight({
+                                           night,
+                                           latitude,
+                                           longitude,
+                                           reloadSchedule,
+                                           openCreateAccomodationModal,
+                                           openEditAccomodationModal,
+                                           tripStartDate,
+                                           tripEndDate
+                                       }) {
 
     // Existing state management...
     const [attachments, setAttachments] = useState([]);
@@ -89,7 +98,7 @@ export default function EventOpenNight({night, latitude, longitude, reloadSchedu
 
             const byteArray = DataManipulationsUtils.convertBase64ToBitArray(response.fileData);
 
-            const blob = new Blob([byteArray], { type: response.fileType });
+            const blob = new Blob([byteArray], {type: response.fileType});
             const fileType = blob.type;
             const url = URL.createObjectURL(blob);
 
@@ -106,7 +115,7 @@ export default function EventOpenNight({night, latitude, longitude, reloadSchedu
             const token = localStorage.getItem('token');
             const response = await AttachmentService.getAttachmentData(token, attachment.url);
             const byteArray = DataManipulationsUtils.convertBase64ToBitArray(response.fileData);
-            const blob = new Blob([byteArray], { type: response.fileType });
+            const blob = new Blob([byteArray], {type: response.fileType});
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
@@ -121,32 +130,67 @@ export default function EventOpenNight({night, latitude, longitude, reloadSchedu
     };
 
     // Preview Modal Component
+    // Modifica il componente PreviewModal per aggiungere un pulsante di apertura in nuova scheda
     const PreviewModal = () => {
         if (!showPreviewModal) return null;
+
+        const openInNewTab = () => {
+            window.open(previewUrl, '_blank');
+        };
 
         return (
             <div className="preview-modal">
                 <div className="preview-modal-content">
-                    <button
-                        className="preview-modal-close"
-                        onClick={() => {
-                            setShowPreviewModal(false);
-                            URL.revokeObjectURL(previewUrl);
-                        }}
-                    >
-                        ×
-                    </button>
+                    <div className="preview-modal-controls">
+                        <button
+                            className="preview-modal-close"
+                            onClick={() => {
+                                setShowPreviewModal(false);
+                                URL.revokeObjectURL(previewUrl);
+                            }}
+                        >
+                            ×
+                        </button>
+                        <button
+                            className="open-new-tab-button"
+                            onClick={openInNewTab}
+                            title="Open in new tab"
+                        >
+                            <i className="bi bi-box-arrow-up-right"></i>
+                        </button>
+                    </div>
                     {previewType?.startsWith('image/') ? (
-                        <img src={previewUrl} alt="Preview" className="preview-image" />
+                        <div className="preview-container">
+                            <img
+                                src={previewUrl}
+                                alt="Preview"
+                                className="preview-image"
+                                onClick={openInNewTab}
+                                style={{cursor: 'pointer'}}
+                            />
+                        </div>
                     ) : previewType?.startsWith('application/pdf') ? (
-                        <iframe
-                            src={previewUrl}
-                            title="PDF Preview"
-                            className="preview-pdf"
-                        />
+                        <div className="preview-container">
+                            <iframe
+                                src={previewUrl}
+                                title="PDF Preview"
+                                className="preview-pdf"
+                            />
+                            <div
+                                className="preview-overlay"
+                                onClick={openInNewTab}
+                                title="Click to open in new tab"
+                            ></div>
+                        </div>
                     ) : (
                         <div className="preview-not-available">
-                            Preview not available for this file type
+                            <p>Preview not available for this file type</p>
+                            <button
+                                className="custom-button"
+                                onClick={openInNewTab}
+                            >
+                                Open in new tab
+                            </button>
                         </div>
                     )}
                 </div>
@@ -161,12 +205,16 @@ export default function EventOpenNight({night, latitude, longitude, reloadSchedu
             <div id="event-open">
                 <div className='top-row'>
                     <EventOpenDatePlace event={night} reloadSchedule={reloadSchedule} saveDateFunction={null}
-                                        savePlaceFunction={ScheduleService.changeNightPlace} tripStartDate={tripStartDate} tripEndDate={tripEndDate}
+                                        savePlaceFunction={ScheduleService.changeNightPlace}
+                                        tripStartDate={tripStartDate} tripEndDate={tripEndDate}
                                         canEditDate={false}/>
                 </div>
                 <div className='no-selected-events flex-column align-items-center'>
                     <p>You don't have an accomodation for this night</p>
-                    <button className='custom-button' onClick={()=> {openCreateAccomodationModal(night.id, night.date)}}>Create</button>
+                    <button className='custom-button' onClick={() => {
+                        openCreateAccomodationModal(night.id, night.date)
+                    }}>Create
+                    </button>
                 </div>
             </div>
         );
@@ -181,21 +229,17 @@ export default function EventOpenNight({night, latitude, longitude, reloadSchedu
 
     if (overnightStay.startCheckInTime != null && overnightStay.endCheckInTime != null) {
         checkInTime = overnightStay.startCheckInTime + " - " + overnightStay.endCheckInTime;
-    }
-    else if (overnightStay.startCheckInTime != null) {
+    } else if (overnightStay.startCheckInTime != null) {
         checkInTime = "From " + overnightStay.startCheckInTime
-    }
-    else if (overnightStay.endCheckInTime != null) {
+    } else if (overnightStay.endCheckInTime != null) {
         checkInTime = "Until " + overnightStay.endCheckInTime
     }
 
     if (overnightStay.startCheckOutTime != null && overnightStay.endCheckOutTime != null) {
         checkOutTime = overnightStay.startCheckOutTime + " - " + overnightStay.endCheckOutTime;
-    }
-    else if (overnightStay.startCheckOutTime != null) {
+    } else if (overnightStay.startCheckOutTime != null) {
         checkOutTime = "From " + overnightStay.startCheckOutTime
-    }
-    else if (overnightStay.endCheckOutTime != null) {
+    } else if (overnightStay.endCheckOutTime != null) {
         checkOutTime = "Until " + overnightStay.endCheckOutTime
     }
 
@@ -203,11 +247,15 @@ export default function EventOpenNight({night, latitude, longitude, reloadSchedu
         // ... rest of your JSX remains the same until the attachments list
         <div id="event-open">
             <div className='top-row'>
-                <button onClick={()=>{openEditAccomodationModal(night.id, overnightStay)}} title='Edit accomodation'
-                        className='float-right no-background no-border top-row-button'><i className="bi bi-pencil-fill h5 gray-icon"/></button>
+                <button onClick={() => {
+                    openEditAccomodationModal(night.id, overnightStay)
+                }} title='Edit accomodation'
+                        className='float-right no-background no-border top-row-button'><i
+                    className="bi bi-pencil-fill h5 gray-icon"/></button>
 
                 <EventOpenDatePlace event={night} reloadSchedule={reloadSchedule} saveDateFunction={null}
-                                    savePlaceFunction={ScheduleService.changeNightPlace} tripStartDate={tripStartDate} tripEndDate={tripEndDate}
+                                    savePlaceFunction={ScheduleService.changeNightPlace} tripStartDate={tripStartDate}
+                                    tripEndDate={tripEndDate}
                                     canEditDate={false}/>
 
                 <div className='title'>
@@ -249,12 +297,15 @@ export default function EventOpenNight({night, latitude, longitude, reloadSchedu
                 <div className="attachments">
                     <div className="label">Attachments</div>
                     <div className="attachment-controls">
-                        <input
-                            type="file"
-                            onChange={handleFileChange}
-                            multiple
-                            className="custom-file-input"
-                        />
+                        <label className="custom-file-upload">
+                            <input
+                                type="file"
+                                onChange={handleFileChange}
+                                multiple
+                                className="file-input-hidden"
+                            />
+                            <i className="bi bi-upload"></i> Select Files
+                        </label>
                         <button
                             onClick={handleUpload}
                             className="custom-button"
@@ -264,6 +315,11 @@ export default function EventOpenNight({night, latitude, longitude, reloadSchedu
                         </button>
                     </div>
                     <div className="value">
+                        {selectedFiles.length > 0 && (
+                            <div className="selected-files">
+                                <span>{selectedFiles.length} file(s) selected</span>
+                            </div>
+                        )}
                         {attachments.length > 0 ? (
                             <ul className="attachment-list">
                                 {attachments.map((attachment) => (
@@ -305,7 +361,7 @@ export default function EventOpenNight({night, latitude, longitude, reloadSchedu
                     </div>
                 </div>
             </div>
-            <PreviewModal />
+            <PreviewModal/>
         </div>
     );
 }

@@ -133,3 +133,162 @@
 .action-button[title="Unlink attachment"]:hover {
     color: #ffc107;
 }
+
+/* Aggiungi questi stili al tuo CSS */
+.preview-modal-controls {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 5px;
+}
+
+.open-new-tab-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.5rem;
+    color: #333;
+}
+
+.preview-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.preview-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    background-color: transparent;
+}
+
+.preview-image:hover, .preview-overlay:hover {
+    opacity: 0.9;
+}
+
+/* Stili per il modal di preview */
+.preview-modal-controls {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 5px;
+}
+
+.open-new-tab-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.5rem;
+    color: #333;
+}
+
+.preview-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.preview-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    background-color: transparent;
+}
+
+.preview-image:hover, .preview-overlay:hover {
+    opacity: 0.9;
+}
+
+/* Stili migliorati per la selezione dei file */
+.attachment-controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+    align-items: center;
+}
+
+.file-input-hidden {
+    display: none;
+}
+
+.custom-file-upload {
+    padding: 8px 12px;
+    cursor: pointer;
+    background-color: #f8f9fa;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.custom-file-upload:hover {
+    background-color: #e9ecef;
+    border-color: #adb5bd;
+}
+
+.custom-file-upload i {
+    font-size: 16px;
+}
+
+.selected-files {
+    font-size: 14px;
+    color: #6c757d;
+    margin-bottom: 10px;
+    padding: 5px 8px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+/* Miglioramenti per la lista di allegati */
+.attachment-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.attachment-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.attachment-name {
+    flex-grow: 1;
+    cursor: pointer;
+    color: #0d6efd;
+    transition: color 0.2s;
+}
+
+.attachment-name:hover {
+    color: #0a58ca;
+    text-decoration: underline;
+}
+
+.action-button {
+    background: none;
+    border: none;
+    color: #6c757d;
+    margin-left: 5px;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.action-button:hover {
+    color: #212529;
+}
+
+.action-button i {
+    font-size: 16px;
+}
