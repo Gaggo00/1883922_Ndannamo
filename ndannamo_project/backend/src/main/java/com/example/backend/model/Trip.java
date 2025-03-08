@@ -52,6 +52,12 @@ public class Trip extends AttachableEntity {
     @OneToMany
     private List<Expense> expenses = new ArrayList<>();
 
+
+    // foto della trip
+    @OneToMany
+    private List<ImageData> photos = new ArrayList<>();
+
+
     public boolean removeInvitation(User user) {
         if (this.invitations.contains(user)) {
             this.invitations.remove(user);
@@ -71,6 +77,14 @@ public class Trip extends AttachableEntity {
     public boolean addInvitation(User user) {
         if (!this.invitations.contains(user)) {
             this.invitations.add(user);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean removePhoto(ImageData photo) {
+        if (this.photos.contains(photo)) {
+            this.photos.remove(photo);
             return true;
         }
         return false;

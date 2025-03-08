@@ -2,7 +2,7 @@ import React, {useEffect, useState, useRef} from 'react';
 import {useLocation, useNavigate} from 'react-router-dom';
 
 import ExpenseService from '../../services/ExpenseService';
-import TCForm from './Tricount/TriForm';
+import TCForm from './Tricount/TCForm';
 import TCSales from './Tricount/TriSales';
 import { TCRefund } from "./Tricount/TriRefund";
 
@@ -29,9 +29,9 @@ export default function TripExpenses() {
     const location = useLocation();
     const tripInfo = location.state?.trip; // Recupera il tripInfo dallo stato
     const userId = location.state?.profile.id;
-    const users = tripInfo.list_participants_id.map(u => [
-        parseInt(u[0]),  // Trasforma il primo elemento in intero
-        ...u.slice(1)    // Mantieni gli altri elementi invariati
+    const users = tripInfo.list_participants.map(u => [
+        parseInt(u.id),  // Trasforma il primo elemento in intero
+        u.nickname    // Mantieni gli altri elementi invariati
       ]);
 
     const [data, setData] = useState([]);

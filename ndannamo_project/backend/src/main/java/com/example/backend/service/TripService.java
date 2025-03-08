@@ -1,5 +1,6 @@
 package com.example.backend.service;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -11,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.core.Local;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.backend.mapper.ExpenseMapperImpl;
 import com.example.backend.mapper.TripMapperImpl;
@@ -19,10 +20,14 @@ import com.example.backend.repositories.TripRepository;
 import com.example.backend.utils.EventValidation;
 import com.example.backend.utils.OvernightstayValidation;
 import com.example.backend.utils.TripValidation;
+
+import jakarta.transaction.Transactional;
+
 import com.example.backend.exception.ResourceNotFoundException;
 import com.example.backend.model.Activity;
 import com.example.backend.model.Event;
 import com.example.backend.model.Expense;
+import com.example.backend.model.ImageData;
 import com.example.backend.model.Night;
 import com.example.backend.model.OvernightStay;
 import com.example.backend.model.Travel;
@@ -46,17 +51,19 @@ public class TripService {
     private final UserService userService;
     private final EventService eventService;
     private final ExpenseService expenseService;
+    private final ImageDataService imageDataService;
 
     private final TripMapperImpl tripMapper;
     private final ExpenseMapperImpl expenseMapper;
 
     @Autowired
     public TripService(TripRepository tripRepository, UserService userService, EventService eventService, ExpenseService expenseService,
-                       TripMapperImpl tripMapper, ExpenseMapperImpl expenseMapper) {
+                    ImageDataService imageDataService, TripMapperImpl tripMapper, ExpenseMapperImpl expenseMapper) {
         this.tripRepository = tripRepository;
         this.expenseService = expenseService;
         this.userService = userService;
         this.eventService = eventService;
+        this.imageDataService = imageDataService;
         this.tripMapper = tripMapper;
         this.expenseMapper = expenseMapper;
     }
@@ -453,6 +460,7 @@ public class TripService {
     }
 
 
+
     /********************** FUNZIONI PER LE SPESE **********************/
 
 
@@ -587,6 +595,85 @@ public class TripService {
     }
 
 
+
+    /********************** FUNZIONI PER LE FOTO **********************/
+
+
+    // Per caricare una foto
+    @Transactional
+    public Long uploadImage(String email, long tripId, MultipartFile file) throws IOException {
+        Trip trip = getTripById(tripId);
+
+        // Controllo che l'utente loggato faccia parte della trip
+        User logged_user = userService.getUserByEmail(email);
+        if (!userIsAParticipant(logged_user, trip)) {
+            throw new ResourceNotFoundException("Trip not found");
+        }
+
+        // Chiamo il servizio per salvare la foto
+        ImageData image = imageDataService.uploadImage(file, trip, logged_user);
+
+        // Aggiungo l'immagine alla lista di foto della trip
+        trip.getPhotos().add(image);
+
+        // Salvo la trip
+        tripRepository.save(trip);
+
+        return image.getId();
+    }
+
+    // Per ottenere una foto
+    @Transactional
+    public byte[] getImageById(String email, Long tripId, Long imageId) {
+        Trip trip = getTripById(tripId);
+
+        // Controllo che l'utente loggato faccia parte della trip
+        if (!userIsAParticipant(email, trip)) {
+            throw new ResourceNotFoundException("Trip not found");
+        }
+
+        // Restituisco la foto
+        return imageDataService.getImageById(imageId);
+    }
+
+    // Per ottenere la lista di ID delle foto di una trip
+    @Transactional
+    public List<Long> getTripPhotos(String email, long tripId) {
+        Trip trip = getTripById(tripId);
+
+        // Controllo che l'utente loggato faccia parte della trip
+        if (!userIsAParticipant(email, trip)) {
+            throw new ResourceNotFoundException("Trip not found");
+        }
+
+        // Prendi gli id delle foto
+        List<Long> photoIds = trip.getPhotos().stream()
+            .map(image -> image.getId())
+            .collect(Collectors.toList());
+
+        return photoIds;
+    }
+
+    // Per eliminare una foto
+    @Transactional
+    public void deleteImage(String email, Long tripId, Long imageId) {
+        Trip trip = getTripById(tripId);
+
+        // Controllo che l'utente loggato faccia parte della trip
+        if (!userIsAParticipant(email, trip)) {
+            throw new ResourceNotFoundException("Trip not found");
+        }
+
+        // Ottengo la foto
+        ImageData image = imageDataService.getImageDataById(imageId);
+
+        // Rimuovo la foto dalla trip
+        trip.removePhoto(image);
+        tripRepository.save(trip);
+
+        // Elimino la foto
+        imageDataService.deleteImage(image);
+    }
 
 
     /********************** FUNZIONI PER CAMBIARE I DATI DI UNA TRIP **********************/
@@ -841,7 +928,6 @@ public class TripService {
         eventService.changeTravelPlace(trip, travelId, newPlace);
     }
 
-
     // Cambia destinazione travel
     public void changeTravelDestination(String email, long tripId, long travelId, String newDestination) {
         Trip trip = getTripById(tripId);
@@ -968,20 +1054,6 @@ public class TripService {
         eventService.changeNightPlace(trip, nightId, newPlace);
     }
 
-    /*
-    // Cambia data night => NON E' VERO NON SI PUO' CAMBIARE LA DATA DI UNA NIGHT
-    public void changeNightDate(String email, long tripId, long nightId, LocalDate newDate) {
-        Trip trip = getTripById(tripId);
-
-        // Controllo che l'utente loggato faccia parte della trip
-        if (!userIsAParticipant(email, trip)) {
-            throw new ResourceNotFoundException("Trip not found");
-        }
-
-        // Cambio valore
-        eventService.changeNightDate(trip, nightId, newDate);
-    }
-    */
 
 
     /****************** FUNZIONI PER CONTROLLARE I PERMESSI DEGLI UTENTI ******************/
