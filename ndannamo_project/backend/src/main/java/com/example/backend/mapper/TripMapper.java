@@ -31,6 +31,7 @@ public interface TripMapper {
     @Mapping(target = "created_by.id", source = "createdBy")    // Mappa l'ID del creatore verso l'entità User
     @Mapping(target = "expenses", ignore = true)                // Ignora le spese
     @Mapping(target = "schedule", ignore = true)
+    @Mapping(target = "attachments", ignore = true)
     Trip toEntity(TripDTO tripDTO);
 
     @Named("userToId") 

@@ -8,17 +8,19 @@ import lombok.*;
 import java.time.LocalTime;
 
 import io.micrometer.common.lang.Nullable;
+import lombok.experimental.SuperBuilder;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@SuperBuilder
 @Table(name="activities")
 @DiscriminatorValue("ACTIVITY")
 public class Activity extends Event {
 
     // Per EventDTO
-    private EventType type = EventType.ACTIVITY;
+    //private EventType type = EventType.ACTIVITY;
 
     private String name;
     private LocalTime startTime;

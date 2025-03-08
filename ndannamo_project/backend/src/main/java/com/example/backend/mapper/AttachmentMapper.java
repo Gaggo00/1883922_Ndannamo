@@ -10,6 +10,7 @@ import org.mapstruct.Mapping;
 public interface AttachmentMapper {
 
 
+    @Mapping(target = "attachedToId", source = "attachedTo.id")
     AttachmentDTO toDTO(Attachment attachment);
 
     AttachmentSimpleDTO toSimpleDTO(Attachment attachment);

@@ -3,6 +3,7 @@ package com.example.backend.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -12,12 +13,13 @@ import java.time.LocalTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@SuperBuilder
 @Table(name="travels")
 @DiscriminatorValue("TRAVEL")
 public class Travel extends Event {
 
     // Per EventDTO
-    private EventType type = EventType.TRAVEL;
+    //private EventType type = EventType.TRAVEL;
 
     private String address;         // tipo il nome dell'aeroporto, o della stazione, ecc
     private String destination;

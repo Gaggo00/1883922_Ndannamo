@@ -8,6 +8,7 @@ import lombok.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Data
@@ -15,14 +16,10 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class OvernightStay {
+@DiscriminatorValue("OVERNIGHT_STAY")
+public class OvernightStay extends AttachableEntity {
 
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-
-    @OneToMany(mappedBy = "overnightStay")
+    @OneToMany(mappedBy = "overnightStay", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private List<Night> travelDays;
 
     @NotNull

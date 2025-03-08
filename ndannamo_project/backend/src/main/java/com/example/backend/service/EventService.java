@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import com.example.backend.dto.*;
 import com.example.backend.model.*;
 import com.example.backend.repositories.*;
+import com.example.backend.utils.EventType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +18,6 @@ import com.example.backend.mapper.ActivityMapperImpl;
 import com.example.backend.mapper.NightMapperImpl;
 import com.example.backend.mapper.TravelMapperImpl;
 import com.example.backend.mapper.AttachmentMapperImpl;
-import com.example.backend.model.Event.EventType;
 import com.example.backend.repositories.ActivityRepository;
 import com.example.backend.repositories.NightRepository;
 import com.example.backend.repositories.OvernightStayRepository;
@@ -37,12 +37,14 @@ public class EventService {
     private final ActivityMapperImpl activityMapper;
     private final TravelMapperImpl travelMapper;
     private final AttachmentMapperImpl attachmentMapper;
+    private final CityRepository cityRepository;
 
 
     @Autowired
     public EventService(NightRepository nightRepository, ActivityRepository activityRepository, TravelRepository travelRepository, AttachmentRepository attachmentRepository,
                         NightMapperImpl nightMapper, ActivityMapperImpl activityMapper, TravelMapperImpl travelMapper,
-                        EventRepository eventRepository, AttachmentMapperImpl attachmentMapper, OvernightStayRepository overnightStayRepository) {
+                        EventRepository eventRepository, AttachmentMapperImpl attachmentMapper,
+                        OvernightStayRepository overnightStayRepository, CityRepository cityRepository) {
         this.nightRepository = nightRepository;
         this.activityRepository = activityRepository;
         this.travelRepository = travelRepository;
@@ -53,7 +55,7 @@ public class EventService {
         this.travelMapper = travelMapper;
         this.eventRepository = eventRepository;
         this.attachmentMapper = attachmentMapper;
-
+        this.cityRepository = cityRepository;
     }
 
 
@@ -87,13 +89,13 @@ public class EventService {
 
     /*************** DTO ***************/
 
-    public EventDTO activityToEventDTO(Activity activity) {
+    public ActivityDTO activityToDTO(Activity activity) {
         return activityMapper.toDTO(activity);
     }
-    public EventDTO nightToEventDTO(Night night) {
+    public NightDTO nightToDTO(Night night) {
         return nightMapper.toDTO(night);
     }
-    public EventDTO travelToEventDTO(Travel travel) {
+    public TravelDTO travelToDTO(Travel travel) {
         return travelMapper.toDTO(travel);
     }
     public AttachmentSimpleDTO attachmentToAttachmentSimpleDTO(Attachment attachment) {
@@ -123,11 +125,15 @@ public class EventService {
 
     // Crea una nuova night
     public Night createNight(Trip trip, LocalDate date, String place, OvernightStay overnightStay) {
-        Night night = new Night();
-        night.setDate(date);
-        night.setPlace(place);
-        night.setOvernightStay(overnightStay);
-        night.setTrip(trip);
+        final String[] cityInfo = place.split(",");
+        final City city =  cityRepository.findFirstByNameAndCountryIgnoreCase(cityInfo[0].strip(), cityInfo[1].strip()).get(); // FIXME: unsafe call to find
+        Night night = Night.builder()
+                .date(date)
+                .place(city)
+                .placeName(city.getName() + ", " + city.getCountry())
+                .overnightStay(overnightStay)
+                .trip(trip)
+                .build();
         return nightRepository.save(night);
     }
 
@@ -136,17 +142,20 @@ public class EventService {
 
     // Crea una nuova activity
     public Activity createActivity(Trip trip, ActivityCreationRequest activityCreationRequest) {
-
+        final String[] cityInfo = activityCreationRequest.getPlace().split(",");
+        final City city = cityRepository.findFirstByNameAndCountryIgnoreCase(cityInfo[0].strip(), cityInfo[1].strip()).get(); // FIXME: unsafe call to find
         // Creo l'activity
-        Activity activity = new Activity();
-        activity.setPlace(activityCreationRequest.getPlace());
-        activity.setName(activityCreationRequest.getName());
-        activity.setDate(activityCreationRequest.getDate());
-        activity.setStartTime(activityCreationRequest.getStartTime());
-        activity.setEndTime(activityCreationRequest.getEndTime());
-        activity.setAddress(activityCreationRequest.getAddress());
-        activity.setInfo(activityCreationRequest.getInfo());
-        activity.setTrip(trip);
+        Activity activity = Activity.builder()
+                .place(city)
+                .placeName(city.getName() + ", " + city.getCountry())
+                .name(activityCreationRequest.getName())
+                .date(activityCreationRequest.getDate())
+                .startTime(activityCreationRequest.getStartTime())
+                .endTime(activityCreationRequest.getEndTime())
+                .address(activityCreationRequest.getAddress())
+                .info(activityCreationRequest.getInfo())
+                .trip(trip)
+                .build();
 
         // Salvo l'activity
         return activityRepository.save(activity);
@@ -255,18 +264,21 @@ public class EventService {
 
     // Crea un nuovo travel
     public Travel createTravel(Trip trip, TravelCreationRequest travelCreationRequest) {
-        
+        final String[] cityInfo = travelCreationRequest.getPlace().split(",");
+        final City city = cityRepository.findFirstByNameAndCountryIgnoreCase(cityInfo[0].strip(), cityInfo[1].strip()).get(); // FIXME: unsafe call to find
         // Crea travel
-        Travel travel = new Travel();
-        travel.setPlace(travelCreationRequest.getPlace());
-        travel.setAddress(travelCreationRequest.getAddress());
-        travel.setDestination(travelCreationRequest.getDestination());
-        travel.setDate(travelCreationRequest.getDate());
-        travel.setArrivalDate(travelCreationRequest.getArrivalDate());
-        travel.setDepartureTime(travelCreationRequest.getDepartureTime());
-        travel.setArrivalTime(travelCreationRequest.getArrivalTime());
-        travel.setInfo(travelCreationRequest.getInfo());
-        travel.setTrip(trip);
+        Travel travel = Travel.builder()
+                .place(city)
+                .placeName(city.getName() + ", " + city.getCountry())
+                .address(travelCreationRequest.getAddress())
+                .destination(travelCreationRequest.getDestination())
+                .date(travelCreationRequest.getDate())
+                .arrivalDate(travelCreationRequest.getArrivalDate())
+                .departureTime(travelCreationRequest.getDepartureTime())
+                .arrivalTime(travelCreationRequest.getArrivalTime())
+                .info(travelCreationRequest.getInfo())
+                .trip(trip)
+                .build();
 
         // Salva travel
         return travelRepository.save(travel);
@@ -435,8 +447,9 @@ public class EventService {
             throw new ResourceNotFoundException("Event not found!");
         }
 
+        final String[] cityInfo = newPlace.split(",");
         // Cambia valore
-        event.setPlace(newPlace);
+        event.setPlace(cityRepository.findFirstByNameAndCountryIgnoreCase(cityInfo[0].strip(), cityInfo[1].strip()).get()); // FIXME: unsafe call to find
 
         // Aggiorna l'evento
         switch(eventType) {
@@ -562,7 +575,7 @@ public class EventService {
         Event event = eventRepository.findById(eventId).orElseThrow(()-> new ResourceNotFoundException("Event not found!"));
         Attachment attachment = attachmentRepository.findById(attachmentId).orElseThrow(()-> new ResourceNotFoundException("Attachment not found!"));
         event.setAttachments(event.getAttachments().stream().filter(a -> !Objects.equals(a.getId(), attachmentId)).collect(Collectors.toSet()));
-        attachment.setEvent(null);
+        attachment.setAttachedTo(null);
         eventRepository.save(event);
         attachmentRepository.save(attachment);
     }

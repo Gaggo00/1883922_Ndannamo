@@ -11,8 +11,7 @@ public class AttachmentDTO {
     private String fileName;
     private String fileType;
     private Long fileSize;
-    private Long eventId;
-    private Long tripId;
+    private Long attachedToId;
     private byte[] fileData;
 
 }

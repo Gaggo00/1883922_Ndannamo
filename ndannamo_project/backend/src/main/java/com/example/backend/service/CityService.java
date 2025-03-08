@@ -1,10 +1,10 @@
 package com.example.backend.service;
 
 import com.example.backend.exception.ResourceNotFoundException;
-import com.example.backend.model.City;
 
 import java.util.List;
 
+import com.example.backend.model.City;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.example.backend.repositories.CityRepository;

@@ -11,7 +11,7 @@ import java.util.List;
 @Repository
 public interface AttachmentRepository extends JpaRepository<Attachment, Long> {
 
-    @Query("SELECT a FROM Attachment a WHERE a.event.id = :eventId")
-    List<Attachment> findByEventId(Long eventId);
+    @Query("SELECT a FROM Attachment a WHERE a.attachedTo.id = :attachedToId")
+    List<Attachment> findByEventId(Long attachedToId);
 
 }

@@ -4,45 +4,45 @@ import java.time.LocalDate;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.util.Collection;
-import java.util.Set;
 
 
 @Entity
-//@Inheritance(strategy = InheritanceType.JOINED)
-//@DiscriminatorColumn(name = "event_type")
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS) // ALE TI PREGO NON CAMBIARLO DI NUOVO CHE SE NO SMETTE DI FUNZIONARE DI NUOVO ;-; L'HO GIA' CAMBIATO 2 VOLTE
+@Inheritance(strategy = InheritanceType.JOINED)
+@DiscriminatorColumn(name = "event_type")
+@DiscriminatorValue("EVENT")
+@SuperBuilder
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public abstract class Event {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-
-    public enum EventType {ACTIVITY, NIGHT, TRAVEL};
-    private EventType type;
+@NoArgsConstructor
+public abstract class Event extends AttachableEntity{
 
     @ManyToOne
-    @JoinColumn(name="trip_id", nullable=false)
+    @JoinColumn(name="trip_id", nullable=false, foreignKey = @ForeignKey(name = "event_trip_fk"))
     private Trip trip;
 
-    private String place;
+    @Embedded
+    private Address location;
     
     private LocalDate date;
 
-    @OneToMany(mappedBy = "event")
-    private Set<Attachment> attachments;
+    @ManyToOne
+    @JoinColumn(name = "city_id", foreignKey = @ForeignKey(name = "fk_event_city"))
+    private City place;
+    private String placeName;
 
-    public void addAttachment(Attachment attachment) {
-        this.attachments.add(attachment);
+    public Event(Trip trip, Address location, LocalDate date, City place) {
+        this.trip = trip;
+        this.location = location;
+        this.date = date;
+        setPlace(place);
     }
 
-    public void addAttachments(Collection<Attachment> attachments) {
-        attachments.forEach(attachment -> attachment.setEvent(this));
-        this.attachments.addAll(attachments);
+    public void setCity(final City city) {
+        this.place = city;
+        this.placeName = city.getName() + ", " + city.getCountry();
     }
 
 

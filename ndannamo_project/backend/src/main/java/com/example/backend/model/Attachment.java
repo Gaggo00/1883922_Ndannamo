@@ -24,11 +24,8 @@ public class Attachment {
     private byte[] fileData; // Contenuto del file
 
     @ManyToOne
-    @JoinColumn(name="event_id", foreignKey = @ForeignKey(name = "fk_attachment_event"))
-    private Event event;
+    @JoinColumn(name="attached_to", foreignKey = @ForeignKey(name = "fk_attachment_attached_to"))
+    private AttachableEntity attachedTo;
 
-    @ManyToOne
-    @JoinColumn(name="trip_id", foreignKey = @ForeignKey(name = "fk_attachment_trip"))
-    private Trip trip;
 
 }

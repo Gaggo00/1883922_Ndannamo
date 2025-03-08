@@ -4,20 +4,20 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Set;
 
 @Entity
 @Data
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Trip {
+@DiscriminatorValue("TRIP")
+public class Trip extends AttachableEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
     private String title;
     private List<String> locations; // FIXME: list of strings is not a real type in database
     private LocalDate creationDate;
@@ -25,7 +25,7 @@ public class Trip {
     private LocalDate endDate;
 
     @ManyToOne
-    @JoinColumn(name="created_by", nullable=false)
+    @JoinColumn(name="created_by", nullable=false, foreignKey = @ForeignKey(name = "fk_trip_created_by"))
     private User created_by;
     
     @ManyToMany(fetch = FetchType.EAGER)
@@ -44,16 +44,13 @@ public class Trip {
 
 
     // attivita'/viaggi/notti della trip
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "trip")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Event> schedule = new ArrayList<>();
 
 
     // spese della trip
     @OneToMany
     private List<Expense> expenses = new ArrayList<>();
-
-    @OneToMany(mappedBy = "trip")
-    private Set<Attachment> attachments;
 
     public boolean removeInvitation(User user) {
         if (this.invitations.contains(user)) {

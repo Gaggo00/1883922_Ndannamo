@@ -15,6 +15,7 @@ public interface OvernightStayMapper {
 
     // Da EventOvernightStayDTODTO a OvernightStay
     @Mapping(target = "travelDays", ignore = true)
+    @Mapping(target = "attachments", ignore = true)
     OvernightStay toEntity(OvernightStayDTO OvernightStayDTO);
 }
 

@@ -3,12 +3,9 @@ package com.example.backend.service;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.core.Local;
@@ -25,7 +22,6 @@ import com.example.backend.utils.TripValidation;
 import com.example.backend.exception.ResourceNotFoundException;
 import com.example.backend.model.Activity;
 import com.example.backend.model.Event;
-import com.example.backend.model.Event.EventType;
 import com.example.backend.model.Expense;
 import com.example.backend.model.Night;
 import com.example.backend.model.OvernightStay;
@@ -77,33 +73,24 @@ public class TripService {
         // Ottieni user dall'username
         User logged_user = userService.getUserByEmail(email);
 
-        Trip trip = new Trip();
+        Trip trip = Trip.builder()
+                .title(tripRequest.getTitle())
+                .locations(tripRequest.getLocations())
+                .creationDate(LocalDate.now())
+                .startDate(tripRequest.getStartDate())
+                .endDate(tripRequest.getEndDate())
+                .created_by(logged_user)
+                .participants(new ArrayList<>(Collections.singletonList(logged_user)))
+                .build();
 
-        trip.setTitle(tripRequest.getTitle());
-        trip.setLocations(tripRequest.getLocations());
-        trip.setCreationDate(LocalDate.now());
-        trip.setStartDate(tripRequest.getStartDate());
-        trip.setEndDate(tripRequest.getEndDate());
-
-        trip.setCreated_by(logged_user);
-
-        ArrayList<User> participants = new ArrayList<User>();
-        participants.add(logged_user);
-
-        trip.setParticipants(participants);
 
         // Crea schedule
         int tripDays = (int) tripRequest.getStartDate().until(tripRequest.getEndDate(), java.time.temporal.ChronoUnit.DAYS);  // durata trip in giorni (escluso l'ultimo)
-        List<Event> schedule = new ArrayList<Event>();
 
         // La trip va salvata ora se no la creazione delle night da' errore
         tripRepository.save(trip);
-
-        // Crea una notte per ogni giorno tranne l'ultimo
-        for (var i = 0; i < tripDays; i++) {
-            Night night = eventService.createNight(trip, tripRequest.getStartDate().plusDays(i), tripRequest.getLocations().get(0), null);
-            schedule.add(night);
-        }
+        List<Event> schedule = IntStream.range(0, tripDays).mapToObj(i -> eventService.createNight(trip, tripRequest.getStartDate().plusDays(i),
+                tripRequest.getLocations().get(0), null)).collect(Collectors.toList());
 
         trip.setSchedule(schedule);
 
@@ -335,13 +322,13 @@ public class TripService {
         
         for (Event event: schedule) {
             if (event.getClass() == Night.class) {
-                scheduleDTO.add(eventService.nightToEventDTO((Night) event));
+                scheduleDTO.add(eventService.nightToDTO((Night) event));
             }
             else if (event.getClass() == Activity.class) {
-                scheduleDTO.add(eventService.activityToEventDTO((Activity) event));
+                scheduleDTO.add(eventService.activityToDTO((Activity) event));
             }
             else if (event.getClass() == Travel.class) {
-                scheduleDTO.add(eventService.travelToEventDTO((Travel) event));
+                scheduleDTO.add(eventService.travelToDTO((Travel) event));
             }
         }
 
@@ -445,7 +432,7 @@ public class TripService {
         // Trova le notti la cui data rientra tra startDate e endDate (endDate esclusa perche' fai il check out)
         List<Event> schedule = trip.getSchedule();
         for (Event event : schedule) {
-            if (event.getType() == EventType.NIGHT) {
+            if (event instanceof Night) {
                 LocalDate eventDate = event.getDate();
                 if (eventDate.isEqual(startDate) || (eventDate.isAfter(startDate) && eventDate.isBefore(endDate))) {
                     nights.add((Night) event);
@@ -700,7 +687,7 @@ public class TripService {
 
         for (Event event : schedule) {
         
-            if (event.getType() == EventType.NIGHT) {
+            if (event instanceof Night) {
         
                 LocalDate eventDate = event.getDate();
                 Night night = (Night) event;
