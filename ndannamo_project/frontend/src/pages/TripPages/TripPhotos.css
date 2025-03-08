@@ -13,6 +13,7 @@
     flex: 1 1 auto;
     height: 30vh;
     margin: 1vh 0.5vw;
+    cursor: pointer;
 }
 
 .gallery-item img {
@@ -28,4 +29,19 @@
     background-color: white;
     width: 20vw;
     padding: 2vh 1vw;
+}
+
+
+.photo-open {
+   height: fit-content;
+   width: fit-content;
+}
+
+.photo-open img {
+    width: auto;
+    height: 60vh;
+}
+
+.photo-open-top-bar, .photo-open-bottom-bar {
+    background-color: rgba(255, 255, 255, 0.692);
 }

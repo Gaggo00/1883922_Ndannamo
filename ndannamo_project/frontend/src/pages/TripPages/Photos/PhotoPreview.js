@@ -7,7 +7,7 @@ import PhotoService from '../../../services/PhotoService';
 import "../TripPhotos.css"
 
 
-export default function PhotoPreview({photoId, tripId}) {
+export default function PhotoPreview({photoId, tripId, openModal}) {
 
     const navigate = useNavigate();
 
@@ -46,7 +46,7 @@ export default function PhotoPreview({photoId, tripId}) {
 
     return (
         <div className="gallery-item">
-            <img src={imgURL} key={imgKey}/>
+            <img src={imgURL} key={imgKey} onClick={() => {openModal(imgURL, "nome foto", photoId, "persona")}}/>
         </div>
     );
 }

@@ -10,7 +10,7 @@ class PhotoService {
         try {
             const response = await axios.get(`${PhotoService.BASE_URL}/${tripId}/photos`, {
                 headers: {
-                    "Authorization" : `Bearer ${token}`
+                    "Authorization": `Bearer ${token}`
                 }
             });
             return response.data;
@@ -30,7 +30,7 @@ class PhotoService {
             const response = await axios.post(`${PhotoService.BASE_URL}/${tripId}/photos`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
-                    "Authorization" : `Bearer ${token}`
+                    "Authorization": `Bearer ${token}`
                 }
             });
             return response.data;
@@ -47,13 +47,30 @@ class PhotoService {
             const response = await axios.get(`${PhotoService.BASE_URL}/${tripId}/photos/${photoId}`, {
                 headers: {
                     'Content-Type': 'image/png',
-                    "Authorization" : `Bearer ${token}`
+                    "Authorization": `Bearer ${token}`
                 },
                 responseType: "blob"
             });
             return response.data;
         } catch (error) {
             console.error("Error uploading files:", error);
+            throw error;
+        }
+    }
+
+
+    // Per eliminare una foto
+    static async deletePhoto(token, tripId, photoId) {
+        try {
+            const response = await axios.delete(`${PhotoService.BASE_URL}/${tripId}/photos/${photoId}`, {
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                }
+            });
+            return response.data;
+        } catch (error) {
+            console.error("Error deleting photo:", error);
             throw error;
         }
     }

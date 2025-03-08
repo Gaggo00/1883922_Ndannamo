@@ -81,4 +81,12 @@ public class Trip {
         return false;
     }
 
+    public boolean removePhoto(ImageData photo) {
+        if (this.photos.contains(photo)) {
+            this.photos.remove(photo);
+            return true;
+        }
+        return false;
+    }
+
 }

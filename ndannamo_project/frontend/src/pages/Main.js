@@ -49,6 +49,7 @@ function Main() {
     const closeModal = () => {
         setIsModalOpen(false);
     };
+    
     const fetchProfileInfo = async () => {
         try {
             const token = localStorage.getItem('token'); // Recuperiamo il token da localStorage

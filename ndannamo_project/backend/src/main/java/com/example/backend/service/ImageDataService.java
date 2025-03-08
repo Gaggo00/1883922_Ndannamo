@@ -69,4 +69,18 @@ public class ImageDataService {
         return image;
     }
 
+
+    public void deleteImage(Long id) {
+        ImageData dbImage = imageDataRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Photo not found!"));
+        imageDataRepository.delete(dbImage);
+    }
+
+    public void deleteImage(ImageData image) {
+        imageDataRepository.delete(image);
+    }
+
+    public ImageData getImageDataById(Long id) {
+        ImageData dbImage = imageDataRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Photo not found!"));
+        return dbImage;
+    }
 }

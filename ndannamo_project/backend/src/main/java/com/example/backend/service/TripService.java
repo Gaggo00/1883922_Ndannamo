@@ -667,6 +667,27 @@ public class TripService {
         return photoIds;
     }
 
+    // Per eliminare una foto
+    @Transactional
+    public void deleteImage(String email, Long tripId, Long imageId) {
+        Trip trip = getTripById(tripId);
+
+        // Controllo che l'utente loggato faccia parte della trip
+        if (!userIsAParticipant(email, trip)) {
+            throw new ResourceNotFoundException("Trip not found");
+        }
+
+        // Ottengo la foto
+        ImageData image = imageDataService.getImageDataById(imageId);
+
+        // Rimuovo la foto dalla trip
+        trip.removePhoto(image);
+        tripRepository.save(trip);
+
+        // Elimino la foto
+        imageDataService.deleteImage(image);
+    }
+
 
     /********************** FUNZIONI PER CAMBIARE I DATI DI UNA TRIP **********************/
 

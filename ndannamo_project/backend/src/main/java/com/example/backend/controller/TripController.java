@@ -811,7 +811,7 @@ public class TripController {
 
     // Ottieni una foto
     @GetMapping(value={"/{id}/photos/{photo_id}", "/{id}/photos/{photo_id}/"})
-    public ResponseEntity<?> getImageByName(@PathVariable Long id, @PathVariable Long photo_id){
+    public ResponseEntity<?> getImageById(@PathVariable Long id, @PathVariable Long photo_id){
         try {
             // prendi l'utente dal token
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -841,6 +841,25 @@ public class TripController {
             // prendi lista
             List<Long> photoIds = tripService.getTripPhotos(email, id);
             return ResponseEntity.status(HttpStatus.OK).body(photoIds);
+        }
+        catch (Exception ex) {
+            return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(ex.getMessage());
+        }
+    }
+
+    // Elimina una foto
+    @DeleteMapping(value={"/{id}/photos/{photo_id}", "/{id}/photos/{photo_id}/"})
+    public ResponseEntity<?> deleteImage(@PathVariable Long id, @PathVariable Long photo_id){
+        try {
+            // prendi l'utente dal token
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String email = authentication.getName();
+
+            // elimina foto
+            tripService.deleteImage(email, id, photo_id);
+            return ResponseEntity.status(HttpStatus.OK).body("Deleted image");
         }
         catch (Exception ex) {
             return ResponseEntity
