@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.example.backend.model.Attachment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -796,11 +797,11 @@ public class TripController {
         try {
             // prendi l'utente dal token
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            String email = authentication.getName();
+            final String email = authentication.getName();
 
             // carica foto
-            Long imageId = tripService.uploadImage(email, id, file);
-            return ResponseEntity.ok().body(imageId);
+            List<Long> imageIds = attachmentService.createAttachments(files, email).stream().map(Attachment::getId).toList();
+            return ResponseEntity.ok().body(imageIds);
         }
         catch (Exception ex) {
             return ResponseEntity

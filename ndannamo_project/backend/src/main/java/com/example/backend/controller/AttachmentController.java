@@ -4,8 +4,11 @@ package com.example.backend.controller;
 import com.example.backend.dto.AttachmentDTO;
 import com.example.backend.model.Attachment;
 import com.example.backend.service.AttachmentService;
+import com.example.backend.service.TripService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,16 +21,21 @@ import java.util.List;
 public class AttachmentController {
 
     private final AttachmentService attachmentService;
+    private final TripService tripService;
 
-    public AttachmentController(AttachmentService attachmentService) {
+    public AttachmentController(AttachmentService attachmentService, TripService tripService) {
         this.attachmentService = attachmentService;
+        this.tripService = tripService;
     }
 
-    @PostMapping(value={"", "/"})
+    @PostMapping(value={"", "/trip/{tripId}"})
     public ResponseEntity<?> createAttachments(
-            @RequestParam("files") MultipartFile[] files) {
+            @RequestParam("files") MultipartFile[] files, @PathVariable Long tripId) {
         try {
-            List<Long> attachmentIds = attachmentService.createAttachments(files).stream().map(Attachment::getId).toList();
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String email = authentication.getName();
+            Trip trip = tripService.getTripById(tripId);
+            List<Long> attachmentIds = attachmentService.createAttachments(files, email, trip).stream().map(Attachment::getId).toList();
             return ResponseEntity.ok(attachmentIds); // Ritorna gli ID degli attachments creati
         }
         catch (Exception ex) {

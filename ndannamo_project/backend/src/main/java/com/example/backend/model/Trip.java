@@ -15,8 +15,7 @@ import java.util.ArrayList;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@DiscriminatorValue("TRIP")
-public class Trip extends AttachableEntity {
+public class Trip {
 
     private String title;
     private List<String> locations; // FIXME: list of strings is not a real type in database
@@ -54,8 +53,8 @@ public class Trip extends AttachableEntity {
 
 
     // foto della trip
-    @OneToMany
-    private List<ImageData> photos = new ArrayList<>();
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<Attachment> attachments = new ArrayList<>();
 
 
     public boolean removeInvitation(User user) {

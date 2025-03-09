@@ -27,5 +27,11 @@ public class Attachment {
     @JoinColumn(name="attached_to", foreignKey = @ForeignKey(name = "fk_attachment_attached_to"))
     private AttachableEntity attachedTo;
 
+    @ManyToOne
+    private User uploadedBy;
+
+    @ManyToOne
+    private Trip trip
+
 
 }
