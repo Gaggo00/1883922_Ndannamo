@@ -65,6 +65,7 @@
 .photo-modal {
    height: fit-content;
    width: fit-content;
+   
 }
 
 
@@ -73,19 +74,25 @@
     height: 60vh;
 }
 
+.photo-modal h6 {
+    margin-bottom: 0;
+}
+
 .darker img {
     filter: brightness(0.5);
 }
 
 .photo-modal-top-bar, .photo-modal-bottom-bar {
     background-color: rgba(255, 255, 255, 0.692);
-    font-size: 0.8vw;
 }
 
 .photo-modal-top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
-    padding: 0.5vh 1vw;
+    padding: 0.5vh 0.7vw;
 }
 
 .photo-modal-bottom-bar {
@@ -94,7 +101,10 @@
 }
 
 .photo-modal-info-row {
-    padding: 0.5vh 1vw;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5vh 0.7vw;
 }
 
 .dark-overlay {

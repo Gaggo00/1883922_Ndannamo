@@ -231,7 +231,7 @@ export default function TripPhotos() {
             )}
             {isPhotoModalOpen && (
                 <div className="modal-overlay" onClick={handleOverlayClick}>
-                    <PhotoModal photoUrl={photoModalSrc} photoInfo={photoModalInfo} deletePhoto={deletePhoto}/>
+                    <PhotoModal photoUrl={photoModalSrc} photoInfo={photoModalInfo} closeModal={closePhotoModal} deletePhoto={deletePhoto}/>
                 </div>
             )}
         </div>

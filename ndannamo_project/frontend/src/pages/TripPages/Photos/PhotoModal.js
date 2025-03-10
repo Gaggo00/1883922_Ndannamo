@@ -8,7 +8,7 @@ import ConfirmDelete from '../../../common/ConfirmDelete';
 import "../TripPhotos.css"
 
 
-export default function PhotoModal({photoUrl, photoInfo, deletePhoto}) {
+export default function PhotoModal({photoUrl, photoInfo, closeModal, deletePhoto}) {
 
     /*
 
@@ -46,18 +46,19 @@ export default function PhotoModal({photoUrl, photoInfo, deletePhoto}) {
     return (
         <div className=''>
             <div id="photo-modal" className="photo-modal">
-                <div className='flex-row justify-content-space-between photo-modal-top-bar'>
-                    <div className='photo-name'>{photoInfo.name}</div>
-                    
-                    <button onClick={openDeletePopup} id="delete-button" title='Delete activity' className='no-background no-border'>
-                        <i className="bi bi-trash3-fill h5 red-icon"/>
+                <div className='photo-modal-top-bar'>
+                    <div className='photo-name'><h6>{photoInfo.name}</h6></div>
+                    <button onClick={closeModal} id="delete-button" title='Delete photo' className='no-background no-border'>
+                            <i className="bi bi-x h4"></i>
                     </button>
                 </div>
                 <img className="" src={photoUrl}/>
                 <div className='photo-modal-bottom-bar'>
-                    <div className='photo-modal-info-row flex-row justify-content-space-between'>
-                        <div className='photo-uploaded-by'><i>Uploaded by {photoInfo.uploadedBy.nickname}</i></div>
-                        <div className='photo-uploaded-date'><i>{uploadDate}</i></div> 
+                    <div className='photo-modal-info-row'>
+                        <h6><i>Uploaded by {photoInfo.uploadedBy.nickname} on {uploadDate}</i></h6>
+                        <button onClick={openDeletePopup} id="delete-button" title='Delete photo' className='no-background no-border'>
+                            <i className="bi bi-trash3-fill h6 red-icon"/>
+                        </button>
                     </div>
                 </div>
                 {isDeletePopupOpen && (
