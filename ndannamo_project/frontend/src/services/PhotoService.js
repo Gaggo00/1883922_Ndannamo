@@ -15,7 +15,6 @@ class PhotoService {
             });
             return response.data;
         } catch (error) {
-            console.error("Error getting photo ids:", error);
             throw error;
         }
     }
@@ -35,7 +34,6 @@ class PhotoService {
             });
             return response.data;
         } catch (error) {
-            console.error("Error uploading files:", error);
             throw error;
         }
     }
@@ -53,11 +51,24 @@ class PhotoService {
             });
             return response.data;
         } catch (error) {
-            console.error("Error uploading files:", error);
             throw error;
         }
     }
 
+    // Per ottenere info foto
+    static async getPhotoInfo(token, tripId, photoId) {
+        try {
+            const response = await axios.get(`${PhotoService.BASE_URL}/${tripId}/photos/${photoId}/info`, {
+                headers: {
+                    'Content-Type': "application/json",
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    }
 
     // Per eliminare una foto
     static async deletePhoto(token, tripId, photoId) {
@@ -70,7 +81,6 @@ class PhotoService {
             });
             return response.data;
         } catch (error) {
-            console.error("Error deleting photo:", error);
             throw error;
         }
     }

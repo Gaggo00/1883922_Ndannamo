@@ -4,6 +4,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import InternalMenu from "./InternalMenu";
 
 import PhotoPreview from './Photos/PhotoPreview';
+import PhotoModal from './Photos/PhotoModal';
 
 import PhotoService from '../../services/PhotoService';
 import TripService from '../../services/TripService';
@@ -25,34 +26,33 @@ export default function TripPhotos() {
 
 
     // File contenente l'immagine caricata dall'utente
-    const [file, setFile] = useState();
+    const FILENAME_MAX_LENGTH = 20;
+    const [filename, setFilename] = useState("");
+    var file = null;
+    function setFile(f) {
+        file = f;
+    }
 
     // Lista degli id delle foto
     const [imageIds, setImageIds] = useState([]);
 
 
     // Src dell'immagine aperta nel modal
-    const [modalImgSrc, setModalImgSrc] = useState("");
-    const [modalImgName, setModalImgName] = useState("");          // ancora da far restituire al backend
-    const [modalImgId, setModalImgId] = useState(-1);
-    const [modalImgDescription, setModalImgDescription] = useState("descrizione");     // da vedere se la vogliamo mettere, per ora il backend non la restituisce
-    const [modalImgUploadedBy, setModalImgUploadedBy] = useState("persona");       // ancora da far restituire al backend
+    const [photoModalSrc, setPhotoModalSrc] = useState("");
+    const [photoModalInfo, setPhotoModalInfo] = useState(null);
 
-
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const openModal = (imgSrc, imgName, imgId, imgUploadedBy) => {
-        setModalImgSrc(imgSrc);
-        setModalImgName(imgName);
-        setModalImgId(imgId);
-        setModalImgUploadedBy(imgUploadedBy);
-        setIsModalOpen(true);
+    const [isPhotoModalOpen, setIsPhotoModalOpen] = useState(false);
+    const openPhotoModal = (imgSrc, photoInfo) => {
+        setPhotoModalSrc(imgSrc);
+        setPhotoModalInfo(photoInfo);
+        setIsPhotoModalOpen(true);
     };
-    const closeModal = () => {
-        setIsModalOpen(false);
+    const closePhotoModal = () => {
+        setIsPhotoModalOpen(false);
     };
     const handleOverlayClick = (e) => {
         if (e.target.className === "modal-overlay") {
-            closeModal();
+            closePhotoModal();
         }
     };
 
@@ -60,11 +60,27 @@ export default function TripPhotos() {
     // Per il caricamento dei file
     function handleChange(event) {
         setFile(event.target.files[0]);
-        /*
-        if (event.target.files[0]) {
-            document.getElementById("upload-button").removeAttribute('disabled');
+        var name = event.target.files[0].name;
+        if (name.length > FILENAME_MAX_LENGTH) {
+            name = name.substring(0, FILENAME_MAX_LENGTH) + "...";
         }
-        */
+        setFilename(name);
+        
+        if (event.target.files[0]) {
+            enableUploadButton();
+        }
+        else {
+            disableUploadButton();
+        }
+        
+    }
+
+    function disableUploadButton() {
+        document.getElementById("upload-button").setAttribute('disabled', true);
+    }
+    function enableUploadButton() {
+        document.getElementById("upload-button").removeAttribute('disabled');
+        document.getElementById("upload-button").onclick = uploadPhoto;
     }
 
     // Per ottenere la lista di id
@@ -109,7 +125,7 @@ export default function TripPhotos() {
 
             if (response) {
                 console.log(response);
-                window.location.reload(); 
+                fetchPhotoIds();
                 
             } else {
                 console.error('Invalid response data');
@@ -121,7 +137,8 @@ export default function TripPhotos() {
         }
 
         setFile(null);
-        //document.getElementById("upload-button").setAttribute('disabled', '');
+        setFilename("");
+        disableUploadButton();
     };
 
 
@@ -140,8 +157,8 @@ export default function TripPhotos() {
             const response = await PhotoService.deletePhoto(token, id, photoId);
 
             if (response) {
-                closeModal();
-                window.location.reload(); 
+                closePhotoModal();
+                fetchPhotoIds();
                 
             } else {
                 console.error('Invalid response data');
@@ -190,30 +207,31 @@ export default function TripPhotos() {
                     <div className="trip-details" >
                         <div className="gallery">
                             {imageIds.map((photoId) =>
-                                <PhotoPreview photoId={photoId} tripId={id} openModal={openModal} key={photoId}/>
+                                <PhotoPreview photoId={photoId} tripId={id} openModal={openPhotoModal} key={photoId}/>
                             )}
                         </div>
-                        <div id="upload-buttons-row">
-                            <input type="file" onChange={handleChange}/>
-                            <button id="upload-button" onClick={uploadPhoto}>upload</button>
+                        <div id="buttons-area">
+                            <div id="upload-buttons-row">
+                                <input id="file-input" type="file" onChange={handleChange} hidden/>
+                                <button id="choose-file-button" title="Choose a file" onClick={()=>{document.getElementById("file-input").click()}}>
+                                    <h1><i className="bi bi-plus"/></h1>
+                                </button>
+                                <button id="upload-button" title="Upload" disabled>
+                                    <h1><i className="bi bi-upload"/></h1>
+                                </button>
+                            </div>
+                            {filename != "" && (
+                                    <div id="selected-file-name"><b>Selected:</b> {filename}</div>
+                                )}
                         </div>
                     </div>
                 </div>
             ) : (
                 <p>Loading trip details...</p>          
             )}
-            {isModalOpen && (
+            {isPhotoModalOpen && (
                 <div className="modal-overlay" onClick={handleOverlayClick}>
-                    <div className="photo-open">
-                        <div className='flex-row justify-content-space-around photo-open-top-bar'>
-                            <p>{modalImgName}</p>
-                            <button onClick={() => {deletePhoto(modalImgId)}}>delete</button>
-                        </div>
-                        <img src={modalImgSrc}/>
-                        <div className='photo-open-bottom-bar'>
-                            <p>Uploaded by {modalImgUploadedBy}</p>
-                        </div>
-                    </div>
+                    <PhotoModal photoUrl={photoModalSrc} photoInfo={photoModalInfo} deletePhoto={deletePhoto}/>
                 </div>
             )}
         </div>

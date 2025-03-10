@@ -11,6 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.validation.Valid;
@@ -21,6 +22,7 @@ import com.example.backend.dto.ExpenseCreationRequest;
 import com.example.backend.dto.ExpenseDTO;
 import com.example.backend.dto.GenericList;
 import com.example.backend.dto.GenericType;
+import com.example.backend.dto.ImageDataDTO;
 import com.example.backend.dto.OvernightStayDTO;
 import com.example.backend.dto.TravelCreationRequest;
 import com.example.backend.dto.TripCreationRequest;
@@ -802,6 +804,11 @@ public class TripController {
             Long imageId = tripService.uploadImage(email, id, file);
             return ResponseEntity.ok().body(imageId);
         }
+        catch (MaxUploadSizeExceededException ex) {
+            return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body("Photo exceeds maximum size");
+        }
         catch (Exception ex) {
             return ResponseEntity
                 .status(HttpStatus.FORBIDDEN)
@@ -822,6 +829,26 @@ public class TripController {
             return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.valueOf("image/png"))
                 .body(image);
+        }
+        catch (Exception ex) {
+            return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(ex.getMessage());
+        }
+    }
+
+    // Ottieni info foto
+    @GetMapping(value={"/{id}/photos/{photo_id}/info", "/{id}/photos/{photo_id}/info/"})
+    public ResponseEntity<?> getImageInfoById(@PathVariable Long id, @PathVariable Long photo_id){
+        try {
+            // prendi l'utente dal token
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String email = authentication.getName();
+
+            // prendi info
+            ImageDataDTO imageDTO = tripService.getImageInfoById(email, id, photo_id);
+            return ResponseEntity.status(HttpStatus.OK)
+                .body(imageDTO);
         }
         catch (Exception ex) {
             return ResponseEntity

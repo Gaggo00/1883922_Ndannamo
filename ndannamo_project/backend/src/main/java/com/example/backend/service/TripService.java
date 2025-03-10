@@ -42,6 +42,7 @@ import com.example.backend.dto.AmountUserDTO;
 import com.example.backend.dto.EventDTO;
 import com.example.backend.dto.ExpenseCreationRequest;
 import com.example.backend.dto.ExpenseDTO;
+import com.example.backend.dto.ImageDataDTO;
 import com.example.backend.dto.OvernightStayDTO;
 import com.example.backend.dto.TravelCreationRequest;
 import com.example.backend.dto.TripCreationRequest;
@@ -645,8 +646,25 @@ public class TripService {
             throw new ResourceNotFoundException("Trip not found");
         }
 
+        // prendi tipo
+        //String type = imageDataService
+
         // Restituisco la foto
         return imageDataService.getImageById(imageId);
+    }
+
+    // Per ottenere info foto
+    @Transactional
+    public ImageDataDTO getImageInfoById(String email, Long tripId, Long imageId) {
+        Trip trip = getTripById(tripId);
+
+        // Controllo che l'utente loggato faccia parte della trip
+        if (!userIsAParticipant(email, trip)) {
+            throw new ResourceNotFoundException("Trip not found");
+        }
+
+        // Restituisco la foto
+        return imageDataService.getImageDataDTOById(imageId);
     }
 
     // Per ottenere la lista di ID delle foto di una trip
