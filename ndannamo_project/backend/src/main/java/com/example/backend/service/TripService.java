@@ -500,7 +500,7 @@ public class TripService {
 
 
     // Per aggiungere una nuova spesa alla trip
-    public String createExpense(String email, long tripId, ExpenseCreationRequest expenseCreationRequest) {
+    public Long createExpense(String email, long tripId, ExpenseCreationRequest expenseCreationRequest) {
 
         Trip trip = getTripById(tripId);
 
@@ -574,7 +574,7 @@ public class TripService {
         }
 
 
-        return("Expense created");
+        return(expense.getId());
     }
 
 
@@ -604,6 +604,68 @@ public class TripService {
 
         // Elimina spesa
         expenseService.deleteExpense(expense);
+
+        return true;
+    }
+
+
+    public boolean updateExpense(String email, long tripId, long expenseId, ExpenseCreationRequest expenseUpdateRequest) {
+
+        Trip trip = getTripById(tripId);
+
+        // Controllo che l'utente loggato faccia parte della trip
+        if (!userIsAParticipant(email, trip)) {
+            throw new ResourceNotFoundException("Trip not found");
+        }
+
+        // Controllo che la spesa sia una spesa della trip
+        Expense expense = expenseService.getExpenseById(expenseId);
+        if (expense.getTrip() != trip) {
+            throw new ResourceNotFoundException("Expense not found");
+        }
+
+        expense.setTitle(expenseUpdateRequest.getTitle());
+        expense.setDate(expenseUpdateRequest.getDate());
+        expense.setAmount(expenseUpdateRequest.getAmount());
+        expense.setSplitEven(expenseUpdateRequest.getSplitEven());
+
+        // Controllo che l'utente pagante faccia parte della trip
+        User paidByUser = userService.getUserById(expenseUpdateRequest.getPaidById());
+        if (!userIsAParticipant(paidByUser, trip)) {
+            throw new ResourceNotFoundException("User 'paid by' not found!");
+        }
+        expense.setPaidBy(paidByUser.getId());
+        expense.setPaidByNickname(paidByUser.getNickname());
+
+        // Per controllare che la somma degli amount di tutti gli utenti sia uguale all'amount totale
+        double tot = 0;
+
+        // Controllo che tutti gli utenti nella lista amountPerUser facciano parte della trip
+        List<AmountUserDTO> amountPerUserDTO = expenseUpdateRequest.getAmountPerUser();
+        //Map<User, Double> amountPerUserMap = new HashMap<User, Double>();
+        for (AmountUserDTO amountUser : amountPerUserDTO) {
+            // Controllo che l'utente faccia parte della trip
+            User user = userService.getUserById(amountUser.getUser());
+            if (!userIsAParticipant(user, trip)) {
+                throw new ResourceNotFoundException("User not found!");
+            }
+            tot += amountUser.getAmount();
+            //amountPerUserMap.put(user, amountUser.getAmount());
+        }
+        if (expenseUpdateRequest.getAmount() != tot) {
+            throw new ResourceNotFoundException("Expense division is incorrect");
+        }
+                
+        // Salvo la lista amountPerUser
+        //expense.setAmountPerUser(amountPerUserMap);
+        expense.setAmountPerUser(amountPerUserDTO);
+
+        try {
+            // Salvo la spesa
+            expenseService.saveExpense(expense);
+        } catch (Exception e) {
+            throw new ResourceNotFoundException("Errore saveExpense");
+        }
 
         return true;
     }

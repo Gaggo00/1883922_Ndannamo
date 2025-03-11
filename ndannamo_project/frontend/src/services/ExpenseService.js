@@ -54,7 +54,57 @@ class ExpenseService {
             throw error; // L'errore sarà gestito all'esterno
         }
     }
-    
+
+    static async delete(token, tripId, expenseId) {
+        try {
+            const response = await axios.delete(
+                `${ExpenseService.BASE_URL}/${tripId}/expenses/${expenseId}`,
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization" : `Bearer ${token}`
+                    }
+                }
+            );
+            return response;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    static async update(token, tripId, expenseId, updatedExpense) {
+        const {title, paidByNickname, paidBy, date, amount, splitEven, amountPerUser} = updatedExpense;
+        console.log("Updated: ", updatedExpense)
+        console.log("Padid by:", paidBy);
+
+        let year = date.getFullYear();
+        let month = ("0" + (date.getMonth() + 1)).slice(-2); // Aggiungi lo zero davanti al mese se è inferiore a 10
+        let day = ("0" + date.getDate()).slice(-2);
+        let formattedDate = `${year}-${month}-${day}`;
+        try {
+            const response = await axios.put(
+                `${ExpenseService.BASE_URL}/${tripId}/expenses/${expenseId}`,
+                {
+                    title: title,
+                    paidByNickname: paidByNickname,
+                    paidById: paidBy,
+                    date: formattedDate,
+                    amount: amount,
+                    splitEven: splitEven,
+                    amountPerUser: amountPerUser,
+                },
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`,
+                    }
+                }
+            );
+            return response;  // La risposta del server
+        } catch (error) {
+            throw error;
+        }
+    }
 }
 
 export default ExpenseService;

@@ -1,10 +1,14 @@
 import React, {useEffect, useState, useRef} from 'react';
 import {useLocation, useNavigate} from 'react-router-dom';
 
+import InternalMenu from "./InternalMenu";
+
 import ExpenseService from '../../services/ExpenseService';
 import TCForm from './Tricount/TCForm';
 import TCSales from './Tricount/TriSales';
 import { TCRefund } from "./Tricount/TriRefund";
+
+import DateUtilities from '../../utils/DateUtilities';
 
 import './InternalMenu.css'
 import "../../styles/Main.css";
@@ -40,6 +44,44 @@ export default function TripExpenses() {
         retrieveTricounts();
     }, []);
 
+    useEffect(() => {
+        console.log('Data aggiornato:', data);
+        // Fai quello che serve qui dopo l'aggiornamento!
+    }, [data]);
+
+
+    const submit = async (newExpense, expenseId = -1) => {
+        if (expenseId == -1) {
+            const backExpenseId = await saveExpense(newExpense);
+            createNewExpense(newExpense, backExpenseId);
+        }
+        else
+        {
+            const oldExpenseIndex = data.findIndex((expense) => expense.id == expenseId);
+            if (oldExpenseIndex >= 0) {
+                const newData = [...data];
+                const oldExpense = data[oldExpenseIndex];
+                const newExpenseDto = {
+                    ...oldExpense,
+                    ...newExpense,
+                }
+                newData[oldExpenseIndex] = newExpenseDto;
+                console.log(oldExpense.id == newExpenseDto.id, oldExpense.id, newExpenseDto.id);
+                setData(newData);
+
+                console.log(newExpense);
+                console.log(newExpenseDto);
+                const token = localStorage.getItem('token');
+                try {
+                    console.log(newExpense)
+                    const response = await ExpenseService.update(token, tripInfo.id, expenseId, newExpenseDto);
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+        }
+    }
+
     const [activeText, setActiveText] = useState("list");
     const [formVisibility, setFormVisibility] = useState(true);
     const [formData, setFormData] = useState({
@@ -62,10 +104,16 @@ export default function TripExpenses() {
             }
 
             // Chiamata al servizio per ottenere le informazioni del profilo
-            //const response = await ExpenseService.getExpenses(token, tripInfo.id);
-            const response = undefined
+            const response = await ExpenseService.getExpenses(token, tripInfo.id);
+            //const response = undefined
             if (response) {
-                console.log("E'arrivata una risposta");
+                //console.log("E'arrivata una risposta", response);
+                response.map(expense => [
+                    expense.date = new Date(expense.date),
+                ]);
+                const now = new Date();
+                response.sort((a, b) => Math.abs(b.date - now) - Math.abs(a.date - now));
+                //console.log("E'arrivata una risposta", response);
                 setData(response);
             } else {
                 console.error('Invalid response data');
@@ -131,20 +179,18 @@ export default function TripExpenses() {
         }
     }
 
-    function getNewExpenseId() {
-        const max = Math.max(...data.map(expense => expense.id));
-        return max + 1;
-    }
-
-    function createNewExpense(newExpense) {
+    function createNewExpense(newExpense, newId) {
         const newExpenseDto = new ExpenseDto(newExpense);
-        const newId = getNewExpenseId();
         newExpenseDto.id = newId;
-        const newData = [...data];
-        newData.push(newExpenseDto);
-        const now = new Date();
-        newData.sort((a, b) => Math.abs(b.date - now) - Math.abs(a.date - now));
-        setData(newData);
+        
+        setData(prevData => {
+            // Combina i dati precedenti con la nuova spesa
+            const newData = [...prevData, newExpenseDto];
+            const now = new Date();
+            newData.sort((a, b) => Math.abs(b.date - now) - Math.abs(a.date - now));
+            
+            return newData;
+        });
     }
 
     const saveExpense = async (newExpense) => {
@@ -152,82 +198,73 @@ export default function TripExpenses() {
         const {title, paidByNickname, paidBy, date, amount, amountPerUser} = newExpense;
         try {
             const response = await ExpenseService.create(token, tripInfo.id, title, paidByNickname, paidBy, date, amount, true, amountPerUser);
+            return response;
         } catch (error) {
             console.log(error);
         }
     }
 
-    function submit(newExpense, expenseId = -1) {
-        if (expenseId == -1) {
-            console.log("La new Expense é: ", newExpense);
-            createNewExpense(newExpense);
-            console.log("Ragi ci siete?")
-            saveExpense(newExpense);
-        }
-        else
-        {
-            const oldExpenseIndex = data.findIndex((expense) => expense.id == expenseId);
-            if (oldExpenseIndex >= 0) {
-                const newData = [...data];
-                const oldExpense = data[oldExpenseIndex];
-                const newExpenseDto = {
-                    ...oldExpense,
-                    ...newExpense,
-                }
-                newData[oldExpenseIndex] = newExpenseDto;
-                setData(newData);
-            }
-        }
-    }
-
     
-    function destroy(expenseId) {
+    const destroy = async (expenseId) => {
         const index = data.findIndex(expense => expense.id == expenseId);
         if (index >= 0) {
             const newData = [...data];
             newData.splice(index, 1);
             setData(newData);
         }
+
+        const token = localStorage.getItem('token');
+        try {
+            const response = await ExpenseService.delete(token, tripInfo.id, expenseId);
+        } catch (error) {
+            console.log(error);
+        }
     }
 
 
     return (
-        <div className="main">
-            <div className="content tc-content">
-                <div className="tc-left">
-                    <div className="tc-top">
-                        <div className={`tc-top-text ${activeText === "list" ? "active" : "inactive"}`}
-                            id="list" onClick={()=>handleClick("list")}>Lista spese</div>
-                        <div className={`tc-top-text ${activeText === "sales" ? "active" : "inactive"}`}
-                            id="sales" onClick={()=>handleClick("sales")}>Saldi</div>
-                    </div>
-                    {activeText === "list" &&
-                        <TCSales
-                            data={data}
-                            userId={userId}
-                            handleSelection={handleTricountSelection}
-                            handleAdd={addSale}/>
-                    }
-                    {activeText == "sales" &&
-                        <TCRefund
-                            user={userId}
-                            expenses={data}
-                            users={users}
-                        />
-                    } 
+        <div className="trip-info">
+            <InternalMenu />
+            <div className="trip-content">
+                <div className="trip-top">
+                    <span> <strong>{tripInfo.title}:</strong> {DateUtilities.yyyymmdd_To_ddMONTH(tripInfo.startDate)} - {DateUtilities.yyyymmdd_To_ddMONTH(tripInfo.endDate)}</span>
                 </div>
-                {formVisibility == true &&
-                    <div className="tc-right">
-                        <TCForm {...formData}/>
-                        {/***activeText === "sales" &&
-                            <TCUserRecap
+                <div className="tc-content">
+                    <div className="tc-left">
+                        <div className="tc-top">
+                            <div className={`tc-top-text ${activeText === "list" ? "active" : "inactive"}`}
+                                id="list" onClick={()=>handleClick("list")}>Lista spese</div>
+                            <div className={`tc-top-text ${activeText === "sales" ? "active" : "inactive"}`}
+                                id="sales" onClick={()=>handleClick("sales")}>Saldi</div>
+                        </div>
+                        {activeText === "list" &&
+                            <TCSales
+                                data={data}
+                                userId={userId}
+                                handleSelection={handleTricountSelection}
+                                handleAdd={addSale}/>
+                        }
+                        {activeText == "sales" &&
+                            <TCRefund
                                 user={userId}
-                                userNickname={userNickname}
                                 expenses={data}
+                                users={users}
                             />
-                        ***/}
+                        } 
                     </div>
-                }
+                    {formVisibility == true &&
+                        <div className="tc-right">
+                            <TCForm {...formData}/>
+                            {/***activeText === "sales" &&
+                                <TCUserRecap
+                                    user={userId}
+                                    userNickname={userNickname}
+                                    expenses={data}
+                                />
+                            ***/}
+                        </div>
+                    }
+                </div>
             </div>
         </div>
     )
