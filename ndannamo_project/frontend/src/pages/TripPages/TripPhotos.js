@@ -59,20 +59,28 @@ export default function TripPhotos() {
 
     // Per il caricamento dei file
     function handleChange(event) {
-        setFile(event.target.files[0]);
-        var name = event.target.files[0].name;
+
+        var file = event.target.files[0];
+
+        if (!file) {
+            disableUploadButton();
+        }
+
+        const fileSizeKb = Math.round((file.size / 1024));
+        if (fileSizeKb >= 1024) {
+            alert("The photo you selected is too heavy. Only files up to 1Mb are supported.");
+            disableUploadButton();
+            return;
+        }
+
+        setFile(file);
+        var name = file.name;
         if (name.length > FILENAME_MAX_LENGTH) {
             name = name.substring(0, FILENAME_MAX_LENGTH) + "...";
         }
         setFilename(name);
         
-        if (event.target.files[0]) {
-            enableUploadButton();
-        }
-        else {
-            disableUploadButton();
-        }
-        
+        enableUploadButton();
     }
 
     function disableUploadButton() {
