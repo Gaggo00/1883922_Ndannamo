@@ -14,7 +14,7 @@ export default function Home() {
 
     const goToLogin = () => {
         if (isAuthenticated) {
-            navigate('/main');
+            navigate('/trips');
         } else {
             navigate('/login');
         }

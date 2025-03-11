@@ -46,7 +46,7 @@ export default function Navbar() {
                     {/* Usa la classe CSS personalizzata per il menu */}
                     <Dropdown.Menu className="dropdown-menu-custom">
                         <Dropdown.Item as={Link} to="/profile">My profile</Dropdown.Item>
-                        <Dropdown.Item as={Link} to="/main">My trips</Dropdown.Item>
+                        <Dropdown.Item as={Link} to="/trips">My trips</Dropdown.Item>
                         <Dropdown.Divider />
                         <Dropdown.Item as={Link} to="/" onClick={handleLogout}>Logout</Dropdown.Item>
                     </Dropdown.Menu>

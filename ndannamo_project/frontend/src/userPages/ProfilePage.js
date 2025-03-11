@@ -43,7 +43,7 @@ function ProfilePage() {
     };
 
     const goToTrips = () => {
-        navigate('/main');
+        navigate('/trips');
     }
 
     const fetchProfileInfo = async () => {

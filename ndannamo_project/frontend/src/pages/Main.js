@@ -247,7 +247,7 @@ function Main() {
             {isModalOpen && (
                 <div className="modal-overlay" onClick={handleOverlayClick}>
                     <div className="trip-box">
-                        <MultiStepForm/>
+                        <MultiStepForm reloadTrips={fetchTripsInfo}/>
                     </div>
                 </div>
             )}
