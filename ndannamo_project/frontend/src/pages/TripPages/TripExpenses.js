@@ -44,13 +44,8 @@ export default function TripExpenses() {
         retrieveTricounts();
     }, []);
 
-    useEffect(() => {
-        console.log('Data aggiornato:', data);
-        // Fai quello che serve qui dopo l'aggiornamento!
-    }, [data]);
-
-
     const submit = async (newExpense, expenseId = -1) => {
+        console.log("Il valore di newExpense: ", newExpense);
         if (expenseId == -1) {
             const backExpenseId = await saveExpense(newExpense);
             createNewExpense(newExpense, backExpenseId);
@@ -65,15 +60,14 @@ export default function TripExpenses() {
                     ...oldExpense,
                     ...newExpense,
                 }
+
                 newData[oldExpenseIndex] = newExpenseDto;
-                console.log(oldExpense.id == newExpenseDto.id, oldExpense.id, newExpenseDto.id);
+                const now = new Date();
+                newData.sort((a, b) => Math.abs(b.date - now) - Math.abs(a.date - now));
                 setData(newData);
 
-                console.log(newExpense);
-                console.log(newExpenseDto);
                 const token = localStorage.getItem('token');
                 try {
-                    console.log(newExpense)
                     const response = await ExpenseService.update(token, tripInfo.id, expenseId, newExpenseDto);
                 } catch (error) {
                     console.log(error);
@@ -250,7 +244,7 @@ export default function TripExpenses() {
                                 expenses={data}
                                 users={users}
                             />
-                        } 
+                        }
                     </div>
                     {formVisibility == true &&
                         <div className="tc-right">

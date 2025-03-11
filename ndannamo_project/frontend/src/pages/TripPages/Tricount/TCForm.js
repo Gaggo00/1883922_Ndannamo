@@ -40,8 +40,13 @@ function TCForm({
         setDate(expenseData.date);
         setId(expenseData.id);
         setStatus(status);
+        setSplitMethod(expenseData.splitEven == true ? "In modo equo" : "Personalizzato")
     }, [expenseData, status]);
 
+
+    useEffect(() => {
+        console.log("Pozzo");
+    }, [sSplitMethod])
 
     function setDateToString(dateString) {
         const newDate = new Date(dateString);
@@ -83,6 +88,49 @@ function TCForm({
         doSplit(Number(sAmount));
     }
 
+
+    const handleChangeCost = (index, e) => {
+        let newValue = e.target.value;
+    
+        // Se il valore non è vuoto, rimuovi lo zero iniziale solo se il numero non è zero
+        if (newValue && newValue[0] === '0' && newValue.length > 1) {
+          newValue = newValue.replace(/^0+/, ''); // Rimuove tutti gli zeri iniziali
+        }
+    
+        // Aggiorna lo stato solo con numeri validi
+        const newAmount = newValue === '' ? "" : parseInt(newValue, 10);
+    
+        // Aggiorna l'array in base all'indice
+        setSplitValue((prev) =>
+          prev.map((expense, idx) =>
+            idx === index
+              ? { ...expense, amount: isNaN(newAmount) ? "" : newAmount }
+              : expense
+          )
+        );
+    };
+
+    const handleFocusCost = (index, e) => {
+        // Se il valore è 0, rimuovilo
+        if (sSplitValue[index].amount === 0) {
+          setSplitValue((prev) =>
+            prev.map((expense, idx) =>
+              idx === index ? { ...expense, amount: '' } : expense
+            )
+          );
+        }
+      };
+    
+      const handleBlurCost = (index, e) => {
+        // Se l'input è vuoto, ripristina il valore a 0
+        console.log(e.target.value)
+        if (e.target.value <= 0) {
+            setSplitValue((prev) =>
+                prev.filter((expense, idx) => idx !== index) // Rimuovi l'elemento con l'indice 'index'
+            );
+        }
+      };
+
     function changeAmount(value) {
         setAmount(value);
         doSplit(value);
@@ -95,9 +143,16 @@ function TCForm({
             return false;
         if (sPaidBy == "" || sPaidBy == undefined)
             return false;
-        if (sDate < Date.now() || sDate == undefined)
+        const compDat1 = new Date(sDate);
+        const compDat2 = new Date();
+        compDat1.setHours(0, 0, 0, 0);
+        compDat2.setHours(0, 0, 0, 0)
+        if (compDat1 < compDat2 || sDate == undefined)
             return false;
-        if (sSplitValue == [] || sSplitValue == undefined)
+        if (sSplitValue.length == 0 || sSplitValue == undefined)
+            return false;
+        const totalAmount = sSplitValue.reduce((sum, item) => sum + item.amount, 0);
+        if (totalAmount != sAmount)
             return false;
         return true;
     }
@@ -130,7 +185,8 @@ function TCForm({
             date: sDate,
             paidBy: paidByUser === undefined ? -1 : paidByUser[0],
             paidByNickname: sPaidBy,
-            amountPerUser: sSplitValue,         
+            amountPerUser: sSplitValue,
+            splitEven: sSplitMethod == 'In modo equo' ? true : false,      
         }
         onSubmit(newExpense, expenseId);
         reset();
@@ -188,7 +244,7 @@ function TCForm({
             </div>
             <div className="tc-form-line" style={{alignItems: "center"}}>
                 <div>Split</div>
-                <PickField value={sSplitMethod} setValue={setSplitMethod} options={["In modo equo"]} disabled={sStatus == 1} style={{width: '60%'}}/>
+                <PickField value={sSplitMethod} setValue={setSplitMethod} options={["In modo equo", "Personalizzato"]} disabled={sStatus == 1} style={{width: '60%'}}/>
             </div>
             <div className="tc-form-list">
                 {users.map((user, index) => (
@@ -203,7 +259,26 @@ function TCForm({
                             />
                             <label htmlFor={`item-${index}`}>{user[1]}</label>
                         </div>
-                        <div className="tc-list-right">{sSplitValue.find(expense => expense.user === user[0])?.amount ?? 0}</div>
+                        {
+                            sSplitMethod === 'Personalizzato' &&
+                            <div className="tc-list-right">
+                                <input
+                                    type="number"
+                                    min={0}
+                                    value={sSplitValue.find(expense => expense.user === user[0])?.amount ?? ""}
+                                    onChange={(e) => handleChangeCost(index, e)}
+                                    onFocus={(e) => handleFocusCost(index, e)} // Gestisce il focus
+                                    onBlur={(e) => handleBlurCost(index, e)} // Gestisce il blur
+                                    step="1"
+                                    style={{width: "80px"}}
+                                    disabled={!sSplitValue.find(expense => expense.user === user[0])}
+                                />
+                            </div>
+                        }
+                        {
+                            sSplitMethod !== 'Personalizzato' &&
+                            <div className="tc-list-right">{sSplitValue.find(expense => expense.user === user[0])?.amount ?? 0}</div>
+                        }
                     </div>
                 ))}
             </div>

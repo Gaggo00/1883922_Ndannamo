@@ -228,7 +228,7 @@ export const TCRefund = ({user, expenses, users=[]}) => {
     return (
         <div className="tc-bottom">
             <TCListHeader names={["Nickname", "Balance"]}/>
-            <div className="tc-list">
+            <div className="tc-list tc-list-refund">
                 <div className="tc-list-inner" style={{maxHeight: '150px'}}>
                     {balances
                         .sort((a, b) => (a.id === user ? -1 : b.id === user ? 1 : 0))
@@ -248,16 +248,18 @@ export const TCRefund = ({user, expenses, users=[]}) => {
             </div>
             <div className="tc-list">
                 <TCListHeader names={["By", "To", "Amount", ""]}/>
-                {refunds.map((r, index) => (
-                    <TriRefund
-                        key={index}
-                        by={r.by}
-                        to={r.to}
-                        amount={r.amount}
-                        toNick={users[r.to][1]}
-                        byNick={users[r.by][1]}
-                    />
-                ))}
+                <div className='tc-list-container'>
+                    {refunds.map((r, index) => (
+                        <TriRefund
+                            key={index}
+                            by={r.by}
+                            to={r.to}
+                            amount={r.amount}
+                            toNick={users[r.to][1]}
+                            byNick={users[r.by][1]}
+                        />
+                    ))}
+                </div>
             </div>
         </div>
     );
