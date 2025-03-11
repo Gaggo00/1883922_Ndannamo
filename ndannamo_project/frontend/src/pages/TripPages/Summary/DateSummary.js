@@ -72,7 +72,7 @@ export default function DateSummary() {
                     <img src={calendar_icon} alt="calendar_icon" />
                     <p>Dates</p>
                 </div>
-                {!changeDate &&
+                {!changeDate && tripInfo.creator &&
                     <img id="edit" class="editable" onClick={handleEditDates} src={edit_icon} alt="edit_icon" />}
                 {changeDate && <UndoConfirm
                     onConfirm={handleChangeDates}

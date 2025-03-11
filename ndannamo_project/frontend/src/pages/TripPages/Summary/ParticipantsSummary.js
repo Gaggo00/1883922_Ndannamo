@@ -25,14 +25,18 @@ export default function ParticipantsSummary() {
         setChangeParticipants(true);
         setParticipants(tripInfo.list_participants);
         setInvitations(tripInfo.list_invitations);
+        console.log("list_invitations",tripInfo.list_invitations);
     }
 
     const handleChangeParticipants = async () => {
         let email_participants = participants.map(p => p.email);
         let email_list_participants = tripInfo.list_participants.map(p => p.email);
         let email_list_invitations = tripInfo.list_invitations.map(p => p.email);
+        let email_invitations = invitations.map(p =>
+            (typeof p === "object" && p !== null && "email" in p) ? p.email : p
+        );
 
-        if (email_participants === email_list_participants && invitations === email_list_invitations) {
+        if (email_participants === email_list_participants && email_invitations === email_list_invitations) {
             setChangeParticipants(false);
         } else {
             try {
@@ -41,10 +45,10 @@ export default function ParticipantsSummary() {
                     navigate("/login");
                 }
                 //console.log("1:", email_participants);
-                //console.log("2:", invitations);
+                //console.log("2:", email_invitations);
                 //console.log("3:", email_list_participants);
                 //console.log("4:", email_list_invitations);
-                const response = await TripService.updateParticipants(token, tripInfo.id, email_participants,invitations,email_list_participants, email_list_invitations);
+                const response = await TripService.updateParticipants(token, tripInfo.id, email_participants,email_invitations,email_list_participants, email_list_invitations);
 
                 if (response) {
                     setChangeParticipants(false);
@@ -92,7 +96,7 @@ export default function ParticipantsSummary() {
                     <img src={participants_icon} alt="participants_icon" />
                     <p>Participants</p>
                 </div>
-                {!changeParticipants &&
+                {!changeParticipants && tripInfo.creator &&
                     <img id="edit" className="editable" onClick={handleEditParticipants} src={edit_icon} alt="edit_icon" />}
                 {changeParticipants && <UndoConfirm
                     onConfirm={handleChangeParticipants}

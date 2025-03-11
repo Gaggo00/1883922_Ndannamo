@@ -131,14 +131,12 @@ class TripService{
     }
 
     static async updateParticipants(token, tripId, new_participants, new_invitations, old_participants, old_invitations) {
-        //console.log("new_participants:", new_participants);
-        //console.log("new_invitations:", new_invitations);
-        //console.log("old_participants:",old_participants);
-        //console.log("old_invitations:",old_invitations);
         let participants_to_delete = old_participants.filter(element => !new_participants.includes(element));
         let invitations_to_send = new_invitations.filter(element => !old_invitations.includes(element));
         let invitations_to_revoke = old_invitations.filter(element => !new_invitations.includes(element));
         //console.log("sto provando ad invitare:",invitations_to_send);
+        //console.log("inviti da revocare:", invitations_to_revoke);
+        //console.log("partecipanti da cancellare:",invitations_to_revoke);
         try {
             const requests = [];
 

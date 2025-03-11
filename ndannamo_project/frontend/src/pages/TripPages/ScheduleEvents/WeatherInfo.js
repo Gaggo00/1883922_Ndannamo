@@ -48,6 +48,7 @@ const WeatherInfo = ({ latitude, longitude, date,time }) => {
                 const response = await MeteoService.getMeteoInfo(latitude, longitude, date,time);
                 setTemperature(response[0]);
                 let icon_index= response[1];
+                console.log("icon_index:",icon_index);
                 setWeatherSymbol(icon_index);
             } catch (error) {
                 console.error("Errore nel recupero dati meteo:", error);
