@@ -13,6 +13,7 @@ import { DateField } from '../../../components/Fields/Fields';
 
 import '../TripSchedule.css'
 import '../../../styles/Common.css';
+import WeatherInfo from "./WeatherInfo";
 
 export default function EventOpenActivity({activity, latitude, longitude, reloadSchedule, tripStartDate, tripEndDate}) {
 
@@ -388,8 +389,12 @@ export default function EventOpenActivity({activity, latitude, longitude, reload
                         )}
                     </div>
                     <div className='row-element'>
-                        <div className='label'>Weather</div>
-                        <div className='value'>Not available</div>
+                        <WeatherInfo
+                            latitude={latitude}
+                            longitude={longitude}
+                            date={tripStartDate}
+                            time={activity.startTime}
+                        />
                     </div>
                 </div>
 
