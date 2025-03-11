@@ -18,7 +18,7 @@
 <list of user stories satisfied>
 
 ### PORTS: 
-<used ports>
+- 8080
 
 ### DESCRIPTION:
 <description of the container>
@@ -88,15 +88,13 @@
     | GET | /trips/{id}/leave | Leaves trip {id} | ... |
 
 
-- PAGES: <put this bullet point only in the case of frontend and fill the following table>
-
-	| Name | Description | Related Microservice | User Stories |
-	| ---- | ----------- | -------------------- | ------------ |
-	| ... | ... | ... | ... |
-
 - DB STRUCTURE: <put this bullet point only in the case a DB is used in the microservice and specify the structure of the tables and columns>
 
-	**_<name of the table>_** :	| **_id_** | <other columns>
+	**_trip_** : | **_id_** | creation_date | start_date | end_date | created_by | title | locations | invitations |
+
+    **_trips\_invitations_** : | **_trip_id, user_id_** | - |
+
+
 
 #### <other microservices>
 
