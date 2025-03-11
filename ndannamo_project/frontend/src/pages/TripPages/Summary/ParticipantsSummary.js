@@ -6,7 +6,7 @@ import edit_icon from "../../../static/svg/icons/edit_icon.svg";
 import TripService from "../../../services/TripService";
 import { useLocation } from 'react-router-dom';
 import participants_icon from "../../../static/svg/icons/partecipants_icon.svg";
-import participant_icon from "../../../static/svg/icons/partecipant_icon.svg";
+import UsersService from "../../../services/UsersService";
 
 export default function ParticipantsSummary() {
     const [changeParticipants, setChangeParticipants] = useState(false);
@@ -19,13 +19,16 @@ export default function ParticipantsSummary() {
     const location = useLocation();
     const tripInfo = location.state?.trip; // Recupera il tripInfo dallo stato
     const profileInfo = location.state?.profile; // Recupera il tripInfo dallo stato
+    const [listUsers, setListUsers] = useState([]);
+    const [errorMessage, setErrorMessage] = useState("");
 
 
     const handleEditParticipants = () => {
         setChangeParticipants(true);
         setParticipants(tripInfo.list_participants);
         setInvitations(tripInfo.list_invitations);
-        console.log("list_invitations",tripInfo.list_invitations);
+        console.log("list_invitations", tripInfo.list_invitations);
+        setErrorMessage([]);
     }
 
     const handleChangeParticipants = async () => {
@@ -48,13 +51,13 @@ export default function ParticipantsSummary() {
                 //console.log("2:", email_invitations);
                 //console.log("3:", email_list_participants);
                 //console.log("4:", email_list_invitations);
-                const response = await TripService.updateParticipants(token, tripInfo.id, email_participants,email_invitations,email_list_participants, email_list_invitations);
+                const response = await TripService.updateParticipants(token, tripInfo.id, email_participants, email_invitations, email_list_participants, email_list_invitations);
 
                 if (response) {
                     setChangeParticipants(false);
 
-                    let data = await TripService.getTrips(token,tripInfo.id);
-                    navigate(`/trips/${tripInfo.id}/summary`, { state: { trip: data[0], profile: profileInfo } })
+                    let data = await TripService.getTrips(token, tripInfo.id);
+                    navigate(`/trips/${tripInfo.id}/summary`, {state: {trip: data[0], profile: profileInfo}})
                     console.log("Participants updated!");
                 } else {
                     console.error('Invalid response data');
@@ -73,10 +76,35 @@ export default function ParticipantsSummary() {
         setNewParticipant(event.target.value); // Aggiorna lo stato dell'input
     }
 
+    const initUserList = async ()=> {
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                navigate("/login");
+            }
+            let response = await UsersService.getAllUsers(token);
+            if (response) {
+                setListUsers(response.map(p => p.email));
+            }
+
+        } catch (error) {
+            console.error('Error updating participants:', error);
+        }
+
+    }
+
     const handleAddParticipant = () => {
-        if (newParticipant && !invitations.includes(newParticipant)) { // Aggiungi solo se non è già presente
+
+        if (listUsers.length === 0) {
+            initUserList();
+        }
+        if (newParticipant in listUsers && !invitations.includes(newParticipant)) { // Aggiungi solo se non è già presente
             setInvitations([...invitations, newParticipant]); // Aggiorna la lista dei partecipanti
             setNewParticipant(""); // Resetta il campo di input
+        }
+        else {
+            console.log("email not found!");
+            setErrorMessage("email not found!");
         }
     }
 
@@ -93,14 +121,15 @@ export default function ParticipantsSummary() {
         <div className="sezione1">
             <div className="header-section" id="section1">
                 <div className="icon-label">
-                    <img src={participants_icon} alt="participants_icon" />
+                    <img src={participants_icon} alt="participants_icon"/>
                     <p>Participants</p>
                 </div>
                 {!changeParticipants && tripInfo.creator &&
-                    <img id="edit" className="editable" onClick={handleEditParticipants} src={edit_icon} alt="edit_icon" />}
+                    <img id="edit" className="editable" onClick={handleEditParticipants} src={edit_icon}
+                         alt="edit_icon"/>}
                 {changeParticipants && <UndoConfirm
                     onConfirm={handleChangeParticipants}
-                    onUndo={undoChangeParticipants} />}
+                    onUndo={undoChangeParticipants}/>}
             </div>
             <div className="partecipants-section">
                 <div className="partecipants">
@@ -111,12 +140,13 @@ export default function ParticipantsSummary() {
                             {participant.nickname !== profileInfo.nickname ? <p>{participant.nickname}</p> : <p>you</p>}
                         </div>))}
                     {!changeParticipants && tripInfo.list_invitations.map((participant, index) => (
-                            <div className="partecipant" key={index}>
-                                <i id="invitation-icon" className="bi bi-person-fill-add h2"></i>
-                                {participant.nickname !== profileInfo.nickname
-                                    ? <p>{participant.length > 6 ? participant.substring(0, 10) + "..." : participant.nickname}</p>
-                                    : <p>you</p>}
-                            </div>))
+                        <div className="partecipant" key={index}>
+                            <i id="invitation-icon" className="bi bi-person-fill-add h2"></i>
+                            {participant.nickname !== profileInfo.nickname
+                                ?
+                                <p>{participant.length > 6 ? participant.substring(0, 10) + "..." : participant.nickname}</p>
+                                : <p>you</p>}
+                        </div>))
                     }
                     {/* if you want to change the participants */}
                     {changeParticipants && participants.map((participant, index) => (
@@ -135,24 +165,30 @@ export default function ParticipantsSummary() {
                                 className="bi bi-trash3 h6"></i></div>
                             <i id="invitation-icon" className="bi bi-person-fill-add h2"></i>
                             {participant.nickname !== profileInfo.nickname
-                                ? <p>{participant.length > 6 ? participant.substring(0, 10) + "..." : participant.nickname}</p>
+                                ?
+                                <p>{participant.length > 6 ? participant.substring(0, 10) + "..." : participant.nickname}</p>
                                 : <p>you</p>}
                         </div>
                     ))}
                 </div>
                 {changeParticipants && (
                     <div className="add-part">
-                        <label>
-                            <input
-                                type="text"
-                                name="email"
-                                value={newParticipant}
-                                onChange={handleChange}
-                                placeholder='Enter the email'
-                            />
-                        </label>
-                        <button onClick={handleAddParticipant}>+</button>
-                    </div>
+                        <div className="input-container">
+                            <div className="input-wrapper">
+                                <input
+                                    type="text"
+                                    name="email"
+                                    value={newParticipant}
+                                    onChange={handleChange}
+                                    placeholder="Enter the email"
+                                />
+                                <button onClick={handleAddParticipant}>+</button>
+                            </div>
+                            <p id="error-message" className={errorMessage ? "visible" : ""}>
+                                {errorMessage}
+                            </p>
+                        </div>
+                  </div>
                 )}
             </div>
         </div>
