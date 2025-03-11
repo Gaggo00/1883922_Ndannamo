@@ -25,6 +25,7 @@ public class Expense {
     private long id;
 
     @ManyToOne
+    @JoinColumn(name="trip_id", nullable=false, foreignKey = @ForeignKey(name = "fk_trip_expenses"))
     private Trip trip;
 
     private String title;
