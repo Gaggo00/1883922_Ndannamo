@@ -10,6 +10,7 @@ import TripService from '../../services/TripService';
 
 import './InternalMenu.css'
 import "./TripPhotos.css"
+import AttachmentService from "../../services/AttachmentService";
 
 
 export default function TripPhotos() {
@@ -105,7 +106,7 @@ export default function TripPhotos() {
             }
 
             // Chiamata al servizio per ottenere le informazioni del profilo
-            const response = await PhotoService.uploadPhoto(token, id, file);
+            const response = await AttachmentService.uploadPhoto(token, id, file);
 
             if (response) {
                 console.log(response);
@@ -137,7 +138,7 @@ export default function TripPhotos() {
                 navigate("/login");
             }
 
-            const response = await PhotoService.deletePhoto(token, id, photoId);
+            const response = await AttachmentService.deleteAttachment(token, photoId);
 
             if (response) {
                 closeModal();

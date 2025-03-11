@@ -52,7 +52,7 @@ export default function EventOpenNight({
 
         try {
             const token = localStorage.getItem('token');
-            const uploadedFiles = await AttachmentService.uploadFiles(token, selectedFiles);
+            const uploadedFiles = await AttachmentService.uploadFiles(token, selectedFiles, night.tripId);
             await AttachmentService.linkAttachmentsToAttachable(token, night.id, uploadedFiles);
             await loadAttachments();
             setSelectedFiles([]);

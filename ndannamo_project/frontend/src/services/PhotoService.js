@@ -21,59 +21,10 @@ class PhotoService {
     }
 
 
-    // Per caricare una sola foto (per piu' foto insieme bisogna ancora farlo lato backend)
-    static async uploadPhoto(token, tripId, file) {
-        const formData = new FormData();
-        formData.append("image", file);
 
-        try {
-            const response = await axios.post(`${PhotoService.BASE_URL}/${tripId}/photos`, formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                    "Authorization": `Bearer ${token}`
-                }
-            });
-            return response.data;
-        } catch (error) {
-            console.error("Error uploading files:", error);
-            throw error;
-        }
-    }
-
-
-    // Per ottenere una foto
-    static async getPhoto(token, tripId, photoId) {
-        try {
-            const response = await axios.get(`${PhotoService.BASE_URL}/${tripId}/photos/${photoId}`, {
-                headers: {
-                    'Content-Type': 'image/png',
-                    "Authorization": `Bearer ${token}`
-                },
-                responseType: "blob"
-            });
-            return response.data;
-        } catch (error) {
-            console.error("Error uploading files:", error);
-            throw error;
-        }
-    }
 
 
     // Per eliminare una foto
-    static async deletePhoto(token, tripId, photoId) {
-        try {
-            const response = await axios.delete(`${PhotoService.BASE_URL}/${tripId}/photos/${photoId}`, {
-                headers: {
-                    "Authorization": `Bearer ${token}`,
-                    "Content-Type": "application/json"
-                }
-            });
-            return response.data;
-        } catch (error) {
-            console.error("Error deleting photo:", error);
-            throw error;
-        }
-    }
 
     /*
     axios.get(endpoint, {

@@ -7,12 +7,12 @@ class AttachmentService {
 
     static FRONT_END_URL = process.env.REACT_APP_FRONT_END_URL || 'http://localhost:3000';
 
-    static async uploadFiles(token, files) {
+    static async uploadFiles(token, files, tripId) {
         const formData = new FormData();
         files.forEach(file => formData.append("files", file));
 
         try {
-            const response = await axios.post(`${AttachmentService.BASE_URL}/attachments`, formData, {
+            const response = await axios.post(`${AttachmentService.BASE_URL}/trips/${tripId}/attachments`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     "Authorization" : `Bearer ${token}`
@@ -85,6 +85,22 @@ class AttachmentService {
         }
     }
 
+    static async getPhoto(token, tripId, photoId) {
+        try {
+            const response = await axios.get(`${PhotoService.BASE_URL}/attachments/${photoId}`, {
+                headers: {
+                    'Content-Type': 'image/png',
+                    "Authorization": `Bearer ${token}`
+                },
+                responseType: "blob"
+            });
+            return response.data;
+        } catch (error) {
+            console.error("Error uploading files:", error);
+            throw error;
+        }
+    }
+
     static async unlinkAttachment(token, attachableId, attachmentId) {
         try {
             const response = await axios.delete(
@@ -121,6 +137,24 @@ class AttachmentService {
         }
     }
 
+// Per caricare una sola foto (per piu' foto insieme bisogna ancora farlo lato backend)
+    static async uploadPhoto(token, tripId, file) {
+        const formData = new FormData();
+        formData.append("image", file);
+
+        try {
+            const response = await axios.post(`${PhotoService.BASE_URL}/${tripId}/photos`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+            return response.data;
+        } catch (error) {
+            console.error("Error uploading files:", error);
+            throw error;
+        }
+    }
 
 }
 

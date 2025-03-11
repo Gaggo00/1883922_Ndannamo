@@ -5,6 +5,7 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import PhotoService from '../../../services/PhotoService';
 
 import "../TripPhotos.css"
+import AttachmentService from "../../../services/AttachmentService";
 
 
 export default function PhotoPreview({photoId, tripId, openModal}) {
@@ -27,7 +28,7 @@ export default function PhotoPreview({photoId, tripId, openModal}) {
                 navigate("/login");
             }
 
-            const response = await PhotoService.getPhoto(token, tripId, photoId);
+            const response = await AttachmentService.getPhoto(token, tripId, photoId);
 
             if (response) {
                 console.log("fetched image of id: " + photoId);

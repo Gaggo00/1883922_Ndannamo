@@ -250,7 +250,7 @@ export default function EventOpenTravel({travel, latitude, longitude, reloadSche
 
         try {
             const token = localStorage.getItem('token');
-            const uploadedFiles = await AttachmentService.uploadFiles(token, selectedFiles);
+            const uploadedFiles = await AttachmentService.uploadFiles(token, selectedFiles, travel.tripId);
             await AttachmentService.linkAttachmentsToAttachable(token, travel.id, uploadedFiles);
             await loadAttachments();
             setSelectedFiles([]);

@@ -298,7 +298,7 @@ export default function EventOpenActivity({activity, latitude, longitude, reload
 
         try {
             const token = localStorage.getItem('token');
-            const uploadedFiles = await AttachmentService.uploadFiles(token, selectedFiles);
+            const uploadedFiles = await AttachmentService.uploadFiles(token, selectedFiles, activity.tripId);
             await AttachmentService.linkAttachmentsToAttachable(token, activity.id, uploadedFiles);
             await loadAttachments();
             setSelectedFiles([]);
