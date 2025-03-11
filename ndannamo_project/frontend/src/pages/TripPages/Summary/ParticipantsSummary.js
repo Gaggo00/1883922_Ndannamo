@@ -28,7 +28,11 @@ export default function ParticipantsSummary() {
     }
 
     const handleChangeParticipants = async () => {
-        if (participants === tripInfo.list_participants && invitations === tripInfo.list_invitations) {
+        let email_participants = participants.map(p => p.email);
+        let email_list_participants = tripInfo.list_participants.map(p => p.email);
+        let email_list_invitations = tripInfo.list_invitations.map(p => p.email);
+
+        if (email_participants === email_list_participants && invitations === email_list_invitations) {
             setChangeParticipants(false);
         } else {
             try {
@@ -36,14 +40,17 @@ export default function ParticipantsSummary() {
                 if (!token) {
                     navigate("/login");
                 }
-
-                const response = await TripService.updateParticipants(token, tripInfo.id, participants,invitations,tripInfo.list_participants, tripInfo.list_invitations);
+                //console.log("1:", email_participants);
+                //console.log("2:", invitations);
+                //console.log("3:", email_list_participants);
+                //console.log("4:", email_list_invitations);
+                const response = await TripService.updateParticipants(token, tripInfo.id, email_participants,invitations,email_list_participants, email_list_invitations);
 
                 if (response) {
                     setChangeParticipants(false);
-                    tripInfo.list_invitations = invitations;
-                    tripInfo.list_participants = participants;
-                    navigate(`/trips/${tripInfo.id}/summary`, { state: { trip: tripInfo, profile: profileInfo } })
+
+                    let data = await TripService.getTrips(token,tripInfo.id);
+                    navigate(`/trips/${tripInfo.id}/summary`, { state: { trip: data[0], profile: profileInfo } })
                     console.log("Participants updated!");
                 } else {
                     console.error('Invalid response data');
