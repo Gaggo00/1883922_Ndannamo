@@ -142,8 +142,8 @@ class TripService{
 
             if (invitations_to_revoke.length > 0) {
                 requests.push(
-                    axios.post(
-                        `${TripService.BASE_URL}/${tripId}/remove-invitations`,
+                    axios.delete(
+                        `${TripService.BASE_URL}/${tripId}/invite`,
                         { inviteList: invitations_to_revoke },
                         { headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` } }
                     )
@@ -152,8 +152,8 @@ class TripService{
 
             if (participants_to_delete.length > 0) {
                 requests.push(
-                    axios.post(
-                        `${TripService.BASE_URL}/${tripId}/remove-participants`,
+                    axios.delete(
+                        `${TripService.BASE_URL}/${tripId}/participants`,
                         { inviteList: participants_to_delete },
                         { headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` } }
                     )
