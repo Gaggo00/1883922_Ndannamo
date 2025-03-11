@@ -99,7 +99,7 @@ export const TriBalance = ({ id, nickname, amount, onClick = ()=>{} }) => {
 }
   
 
-const TriRefund = ({ by, to, amount, toNick, byNick }) => {
+const TriRefund = ({ by, to, amount, toNick, byNick, onClickPaid, onClickPay}) => {
 
     return (
         <div className='tc-item-n-h'>
@@ -107,8 +107,8 @@ const TriRefund = ({ by, to, amount, toNick, byNick }) => {
             <div className="tc-column tc-expense">{toNick}</div>
             <div className="tc-column tc-total">{amount}</div>
             <div className="tc-column tc-date">
-                <button>Paid</button>
-                <button>Pay</button>
+                <button onClick={onClickPaid}>Paid</button>
+                <button onClick={onClickPay}>Pay</button>
             </div>
         </div>
     );
@@ -122,7 +122,7 @@ class Refound {
     }
 }
 
-export const TCRefund = ({user, expenses, users=[]}) => {
+export const TCRefund = ({user, expenses, users=[], onRefund}) => {
 
     const [refunds, setRefunds] = useState([]);
     const [balances, setBalances] = useState([]);
@@ -145,6 +145,7 @@ export const TCRefund = ({user, expenses, users=[]}) => {
         })
 
         newExpenses.map((e) => {
+            dict[e.paidBy] = dict[e.paidBy] || 0; 
             dict[e.paidBy] += e.amount;
             e.amountPerUser.map((userAmount) => {
                 dict[userAmount.user] -= userAmount.amount;
@@ -157,8 +158,10 @@ export const TCRefund = ({user, expenses, users=[]}) => {
             .sort(([, valueA], [, valueB]) => valueB - valueA);
         sorted.map((value) => {
             const indx = users.findIndex(user => user[0] === value[0]);
-            const newBalance = {amount: value[1], id: value[0], nickname: users[indx][1]};
-            balances.push(newBalance);
+            if (indx >= 0) {
+                const newBalance = {amount: value[1], id: value[0], nickname: users[indx][1]};
+                balances.push(newBalance);
+            }
         })
 
         return balances;
@@ -221,7 +224,25 @@ export const TCRefund = ({user, expenses, users=[]}) => {
 
 
     function onBalanceClik(userId) {
-        console.log(userId);
+    }
+
+    function onClickPaid(index) {
+        const refund = refunds[index];
+        const userBy  = users.find(user => user[0] === refund.by);
+        const userTo = users.find(user => user[0] === refund.to);
+
+        const newExpenseDto = {
+            title: "Refund by " + userBy[1] + " to " + userTo[1],
+            amount: refund.amount,
+            date: new Date(),
+            paidBy: userBy[0],
+            paidByNickname: userBy[1],
+            splitEven: true,
+            amountPerUser: [{user: userTo[0], amount: refund.amount, userNickname: userTo[1]}],
+            refund: true,
+        }
+
+        onRefund(newExpenseDto);
     }
 
 
@@ -255,8 +276,10 @@ export const TCRefund = ({user, expenses, users=[]}) => {
                             by={r.by}
                             to={r.to}
                             amount={r.amount}
-                            toNick={users[r.to][1]}
-                            byNick={users[r.by][1]}
+                            toNick={users.find(user => user[0] === r.to) ? users.find(user => user[0] === r.to)[1] : null}
+                            byNick={users.find(user => user[0] === r.by) ? users.find(user => user[0] === r.by)[1] : null}
+                            onClickPaid={() => onClickPaid(index)}
+                            onClickPay={() => {console.log("Pollo")}}
                         />
                     ))}
                 </div>

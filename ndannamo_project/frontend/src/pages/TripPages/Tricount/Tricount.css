@@ -231,6 +231,7 @@
     padding-left: 8px;
     padding-right: 16px;
     border-radius: 8px;
+    gap: 8px;
 }
 
 .tc-list-container {

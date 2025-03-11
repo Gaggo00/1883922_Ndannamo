@@ -518,6 +518,7 @@ public class TripService {
         expense.setDate(expenseCreationRequest.getDate());
         expense.setAmount(expenseCreationRequest.getAmount());
         expense.setSplitEven(expenseCreationRequest.getSplitEven());
+        expense.setRefund(expenseCreationRequest.getRefund());
 
         // Controllo che l'utente pagante faccia parte della trip
         User paidByUser = userService.getUserById(expenseCreationRequest.getPaidById());
@@ -628,6 +629,7 @@ public class TripService {
         expense.setDate(expenseUpdateRequest.getDate());
         expense.setAmount(expenseUpdateRequest.getAmount());
         expense.setSplitEven(expenseUpdateRequest.getSplitEven());
+        expense.setRefund(expenseUpdateRequest.getRefund());
 
         // Controllo che l'utente pagante faccia parte della trip
         User paidByUser = userService.getUserById(expenseUpdateRequest.getPaidById());

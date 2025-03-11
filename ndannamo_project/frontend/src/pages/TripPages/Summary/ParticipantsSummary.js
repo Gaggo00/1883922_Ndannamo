@@ -22,7 +22,6 @@ export default function ParticipantsSummary() {
     const [listUsers, setListUsers] = useState([]);
     const [errorMessage, setErrorMessage] = useState("");
 
-
     const handleEditParticipants = () => {
         setChangeParticipants(true);
         setParticipants(tripInfo.list_participants);
@@ -95,10 +94,14 @@ export default function ParticipantsSummary() {
 
     const handleAddParticipant = () => {
 
+        listUsers.forEach((email) => {
+            console.log(`'${email}'`);
+        });
+        console.log("L-utente é dentro: ", newParticipant in listUsers);
         if (listUsers.length === 0) {
             initUserList();
         }
-        if (newParticipant in listUsers && !invitations.includes(newParticipant)) { // Aggiungi solo se non è già presente
+        if (listUsers.includes(newParticipant) && !invitations.includes(newParticipant)) { // Aggiungi solo se non è già presente
             setInvitations([...invitations, newParticipant]); // Aggiorna la lista dei partecipanti
             setNewParticipant(""); // Resetta il campo di input
         }

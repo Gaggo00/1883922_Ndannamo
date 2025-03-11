@@ -30,11 +30,14 @@ const TCSales = ({data, userId, handleSelection=()=>{}, handleAdd=()=>{}}) => {
         let myExpenses = 0;
 
         expensesData.map((expense) => {
-            totExpenses += expense.amount;
-            expense.amountPerUser.map((e) => {
-                if (e.user == userId)
-                    myExpenses += e.amount;
-            })
+            console.log(expense.refund)
+            if (expense.refund != true) {
+                totExpenses += expense.amount;
+                expense.amountPerUser.map((e) => {
+                    if (e.user == userId)
+                        myExpenses += e.amount;
+                })
+            }
         })
 
         setTotalExpenses(totExpenses);

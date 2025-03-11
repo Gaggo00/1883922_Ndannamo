@@ -33,6 +33,7 @@ public class ExpenseDTO {
     private double amount;
 
     private boolean splitEven;
+    private boolean refund;
     
     List<AmountUserDTO> amountPerUser = new ArrayList<>();
 }

@@ -25,6 +25,7 @@ class ExpenseDto {
         this.amount = params.amount ?? 0;
         this.splitEven = params.splitEven ?? true;
         this.amountPerUser = params.amountPerUser ?? [];
+        this.refund = params.refund ?? false;
     }
 }
 
@@ -45,7 +46,7 @@ export default function TripExpenses() {
     }, []);
 
     const submit = async (newExpense, expenseId = -1) => {
-        console.log("Il valore di newExpense: ", newExpense);
+        newExpense.refund = false;
         if (expenseId == -1) {
             const backExpenseId = await saveExpense(newExpense);
             createNewExpense(newExpense, backExpenseId);
@@ -189,9 +190,9 @@ export default function TripExpenses() {
 
     const saveExpense = async (newExpense) => {
         const token = localStorage.getItem('token');
-        const {title, paidByNickname, paidBy, date, amount, amountPerUser} = newExpense;
+        const {title, paidByNickname, paidBy, date, amount, amountPerUser, splitEven, refund} = newExpense;
         try {
-            const response = await ExpenseService.create(token, tripInfo.id, title, paidByNickname, paidBy, date, amount, true, amountPerUser);
+            const response = await ExpenseService.create(token, tripInfo.id, title, paidByNickname, paidBy, date, amount, splitEven, amountPerUser, refund);
             return response;
         } catch (error) {
             console.log(error);
@@ -213,6 +214,11 @@ export default function TripExpenses() {
         } catch (error) {
             console.log(error);
         }
+    }
+
+    const onRefund = async (newExpense) => {
+        const backExpenseId = await saveExpense(newExpense);
+        createNewExpense(newExpense, backExpenseId);
     }
 
 
@@ -243,6 +249,7 @@ export default function TripExpenses() {
                                 user={userId}
                                 expenses={data}
                                 users={users}
+                                onRefund={onRefund}
                             />
                         }
                     </div>

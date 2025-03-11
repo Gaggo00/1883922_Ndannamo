@@ -45,7 +45,6 @@ function TCForm({
 
 
     useEffect(() => {
-        console.log("Pozzo");
     }, [sSplitMethod])
 
     function setDateToString(dateString) {
