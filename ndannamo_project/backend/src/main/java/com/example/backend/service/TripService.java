@@ -76,7 +76,7 @@ public class TripService {
 
         Trip trip = Trip.builder()
                 .title(tripRequest.getTitle())
-                .locations(tripRequest.getLocations())
+                .locations(tripRequest.getLocations().stream().map(l -> cityService.getCityByNameAndCountry(l.split(',')[0].strip(), l.split(',')[1].strip())).collect(Collectors.toList()))
                 .creationDate(LocalDate.now())
                 .startDate(tripRequest.getStartDate())
                 .endDate(tripRequest.getEndDate())

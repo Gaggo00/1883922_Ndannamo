@@ -22,7 +22,8 @@ public class Trip {
     private Long id;
 
     private String title;
-    private List<String> locations; // FIXME: list of strings is not a real type in database
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<City> locations; // FIXME: list of strings is not a real type in database
     private LocalDate creationDate;
     private LocalDate startDate;
     private LocalDate endDate;
