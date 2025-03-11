@@ -2,10 +2,13 @@ package com.example.backend.controller;
 
 
 import com.example.backend.dto.AttachmentDTO;
+import com.example.backend.exception.ResourceNotFoundException;
 import com.example.backend.model.Attachment;
+import com.example.backend.model.Trip;
 import com.example.backend.service.AttachmentService;
 import com.example.backend.service.TripService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+
 
 
 @RestController
@@ -28,27 +32,12 @@ public class AttachmentController {
         this.tripService = tripService;
     }
 
-    @PostMapping(value={"", "/trip/{tripId}"})
-    public ResponseEntity<?> createAttachments(
-            @RequestParam("files") MultipartFile[] files, @PathVariable Long tripId) {
-        try {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            String email = authentication.getName();
-            Trip trip = tripService.getTripById(tripId);
-            List<Long> attachmentIds = attachmentService.createAttachments(files, email, trip).stream().map(Attachment::getId).toList();
-            return ResponseEntity.ok(attachmentIds); // Ritorna gli ID degli attachments creati
-        }
-        catch (Exception ex) {
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(ex.getMessage());
-        }
-    }
-
     @GetMapping(value={"/{id}", "/{id}/"})
     public ResponseEntity<?> getAttachment(@PathVariable Long id) {
         try {
-            AttachmentDTO file = attachmentService.getAttachmentDataDTObyId(id);
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String email = authentication.getName();
+            AttachmentDTO file = attachmentService.getAttachmentDataDTObyId(id, email);
             return ResponseEntity.ok()
                     .body(file);
         }
@@ -60,10 +49,34 @@ public class AttachmentController {
 
     }
 
+    @GetMapping(value={"/{id}/photo", "/{id}/photo/"})
+    public ResponseEntity<?> getAttachmentPhoto(@PathVariable Long id) {
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String email = authentication.getName();
+
+            // Controllo che l'utente loggato faccia parte della trip
+
+            AttachmentDTO file = attachmentService.getAttachmentDataDTObyId(id, email);
+            return ResponseEntity.ok()
+                    .contentType(MediaType.valueOf("image/png"))
+                    .body(file.getFileData());
+        }
+        catch (Exception ex) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(ex.getMessage());
+        }
+
+    }
+
+
     @DeleteMapping(value={"/{id}", "/{id}/"})
     public ResponseEntity<?> deleteAttachment(@PathVariable Long id) {
         try {
-            attachmentService.deleteAttachment(id);
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            final String email = authentication.getName();
+            attachmentService.deleteAttachment(id, email);
             return ResponseEntity.ok().build();
         }
         catch (Exception ex) {
@@ -72,9 +85,6 @@ public class AttachmentController {
                     .body(ex.getMessage());
         }
     }
-
-
-
 
 
 }

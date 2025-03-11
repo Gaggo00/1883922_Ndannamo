@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.ArrayList;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Entity
 @Data
@@ -16,6 +16,10 @@ import java.util.ArrayList;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Trip {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     private String title;
     private List<String> locations; // FIXME: list of strings is not a real type in database
@@ -53,8 +57,8 @@ public class Trip {
 
 
     // foto della trip
-    @OneToMany(fetch = FetchType.LAZY)
-    private List<Attachment> attachments = new ArrayList<>();
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Attachment> attachments = new HashSet<>();
 
 
     public boolean removeInvitation(User user) {
@@ -81,9 +85,18 @@ public class Trip {
         return false;
     }
 
-    public boolean removePhoto(ImageData photo) {
-        if (this.photos.contains(photo)) {
-            this.photos.remove(photo);
+    public void addAttachments(Collection<Attachment> attachments){
+        this.attachments.addAll(attachments);
+    }
+
+    //TODO: cambiare filtro?
+    public List<Attachment> getPhotos(){
+        return this.attachments.stream().filter(attachment -> attachment.getFileType().startsWith('image')).collect(Collectors.toList())
+    }
+
+    public boolean removeAttachment(final Attachment attachment) {
+        if (this.attachments.contains(attachment)) {
+            this.attachments.remove(attachment);
             return true;
         }
         return false;

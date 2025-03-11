@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.example.backend.exception.ResourceNotFoundException;
 import com.example.backend.model.Attachment;
+import com.example.backend.service.AttachmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -41,15 +43,18 @@ public class TripController {
 
     @Autowired
     private final TripService tripService;
+
+    private final AttachmentService attachmentService;
     //private final UserService userService;
 
     @Autowired
     private ImageDataService imageDataService;
 
     @Autowired
-    public TripController(TripService tripService /*, UserService userService*/) {
+    public TripController(TripService tripService, AttachmentService attachmentService /*, UserService userService*/) {
         this.tripService = tripService;
         //this.userService = userService;
+        this.attachmentService = attachmentService;
     }
 
     // Crea una trip
@@ -789,46 +794,29 @@ public class TripController {
 
 
 
-    /********************************* FOTO *********************************/
-
-    // Carica una foto
-    @PostMapping(value={"/{id}/photos", "/{id}/photos/"} /*, consumes = { MediaType.MULTIPART_FORM_DATA_VALUE }*/)
-    public ResponseEntity<?> uploadImage(@PathVariable Long id, @RequestParam("image") MultipartFile file) throws IOException {
+    /*********************************Attachments *********************************/
+    @PostMapping(value={"/{id}/attachments", "/{id}/attachments/"})
+    public ResponseEntity<?> createAttachments(
+            @RequestParam("files") MultipartFile[] files, @PathVariable Long id) {
         try {
-            // prendi l'utente dal token
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            final String email = authentication.getName();
-
-            // carica foto
-            List<Long> imageIds = attachmentService.createAttachments(files, email).stream().map(Attachment::getId).toList();
-            return ResponseEntity.ok().body(imageIds);
-        }
-        catch (Exception ex) {
-            return ResponseEntity
-                .status(HttpStatus.FORBIDDEN)
-                .body(ex.getMessage());
-        }
-    }
-
-    // Ottieni una foto
-    @GetMapping(value={"/{id}/photos/{photo_id}", "/{id}/photos/{photo_id}/"})
-    public ResponseEntity<?> getImageById(@PathVariable Long id, @PathVariable Long photo_id){
-        try {
-            // prendi l'utente dal token
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String email = authentication.getName();
 
-            // prendi foto
-            byte[] image = tripService.getImageById(email, id, photo_id);
-            return ResponseEntity.status(HttpStatus.OK)
-                .contentType(MediaType.valueOf("image/png"))
-                .body(image);
+            Trip trip = tripService.getTripById(id);
+            List<Long> attachmentIds = attachmentService.createAttachments(files, email, trip).stream().map(Attachment::getId).toList();
+            return ResponseEntity.ok(attachmentIds); // Ritorna gli ID degli attachments creati
         }
         catch (Exception ex) {
             return ResponseEntity
-                .status(HttpStatus.FORBIDDEN)
-                .body(ex.getMessage());
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(ex.getMessage());
         }
+    }
+
+    // Carica una foto
+    @PostMapping(value={"/{id}/photos", "/{id}/photos/"} /*, consumes = { MediaType.MULTIPART_FORM_DATA_VALUE }*/)
+    public ResponseEntity<?> uploadImage(@PathVariable Long id, @RequestParam("image") MultipartFile[] files) throws IOException {
+        return createAttachments(files, id);
     }
 
     // Ottieni lista di foto id
@@ -842,25 +830,6 @@ public class TripController {
             // prendi lista
             List<Long> photoIds = tripService.getTripPhotos(email, id);
             return ResponseEntity.status(HttpStatus.OK).body(photoIds);
-        }
-        catch (Exception ex) {
-            return ResponseEntity
-                .status(HttpStatus.FORBIDDEN)
-                .body(ex.getMessage());
-        }
-    }
-
-    // Elimina una foto
-    @DeleteMapping(value={"/{id}/photos/{photo_id}", "/{id}/photos/{photo_id}/"})
-    public ResponseEntity<?> deleteImage(@PathVariable Long id, @PathVariable Long photo_id){
-        try {
-            // prendi l'utente dal token
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            String email = authentication.getName();
-
-            // elimina foto
-            tripService.deleteImage(email, id, photo_id);
-            return ResponseEntity.status(HttpStatus.OK).body("Deleted image");
         }
         catch (Exception ex) {
             return ResponseEntity

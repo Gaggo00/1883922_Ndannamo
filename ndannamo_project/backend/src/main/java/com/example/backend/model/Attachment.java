@@ -20,6 +20,7 @@ public class Attachment {
     private String fileType; // Tipo MIME (es. "image/png", "application/pdf")
     private Long fileSize;   // Dimensione del file in byte
 
+    // TODO: Aggiungere la data di upload del file? limitare lunghezza file? compressione file?
     @Column(columnDefinition = "BYTEA") // Salva il file come blob binario
     private byte[] fileData; // Contenuto del file
 
@@ -28,10 +29,12 @@ public class Attachment {
     private AttachableEntity attachedTo;
 
     @ManyToOne
+    @JoinColumn(name="uploaded_by", foreignKey = @ForeignKey(name = "fk_attachment_uploaded_by"))
     private User uploadedBy;
 
     @ManyToOne
-    private Trip trip
+    @JoinColumn(name="trip_id", foreignKey = @ForeignKey(name = "fk_attachment_trip"))
+    private Trip trip;
 
 
 }

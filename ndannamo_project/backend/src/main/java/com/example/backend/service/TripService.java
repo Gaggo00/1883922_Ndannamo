@@ -8,6 +8,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import com.example.backend.exception.UserNotParticipantException;
+import com.example.backend.exception.UserNotParticipantException.UserNotParticipantExceptionCodes;
+import com.example.backend.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.core.Local;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -24,15 +27,6 @@ import com.example.backend.utils.TripValidation;
 import jakarta.transaction.Transactional;
 
 import com.example.backend.exception.ResourceNotFoundException;
-import com.example.backend.model.Activity;
-import com.example.backend.model.Event;
-import com.example.backend.model.Expense;
-import com.example.backend.model.ImageData;
-import com.example.backend.model.Night;
-import com.example.backend.model.OvernightStay;
-import com.example.backend.model.Travel;
-import com.example.backend.model.Trip;
-import com.example.backend.model.User;
 import com.example.backend.dto.ActivityCreationRequest;
 import com.example.backend.dto.AmountUserDTO;
 import com.example.backend.dto.EventDTO;
@@ -599,29 +593,6 @@ public class TripService {
     /********************** FUNZIONI PER LE FOTO **********************/
 
 
-    // Per caricare una foto
-    @Transactional
-    public Long uploadImage(String email, long tripId, MultipartFile file) throws IOException {
-        Trip trip = getTripById(tripId);
-
-        // Controllo che l'utente loggato faccia parte della trip
-        User logged_user = userService.getUserByEmail(email);
-        if (!userIsAParticipant(logged_user, trip)) {
-            throw new ResourceNotFoundException("Trip not found");
-        }
-
-        // Chiamo il servizio per salvare la foto
-        ImageData image = imageDataService.uploadImage(file, trip, logged_user);
-
-        // Aggiungo l'immagine alla lista di foto della trip
-        trip.getPhotos().add(image);
-
-        // Salvo la trip
-        tripRepository.save(trip);
-
-        return image.getId();
-    }
-
     // Per ottenere una foto
     @Transactional
     public byte[] getImageById(String email, Long tripId, Long imageId) {
@@ -641,17 +612,18 @@ public class TripService {
     public List<Long> getTripPhotos(String email, long tripId) {
         Trip trip = getTripById(tripId);
 
+
         // Controllo che l'utente loggato faccia parte della trip
         if (!userIsAParticipant(email, trip)) {
-            throw new ResourceNotFoundException("Trip not found");
+            User user = userService.getUserByEmail(email);
+            throw new UserNotParticipantException(user, UserNotParticipantExceptionCodes.CANT_RETRIEVE);
         }
 
         // Prendi gli id delle foto
-        List<Long> photoIds = trip.getPhotos().stream()
-            .map(image -> image.getId())
-            .collect(Collectors.toList());
 
-        return photoIds;
+        return trip.getPhotos().stream()
+            .map(Attachment::getId)
+            .collect(Collectors.toList());
     }
 
     // Per eliminare una foto
@@ -1058,7 +1030,7 @@ public class TripService {
 
     /****************** FUNZIONI PER CONTROLLARE I PERMESSI DEGLI UTENTI ******************/
 
-    private boolean userIsAParticipant(User user, Trip trip) {
+    public static boolean userIsAParticipant(User user, Trip trip) {
         return trip.getParticipants().contains(user);
     }
 
