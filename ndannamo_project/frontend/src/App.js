@@ -39,6 +39,7 @@ export default function App() {
                             <Route path="/trips/:id/tickets" element={<TripTickets />} />
                             <Route path="/change-password" element={<ChangePassword/>} />
                             <Route path="/tricount" element={<Tricount />} />
+                            <Route path="/chat" element={<TripChat />} />
                         </Routes>
                     </main>
                     <FooterComponent/>
