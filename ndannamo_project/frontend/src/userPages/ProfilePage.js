@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import UserService from '../services/UserService';
-import TripPreview from '../components/TripPreview.js'
-import TripInvitation from '../components/TripInvitation.js'
-import passport from '../static/Passport.png';
 import { useNavigate } from 'react-router-dom';
 
-import ondaVerde from "../static/svg/onda_sopra_verde.svg"
-import ondaArancione from "../static/svg/onda_sotto_arancione.svg"
+import UserService from '../services/UserService';
+import ConfirmDelete from '../common/ConfirmDelete.js';
+import TripInvitation from '../components/TripInvitation.js'
 
-import "../styles/ProfilePage.css";
+import passport from '../static/Passport.png';
+import "./ProfilePage.css";
 import "../styles/TripPreview.css";
+
 
 function ProfilePage() {
     // Impostiamo un valore di default per profileInfo
@@ -19,6 +18,17 @@ function ProfilePage() {
         trips: [],
         invitations : []
     });
+
+    // Per il pop up di conferma eliminazione profilo
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const handleOverlayClick = (e) => {
+        // Verifica se l'utente ha cliccato sull'overlay e non sul contenuto del modal
+        if (e.target.className === "modal-overlay") {
+            setIsModalOpen(false);
+        }
+    };
+
+
     const [editingNickname, setEditingNickname] = useState(false);
     const [newNickname, setNewNickname] = useState("");
 
@@ -98,67 +108,95 @@ function ProfilePage() {
         }
     };
 
+
+    // Funzione per eliminare il profilo, ancora da fare
+    const deleteProfile = () => {
+        console.log("profile deleted");
+        setIsModalOpen(false);
+    }
+
+
+
+
     return (
         <div className="page profile-page">
-            {/*<div id="color"></div>*/}
-            <img id="top" src={ondaVerde}/>
             <div className="profile-page-container">
                 {/*<h2>Profile Information</h2>*/}
-                <div id="profile-content">
-                    <div id="image-box">
-                        <img src={passport} alt="User's passport photo" />
-                    </div>
-                    <div id="scritte">
-                        <h2>Profile Information</h2>
-                        <p><strong>Username: </strong>
-                            <span>
-                                {!editingNickname && profileInfo.nickname}
-                                {!editingNickname && <button onClick={makeNicknameEditable} className='nickname-button'><i className="bi bi-pencil-fill"></i></button>}
-                                {editingNickname && <input type="text"
-                                                            id="nickname-input"
-                                                            value={newNickname}
-                                                            onChange={handleInputChange}
-                                                            onKeyDown={handleKeyDown}/>}
-                                {editingNickname && <button onClick={saveNewNickname} className='nickname-button'><i className="bi bi-floppy-fill"></i></button>}
-                                
-                            </span>
-                        </p>
-                        <p>
-                            <strong>Email: </strong>
-                            {profileInfo.email}
-                        </p>
-                        <div id="pass">
-                            <p><strong>Password: </strong></p>
-                            <button onClick={handlePasswordChange}>Change password</button>
+                <div id="profile-content-outside" className='flex-column align-items-center'>
+                    <div id="profile-content" className='flex-column'>
+                        <div className="header-section" id="section1">
+                            <div className="icon-label">
+                                <h3>Your information</h3>
+                            </div>
+                        </div>
+                        <div className='flex-row'>
+                            <div id="image-box">
+                                <img src={passport} alt="User's passport photo" />
+                            </div>
+                            <div id="info">
+                                <h2>Hi, {profileInfo.nickname}</h2>
+                                <div id="info-campi">
+                                    <p className='flex-row'><strong>Username:&nbsp;</strong>
+                                        {!editingNickname ? (
+                                            <span className='flex-row'>
+                                                {profileInfo.nickname}
+                                                <button onClick={makeNicknameEditable} className='edit-button'><i className="bi bi-pencil-fill"/></button>
+                                            </span>
+                                        ) : (
+                                            <span className='flex-row'>
+                                                <input type="text"
+                                                    id="nickname-input"
+                                                    value={newNickname}
+                                                    onChange={handleInputChange}
+                                                    onKeyDown={handleKeyDown}/>
+                                                <button onClick={saveNewNickname} className='edit-button'><i className="bi bi-floppy-fill"/></button>
+                                            </span>
+                                        )}
+                                    </p>
+                                    <p>
+                                        <strong>Email: </strong>
+                                        {profileInfo.email}
+                                    </p>
+                                    <p>
+                                        <strong>Password: </strong>*******
+                                        <button className="edit-button" onClick={handlePasswordChange}><i className="bi bi-pencil-fill"/></button>
+                                    </p>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div id="trips-content">
-                    <div className='tripPreviewContainer'>
-                        <h2>Trips</h2>
-                        <div className='flex-space-between'>
-                            <div className='tripPreviewBlocksContainer'>
-                                {profileInfo.trips.slice(0, 3).map((trip, index) =>
-                                    <TripPreview key={index} trip={trip} reloadProfile={fetchProfileInfo}></TripPreview>
-                                )}
-                            </div>
-                            <button id="all-trips-button" onClick={goToTrips}>
-                                <i className="bi bi-chevron-double-right h2"></i>
-                                <p>All trips</p>
-                            </button>
-                        </div> 
+                    <button id="goToTripsButton" onClick={goToTrips}><h3>See your trips</h3></button>
+                </div>              
+                <div id="invitations-content" className='flex-column'>
+                    <div className="header-section" id="section3">
+                        <div className="icon-label">
+                            <h3>Invitations</h3>
+                        </div>
                     </div>
-                    <div className='tripPreviewContainer invitationsContainer'>
-                        <h2>Pending invitations</h2>
-                        <div className='tripPreviewBlocksContainer'>
+                    <div className='invitationsContainer flex-column'>
+                        {(profileInfo.invitations.length < 1) ? (
+                            <div id="noInvitationsText">You don't have any invitations.</div>
+                        ) : (
+                            <div>
                             {profileInfo.invitations.map((trip, index) =>
                                 <TripInvitation key={index} trip={trip} reloadProfile={fetchProfileInfo}></TripInvitation>
                             )}
-                        </div>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
-            <img id="bottom" src={ondaArancione}/>
+            <button id="deleteProfileButton" onClick={() => {setIsModalOpen(true)}}>Delete profile</button>
+            {isModalOpen && (
+                <div className="modal-overlay" onClick={handleOverlayClick}>
+                    <div className="trip-box">
+                        <ConfirmDelete
+                            message={"Do you really want to delete your profile?\nThis operation can't be reversed!"}
+                            onConfirm={deleteProfile}
+                            onClose={()=>{setIsModalOpen(false);}}/>
+                    </div>
+                </div>
+            )} 
         </div>
     );
 }

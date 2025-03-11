@@ -9,6 +9,8 @@
 }
 .header-section{
     display: flex;
+    height: 6vh;
+    overflow: hidden; /* Nasconde il contenuto in eccesso */
     flex-direction: row;
     border-radius: 20px 20px 0px 0px;
     justify-content: space-between;
@@ -44,6 +46,12 @@
 .internal-section img{
     width: 30vh;
     height: 30vh;
+
+}
+.internal-section #globe{
+    width: 30vh;
+    height: 30vh;
+    margin-left: 5vh;
 }
 .header-section img{
     width: 1.2vw;
@@ -93,7 +101,11 @@
     padding:0.6vw;
     border-radius: 45px;
 }
-
+.partecipants p{
+    margin-bottom: 0;
+    width: 4vw;
+    font-size: medium;
+}
 .partecipants-section button{
     border-radius:45px;
     background: rgba(237, 138, 83, 0.80);
@@ -116,6 +128,9 @@
     font-style: normal;
     font-weight: 600;
     line-height: normal;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 .other-section{
     display: flex;
@@ -126,7 +141,7 @@
     justify-content: space-between;
 }
 .mini-section{
-    width: 32vw;
+    width: calc(35vw - 15px);
     height: 42vh;
     box-shadow: 0px 10px 4px 0px rgba(0, 0, 0, 0.25);
     border-radius: 20px;
@@ -140,6 +155,8 @@
     font-style: normal;
     font-weight: 600;
     line-height: normal;
+    display: flex;
+    flex-direction: column;
 }
 .dates{
     display: flex;
@@ -162,4 +179,81 @@
     width: 1vw;
     height: 1vw;
     margin: 10px 0 10px 0;
+}
+.undo-change #editable{
+    cursor: pointer;
+}
+.delete-location{
+    display: flex;
+    flex-direction: row;
+}
+.destinations{
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    justify-content: space-evenly;
+    list-style: none;
+    height: 100%;
+    align-items: center;
+}
+.destinations #1{
+    justify-content: center;
+}
+.destinations button{
+    border:none;
+    background-color: transparent;
+}
+.destinations #input{
+    width: 14vw;
+    align-items: center;
+}
+.suggestions-destination {
+    position: relative;
+    border: 1px solid #d4d4d4;
+    z-index: 99;
+    overflow-y: auto;
+    max-height: 12vh;
+    width: 14vw;
+    margin: 0 auto;
+    text-align: left;
+    font-size: 1vw;
+
+}
+.suggestions-destination .data {
+    padding: 8px;
+    cursor: pointer;
+    background-color: #fff;
+    border-bottom: 1px solid #eee;
+}
+.add-part{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.add-part input{
+    margin-right: 30px;
+}
+.partecipants #participant-icon{
+    background: #BCBCBC;
+    height: 4vw;
+    width: 4vw;
+    padding:0.6vw;
+    border-radius: 45px;
+}
+.partecipants #invitation-icon{
+    background: #BCBCBC;
+    height: 4vw;
+    width: 4vw;
+    padding:0.6vw;
+    border-radius: 45px;
+    opacity: 0.5;
+}
+.partecipant #delete{
+    z-index: 9;
+    background: #f24646;
+    border-radius: 30px;
+    cursor: pointer;
+    position: absolute;
+    margin: -10px -38px 0px 0px;
+    width: 26px;
 }

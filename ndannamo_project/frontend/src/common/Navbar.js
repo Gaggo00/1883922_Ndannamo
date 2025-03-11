@@ -28,7 +28,7 @@ export default function Navbar() {
     };
 
     return (
-        <div className="navbar" style={(location.pathname != '/') && (location.pathname != '/profile') && (location.pathname != '/login')
+        <div className="navbar" style={(location.pathname != '/') && (location.pathname != '/login')
             && (location.pathname != '/register') ? style  : null}>
             <Link to="/">
                 <div className="logo">

@@ -1,31 +1,239 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+
 import InternalMenu from "./InternalMenu";
+
+import PhotoPreview from './Photos/PhotoPreview';
+import PhotoModal from './Photos/PhotoModal';
+
+import PhotoService from '../../services/PhotoService';
+import TripService from '../../services/TripService';
+
 import './InternalMenu.css'
-import {useLocation} from "react-router-dom";
+import "./TripPhotos.css"
+
 
 export default function TripPhotos() {
+    const navigate = useNavigate();
     const location = useLocation();
-    const tripInfo = location.state?.trip; // Recupera il tripInfo dallo stato
+    const { id } = useParams();
+
+    const [tripInfo, setTripInfo] = useState(location.state?.trip);
+
+    useEffect(() => {
+        fetchPhotoIds();
+    }, []);
+
+
+    // File contenente l'immagine caricata dall'utente
+    const FILENAME_MAX_LENGTH = 20;
+    const [filename, setFilename] = useState("");
+    var file = null;
+    function setFile(f) {
+        file = f;
+    }
+
+    // Lista degli id delle foto
+    const [imageIds, setImageIds] = useState([]);
+
+
+    // Src dell'immagine aperta nel modal
+    const [photoModalSrc, setPhotoModalSrc] = useState("");
+    const [photoModalInfo, setPhotoModalInfo] = useState(null);
+
+    const [isPhotoModalOpen, setIsPhotoModalOpen] = useState(false);
+    const openPhotoModal = (imgSrc, photoInfo) => {
+        setPhotoModalSrc(imgSrc);
+        setPhotoModalInfo(photoInfo);
+        setIsPhotoModalOpen(true);
+    };
+    const closePhotoModal = () => {
+        setIsPhotoModalOpen(false);
+    };
+    const handleOverlayClick = (e) => {
+        if (e.target.className === "modal-overlay") {
+            closePhotoModal();
+        }
+    };
+
+
+    // Per il caricamento dei file
+    function handleChange(event) {
+        setFile(event.target.files[0]);
+        var name = event.target.files[0].name;
+        if (name.length > FILENAME_MAX_LENGTH) {
+            name = name.substring(0, FILENAME_MAX_LENGTH) + "...";
+        }
+        setFilename(name);
+        
+        if (event.target.files[0]) {
+            enableUploadButton();
+        }
+        else {
+            disableUploadButton();
+        }
+        
+    }
+
+    function disableUploadButton() {
+        document.getElementById("upload-button").setAttribute('disabled', true);
+    }
+    function enableUploadButton() {
+        document.getElementById("upload-button").removeAttribute('disabled');
+        document.getElementById("upload-button").onclick = uploadPhoto;
+    }
+
+    // Per ottenere la lista di id
+    const fetchPhotoIds = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                navigate("/login");
+            }
+
+            // Chiamata al servizio per ottenere le informazioni del profilo
+            const response = await PhotoService.getPhotoIds(token, id);
+
+            if (response) {
+                console.log(response);
+                setImageIds(response);
+            } else {
+                console.error('Invalid response data');
+            }
+        } catch (error) {
+            console.error('Error fetching photos:', error);
+        }
+    }
+
+
+    // Per caricare una nuova foto
+    const uploadPhoto = async () => {
+        if (!file) {
+            console.log("no file selected");
+            alert("Choose a file first");
+            return;
+        }
+        console.log("uploading photo");
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                navigate("/login");
+            }
+
+            // Chiamata al servizio per ottenere le informazioni del profilo
+            const response = await PhotoService.uploadPhoto(token, id, file);
+
+            if (response) {
+                console.log(response);
+                fetchPhotoIds();
+                
+            } else {
+                console.error('Invalid response data');
+                alert("Server error");
+            }
+        } catch (error) {
+            console.error('Error uploading photos:', error);
+            alert("Couldn't upload photos, error:", error);
+        }
+
+        setFile(null);
+        setFilename("");
+        disableUploadButton();
+    };
+
+
+    // Per eliminare una foto
+    const deletePhoto = async (photoId) => {
+        if (photoId == -1) {
+            return;
+        }
+        console.log("deleting photo, id: " + photoId);
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                navigate("/login");
+            }
+
+            const response = await PhotoService.deletePhoto(token, id, photoId);
+
+            if (response) {
+                closePhotoModal();
+                fetchPhotoIds();
+                
+            } else {
+                console.error('Invalid response data');
+                alert("Server error");
+            }
+        } catch (error) {
+            console.error('Error deleting photo:', error);
+            alert("Couldn't delete photo, error:", error);
+        }
+    };
+
+
+
+    const fetchTripInfo = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                navigate("/login");
+            }
+            const response = await TripService.getTrip(token, id);
+            if (response) {
+                console.log("obtained trip info");
+                setTripInfo(response);
+                
+            } else {
+                console.error('Invalid response data');
+            }
+        } catch (error) {
+            console.error('Error fetching trip info:', error);
+        }
+    }
+
 
     if (!tripInfo) {
-        return <p>Loading trip details...</p>;
+        fetchTripInfo();
     }
 
     return (
         <div className="trip-info">
             <InternalMenu />
-            <div className="trip-content">
-                <div className="trip-top">
-                    <span> <strong>{tripInfo.title}</strong> {tripInfo.startDate} {tripInfo.endDate}</span>
-                </div>
-                <div className="trip-details">
-                    <div className="sezione1">
-                        <h1>Trip Details</h1>
-                        <p>Showing details for trip ID: {tripInfo.id}</p>
+            {tripInfo ? (
+                <div className="trip-content">
+                    <div className="trip-top">
+                        <span> <strong>{tripInfo.title}</strong> {tripInfo.startDate} {tripInfo.endDate}</span>
                     </div>
-                    <div className="sezione2"></div>
+                    <div className="trip-details" >
+                        <div className="gallery">
+                            {imageIds.map((photoId) =>
+                                <PhotoPreview photoId={photoId} tripId={id} openModal={openPhotoModal} key={photoId}/>
+                            )}
+                        </div>
+                        <div id="buttons-area">
+                            <div id="upload-buttons-row">
+                                <input id="file-input" type="file" onChange={handleChange} hidden/>
+                                <button id="choose-file-button" title="Choose a file" onClick={()=>{document.getElementById("file-input").click()}}>
+                                    <h1><i className="bi bi-plus"/></h1>
+                                </button>
+                                <button id="upload-button" title="Upload" disabled>
+                                    <h1><i className="bi bi-upload"/></h1>
+                                </button>
+                            </div>
+                            {filename != "" && (
+                                    <div id="selected-file-name"><b>Selected:</b> {filename}</div>
+                                )}
+                        </div>
+                    </div>
                 </div>
-            </div>
+            ) : (
+                <p>Loading trip details...</p>          
+            )}
+            {isPhotoModalOpen && (
+                <div className="modal-overlay" onClick={handleOverlayClick}>
+                    <PhotoModal photoUrl={photoModalSrc} photoInfo={photoModalInfo} closeModal={closePhotoModal} deletePhoto={deletePhoto}/>
+                </div>
+            )}
         </div>
     );
 }

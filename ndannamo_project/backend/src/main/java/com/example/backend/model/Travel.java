@@ -13,7 +13,7 @@ import java.time.LocalTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name="travels")
-@DiscriminatorValue("TRAVEL")
+//@DiscriminatorValue("TRAVEL")
 public class Travel extends Event {
 
     // Per EventDTO

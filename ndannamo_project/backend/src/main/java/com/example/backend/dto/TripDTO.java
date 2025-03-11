@@ -25,8 +25,9 @@ public class TripDTO {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate endDate;
     private long createdBy;
-    private List<String> list_participants = new ArrayList<>();
-    private List<String[]> list_participants_id = new ArrayList<>();
+    private String createdByName;
+    private List<UserDTOSimple> list_participants = new ArrayList<>();
+    private List<UserDTOSimple> list_invitations = new ArrayList<>();
     private boolean isCreator = false;
     
     //private List<Expense> expenses = new ArrayList<>();

@@ -5,6 +5,7 @@ import EventOpenActivity from './EventOpenActivity';
 import EventOpenTravel from './EventOpenTravel';
 
 import '../TripSchedule.css'
+import '../../../styles/Common.css';
 
 export default function EventOpen({event, latitude, longitude, reloadSchedule, openCreateAccomodationModal, openEditAccomodationModal,
     tripStartDate, tripEndDate}) {

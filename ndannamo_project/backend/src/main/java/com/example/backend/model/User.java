@@ -13,7 +13,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Entity
@@ -52,8 +51,11 @@ public class User implements UserDetails {
     private List<Trip> trips = new ArrayList<>();
 
     // Trip a cui sei stato invitato che non hai ancora accettato/rifiutato
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name="invitations")
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+        name = "trips_invitations",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "trip_id"))
     private List<Trip> invitations = new ArrayList<>();
 
     @Override

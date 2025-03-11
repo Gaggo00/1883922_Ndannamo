@@ -10,6 +10,7 @@ import ConfirmDelete from '../../../common/ConfirmDelete';
 import EventOpenDatePlace from './EventOpenDatePlace';
 
 import '../TripSchedule.css'
+import '../../../styles/Common.css';
 
 export default function EventOpenTravel({travel, latitude, longitude, reloadSchedule, tripStartDate, tripEndDate}) {
 
@@ -346,7 +347,7 @@ export default function EventOpenTravel({travel, latitude, longitude, reloadSche
                     <div className='label'>Tickets</div>
                 </div>
                 {isModalOpen && (
-                    <div className="modal-overlay">
+                    <div className="modal-overlay" onClick={handleOverlayClick}>
                         <div className="trip-box">
                             <ConfirmDelete
                                 message={"Do you really want to delete travel to \"" + travel.destination + "\"?"}

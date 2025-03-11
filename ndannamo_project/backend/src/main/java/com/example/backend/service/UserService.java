@@ -1,6 +1,7 @@
 package com.example.backend.service;
 
 import com.example.backend.dto.ChangePasswordRequest;
+import com.example.backend.dto.TripDTO;
 import com.example.backend.dto.UserDTO;
 import com.example.backend.exception.ResourceNotFoundException;
 import com.example.backend.model.Trip;
@@ -44,6 +45,12 @@ public class UserService {
     public UserDTO getUserDTOByEmail(String email) {
         User user = getUserByEmail(email);
         UserDTO userDTO = userMapper.toDTO(user);
+        for (TripDTO tripDTO : userDTO.getTrips()) {
+            // se l'utente loggato e' il creatore
+            if (userDTO.getId() == tripDTO.getCreatedBy()) {
+                tripDTO.setCreator(true);
+            }
+        }
         return userDTO;
     }
     
@@ -80,4 +87,5 @@ public class UserService {
     protected void saveUser(User user) {
         userRepository.save(user);
     }
+
 }

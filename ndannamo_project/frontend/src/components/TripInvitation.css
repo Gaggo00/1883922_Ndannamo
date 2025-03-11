@@ -1,0 +1,51 @@
+
+.tripBlockInvitation {
+    margin: 1.5vh 0;
+}
+
+.tripBlockContentInvitation {
+    margin: 0 1vw;
+    background-color: #F1F1F1;
+    color: #002922;
+    font-size: 1vw;
+    width: 30vw;
+    border-radius: 10px;
+    padding: 0.6vh 0.8vw;
+}
+
+.tripBlockContentInvitation #title {
+    font-size: 1.2vw;
+    font-weight: bold;
+}
+
+.tripBlockInvitation #createdBy {
+    font-size: 0.9vw;
+}
+
+.tripBlockContentInvitation i {
+    margin-right: 0.5vw;
+}
+
+.tripBlockInvitation img {
+    border-radius: 10px;
+}
+
+.invitation-button {
+    border-radius: 1vw;
+    font-size: 1vw;
+    padding: 0.4vh 0.6vw;
+    margin: 1vh 0.5vw;
+    border: none;
+    box-shadow: 0px 5px 2px 0px rgba(0, 0, 0, 0.25);
+    color: white;
+    font-weight: bold;
+}
+
+.invitation-button.accept-button {
+    background-color: #84BD9A;
+}
+
+.invitation-button.refuse-button {
+    background-color: #E36B6B;
+}
+

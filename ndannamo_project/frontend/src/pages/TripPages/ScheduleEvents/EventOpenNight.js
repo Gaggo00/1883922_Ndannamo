@@ -4,13 +4,14 @@ import Map from './Map';
 import DateUtilities from '../../../utils/DateUtilities';
 import {useNavigate} from "react-router-dom";
 
-
 import ScheduleService from '../../../services/ScheduleService';
+import AttachmentService from "../../../services/AttachmentService";
 
 import EventOpenDatePlace from './EventOpenDatePlace';
 
-import '../TripSchedule.css'
-import AttachmentService from "../../../services/AttachmentService";
+import '../TripSchedule.css';
+import '../../../styles/Common.css';
+
 
 
 
@@ -26,9 +27,9 @@ export default function EventOpenNight({night, latitude, longitude, reloadSchedu
         return (
             <div id="event-open">
                 <div className='top-row'>
-                    <div className='date'>
-                        {DateUtilities.yyyymmdd_To_WEEKDAYddMONTH(night.date)}
-                    </div>
+                    <EventOpenDatePlace event={night} reloadSchedule={reloadSchedule} saveDateFunction={null}
+                        savePlaceFunction={ScheduleService.changeNightPlace} tripStartDate={tripStartDate} tripEndDate={tripEndDate}
+                        canEditDate={false}/>
                 </div>
                 <div className='no-selected-events flex-column align-items-center'>
                     <p>You don't have an accomodation for this night</p>

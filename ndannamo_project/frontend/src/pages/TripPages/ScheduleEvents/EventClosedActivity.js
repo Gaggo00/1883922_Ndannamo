@@ -1,5 +1,6 @@
 
 import "./ScheduleEvents.css";
+import '../../../styles/Common.css';
 
 
 export default function EventClosedActivity({activity, selectEvent}) {

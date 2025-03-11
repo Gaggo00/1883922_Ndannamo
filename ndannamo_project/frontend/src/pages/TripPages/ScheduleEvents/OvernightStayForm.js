@@ -9,6 +9,7 @@ import Loading from '../../../components/Loading';
 import DateUtilities from '../../../utils/DateUtilities';
 
 import "./OvernightStayForm.css";
+import '../../../styles/Common.css';
 
 
 export default function OvernightStayForm({tripId, tripStartDate, tripEndDate, overnightStay, closeModal, reloadSchedule, editing, nightId}) {

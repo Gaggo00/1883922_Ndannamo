@@ -62,11 +62,11 @@ export default function TripPreview({trip, reloadProfile}) {
     const endDate = DateUtilities.yyyymmdd_To_ddmmyy(trip.endDate, "-", "/");
 
 
-    var participantsStr = trip.list_participants[0];
+    var participantsStr = trip.list_participants[0].nickname;
     var participantsStrShortened = true;
 
     if (trip.list_participants.length > 1) {
-        var temp = participantsStr + ", " + trip.list_participants[1];
+        var temp = participantsStr + ", " + trip.list_participants[1].nickname;
         if (temp.length <= MAX_ROW_CHARACTERS) {
             participantsStr = temp;
             participantsStrShortened = false;

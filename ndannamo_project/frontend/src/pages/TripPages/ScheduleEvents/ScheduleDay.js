@@ -9,6 +9,7 @@ import EventClosedTravel from "./EventClosedTravel";
 import ScheduleService from "../../../services/ScheduleService";
 import DateUtilities from '../../../utils/DateUtilities';
 
+import '../../../styles/Common.css';
 
 export default function ScheduleDay({day, selectEvent, reloadSchedule}) {
 
