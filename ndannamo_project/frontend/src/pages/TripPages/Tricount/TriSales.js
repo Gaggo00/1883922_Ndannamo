@@ -30,11 +30,14 @@ const TCSales = ({data, userId, handleSelection=()=>{}, handleAdd=()=>{}}) => {
         let myExpenses = 0;
 
         expensesData.map((expense) => {
-            totExpenses += expense.amount;
-            expense.amountPerUser.map((e) => {
-                if (e.user == userId)
-                    myExpenses += e.amount;
-            })
+            console.log(expense.refund)
+            if (expense.refund != true) {
+                totExpenses += expense.amount;
+                expense.amountPerUser.map((e) => {
+                    if (e.user == userId)
+                        myExpenses += e.amount;
+                })
+            }
         })
 
         setTotalExpenses(totExpenses);
@@ -89,15 +92,17 @@ const TCSales = ({data, userId, handleSelection=()=>{}, handleAdd=()=>{}}) => {
             </div>
             <div className="tc-list">
                 <TCListHeader names={["Name", "Expense", "Total", "Date", "Paid by"]}/>
-                {searchData.map((item, index) => (
-                    <TCListItem
-                        key={index}
-                        userId={userId}
-                        expenseData={item}
-                        ref={(el) => (itemsRefs.current[index] = el)}
-                        onClick={(event) => handleItemSelection(event, index, item)}
-                    />
-                ))}
+                <div className="tc-list-container">
+                    {searchData.map((item, index) => (
+                        <TCListItem
+                            key={index}
+                            userId={userId}
+                            expenseData={item}
+                            ref={(el) => (itemsRefs.current[index] = el)}
+                            onClick={(event) => handleItemSelection(event, index, item)}
+                        />
+                    ))}
+                </div>
             </div>
             <div className="tc-button-container">
                 <div className="tc-add-button" onClick={addClicked}>+ Add Spesa</div>
