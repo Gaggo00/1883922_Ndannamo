@@ -23,6 +23,11 @@ export default function ParticipantsSummary() {
     const [errorMessage, setErrorMessage] = useState("");
 
 
+    useEffect(() => {
+        initUserList();
+    }, []);
+
+
     const handleEditParticipants = () => {
         setChangeParticipants(true);
         setParticipants(tripInfo.list_participants);
@@ -84,6 +89,7 @@ export default function ParticipantsSummary() {
             }
             let response = await UsersService.getAllUsers(token);
             if (response) {
+                //listUsersBackup = [...(response.map(p => p.email))];
                 setListUsers(response.map(p => p.email));
             }
 
@@ -95,11 +101,20 @@ export default function ParticipantsSummary() {
 
     const handleAddParticipant = () => {
 
+        //console.log("list:");
+        //console.log(listUsers);
+
+        const newParticipantTrim = newParticipant.trim();
+
+        if (newParticipantTrim === "") {
+            return;
+        }
+
         if (listUsers.length === 0) {
             initUserList();
         }
-        if (newParticipant in listUsers && !invitations.includes(newParticipant)) { // Aggiungi solo se non è già presente
-            setInvitations([...invitations, newParticipant]); // Aggiorna la lista dei partecipanti
+        if (listUsers.includes(newParticipantTrim) && !invitations.includes(newParticipantTrim)) { // Aggiungi solo se non è già presente
+            setInvitations([...invitations, newParticipantTrim]); // Aggiorna la lista dei partecipanti
             setNewParticipant(""); // Resetta il campo di input
         }
         else {
