@@ -132,11 +132,11 @@
 
 	Main table:
 
-	**_users_** :	| **_id_** | email | nickname | password | role
+	**_users_** :	| **_id_** | email | nickname | password | role |
 
 	Join table:
 
-	**_trips\_participation_** : | trip\_id | user\_id |
+	**_trips\_invitations_** : | trip\_id | user\_id |
 
 
 #### MICROSERVICE: Trips managing
