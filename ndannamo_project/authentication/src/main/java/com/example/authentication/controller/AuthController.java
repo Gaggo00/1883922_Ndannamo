@@ -1,16 +1,17 @@
-package com.example.backend.controller;
+package com.example.authentication.controller;
 
 
-import com.example.backend.dto.UserDTO;
-import com.example.backend.dto.ChangePasswordRequest;
-import com.example.backend.dto.LoginRequest;
-import com.example.backend.model.User;
-import com.example.backend.service.JwtService;
-import com.example.backend.service.UserService;
+import com.example.authentication.dto.LoginRequest;
+//import com.example.authentication.dto.UserDTO;
+//import com.example.authentication.dto.ChangePasswordRequest;
+import com.example.authentication.model.User;
+import com.example.authentication.service.JwtService;
+import com.example.authentication.service.UserService;
+
+
 import jakarta.validation.Valid;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,12 +24,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
-
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api/auth")
 public class AuthController {
-
+    
     private final AuthenticationManager authenticationManager;
     private final UserService userService;
     private final JwtService jwtService;
@@ -38,6 +38,12 @@ public class AuthController {
         this.authenticationManager = authenticationManager;
         this.userService = userService;
         this.jwtService = jwtService;
+    }
+
+    @GetMapping("/prova")
+    public ResponseEntity<?> prova() {
+        User user = userService.getUserByEmail("anna@email.it");
+        return ResponseEntity.ok().body(user);
     }
 
     @PostMapping(value={"/login", "/login/"})
@@ -62,12 +68,11 @@ public class AuthController {
         }
     }
 
-
     @PostMapping(value={"/register", "/register/"})
     public ResponseEntity<?> register(@Valid @RequestBody User user) {
         try {
             // registra il nuovo utente
-            UserDTO userDTO = userService.registerUser(user);
+            User registeredUser = userService.registerUser(user);
 
             // fai direttamente anche il login
             final UserDetails userDetails = userService.getUserByEmail(user.getEmail());

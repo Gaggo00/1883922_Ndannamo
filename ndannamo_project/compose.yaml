@@ -22,6 +22,23 @@ services:
       timeout: 5s
       retries: 5
 
+  authentication:
+    build: authentication
+    container_name: authentication
+    ports:
+      - "8081:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/mydatabase
+      SPRING_DATASOURCE_USERNAME: myuser
+      SPRING_DATASOURCE_PASSWORD: mypassword
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - spring_net
+      - frontend_net
+
+
   app:
     build: backend
     container_name: backend
