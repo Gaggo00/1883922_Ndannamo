@@ -1,6 +1,6 @@
-package com.example.backend.repositories;
+package com.example.cities.repositories;
 
-import com.example.backend.model.City;
+import com.example.cities.model.City;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

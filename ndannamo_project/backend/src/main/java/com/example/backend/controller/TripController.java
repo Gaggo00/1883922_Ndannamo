@@ -371,8 +371,8 @@ public class TripController {
             String email = authentication.getName();
 
             // crea spesa
-            String res = tripService.createExpense(email, id, expenseCreationRequest);
-            return ResponseEntity.ok().body(res);
+            Long expenseId = tripService.createExpense(email, id, expenseCreationRequest);
+            return ResponseEntity.ok().body(expenseId);
         }
         catch (Exception ex) {
             System.out.println("Error creating expense: " + ex.getMessage());
@@ -397,6 +397,29 @@ public class TripController {
         }
         catch (Exception ex) {
             System.out.println("Error creating expense: " + ex.getMessage());
+            return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(ex.getMessage());
+        }
+    }
+
+    // Aggiorna una spesa
+    @PutMapping(value={"/{id}/expenses/{expense_id}", "/{id}/expenses/{expense_id}/"})
+    public ResponseEntity<?> updateExpense(@PathVariable Long id, @PathVariable Long expense_id, @Valid @RequestBody ExpenseCreationRequest expenseUpdateRequest) {
+        try {
+            // prendi l'utente dal token
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String email = authentication.getName();
+
+            // aggiorna la spesa
+            boolean res = tripService.updateExpense(email, id, expense_id, expenseUpdateRequest);
+            if (res) {
+                return ResponseEntity.ok().body("Spesa aggiornata con successo");
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Spesa non trovata");
+            }
+        } catch (Exception ex) {
+            System.out.println("Error updating expense: " + ex.getMessage());
             return ResponseEntity
                 .status(HttpStatus.FORBIDDEN)
                 .body(ex.getMessage());

@@ -3,7 +3,7 @@ PER TESTARE SE IL DATABASE HA CARICATO LA TABELLA cities:
 - Avvia i container (chiamando docker-compose)
 
 - In un altro terminale, fai:
-  >>    docker exec -it my-postgres bash
+  >>    docker exec -it postgres_main bash
   >>    psql -U myuser -W mydatabase
 
 - Inserisci la password "mypassword"
