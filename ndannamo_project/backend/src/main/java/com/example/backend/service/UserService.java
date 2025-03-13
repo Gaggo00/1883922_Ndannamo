@@ -5,7 +5,6 @@ import com.example.backend.dto.TripDTO;
 import com.example.backend.dto.UserDTO;
 import com.example.backend.dto.UserDTOSimple;
 import com.example.backend.exception.ResourceNotFoundException;
-import com.example.backend.model.Trip;
 import com.example.backend.model.User;
 import com.example.backend.repositories.UserRepository;
 import com.example.backend.mapper.UserMapperImpl;
@@ -17,6 +16,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
+// FUNZIONALITA': cambio password, cambio nickname
 
 
 @Service
@@ -39,15 +40,6 @@ public class UserService {
         User user = getUserById(id);
         UserDTO userDTO = userMapper.toDTO(user);
         return userDTO;
-    }
-
-    public UserDTO registerUser(User user) {
-        if(userRepository.findByEmail(user.getEmail()).isPresent()) {
-            throw new IllegalStateException("Email already taken");
-        }
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setRole(User.Role.USER);
-        return userMapper.toDTO(userRepository.save(user));
     }
 
     public UserDTO getUserDTOByEmail(String email) {
@@ -99,8 +91,8 @@ public class UserService {
 
 
     // per aggiornare gli utenti quando mandi inviti
-    protected void saveUser(User user) {
-        userRepository.save(user);
+    protected User saveUser(User user) {
+        return userRepository.save(user);
     }
 
 

@@ -1,7 +1,8 @@
-package com.example.backend.config;
+package com.example.authentication.config;
 
-import com.example.backend.repositories.UserRepository;
-import com.example.backend.service.JwtService;
+import com.example.authentication.repositories.UserRepository;
+import com.example.authentication.service.JwtService;
+
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -48,10 +49,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth-> auth
-                        .requestMatchers("/").permitAll()
-                        .requestMatchers("/images/**").permitAll()
-                        .requestMatchers("/index.html").permitAll()
-                        .requestMatchers("/cities/**").permitAll()
+                        .requestMatchers("/api/auth/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
