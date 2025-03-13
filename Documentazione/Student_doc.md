@@ -80,38 +80,31 @@
 
 # CONTAINERS:
 
-## CONTAINER_NAME: backend
+## CONTAINER_NAME: authentication
 
 ### DESCRIPTION: 
-<description of the container>
+This container runs the microservice of the authentication (registration and login) of users.
 
 ### USER STORIES:
-<list of user stories satisfied>
+1, 2
 
 ### PORTS: 
-- 8080
-
-### DESCRIPTION:
-<description of the container>
+- 8081
 
 ### PERSISTENCE EVALUATION
-<description on the persistence of data>
+To ensure the persistence of data, we used the Spring Data JPA interface, that allowed us to implement JPA-based (Java Persistence API) repositories.
 
 ### EXTERNAL SERVICES CONNECTIONS
-<description on the connections to external services>
+This container doesn't connect to any external service.
 
 ### MICROSERVICES:
-- Authentication and profile managing
-- Trips managing
-- Trip schedule managing
-- Trip expenses managing
-- Trip photos managing
+- Registration and authentication
 
-#### MICROSERVICE: Authentication and profile managing
+### MICROSERVICE: Registration and authentication
 - TYPE: backend
-- DESCRIPTION: Allows a user to register and login, to see and modify their personal data, and to accept or refuse invitations sent by other users.
-- PORTS: 8080
-- TECHNOLOGICAL SPECIFICATION: Microservice realized in Java using the SpringBoot framework. It uses a PostgreSQL database and exposes a REST interface on port 8080.
+- DESCRIPTION: Allows a user to register and to login.
+- PORTS: 8081
+- TECHNOLOGICAL SPECIFICATION: Microservice realized in Java using the SpringBoot framework. It uses a PostgreSQL database and exposes a REST interface on port 8081.
 - SERVICE ARCHITECTURE: 
 <description of the architecture of the microservice>
 
@@ -121,6 +114,49 @@
 	| ----------- | --- | ----------- | ------------ |
     | POST | /api/auth/login | Logs the user in, returning a JWT token | 2 |
     | POST | /api/auth/register | Registers a user, returning a JWT token | 1 |
+
+
+- DB STRUCTURE:
+
+	**_users_** :	| **_id_** | email | nickname | password | role |
+
+
+
+
+## CONTAINER_NAME: backend
+
+### DESCRIPTION: 
+This container runs the microservices related to the main functionalities of the application.
+
+### USER STORIES:
+<list of user stories satisfied>
+
+### PORTS: 
+- 8080
+
+### PERSISTENCE EVALUATION
+To ensure the persistence of data, we used the Spring Data JPA interface, that allowed us to implement JPA-based (Java Persistence API) repositories.
+
+### EXTERNAL SERVICES CONNECTIONS
+This container doesn't connect to any external service.
+
+### MICROSERVICES:
+- Profile managing
+- Trips managing
+  
+
+#### MICROSERVICE: Profile managing
+- TYPE: backend
+- DESCRIPTION: Allows a user to see and modify their personal data, and to accept or refuse invitations sent by other users.
+- PORTS: 8080
+- TECHNOLOGICAL SPECIFICATION: Microservice realized in Java using the SpringBoot framework. It uses a PostgreSQL database and exposes a REST interface on port 8080.
+- SERVICE ARCHITECTURE: 
+<description of the architecture of the microservice>
+
+- ENDPOINTS:
+		
+	| HTTP METHOD | URL | Description | User Stories |
+	| ----------- | --- | ----------- | ------------ |
     | GET | /profile | Returns the personal data of the logged user | 4, 9 |
     | PUT | /profile/nickname | Changes the user's nickname | 5 |
     | PUT | /profile/password | Changes the user's password | 5 |
@@ -140,10 +176,9 @@
 
 #### MICROSERVICE: Trips managing
 - TYPE: backend
-- DESCRIPTION: Allows to create and manage a trip: delete it, edit it, invite people to it, etc.
+- DESCRIPTION: Allows to create and manage a trip: delete it, edit it, invite people to it, etc. It also allows to manage the schedule of a trip: create and manage events (activities or travels) and multi-nights accomodations.
 - PORTS: 8080
-- TECHNOLOGICAL SPECIFICATION:
-<description of the technological aspect of the microservice>
+- TECHNOLOGICAL SPECIFICATION: Microservice realized in Java using the SpringBoot framework. It uses a PostgreSQL database and exposes a REST interface on port 8080.
 - SERVICE ARCHITECTURE: 
 <description of the architecture of the microservice>
 
@@ -162,34 +197,6 @@
     | PUT | /trips/{id}/title | Changes title of trip {id} | 18 |
     | PUT | /trips/{id}/dates | Changes dates of trip {id} | 19 |
     | PUT | /trips/{id}/locations | Changes destinations of trip {id} | 20 |
-
-
-- DB STRUCTURE:
-- 
-    Main table:
-
-	**_trip_** : | **_id_** | creation_date | start_date | end_date | created_by | title | locations | invitations |
-
-    Join tables:
-
-    **_trips\_invitations_** : | trip\_id | user\_id |
-
-    **_trips\_participation_** : | trip\_id | user\_id |
-
-
-#### MICROSERVICE: Trip schedule managing
-- TYPE: backend
-- DESCRIPTION: Allows to manage the schedule of a trip: create and manage events (activities or travels) and multi-nights accomodations.
-- PORTS: 8080
-- TECHNOLOGICAL SPECIFICATION:
-<description of the technological aspect of the microservice>
-- SERVICE ARCHITECTURE: 
-<description of the architecture of the microservice>
-
-- ENDPOINTS:
-  
-    | HTTP METHOD | URL | Description | User Stories |
-    | ----------- | --- | ----------- | ------------ |
     | GET | /trips/{id}/schedule | Returns the schedule of trip {id} | 21, 22, 26, 34, 43 |
     | POST | /trips/{id}/schedule/activity | Creates an activity for trip {id} | 24 |
     | DELETE | /trips/{id}/schedule/activity/{activity_id} | Deletes activity {activity_id} from trip {id} | 25 |
@@ -198,19 +205,51 @@
     | POST | /trips/{id}/schedule/overnightstay | Creates an accomodation for trip {id} | 41 |
     | PUT | /trips/{id}/schedule/overnightstay | Edits an accomodation for trip {id} | 44 |
     | PUT | /trips/{id}/schedule/activity/{activity_id}/place | Edits the place of activity {activity_id} of trip {id} | 27 |
-  | PUT | /trips/{id}/schedule/activity/{activity_id}/date | Edits the date of activity {activity_id} of trip {id} | 27 |
-  | PUT | /trips/{id}/schedule/activity/{activity_id}/name | Edits the name of activity {activity_id} of trip {id} | 27 |
-  | PUT | /trips/{id}/schedule/activity/{activity_id}/address | Edits the address of activity {activity_id} of trip {id} | 27 |
-  | PUT | /trips/{id}/schedule/activity/{activity_id}/time | Edits the time of activity {activity_id} of trip {id} | 27 |
-  | PUT | /trips/{id}/schedule/activity/{activity_id}/info | Edits the additional info of activity {activity_id} of trip {id} | 27 |
-  | PUT | /trips/{id}/schedule/travel/{travel_id}/place | Edits the starting place of travel {travel_id} of trip {id} | 35 |
-  | PUT | /trips/{id}/schedule/travel/{travel_id}/destination | Edits the destination of travel {travel_id} of trip {id} | 35 |
-  | PUT | /trips/{id}/schedule/travel/{travel_id}/date | Edits the date of travel {travel_id} of trip {id} | 35 |
-  | PUT | /trips/{id}/schedule/travel/{travel_id}/arrivaldate | Edits the arrival date of travel {travel_id} of trip {id} | 35 |
-  | PUT | /trips/{id}/schedule/travel/{travel_id}/address | Edits the departure address of travel {travel_id} of trip {id} | 35 |
-  | PUT | /trips/{id}/schedule/travel/{travel_id}/time | Edits the departure and arrival times of travel {travel_id} of trip {id} | 35 |
-  | PUT | /trips/{id}/schedule/travel/{travel_id}/info | Edits the additional info of travel {travel_id} of trip {id} | 35 |
+    | PUT | /trips/{id}/schedule/activity/{activity_id}/date | Edits the date of activity {activity_id} of trip {id} | 27 |
+    | PUT | /trips/{id}/schedule/activity/{activity_id}/name | Edits the name of activity {activity_id} of trip {id} | 27 |
+    | PUT | /trips/{id}/schedule/activity/{activity_id}/address | Edits the address of activity {activity_id} of trip {id} | 27 |
+    | PUT | /trips/{id}/schedule/activity/{activity_id}/time | Edits the time of activity {activity_id} of trip {id} | 27 |
+    | PUT | /trips/{id}/schedule/activity/{activity_id}/info | Edits the additional info of activity {activity_id} of trip {id} | 27 |
+    | PUT | /trips/{id}/schedule/travel/{travel_id}/place | Edits the starting place of travel {travel_id} of trip {id} | 35 |
+    | PUT | /trips/{id}/schedule/travel/{travel_id}/destination | Edits the destination of travel {travel_id} of trip {id} | 35 |
+    | PUT | /trips/{id}/schedule/travel/{travel_id}/date | Edits the date of travel {travel_id} of trip {id} | 35 |
+    | PUT | /trips/{id}/schedule/travel/{travel_id}/arrivaldate | Edits the arrival date of travel {travel_id} of trip {id} | 35 |
+    | PUT | /trips/{id}/schedule/travel/{travel_id}/address | Edits the departure address of travel {travel_id} of trip {id} | 35 |
+    | PUT | /trips/{id}/schedule/travel/{travel_id}/time | Edits the departure and arrival times of travel {travel_id} of trip {id} | 35 |
+    | PUT | /trips/{id}/schedule/travel/{travel_id}/info | Edits the additional info of travel {travel_id} of trip {id} | 35 |
     | PUT | /trips/{id}/schedule/night/{night_id}/place | Edits the place of night {night_id} of trip {id} | 40 |
+
+
+- DB STRUCTURE:
+- 
+    Main tables:
+
+	**_trip_** : | **_id_** | creation_date | start_date | end_date | created_by | title | locations | invitations |
+
+	**_activities_** : | **_id_** | trip_id | place | date | type | start_time | end_time | address | name | info |
+
+  	**_travels_** : | **_id_** | trip_id | place | date | type | departure_date | arrival_date | departure_time | arrival_time | address | destination | info |
+
+	**_nights_** : | **_id_** | trip_id | place | date | type | overnight_stay_id | 
+
+	**_overnight\_stay_** : | **_id_** | trip_id | start_date | end_date | start_check_in_time | end_check_in_time | start_check_out_time | end_check_out_time | name | address | contact |
+
+ 	**_expenses_** : | **_id_** | trip_id | amount | date | paid_by | split_even | refund | paid_by_nickname | title | 
+
+	**_image\_data_** : | **_id_** | trip_id | uploaded_by_id | upload_date | name | type | description | imagedata | 
+
+
+ 
+    Join tables:
+
+    **_trips\_invitations_** : | trip\_id | user\_id |
+
+    **_trips\_participation_** : | trip\_id | user\_id |
+
+    **_amount\_per\_user_** : | expense_id | amount_per_user |
+
+
+
 
 
 
