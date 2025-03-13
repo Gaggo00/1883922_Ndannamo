@@ -1,7 +1,7 @@
 import axios from "axios";
 
 class CityService{
-    static BASE_URL = "http://localhost:8080/cities"
+    static BASE_URL = "http://localhost:8083/cities"
 
 
     // Per ottenere tutte le city che iniziano con una stringa
