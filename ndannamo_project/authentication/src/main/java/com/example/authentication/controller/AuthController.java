@@ -2,8 +2,6 @@ package com.example.authentication.controller;
 
 
 import com.example.authentication.dto.LoginRequest;
-//import com.example.authentication.dto.UserDTO;
-//import com.example.authentication.dto.ChangePasswordRequest;
 import com.example.authentication.model.User;
 import com.example.authentication.service.JwtService;
 import com.example.authentication.service.UserService;
