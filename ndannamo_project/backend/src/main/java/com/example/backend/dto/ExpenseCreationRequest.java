@@ -21,6 +21,7 @@ public class ExpenseCreationRequest {
     private LocalDate date;
     private double amount;
     private Boolean splitEven;
-    
+    private Boolean refund;
+
     List<AmountUserDTO> amountPerUser = new ArrayList<>();
 }

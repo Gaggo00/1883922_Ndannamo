@@ -38,3 +38,17 @@ PER RI-CREARE LA TABELLA CITIES SENZA ELIMINARE GLI ALTRI DATI:
   >>    COPY cities FROM '/docker-entrypoint-initdb.d/cities.csv' DELIMITER ',' CSV HEADER;
 
 
+
+#################################################################################
+
+PER VEDERE LO SCHEMA DI UNA TABELLA (comodo per la documentazione):
+
+  >> SELECT column_name, data_type FROM information_schema.columns WHERE table_name = 'trip';
+
+
+
+
+
+
+
+  SELECT name FROM cities WHERE country = 'Italy' LIMIT 10;

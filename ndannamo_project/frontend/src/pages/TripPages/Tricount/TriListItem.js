@@ -46,7 +46,12 @@ const TCListItem = forwardRef(({userId, expenseData, onClick}, ref) => {
             <div className="tc-column tc-name">{expenseData.title}</div>
             <div className="tc-column tc-expense">{myExpense}</div>
             <div className="tc-column tc-total">{expenseData.amount}</div>
-            <div className="tc-column tc-date">{expenseData.date.toDateString()}</div>
+            <div className="tc-column tc-date">{expenseData.date.toLocaleDateString(
+                'it-IT', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                })}</div>
             <div className="tc-column tc-by">{expenseData.paidByNickname}</div>
         </div>
     )

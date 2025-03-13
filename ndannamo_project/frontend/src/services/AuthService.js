@@ -1,7 +1,7 @@
 import axios from "axios";
 
 class AuthService {
-    static BASE_URL = "http://localhost:8080/api/auth"
+    static BASE_URL = "http://localhost:8081/api/auth"
 
     static async login(email, password) {
         try {
@@ -11,7 +11,6 @@ class AuthService {
                 {
                     headers: {
                         "Content-Type": "application/json"
-
                     }
                 }
             );
@@ -29,7 +28,6 @@ class AuthService {
                 {
                     headers: {
                         "Content-Type": "application/json"
-
                     }
                 }
             );
