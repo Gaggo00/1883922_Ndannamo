@@ -129,7 +129,7 @@ This container doesn't connect to any external service.
 This container runs the microservices related to the main functionalities of the application.
 
 ### USER STORIES:
-<list of user stories satisfied>
+4, 5, 7-22, 24-27, 32-35, 40, 41, 43, 44, 64-66
 
 ### PORTS: 
 - 8080
@@ -218,6 +218,13 @@ This container doesn't connect to any external service.
     | PUT | /trips/{id}/schedule/travel/{travel_id}/time | Edits the departure and arrival times of travel {travel_id} of trip {id} | 35 |
     | PUT | /trips/{id}/schedule/travel/{travel_id}/info | Edits the additional info of travel {travel_id} of trip {id} | 35 |
     | PUT | /trips/{id}/schedule/night/{night_id}/place | Edits the place of night {night_id} of trip {id} | 40 |
+    | GET | /trips/{id}/photos | Returns a list of IDs of all the photos of trip {id} | 64 |
+    | POST | /trips/{id}/photos | Uploads a photo to trip {id} | 65 |
+    | GET | /trips/{id}/photos/{photo_id} | Returns the binary data of photo {photo_id} of trip {id} | 64 |
+    | GET | /trips/{id}/photos/{photo_id}/info | Returns the info of photo {photo_id} of trip {id} | 64 |
+    | DELETE | /trips/{id}/photos/{photo_id} | Deletes photo {photo_id} from trip {id} | 66 |
+
+-------------- DA AGGIUNGERE INTERFACCIA SPESE QUANDO JACOPO L'HA FINITA --------------
 
 
 - DB STRUCTURE:
