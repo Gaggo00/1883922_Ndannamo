@@ -111,8 +111,7 @@
 - TYPE: backend
 - DESCRIPTION: Allows a user to register and login, to see and modify their personal data, and to accept or refuse invitations sent by other users.
 - PORTS: 8080
-- TECHNOLOGICAL SPECIFICATION:
-<description of the technological aspect of the microservice>
+- TECHNOLOGICAL SPECIFICATION: Microservice realized in Java using the SpringBoot framework. It uses a PostgreSQL database and exposes a REST interface on port 8080.
 - SERVICE ARCHITECTURE: 
 <description of the architecture of the microservice>
 
