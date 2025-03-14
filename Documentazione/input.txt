@@ -12,6 +12,15 @@ Our system is designed for anyone who needs to plan trips, including:
 - Business professionals planning work-related trips.
 - Event organizers managing group activities or retreats.
 
+## Proposed Implementation
+The system will be built as a microservices-based distributed application, ensuring scalability and maintainability. Each major functionality will be implemented as a separate microservice, running in its own container.
+
+Here Is an example of how It could be divided in microservices:
+- Trip Management Service: Handles trip creation and itinerary management.
+- Expense Service: Manages cost tracking and splitting.
+- Chat Service: Supports trip-related discussions and polls.
+- Media Sharing Service: Enables uploading and accessing trip-related media.
+
 
 # USER STORIES:
 
