@@ -3,7 +3,8 @@
 <img src="images/Ndannamo-Architecture.png" alt="System architecture" width="100%"/>
 
 Our system is organized as shown in the picture: there are 8 Docker containers, orchestrated by Docker Compose. One container runs the frontend, 4 containers run different microservices of the backend, and 3 containers run the PostgreSQL Docker image and together they constitute the database of our application.
-The frontend also connects to some external services: Locationiq, OpenStreetMap and MeteoMatics. The containers are organized by Docker Compose in four different networks: spring_net, frontend_net, chat_net and cities_net, ensuring separation between containers that aren't meant to exchange data.
+
+The frontend also connects to some external services: LocationIQ, OpenStreetMap and MeteoMatics. The containers are organized by Docker Compose in four different networks: spring_net, frontend_net, chat_net and cities_net, ensuring separation between containers that aren't meant to exchange data.
 
 [da rimuovere, template: https://drive.google.com/file/d/1stCQoen6ojT3hBexAkyp0Ja8H6XzOuFn/view ]
 
@@ -306,6 +307,141 @@ This container doesn't connect to any external service.
 **_cities_** : | **_id_** | name | country | iso | latitude | longitude | image |
 
 
-## <other containers>
 
-...
+## CONTAINER_NAME: frontend
+
+### DESCRIPTION: 
+This container contains the frontend of the application.
+
+### USER STORIES:
+
+
+### PORTS: 
+- 3000
+
+### PERSISTENCE EVALUATION
+This container doesn't require persistent data.
+
+### EXTERNAL SERVICES CONNECTIONS
+- **LocationIQ**: to retrieve the coordinates of the address of an activity/travel/accomodation
+- **OpenStreetMap**: to show a map of the address of an activity/travel/accomodation
+- **MeteoMatics**: to show the weather forecast for every day of the trip
+
+### MICROSERVICES:
+- Frontend
+
+#### MICROSERVICE: Frontend
+
+- TYPE: frontend
+- DESCRIPTION: Allows to get different information about cities of the world.
+- PORTS: 3000
+- TECHNOLOGICAL SPECIFICATION: Microservice realized in Javascript using the React framework. It connects to both external services and to the microservices offered by the other containers of the application. It provides the users with a web interface through with they can access the functionalities of the application.
+- SERVICE ARCHITECTURE: 
+<img src="images/Ndannamo_Microservice_Frontend.png" alt="System architecture" width="100%"/>
+
+- PAGES: <put this bullet point only in the case of frontend and fill the following table>
+
+	| Name | Description | Related Microservice | User Stories |
+	| ---- | ----------- | -------------------- | ------------ |
+	| Home | Landing page of the application | - | - |
+	| Login | Login page | Registration and authentication | 2 |
+	| Signup | Signup page | Registration and authentication | 1 |
+	| Profile | Profile page | Profile managing | 4, 5, 9, 13, 14 |
+	| Change Password | Page with a form to change your password | Profile managing | 6 |
+	| Trips | Page with all your trips where it's possible to create a new trip | Trips managing, Cities information | 7, 8, 10, 67 |
+	| Trip Summary | Page with the general details of a trip | Trips managing | 11, 12, 15-20 |
+	| Trip Schedule | Page with the schedule and events of a trip | Trips managing | 21-30, 32-38, 40-47 |
+	| Trip Expenses | Page with the expenses of a trip | Trips managing | 48-58 |
+	| Trip Photos | Page with the photos of a trip | Trips managing | 64-66 |
+	| Trip Chat | Page with the chat of a trip | Trips managing | 59, 60, 61 |
+
+
+
+## CONTAINER_NAME: Postgres_main
+
+### DESCRIPTION: 
+Main database of the application.
+
+### USER STORIES:
+[Empty]
+
+### PORTS: 
+- 5432
+
+### PERSISTENCE EVALUATION
+We ensured the persistence of data by mounting a volume associated to this container.
+
+### EXTERNAL SERVICES CONNECTIONS
+This container doesn't connect to any external service.
+
+### MICROSERVICES:
+
+#### MICROSERVICE: Main Database
+- TYPE: database
+- DESCRIPTION: Implements the main database of the application.
+- PORTS: 5432
+- TECHNOLOGICAL SPECIFICATION:
+This microservice is implemented by running the official PostgreSQL Docker image.
+- SERVICE ARCHITECTURE: 
+<img src="images/Ndannamo_PostgresMain_Schema.png" alt="System architecture" width="80%"/>
+
+- DB STRUCTURE: <put this bullet point only in the case a DB is used in the microservice and specify the structure of the tables and columns>
+
+  - Main tables:
+ 
+    **_users_** :	| **_id_** | email | nickname | password | role |
+
+    **_trip_** : | **_id_** | creation_date | start_date | end_date | created_by | title | locations | invitations |
+
+    **_activities_** : | **_id_** | trip_id | place | date | type | start_time | end_time | address | name | info |
+
+    **_travels_** : | **_id_** | trip_id | place | date | type | departure_date | arrival_date | departure_time | arrival_time | address | destination | info |
+
+    **_nights_** : | **_id_** | trip_id | place | date | type | overnight_stay_id | 
+
+    **_overnight\_stay_** : | **_id_** | trip_id | start_date | end_date | start_check_in_time | end_check_in_time | start_check_out_time | end_check_out_time | name | address | contact |
+
+    **_expenses_** : | **_id_** | trip_id | amount | date | paid_by | split_even | refund | paid_by_nickname | title | 
+
+    **_image\_data_** : | **_id_** | trip_id | uploaded_by_id | upload_date | name | type | description | imagedata | 
+
+  - Join tables:
+
+    **_trips\_invitations_** : | trip\_id | user\_id |
+
+    **_trips\_participation_** : | trip\_id | user\_id |
+
+    **_amount\_per\_user_** : | expense_id | amount_per_user |
+
+
+
+## CONTAINER_NAME: Postgres_cities
+
+### DESCRIPTION: 
+Database containing information about different cities of the world.
+
+### USER STORIES:
+[Empty]
+
+### PORTS: 
+- 5434
+
+### PERSISTENCE EVALUATION
+We ensured the persistence of data by mounting a volume associated to this container.
+
+### EXTERNAL SERVICES CONNECTIONS
+This container doesn't connect to any external service.
+
+### MICROSERVICES:
+
+#### MICROSERVICE: Cities Database
+- TYPE: database
+- DESCRIPTION: Implements a database with information about cities.
+- PORTS: 5434
+- TECHNOLOGICAL SPECIFICATION:
+This microservice is implemented by running the official PostgreSQL Docker image.
+- SERVICE ARCHITECTURE: 
+
+- DB STRUCTURE: <put this bullet point only in the case a DB is used in the microservice and specify the structure of the tables and columns>
+
+  **_cities_** : | **_id_** | name | country | iso | latitude | longitude | image |
