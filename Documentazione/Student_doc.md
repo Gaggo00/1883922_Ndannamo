@@ -109,7 +109,7 @@ This container doesn't connect to any external service.
 - PORTS: 8081
 - TECHNOLOGICAL SPECIFICATION: Microservice realized in Java using the SpringBoot framework. It connects to a PostgreSQL database hosted by the Postgres_main container, and exposes a REST interface on port 8081.
 - SERVICE ARCHITECTURE: 
-<description of the architecture of the microservice>
+<img src="images/Ndannamo_Microservice_Authentication.png" alt="System architecture" width="80%"/>
 
 - ENDPOINTS:
 		
@@ -154,7 +154,7 @@ This container doesn't connect to any external service.
 - PORTS: 8080
 - TECHNOLOGICAL SPECIFICATION: Microservice realized in Java using the SpringBoot framework. It connects to a PostgreSQL database hosted by the Postgres_main container, and exposes a REST interface on port 8080.
 - SERVICE ARCHITECTURE: 
-<description of the architecture of the microservice>
+<img src="images/Ndannamo_Microservice_Profile_Managing.png" alt="System architecture" width="80%"/>
 
 - ENDPOINTS:
 		
@@ -183,7 +183,7 @@ This container doesn't connect to any external service.
 - PORTS: 8080
 - TECHNOLOGICAL SPECIFICATION: Microservice realized in Java using the SpringBoot framework. It connects to a PostgreSQL database hosted by the Postgres_main container, and exposes a REST interface on port 8080.
 - SERVICE ARCHITECTURE: 
-<description of the architecture of the microservice>
+<img src="images/Ndannamo_Microservice_Trip_Managing.png" alt="System architecture" width="100%"/>
 
 - ENDPOINTS:
 		
@@ -290,7 +290,7 @@ This container doesn't connect to any external service.
 - PORTS: 8083
 - TECHNOLOGICAL SPECIFICATION: Microservice realized in Java using the SpringBoot framework. It connects to a PostgreSQL database hosted by the Postgres_cities container, and exposes a REST interface on port 8083, only allowing the methods GET and OPTIONS. It doesn't require users to be logged in.
 - SERVICE ARCHITECTURE: 
-<description of the architecture of the microservice>
+<img src="images/Ndannamo_Microservice_Cities_Information.png" alt="System architecture" width="80%"/>
 
 - ENDPOINTS:
 		
