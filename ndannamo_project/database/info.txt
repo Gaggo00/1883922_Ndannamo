@@ -45,6 +45,9 @@ PER VEDERE LO SCHEMA DI UNA TABELLA (comodo per la documentazione):
 
   >> SELECT column_name, data_type FROM information_schema.columns WHERE table_name = 'trip';
 
+oppure
+>> SELECT column_name FROM information_schema.columns WHERE table_name = 'activities';
+
 
 
 
