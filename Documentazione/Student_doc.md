@@ -1,6 +1,9 @@
 # SYSTEM DESCRIPTION:
 
-<system of the system>
+<img src="images/Ndannamo-Architecture.png" alt="System architecture" width="100%"/>
+
+Our system is organized as shown in the picture: there are 8 Docker containers, orchestrated by Docker Compose. One container runs the frontend, 4 containers run different microservices of the backend, and 3 containers run the PostgreSQL Docker image and together they constitute the database of our application.
+The frontend also connects to some external services: Locationiq, OpenStreetMap and MeteoMatics. The containers are organized by Docker Compose in four different networks: spring_net, frontend_net, chat_net and cities_net, ensuring separation between containers that aren't meant to exchange data.
 
 [da rimuovere, template: https://drive.google.com/file/d/1stCQoen6ojT3hBexAkyp0Ja8H6XzOuFn/view ]
 
@@ -264,5 +267,3 @@ This container doesn't connect to any external service.
 
 ## <other containers>
 
-Student_doc.md
-Visualizzazione di Student_doc.md.
