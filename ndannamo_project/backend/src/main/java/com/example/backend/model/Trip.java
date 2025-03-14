@@ -22,7 +22,8 @@ public class Trip {
     private Long id;
 
     private String title;
-    private List<String> locations; // FIXME: list of strings is not a real type in database
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<City> locations; // FIXME: list of strings is not a real type in database
     private LocalDate creationDate;
     private LocalDate startDate;
     private LocalDate endDate;
@@ -31,14 +32,14 @@ public class Trip {
     @JoinColumn(name="created_by", nullable=false, foreignKey = @ForeignKey(name = "fk_trip_created_by"))
     private User created_by;
     
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
         name = "trips_participation", 
         joinColumns = @JoinColumn(name = "trip_id"), 
         inverseJoinColumns = @JoinColumn(name = "user_id"))
     private List<User> participants = new ArrayList<>();
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "trips_invitations",
             joinColumns = @JoinColumn(name = "trip_id"),
@@ -52,7 +53,7 @@ public class Trip {
 
 
     // spese della trip
-    @OneToMany
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true, cascade = CascadeType.ALL, mappedBy = "trip")
     private List<Expense> expenses = new ArrayList<>();
 
 
