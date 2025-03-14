@@ -1,6 +1,17 @@
 # SYSTEM DESCRIPTION:
 
-<description of the system>
+## Objective
+The goal of this project is to design and develop a distributed software system that assists individuals in organizing trips. Our solution aims to streamline the process of planning, coordinating, and managing trips, whether they are for leisure or business purposes, by offering a comprehensive suite of tools in a single platform.
+
+Unlike traditional trip planning apps, this system integrates collaborative features like group chat and polls with financial management tools, offering a one-stop solution for trip organization. Its distributed nature ensures reliability and efficiency, catering to both small groups and large-scale travel needs.
+
+
+## Potential Users
+Our system is designed for anyone who needs to plan trips, including:
+- Leisure travelers organizing vacations with friends or family.
+- Business professionals planning work-related trips.
+- Event organizers managing group activities or retreats.
+
 
 # USER STORIES:
 
