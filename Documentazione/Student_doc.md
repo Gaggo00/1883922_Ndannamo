@@ -1,6 +1,10 @@
 # SYSTEM DESCRIPTION:
 
-<system of the system>
+<img src="images/Ndannamo-Architecture.png" alt="System architecture" width="100%"/>
+
+Our system is organized as shown in the picture: there are 8 Docker containers, orchestrated by Docker Compose. One container runs the frontend, 4 containers run different microservices of the backend, and 3 containers run the PostgreSQL Docker image and together they constitute the database of our application.
+
+The frontend also connects to some external services: LocationIQ, OpenStreetMap and MeteoMatics. The containers are organized by Docker Compose in four different networks: spring_net, frontend_net, chat_net and cities_net, ensuring separation between containers that aren't meant to exchange data.
 
 [da rimuovere, template: https://drive.google.com/file/d/1stCQoen6ojT3hBexAkyp0Ja8H6XzOuFn/view ]
 
@@ -80,41 +84,33 @@
 
 # CONTAINERS:
 
-## CONTAINER_NAME: backend
+## CONTAINER_NAME: authentication
 
 ### DESCRIPTION: 
-<description of the container>
+This container runs the microservice of the authentication (registration and login) of users.
 
 ### USER STORIES:
-<list of user stories satisfied>
+1, 2
 
 ### PORTS: 
-- 8080
-
-### DESCRIPTION:
-<description of the container>
+- 8081
 
 ### PERSISTENCE EVALUATION
-<description on the persistence of data>
+To ensure the persistence of data, we used the Spring Data JPA interface, that allowed us to implement JPA-based (Java Persistence API) repositories.
 
 ### EXTERNAL SERVICES CONNECTIONS
-<description on the connections to external services>
+This container doesn't connect to any external service.
 
 ### MICROSERVICES:
-- Authentication and profile managing
-- Trips managing
-- Trip schedule managing
-- Trip expenses managing
-- Trip photos managing
+- Registration and authentication
 
-#### MICROSERVICE: Authentication and profile managing
+### MICROSERVICE: Registration and authentication
 - TYPE: backend
-- DESCRIPTION: Allows a user to register and login, to see and modify their personal data, and to accept or refuse invitations sent by other users.
-- PORTS: 8080
-- TECHNOLOGICAL SPECIFICATION:
-<description of the technological aspect of the microservice>
+- DESCRIPTION: Allows a user to register and to login. This microservice is in charge of creating new users, and producing the JWT tokens that the users need to access the functionalities of the other microservices.
+- PORTS: 8081
+- TECHNOLOGICAL SPECIFICATION: Microservice realized in Java using the SpringBoot framework. It connects to a PostgreSQL database hosted by the Postgres_main container, and exposes a REST interface on port 8081.
 - SERVICE ARCHITECTURE: 
-<description of the architecture of the microservice>
+<img src="images/Ndannamo_Microservice_Authentication.png" alt="System architecture" width="80%"/>
 
 - ENDPOINTS:
 		
@@ -122,6 +118,49 @@
 	| ----------- | --- | ----------- | ------------ |
     | POST | /api/auth/login | Logs the user in, returning a JWT token | 2 |
     | POST | /api/auth/register | Registers a user, returning a JWT token | 1 |
+
+
+- DB STRUCTURE:
+
+	**_users_** :	| **_id_** | email | nickname | password | role |
+
+
+
+
+## CONTAINER_NAME: backend
+
+### DESCRIPTION: 
+This container runs the microservices related to the main functionalities of the application.
+
+### USER STORIES:
+4, 5, 7-22, 24-27, 32-35, 40, 41, 43, 44, 48-56, 64-66
+
+### PORTS: 
+- 8080
+
+### PERSISTENCE EVALUATION
+To ensure the persistence of data, we used the Spring Data JPA interface, that allowed us to implement JPA-based (Java Persistence API) repositories.
+
+### EXTERNAL SERVICES CONNECTIONS
+This container doesn't connect to any external service.
+
+### MICROSERVICES:
+- Profile managing
+- Trips managing
+  
+
+#### MICROSERVICE: Profile managing
+- TYPE: backend
+- DESCRIPTION: Allows a user to see and modify their personal data, and to accept or refuse invitations sent by other users.
+- PORTS: 8080
+- TECHNOLOGICAL SPECIFICATION: Microservice realized in Java using the SpringBoot framework. It connects to a PostgreSQL database hosted by the Postgres_main container, and exposes a REST interface on port 8080.
+- SERVICE ARCHITECTURE: 
+<img src="images/Ndannamo_Microservice_Profile_Managing.png" alt="System architecture" width="80%"/>
+
+- ENDPOINTS:
+		
+	| HTTP METHOD | URL | Description | User Stories |
+	| ----------- | --- | ----------- | ------------ |
     | GET | /profile | Returns the personal data of the logged user | 4, 9 |
     | PUT | /profile/nickname | Changes the user's nickname | 5 |
     | PUT | /profile/password | Changes the user's password | 5 |
@@ -130,23 +169,22 @@
 
 - DB STRUCTURE:
 
-	Main table:
+  - Main table:
+ 
+    **_users_** :	| **_id_** | email | nickname | password | role |
 
-	**_users_** :	| **_id_** | email | nickname | password | role |
+  - Join table:
 
-	Join table:
-
-	**_trips\_invitations_** : | trip\_id | user\_id |
+    **_trips\_invitations_** : | trip\_id | user\_id |
 
 
 #### MICROSERVICE: Trips managing
 - TYPE: backend
-- DESCRIPTION: Allows to create and manage a trip: delete it, edit it, invite people to it, etc.
+- DESCRIPTION: Allows to create and manage a trip: delete it, edit it, invite people to it, etc. It also allows to manage the schedule of a trip: create and manage events (activities or travels) and multi-nights accomodations.
 - PORTS: 8080
-- TECHNOLOGICAL SPECIFICATION:
-<description of the technological aspect of the microservice>
+- TECHNOLOGICAL SPECIFICATION: Microservice realized in Java using the SpringBoot framework. It connects to a PostgreSQL database hosted by the Postgres_main container, and exposes a REST interface on port 8080.
 - SERVICE ARCHITECTURE: 
-<description of the architecture of the microservice>
+<img src="images/Ndannamo_Microservice_Trip_Managing.png" alt="System architecture" width="100%"/>
 
 - ENDPOINTS:
 		
@@ -163,34 +201,6 @@
     | PUT | /trips/{id}/title | Changes title of trip {id} | 18 |
     | PUT | /trips/{id}/dates | Changes dates of trip {id} | 19 |
     | PUT | /trips/{id}/locations | Changes destinations of trip {id} | 20 |
-
-
-- DB STRUCTURE:
-- 
-    Main table:
-
-	**_trip_** : | **_id_** | creation_date | start_date | end_date | created_by | title | locations | invitations |
-
-    Join tables:
-
-    **_trips\_invitations_** : | trip\_id | user\_id |
-
-    **_trips\_participation_** : | trip\_id | user\_id |
-
-
-#### MICROSERVICE: Trip schedule managing
-- TYPE: backend
-- DESCRIPTION: Allows to manage the schedule of a trip: create and manage events (activities or travels) and multi-nights accomodations.
-- PORTS: 8080
-- TECHNOLOGICAL SPECIFICATION:
-<description of the technological aspect of the microservice>
-- SERVICE ARCHITECTURE: 
-<description of the architecture of the microservice>
-
-- ENDPOINTS:
-  
-    | HTTP METHOD | URL | Description | User Stories |
-    | ----------- | --- | ----------- | ------------ |
     | GET | /trips/{id}/schedule | Returns the schedule of trip {id} | 21, 22, 26, 34, 43 |
     | POST | /trips/{id}/schedule/activity | Creates an activity for trip {id} | 24 |
     | DELETE | /trips/{id}/schedule/activity/{activity_id} | Deletes activity {activity_id} from trip {id} | 25 |
@@ -199,25 +209,239 @@
     | POST | /trips/{id}/schedule/overnightstay | Creates an accomodation for trip {id} | 41 |
     | PUT | /trips/{id}/schedule/overnightstay | Edits an accomodation for trip {id} | 44 |
     | PUT | /trips/{id}/schedule/activity/{activity_id}/place | Edits the place of activity {activity_id} of trip {id} | 27 |
-  | PUT | /trips/{id}/schedule/activity/{activity_id}/date | Edits the date of activity {activity_id} of trip {id} | 27 |
-  | PUT | /trips/{id}/schedule/activity/{activity_id}/name | Edits the name of activity {activity_id} of trip {id} | 27 |
-  | PUT | /trips/{id}/schedule/activity/{activity_id}/address | Edits the address of activity {activity_id} of trip {id} | 27 |
-  | PUT | /trips/{id}/schedule/activity/{activity_id}/time | Edits the time of activity {activity_id} of trip {id} | 27 |
-  | PUT | /trips/{id}/schedule/activity/{activity_id}/info | Edits the additional info of activity {activity_id} of trip {id} | 27 |
-  | PUT | /trips/{id}/schedule/travel/{travel_id}/place | Edits the starting place of travel {travel_id} of trip {id} | 35 |
-  | PUT | /trips/{id}/schedule/travel/{travel_id}/destination | Edits the destination of travel {travel_id} of trip {id} | 35 |
-  | PUT | /trips/{id}/schedule/travel/{travel_id}/date | Edits the date of travel {travel_id} of trip {id} | 35 |
-  | PUT | /trips/{id}/schedule/travel/{travel_id}/arrivaldate | Edits the arrival date of travel {travel_id} of trip {id} | 35 |
-  | PUT | /trips/{id}/schedule/travel/{travel_id}/address | Edits the departure address of travel {travel_id} of trip {id} | 35 |
-  | PUT | /trips/{id}/schedule/travel/{travel_id}/time | Edits the departure and arrival times of travel {travel_id} of trip {id} | 35 |
-  | PUT | /trips/{id}/schedule/travel/{travel_id}/info | Edits the additional info of travel {travel_id} of trip {id} | 35 |
+    | PUT | /trips/{id}/schedule/activity/{activity_id}/date | Edits the date of activity {activity_id} of trip {id} | 27 |
+    | PUT | /trips/{id}/schedule/activity/{activity_id}/name | Edits the name of activity {activity_id} of trip {id} | 27 |
+    | PUT | /trips/{id}/schedule/activity/{activity_id}/address | Edits the address of activity {activity_id} of trip {id} | 27 |
+    | PUT | /trips/{id}/schedule/activity/{activity_id}/time | Edits the time of activity {activity_id} of trip {id} | 27 |
+    | PUT | /trips/{id}/schedule/activity/{activity_id}/info | Edits the additional info of activity {activity_id} of trip {id} | 27 |
+    | PUT | /trips/{id}/schedule/travel/{travel_id}/place | Edits the starting place of travel {travel_id} of trip {id} | 35 |
+    | PUT | /trips/{id}/schedule/travel/{travel_id}/destination | Edits the destination of travel {travel_id} of trip {id} | 35 |
+    | PUT | /trips/{id}/schedule/travel/{travel_id}/date | Edits the date of travel {travel_id} of trip {id} | 35 |
+    | PUT | /trips/{id}/schedule/travel/{travel_id}/arrivaldate | Edits the arrival date of travel {travel_id} of trip {id} | 35 |
+    | PUT | /trips/{id}/schedule/travel/{travel_id}/address | Edits the departure address of travel {travel_id} of trip {id} | 35 |
+    | PUT | /trips/{id}/schedule/travel/{travel_id}/time | Edits the departure and arrival times of travel {travel_id} of trip {id} | 35 |
+    | PUT | /trips/{id}/schedule/travel/{travel_id}/info | Edits the additional info of travel {travel_id} of trip {id} | 35 |
     | PUT | /trips/{id}/schedule/night/{night_id}/place | Edits the place of night {night_id} of trip {id} | 40 |
+    | GET | /trips/{id}/photos | Returns a list of IDs of all the photos of trip {id} | 64 |
+    | POST | /trips/{id}/photos | Uploads a photo to trip {id} | 65 |
+    | GET | /trips/{id}/photos/{photo_id} | Returns the binary data of photo {photo_id} of trip {id} | 64 |
+    | GET | /trips/{id}/photos/{photo_id}/info | Returns the info of photo {photo_id} of trip {id} | 64 |
+    | DELETE | /trips/{id}/photos/{photo_id} | Deletes photo {photo_id} from trip {id} | 66 |
+    | GET | /trips/{id}/expenses | Returns all expenses of trip {id} | 54, 55, 56 |
+    | POST | /trips/{id}/expenses | Creates a new expense for trip {id} | 48 |
+    | DELETE | /trips/{id}/expenses/{expense_id} | Deletes expense {expense_id} from trip {id} | 53 |
+    | PUT | /trips/{id}/expenses/{expense_id} | Modifies expense {expense_id} of trip {id} | 49, 50, 51, 52 |
+
+
+- DB STRUCTURE:
+
+  - Main tables:
+
+    **_trip_** : | **_id_** | creation_date | start_date | end_date | created_by | title | locations | invitations |
+
+    **_activities_** : | **_id_** | trip_id | place | date | type | start_time | end_time | address | name | info |
+
+    **_travels_** : | **_id_** | trip_id | place | date | type | departure_date | arrival_date | departure_time | arrival_time | address | destination | info |
+
+    **_nights_** : | **_id_** | trip_id | place | date | type | overnight_stay_id | 
+
+    **_overnight\_stay_** : | **_id_** | trip_id | start_date | end_date | start_check_in_time | end_check_in_time | start_check_out_time | end_check_out_time | name | address | contact |
+
+    **_expenses_** : | **_id_** | trip_id | amount | date | paid_by | split_even | refund | paid_by_nickname | title | 
+
+    **_image\_data_** : | **_id_** | trip_id | uploaded_by_id | upload_date | name | type | description | imagedata | 
+
+  - Join tables:
+
+    **_trips\_invitations_** : | trip\_id | user\_id |
+
+    **_trips\_participation_** : | trip\_id | user\_id |
+
+    **_amount\_per\_user_** : | expense_id | amount_per_user |
 
 
 
-#### <other microservices>
 
-## <other containers>
 
-Student_doc.md
-Visualizzazione di Student_doc.md.
+
+## CONTAINER_NAME: cities
+
+### DESCRIPTION: 
+This container connects to the database run in the container Postgres_cities to offer information (country, coordinates, pictures) of different cities of the world.
+
+### USER STORIES:
+67
+
+### PORTS: 
+- 8083
+
+### PERSISTENCE EVALUATION
+To ensure the persistence of data, we used the Spring Data JPA interface, that allowed us to implement JPA-based (Java Persistence API) repositories.
+
+### EXTERNAL SERVICES CONNECTIONS
+This container doesn't connect to any external service.
+
+### MICROSERVICES:
+- Cities information
+
+#### MICROSERVICE: Cities information
+
+- TYPE: backend
+- DESCRIPTION: Allows to get different information about cities of the world.
+- PORTS: 8083
+- TECHNOLOGICAL SPECIFICATION: Microservice realized in Java using the SpringBoot framework. It connects to a PostgreSQL database hosted by the Postgres_cities container, and exposes a REST interface on port 8083, only allowing the methods GET and OPTIONS. It doesn't require users to be logged in.
+- SERVICE ARCHITECTURE: 
+<img src="images/Ndannamo_Microservice_Cities_Information.png" alt="System architecture" width="80%"/>
+
+- ENDPOINTS:
+		
+    | HTTP METHOD | URL | Description | User Stories |
+    | ----------- | --- | ----------- | ------------ |
+    | GET | /cities/{id} | Returns information about the city {id} | 67 |
+    | GET | /cities/name/{start} | Returns a list of all the cities whose name starts with the string {start} | 67 |
+    | GET | /cities/image?name={name}&country={country} | Returns the URL of an image of city {city} from country {country} | 67 |
+    | GET | /cities/coordinates?name={name}&country={country} | Returns the coordinates of city {city} from country {country} | 67 |
+  
+  
+- DB STRUCTURE:
+**_cities_** : | **_id_** | name | country | iso | latitude | longitude | image |
+
+
+
+## CONTAINER_NAME: frontend
+
+### DESCRIPTION: 
+This container contains the frontend of the application.
+
+### USER STORIES:
+
+
+### PORTS: 
+- 3000
+
+### PERSISTENCE EVALUATION
+This container doesn't require persistent data.
+
+### EXTERNAL SERVICES CONNECTIONS
+- **LocationIQ**: to retrieve the coordinates of the address of an activity/travel/accomodation
+- **OpenStreetMap**: to show a map of the address of an activity/travel/accomodation
+- **MeteoMatics**: to show the weather forecast for every day of the trip
+
+### MICROSERVICES:
+- Frontend
+
+#### MICROSERVICE: Frontend
+
+- TYPE: frontend
+- DESCRIPTION: Allows to get different information about cities of the world.
+- PORTS: 3000
+- TECHNOLOGICAL SPECIFICATION: Microservice realized in Javascript using the React framework. It connects to both external services and to the microservices offered by the other containers of the application. It provides the users with a web interface through with they can access the functionalities of the application.
+- SERVICE ARCHITECTURE: 
+<img src="images/Ndannamo_Microservice_Frontend.png" alt="System architecture" width="100%"/>
+
+- PAGES: <put this bullet point only in the case of frontend and fill the following table>
+
+	| Name | Description | Related Microservice | User Stories |
+	| ---- | ----------- | -------------------- | ------------ |
+	| Home | Landing page of the application | - | - |
+	| Login | Login page | Registration and authentication | 2 |
+	| Signup | Signup page | Registration and authentication | 1 |
+	| Profile | Profile page | Profile managing | 4, 5, 9, 13, 14 |
+	| Change Password | Page with a form to change your password | Profile managing | 6 |
+	| Trips | Page with all your trips where it's possible to create a new trip | Trips managing, Cities information | 7, 8, 10, 67 |
+	| Trip Summary | Page with the general details of a trip | Trips managing | 11, 12, 15-20 |
+	| Trip Schedule | Page with the schedule and events of a trip | Trips managing | 21-30, 32-38, 40-47 |
+	| Trip Expenses | Page with the expenses of a trip | Trips managing | 48-58 |
+	| Trip Photos | Page with the photos of a trip | Trips managing | 64-66 |
+	| Trip Chat | Page with the chat of a trip | Trips managing | 59, 60, 61 |
+
+
+
+## CONTAINER_NAME: Postgres_main
+
+### DESCRIPTION: 
+Main database of the application.
+
+### USER STORIES:
+[Empty]
+
+### PORTS: 
+- 5432
+
+### PERSISTENCE EVALUATION
+We ensured the persistence of data by mounting a volume associated to this container.
+
+### EXTERNAL SERVICES CONNECTIONS
+This container doesn't connect to any external service.
+
+### MICROSERVICES:
+
+#### MICROSERVICE: Main Database
+- TYPE: database
+- DESCRIPTION: Implements the main database of the application.
+- PORTS: 5432
+- TECHNOLOGICAL SPECIFICATION:
+This microservice is implemented by running the official PostgreSQL Docker image.
+- SERVICE ARCHITECTURE: 
+<img src="images/Ndannamo_PostgresMain_Schema.png" alt="System architecture" width="80%"/>
+
+- DB STRUCTURE: <put this bullet point only in the case a DB is used in the microservice and specify the structure of the tables and columns>
+
+  - Main tables:
+ 
+    **_users_** :	| **_id_** | email | nickname | password | role |
+
+    **_trip_** : | **_id_** | creation_date | start_date | end_date | created_by | title | locations | invitations |
+
+    **_activities_** : | **_id_** | trip_id | place | date | type | start_time | end_time | address | name | info |
+
+    **_travels_** : | **_id_** | trip_id | place | date | type | departure_date | arrival_date | departure_time | arrival_time | address | destination | info |
+
+    **_nights_** : | **_id_** | trip_id | place | date | type | overnight_stay_id | 
+
+    **_overnight\_stay_** : | **_id_** | trip_id | start_date | end_date | start_check_in_time | end_check_in_time | start_check_out_time | end_check_out_time | name | address | contact |
+
+    **_expenses_** : | **_id_** | trip_id | amount | date | paid_by | split_even | refund | paid_by_nickname | title | 
+
+    **_image\_data_** : | **_id_** | trip_id | uploaded_by_id | upload_date | name | type | description | imagedata | 
+
+  - Join tables:
+
+    **_trips\_invitations_** : | trip\_id | user\_id |
+
+    **_trips\_participation_** : | trip\_id | user\_id |
+
+    **_amount\_per\_user_** : | expense_id | amount_per_user |
+
+
+
+## CONTAINER_NAME: Postgres_cities
+
+### DESCRIPTION: 
+Database containing information about different cities of the world.
+
+### USER STORIES:
+[Empty]
+
+### PORTS: 
+- 5434
+
+### PERSISTENCE EVALUATION
+We ensured the persistence of data by mounting a volume associated to this container.
+
+### EXTERNAL SERVICES CONNECTIONS
+This container doesn't connect to any external service.
+
+### MICROSERVICES:
+
+#### MICROSERVICE: Cities Database
+- TYPE: database
+- DESCRIPTION: Implements a database with information about cities.
+- PORTS: 5434
+- TECHNOLOGICAL SPECIFICATION:
+This microservice is implemented by running the official PostgreSQL Docker image.
+- SERVICE ARCHITECTURE: 
+
+- DB STRUCTURE: <put this bullet point only in the case a DB is used in the microservice and specify the structure of the tables and columns>
+
+  **_cities_** : | **_id_** | name | country | iso | latitude | longitude | image |
