@@ -4,9 +4,6 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { BsChevronDown } from "react-icons/bs";
 
-import DateUtilities from '../../utils/DateUtilities';
-
-
 export function DateField({
     value,
     setValue,
@@ -42,19 +39,6 @@ export function DateField({
             }
         }
     }
-
-    function changeValue(newValue) {
-        setIsChanged(true);
-        setValue(newValue);
-        if (validate != undefined) {
-            const valid = validate(value);
-            if (valid)
-                setIsValid(1);
-            else
-                setIsValid(0);
-        }
-    }
-
 
     // serve perche' quando si seleziona una data per la prima volta, per problemi di time zone, imposta il giorno
     // prima rispetto al giorno selezionato
@@ -156,13 +140,13 @@ export function PickField({
     const handleClick = () => {
         setIsChanged(true);
         if (!disabled)
-            flag == 0 ? setFlag(1) : setFlag(0);
+            flag === 0 ? setFlag(1) : setFlag(0);
     }
 
     const handleSelect = (suggestion) => {
         setValue(suggestion);
         setFlag(0);
-        if (validate != undefined) {
+        if (validate !== undefined) {
             const valid = validate(value);
             if (valid)
                 setIsValid(1);
@@ -172,7 +156,7 @@ export function PickField({
     };
 
     const handleBlur = () => {
-        if (validate != undefined) {
+        if (validate !== undefined) {
             const valid = validate(value);
             if (valid)
                 setIsValid(1);
@@ -222,7 +206,7 @@ export const PickedField = forwardRef(({
     const [search, setSearch] = useState("");
 
     const handleClick = () => {
-        if (suggestions != [])
+        if (suggestions !== [])
             setSuggestions([]);
         else
             setSuggestions(options);
@@ -314,7 +298,7 @@ export function TextField({
     }
 
     const handleKeyPress = (e) => {
-        if (e.key === "Enter" && validate != undefined) {
+        if (e.key === "Enter" && validate !== undefined) {
           const valid = validate(value);
           if (valid)
             setIsValid(1);
@@ -324,7 +308,7 @@ export function TextField({
     };
 
     const handleBlur = () => {
-        if (validate != undefined) {
+        if (validate !== undefined) {
             const valid = validate(value);
             if (valid)
                 setIsValid(1);

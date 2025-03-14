@@ -14,7 +14,7 @@ const TCSales = ({data, userId, handleSelection=()=>{}, handleAdd=()=>{}}) => {
 
     useEffect(() => {
         retriveExpenses(data);
-        if (!searchValue || searchValue == "")
+        if (!searchValue || searchValue === "")
             setSearchData(data);
         else {
             const filteredItems = data.filter(
@@ -31,10 +31,10 @@ const TCSales = ({data, userId, handleSelection=()=>{}, handleAdd=()=>{}}) => {
 
         expensesData.map((expense) => {
             console.log(expense.refund)
-            if (expense.refund != true) {
+            if (expense.refund !== true) {
                 totExpenses += expense.amount;
                 expense.amountPerUser.map((e) => {
-                    if (e.user == userId)
+                    if (e.user === userId)
                         myExpenses += e.amount;
                 })
             }
@@ -52,14 +52,14 @@ const TCSales = ({data, userId, handleSelection=()=>{}, handleAdd=()=>{}}) => {
 
 
     function handleItemSelection (event, index, item) {
-        if (selected != -1 && itemsRefs.current[selected])
+        if (selected !== -1 && itemsRefs.current[selected])
             itemsRefs.current[selected].setClicked(false);
         setSelected(index);
         handleSelection(event, item);
     }
 
     function addClicked () {
-        if (selected != -1 && itemsRefs.current[selected]) {
+        if (selected !== -1 && itemsRefs.current[selected]) {
             itemsRefs.current[selected].setClicked(false);
             setSelected(-1);
         }

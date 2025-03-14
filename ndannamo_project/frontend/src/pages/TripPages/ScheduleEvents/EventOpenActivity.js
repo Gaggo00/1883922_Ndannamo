@@ -1,16 +1,10 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import Map from './Map';
-import DateUtilities from '../../../utils/DateUtilities';
-
 import ScheduleService from '../../../services/ScheduleService';
-import CityService from '../../../services/CityService';
 import ConfirmDelete from '../../../common/ConfirmDelete';
-
 import EventOpenDatePlace from './EventOpenDatePlace';
-import { DateField } from '../../../components/Fields/Fields';
-
 import '../TripSchedule.css'
 import '../../../styles/Common.css';
 import WeatherInfo from "./WeatherInfo";
@@ -111,7 +105,7 @@ export default function EventOpenActivity({activity, latitude, longitude, reload
     const saveNewAddress = async () => {
     
         // Se e' una stringa vuota o e' uguale a prima, non fare nulla
-        if (newAddress.trim() == "" || activity.address == newAddress) {
+        if (newAddress.trim() === "" || activity.address === newAddress) {
             setEditingAddress(false);
             return;
         }
@@ -159,7 +153,7 @@ export default function EventOpenActivity({activity, latitude, longitude, reload
     const saveNewTime = async () => {
 
         // Se e' tutto uguale a prima, non fare nulla
-        if (newStartTime == activity.startTime && newEndTime == activity.endTime) {
+        if (newStartTime === activity.startTime && newEndTime === activity.endTime) {
             setEditingTime(false);
             return;
         }

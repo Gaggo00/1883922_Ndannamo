@@ -1,14 +1,8 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 
 import Map from './Map';
-import DateUtilities from '../../../utils/DateUtilities';
-import {useNavigate} from "react-router-dom";
-
 import ScheduleService from '../../../services/ScheduleService';
-import AttachmentService from "../../../services/AttachmentService";
-
 import EventOpenDatePlace from './EventOpenDatePlace';
-
 import '../TripSchedule.css';
 import '../../../styles/Common.css';
 

@@ -67,7 +67,7 @@ function TCForm({
     function doSplit(value) {
         let newSplitValue = [...sSplitValue];
         const countNonZero = newSplitValue.length;
-        if (countNonZero != 0)
+        if (countNonZero !== 0)
             var shares = divideMoney(value, countNonZero);
         else
             var shares = Array(newSplitValue.length).fill(0);
@@ -136,23 +136,31 @@ function TCForm({
     }
 
     function checkSubmit() {
-        if (sTitle == "" || sTitle == undefined)
-            return false;
-        if (Number(sAmount) <= 0 || sTitle == undefined)
-            return false;
-        if (sPaidBy == "" || sPaidBy == undefined)
-            return false;
+        if (sTitle === "" || sTitle === undefined) {
+            console.log("problema titolo");
+            return false;}
+        if (Number(sAmount) <= 0 || sTitle === undefined){
+            console.log("problema amount");
+            return false;}
+        if (sPaidBy === "" || sPaidBy === undefined){
+            console.log("problema paid");
+            return false;}
         const compDat1 = new Date(sDate);
         const compDat2 = new Date();
         compDat1.setHours(0, 0, 0, 0);
         compDat2.setHours(0, 0, 0, 0)
-        if (compDat1 < compDat2 || sDate == undefined)
-            return false;
-        if (sSplitValue.length == 0 || sSplitValue == undefined)
-            return false;
+        if (compDat1 < compDat2 || sDate === undefined){
+            console.log("problema con date 1");
+            return false;}
+        if (sSplitValue.length === 0 || sSplitValue === undefined){
+            console.log("problema splitvalue");
+            return false;}
         const totalAmount = sSplitValue.reduce((sum, item) => sum + item.amount, 0);
-        if (totalAmount != sAmount)
-            return false;
+        if (totalAmount != sAmount){
+            console.log("total amount", totalAmount);
+            console.log("sAmount:",sAmount);
+            console.log("problema totale");
+            return false;}
         return true;
     }
 
@@ -177,7 +185,7 @@ function TCForm({
             return;
         }
 
-        const paidByUser = users.find((u) => u[1] == sPaidBy);
+        const paidByUser = users.find((u) => u[1] === sPaidBy);
         const newExpense = {
             title: sTitle,
             amount: Number(sAmount),
@@ -185,7 +193,7 @@ function TCForm({
             paidBy: paidByUser === undefined ? -1 : paidByUser[0],
             paidByNickname: sPaidBy,
             amountPerUser: sSplitValue,
-            splitEven: sSplitMethod == 'In modo equo' ? true : false,      
+            splitEven: sSplitMethod === 'In modo equo' ? true : false,
         }
         onSubmit(newExpense, expenseId);
         reset();
@@ -217,7 +225,7 @@ function TCForm({
     }
 
     function notEmpty(titleValue) {
-        if (titleValue == "")
+        if (titleValue === "")
             return false;
         return true;
     }
@@ -235,15 +243,15 @@ function TCForm({
                 {sStatus > 0 && <GoPencil className="tc-button" onClick={() => modify()} />}
                 <BsXLg className="tc-button" onClick={() => close()}/>
             </div>
-            <TextField value={sTitle} setValue={setTitle} name="Title" disabled={sStatus == 1} validate={sStatus != 1 ? notEmpty : undefined}/>
-            <TextField value={sAmount} setValue={changeAmount} name="Amount" type="number" disabled={sStatus == 1} validate={sStatus != 1 ? validateAmount : undefined}/>
+            <TextField value={sTitle} setValue={setTitle} name="Title" disabled={sStatus === 1} validate={sStatus !== 1 ? notEmpty : undefined}/>
+            <TextField value={sAmount} setValue={changeAmount} name="Amount" type="number" disabled={sStatus === 1} validate={sStatus !== 1 ? validateAmount : undefined}/>
             <div className="tc-form-line" style={{gap: '15px'}}>
-                <PickField value={sPaidBy} setValue={setPaidBy} name="Paid By" options={users.map(user => user[1])} style={{flex: "3"}} disabled={sStatus == 1} validate={sStatus != 1 ? notEmpty : undefined}/>
-                <DateField value={sDate} setValue={setDateToString} name="When" style={{flex: "2"}} disabled={sStatus == 1} minDate={startingData} validate={sStatus != 1 ? () => {return true} : undefined}/>
+                <PickField value={sPaidBy} setValue={setPaidBy} name="Paid By" options={users.map(user => user[1])} style={{flex: "3"}} disabled={sStatus === 1} validate={sStatus !== 1 ? notEmpty : undefined}/>
+                <DateField value={sDate} setValue={setDateToString} name="When" style={{flex: "2"}} disabled={sStatus === 1} minDate={startingData} validate={sStatus !== 1 ? () => {return true} : undefined}/>
             </div>
             <div className="tc-form-line" style={{alignItems: "center"}}>
                 <div>Split</div>
-                <PickField value={sSplitMethod} setValue={setSplitMethod} options={["In modo equo", "Personalizzato"]} disabled={sStatus == 1} style={{width: '60%'}}/>
+                <PickField value={sSplitMethod} setValue={setSplitMethod} options={["In modo equo", "Personalizzato"]} disabled={sStatus === 1} style={{width: '60%'}}/>
             </div>
             <div className="tc-form-list">
                 {users.map((user, index) => (
@@ -254,7 +262,7 @@ function TCForm({
                                 checked={!!sSplitValue.find(expense => expense.user === user[0])}
                                 id={`item-${index}`}
                                 onChange={() => handleCheck(user[0], user[1])}
-                                disabled={sStatus == 1}
+                                disabled={sStatus === 1}
                             />
                             <label htmlFor={`item-${index}`}>{user[1]}</label>
                         </div>
@@ -283,8 +291,8 @@ function TCForm({
             </div>
             <div className="tc-button-container">
                 {
-                    sStatus != 1 &&
-                    <div className="tc-add-button" onClick={() => submit()}>{sStatus == 0 ? "Send" : "Save"}</div>
+                    sStatus !== 1 &&
+                    <div className="tc-add-button" onClick={() => submit()}>{sStatus === 0 ? "Send" : "Save"}</div>
                 }
             </div>
             {showBanner && (

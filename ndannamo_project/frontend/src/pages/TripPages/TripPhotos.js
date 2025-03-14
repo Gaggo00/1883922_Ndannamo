@@ -152,7 +152,7 @@ export default function TripPhotos() {
 
     // Per eliminare una foto
     const deletePhoto = async (photoId) => {
-        if (photoId == -1) {
+        if (photoId === -1) {
             return;
         }
         console.log("deleting photo, id: " + photoId);
@@ -228,7 +228,7 @@ export default function TripPhotos() {
                                     <h1><i className="bi bi-upload"/></h1>
                                 </button>
                             </div>
-                            {filename != "" && (
+                            {filename !== "" && (
                                     <div id="selected-file-name"><b>Selected:</b> {filename}</div>
                                 )}
                         </div>

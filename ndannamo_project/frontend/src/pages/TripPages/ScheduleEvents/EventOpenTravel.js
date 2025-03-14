@@ -1,9 +1,7 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import Map from './Map';
-import DateUtilities from '../../../utils/DateUtilities';
-
 import ScheduleService from '../../../services/ScheduleService';
 import ConfirmDelete from '../../../common/ConfirmDelete';
 
@@ -63,7 +61,7 @@ export default function EventOpenTravel({travel, latitude, longitude, reloadSche
     const saveNewAddress = async () => {
     
         // Se e' una stringa vuota o e' uguale a prima, non fare nulla
-        if (newAddress.trim() == "" || travel.address == newAddress) {
+        if (newAddress.trim() === "" || travel.address === newAddress) {
             setEditingAddress(false);
             return;
         }
@@ -110,7 +108,7 @@ export default function EventOpenTravel({travel, latitude, longitude, reloadSche
     const saveNewTime = async () => {
 
         // Se e' tutto uguale a prima, non fare nulla
-        if (newStartTime == travel.startTime && newEndTime == travel.endTime) {
+        if (newStartTime === travel.startTime && newEndTime === travel.endTime) {
             setEditingTime(false);
             return;
         }
