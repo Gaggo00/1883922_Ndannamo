@@ -44,8 +44,8 @@ const TCListItem = forwardRef(({userId, expenseData, onClick}, ref) => {
     return (
         <div className={!clicked ? "tc-item" : "tc-item tc-item-clicked"} onClick={(event) => handleClick(event)}>
             <div className="tc-column tc-name">{expenseData.title}</div>
-            <div className="tc-column tc-expense">{myExpense}</div>
-            <div className="tc-column tc-total">{expenseData.amount}</div>
+            <div className="tc-column tc-expense">€ {myExpense}</div>
+            <div className="tc-column tc-total">€ {expenseData.amount}</div>
             <div className="tc-column tc-date">{expenseData.date.toLocaleDateString(
                 'it-IT', {
                     year: 'numeric',

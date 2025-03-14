@@ -71,22 +71,23 @@ const TCSales = ({data, userId, handleSelection=()=>{}, handleAdd=()=>{}}) => {
         <div className="tc-bottom">
             <div className="tc-main-recap">
                 <div className="tc-recap">
-                    <div>Le mie spese</div>
-                    <div className="tc-recap-expenses">{myTotalExpenses.toFixed(2)}</div>
+                    <div>My Expensive</div>
+                    <div className="tc-recap-expenses">€{myTotalExpenses.toFixed(2)}</div>
                 </div>
                 <div className="tc-recap">
-                    <div>Spese totali</div>
-                    <div className="tc-recap-expenses">{totalExpenses.toFixed(2)}</div>
+                    <div>Total Expensive</div>
+                    <div className="tc-recap-expenses">€{totalExpenses.toFixed(2)}</div>
                 </div>
             </div>
             <div className="tc-middle">
-                <div className="tc-title">Spese</div>
+                <div className="tc-title"></div>
                 <SearchBar
                     value={searchValue}
                     setValue={setSearchValue}
                     items={searchData}
                     setItems={setSearchData}
                     itemsAll={data}
+                    placeholder={"Search an Expensive"}
                     checkItemSearch={checkExpensesSearch}
                 />
             </div>
@@ -105,7 +106,9 @@ const TCSales = ({data, userId, handleSelection=()=>{}, handleAdd=()=>{}}) => {
                 </div>
             </div>
             <div className="tc-button-container">
-                <div className="tc-add-button" onClick={addClicked}>+ Add Spesa</div>
+                {1===1 && <div className="tc-add-button" >
+                    <button onClick={addClicked}>+</button>
+                    <p>Add Expenses</p></div>}
             </div>
         </div>
     )

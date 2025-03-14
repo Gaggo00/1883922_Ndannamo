@@ -40,7 +40,7 @@ function TCForm({
         setDate(expenseData.date);
         setId(expenseData.id);
         setStatus(status);
-        setSplitMethod(expenseData.splitEven == true ? "In modo equo" : "Personalizzato")
+        setSplitMethod(expenseData.splitEven == true ? "Equally" : "As Amounts")
     }, [expenseData, status]);
 
 
@@ -243,15 +243,18 @@ function TCForm({
                 {sStatus > 0 && <GoPencil className="tc-button" onClick={() => modify()} />}
                 <BsXLg className="tc-button" onClick={() => close()}/>
             </div>
-            <TextField value={sTitle} setValue={setTitle} name="Title" disabled={sStatus === 1} validate={sStatus !== 1 ? notEmpty : undefined}/>
-            <TextField value={sAmount} setValue={changeAmount} name="Amount" type="number" disabled={sStatus === 1} validate={sStatus !== 1 ? validateAmount : undefined}/>
-            <div className="tc-form-line" style={{gap: '15px'}}>
-                <PickField value={sPaidBy} setValue={setPaidBy} name="Paid By" options={users.map(user => user[1])} style={{flex: "3"}} disabled={sStatus === 1} validate={sStatus !== 1 ? notEmpty : undefined}/>
+            <div className="tc-title">
+                {sStatus === 2 && "Edit Expensive"}
+                {sStatus === 0 && "Add Expensive"}</div>
+            <TextField value={sTitle} setValue={setTitle} name="Title" placeholder="E.g. Dinner" disabled={sStatus === 1} validate={sStatus !== 1 ? notEmpty : undefined}/>
+            <TextField value={sAmount} setValue={changeAmount} name="Amount (€)" placeholder="0.00" type="number" disabled={sStatus === 1} validate={sStatus !== 1 ? validateAmount : undefined}/>
+            <div className="tc-form-line"  id="paid" style={{gap: '15px'}}>
+                <PickField  value={sPaidBy} setValue={setPaidBy} name="Paid By" options={users.map(user => user[1])} style={{flex: "3"}} disabled={sStatus === 1} validate={sStatus !== 1 ? notEmpty : undefined}/>
                 <DateField value={sDate} setValue={setDateToString} name="When" style={{flex: "2"}} disabled={sStatus === 1} minDate={startingData} validate={sStatus !== 1 ? () => {return true} : undefined}/>
             </div>
-            <div className="tc-form-line" style={{alignItems: "center"}}>
+            <div className="tc-form-line" id="split" style={{alignItems: "center"}}>
                 <div>Split</div>
-                <PickField value={sSplitMethod} setValue={setSplitMethod} options={["In modo equo", "Personalizzato"]} disabled={sStatus === 1} style={{width: '60%'}}/>
+                <PickField  value={sSplitMethod} setValue={setSplitMethod} options={["Equally", "As Amounts"]} disabled={sStatus === 1} style={{width: '60%'}}/>
             </div>
             <div className="tc-form-list">
                 {users.map((user, index) => (
@@ -284,7 +287,7 @@ function TCForm({
                         }
                         {
                             sSplitMethod !== 'Personalizzato' &&
-                            <div className="tc-list-right">{sSplitValue.find(expense => expense.user === user[0])?.amount ?? 0}</div>
+                            <div className="tc-list-right">€ {sSplitValue.find(expense => expense.user === user[0])?.amount ?? 0}</div>
                         }
                     </div>
                 ))}
@@ -292,7 +295,7 @@ function TCForm({
             <div className="tc-button-container">
                 {
                     sStatus !== 1 &&
-                    <div className="tc-add-button" onClick={() => submit()}>{sStatus === 0 ? "Send" : "Save"}</div>
+                    <div className="tc-add-button-form" onClick={() => submit()}>{sStatus === 0 ? "Add" : "Save"}</div>
                 }
             </div>
             {showBanner && (
@@ -305,7 +308,7 @@ function TCForm({
                 <div className="tc-form-destroy-banner">
                     <p>Vuoi eliminare {sTitle}?</p>
                     <div>
-                        <button onClick={() => destroy()}>Si</button>
+                        <button onClick={() => destroy()}>Yes</button>
                         <button onClick={() => setShowDestroyBanner(false)}>No</button>
                     </div>
                 </div>

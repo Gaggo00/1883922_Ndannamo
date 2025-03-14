@@ -233,9 +233,9 @@ export default function TripExpenses() {
                     <div className="tc-left">
                         <div className="tc-top">
                             <div className={`tc-top-text ${activeText === "list" ? "active" : "inactive"}`}
-                                id="list" onClick={()=>handleClick("list")}>Lista spese</div>
+                                id="list" onClick={()=>handleClick("list")}>Expenses</div>
                             <div className={`tc-top-text ${activeText === "sales" ? "active" : "inactive"}`}
-                                id="sales" onClick={()=>handleClick("sales")}>Saldi</div>
+                                id="sales" onClick={()=>handleClick("sales")}>Balances</div>
                         </div>
                         {activeText === "list" &&
                             <TCSales
