@@ -105,9 +105,9 @@ This container doesn't connect to any external service.
 
 ### MICROSERVICE: Registration and authentication
 - TYPE: backend
-- DESCRIPTION: Allows a user to register and to login.
+- DESCRIPTION: Allows a user to register and to login. This microservice is in charge of creating new users, and producing the JWT tokens that the users need to access the functionalities of the other microservices.
 - PORTS: 8081
-- TECHNOLOGICAL SPECIFICATION: Microservice realized in Java using the SpringBoot framework. It uses a PostgreSQL database and exposes a REST interface on port 8081.
+- TECHNOLOGICAL SPECIFICATION: Microservice realized in Java using the SpringBoot framework. It connects to a PostgreSQL database hosted by the Postgres_main container, and exposes a REST interface on port 8081.
 - SERVICE ARCHITECTURE: 
 <description of the architecture of the microservice>
 
@@ -132,7 +132,7 @@ This container doesn't connect to any external service.
 This container runs the microservices related to the main functionalities of the application.
 
 ### USER STORIES:
-4, 5, 7-22, 24-27, 32-35, 40, 41, 43, 44, 64-66
+4, 5, 7-22, 24-27, 32-35, 40, 41, 43, 44, 48-56, 64-66
 
 ### PORTS: 
 - 8080
@@ -152,7 +152,7 @@ This container doesn't connect to any external service.
 - TYPE: backend
 - DESCRIPTION: Allows a user to see and modify their personal data, and to accept or refuse invitations sent by other users.
 - PORTS: 8080
-- TECHNOLOGICAL SPECIFICATION: Microservice realized in Java using the SpringBoot framework. It uses a PostgreSQL database and exposes a REST interface on port 8080.
+- TECHNOLOGICAL SPECIFICATION: Microservice realized in Java using the SpringBoot framework. It connects to a PostgreSQL database hosted by the Postgres_main container, and exposes a REST interface on port 8080.
 - SERVICE ARCHITECTURE: 
 <description of the architecture of the microservice>
 
@@ -168,20 +168,20 @@ This container doesn't connect to any external service.
 
 - DB STRUCTURE:
 
-	Main table:
+  - Main table:
+ 
+    **_users_** :	| **_id_** | email | nickname | password | role |
 
-	**_users_** :	| **_id_** | email | nickname | password | role |
+  - Join table:
 
-	Join table:
-
-	**_trips\_invitations_** : | trip\_id | user\_id |
+    **_trips\_invitations_** : | trip\_id | user\_id |
 
 
 #### MICROSERVICE: Trips managing
 - TYPE: backend
 - DESCRIPTION: Allows to create and manage a trip: delete it, edit it, invite people to it, etc. It also allows to manage the schedule of a trip: create and manage events (activities or travels) and multi-nights accomodations.
 - PORTS: 8080
-- TECHNOLOGICAL SPECIFICATION: Microservice realized in Java using the SpringBoot framework. It uses a PostgreSQL database and exposes a REST interface on port 8080.
+- TECHNOLOGICAL SPECIFICATION: Microservice realized in Java using the SpringBoot framework. It connects to a PostgreSQL database hosted by the Postgres_main container, and exposes a REST interface on port 8080.
 - SERVICE ARCHITECTURE: 
 <description of the architecture of the microservice>
 
@@ -226,31 +226,31 @@ This container doesn't connect to any external service.
     | GET | /trips/{id}/photos/{photo_id} | Returns the binary data of photo {photo_id} of trip {id} | 64 |
     | GET | /trips/{id}/photos/{photo_id}/info | Returns the info of photo {photo_id} of trip {id} | 64 |
     | DELETE | /trips/{id}/photos/{photo_id} | Deletes photo {photo_id} from trip {id} | 66 |
-
--------------- DA AGGIUNGERE INTERFACCIA SPESE QUANDO JACOPO L'HA FINITA --------------
+    | GET | /trips/{id}/expenses | Returns all expenses of trip {id} | 54, 55, 56 |
+    | POST | /trips/{id}/expenses | Creates a new expense for trip {id} | 48 |
+    | DELETE | /trips/{id}/expenses/{expense_id} | Deletes expense {expense_id} from trip {id} | 53 |
+    | PUT | /trips/{id}/expenses/{expense_id} | Modifies expense {expense_id} of trip {id} | 49, 50, 51, 52 |
 
 
 - DB STRUCTURE:
-- 
-    Main tables:
 
-	**_trip_** : | **_id_** | creation_date | start_date | end_date | created_by | title | locations | invitations |
+  - Main tables:
 
-	**_activities_** : | **_id_** | trip_id | place | date | type | start_time | end_time | address | name | info |
+    **_trip_** : | **_id_** | creation_date | start_date | end_date | created_by | title | locations | invitations |
 
-  	**_travels_** : | **_id_** | trip_id | place | date | type | departure_date | arrival_date | departure_time | arrival_time | address | destination | info |
+    **_activities_** : | **_id_** | trip_id | place | date | type | start_time | end_time | address | name | info |
 
-	**_nights_** : | **_id_** | trip_id | place | date | type | overnight_stay_id | 
+    **_travels_** : | **_id_** | trip_id | place | date | type | departure_date | arrival_date | departure_time | arrival_time | address | destination | info |
 
-	**_overnight\_stay_** : | **_id_** | trip_id | start_date | end_date | start_check_in_time | end_check_in_time | start_check_out_time | end_check_out_time | name | address | contact |
+    **_nights_** : | **_id_** | trip_id | place | date | type | overnight_stay_id | 
 
- 	**_expenses_** : | **_id_** | trip_id | amount | date | paid_by | split_even | refund | paid_by_nickname | title | 
+    **_overnight\_stay_** : | **_id_** | trip_id | start_date | end_date | start_check_in_time | end_check_in_time | start_check_out_time | end_check_out_time | name | address | contact |
 
-	**_image\_data_** : | **_id_** | trip_id | uploaded_by_id | upload_date | name | type | description | imagedata | 
+    **_expenses_** : | **_id_** | trip_id | amount | date | paid_by | split_even | refund | paid_by_nickname | title | 
 
+    **_image\_data_** : | **_id_** | trip_id | uploaded_by_id | upload_date | name | type | description | imagedata | 
 
- 
-    Join tables:
+  - Join tables:
 
     **_trips\_invitations_** : | trip\_id | user\_id |
 
@@ -263,7 +263,49 @@ This container doesn't connect to any external service.
 
 
 
-#### <other microservices>
+## CONTAINER_NAME: cities
+
+### DESCRIPTION: 
+This container connects to the database run in the container Postgres_cities to offer information (country, coordinates, pictures) of different cities of the world.
+
+### USER STORIES:
+67
+
+### PORTS: 
+- 8083
+
+### PERSISTENCE EVALUATION
+To ensure the persistence of data, we used the Spring Data JPA interface, that allowed us to implement JPA-based (Java Persistence API) repositories.
+
+### EXTERNAL SERVICES CONNECTIONS
+This container doesn't connect to any external service.
+
+### MICROSERVICES:
+- Cities information
+
+#### MICROSERVICE: Cities information
+
+- TYPE: backend
+- DESCRIPTION: Allows to get different information about cities of the world.
+- PORTS: 8083
+- TECHNOLOGICAL SPECIFICATION: Microservice realized in Java using the SpringBoot framework. It connects to a PostgreSQL database hosted by the Postgres_cities container, and exposes a REST interface on port 8083, only allowing the methods GET and OPTIONS. It doesn't require users to be logged in.
+- SERVICE ARCHITECTURE: 
+<description of the architecture of the microservice>
+
+- ENDPOINTS:
+		
+    | HTTP METHOD | URL | Description | User Stories |
+    | ----------- | --- | ----------- | ------------ |
+    | GET | /cities/{id} | Returns information about the city {id} | 67 |
+    | GET | /cities/name/{start} | Returns a list of all the cities whose name starts with the string {start} | 67 |
+    | GET | /cities/image?name={name}&country={country} | Returns the URL of an image of city {city} from country {country} | 67 |
+    | GET | /cities/coordinates?name={name}&country={country} | Returns the coordinates of city {city} from country {country} | 67 |
+  
+  
+- DB STRUCTURE:
+**_cities_** : | **_id_** | name | country | iso | latitude | longitude | image |
+
 
 ## <other containers>
 
+...
