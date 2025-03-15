@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import DateUtilities from '../../utils/DateUtilities';
 
-import TextField, { DateField, PickedField, PickField } from "../../components/Fields/Fields";
+import {DateField} from "../../components/Fields/Fields";
 
 const SecondStep = ({ nextStep, prevStep, handleChange, values }) => {
 

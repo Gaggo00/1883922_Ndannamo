@@ -14,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.validation.Valid;
@@ -24,6 +25,7 @@ import com.example.backend.dto.ExpenseCreationRequest;
 import com.example.backend.dto.ExpenseDTO;
 import com.example.backend.dto.GenericList;
 import com.example.backend.dto.GenericType;
+import com.example.backend.dto.ImageDataDTO;
 import com.example.backend.dto.OvernightStayDTO;
 import com.example.backend.dto.TravelCreationRequest;
 import com.example.backend.dto.TripCreationRequest;
@@ -154,7 +156,7 @@ public class TripController {
     }
 
     // Annulla inviti
-    @PostMapping(value={"/{id}/remove-invitations", "/{id}/remove-invitations/"})
+    @DeleteMapping(value={"/{id}/invite", "/{id}/invite/"})
     public ResponseEntity<?> removeInvitation(@PathVariable Long id, @Valid @RequestBody TripInviteList inviteList) {
 
         try {
@@ -174,7 +176,7 @@ public class TripController {
     }
 
     // Rimuovi persone da una trip
-    @PostMapping(value={"/{id}/remove-participants", "/{id}/remove-participants/"})
+    @DeleteMapping(value={"/{id}/participants", "/{id}/participants/"})
     public ResponseEntity<?> removeParticipants(@PathVariable Long id, @Valid @RequestBody TripInviteList inviteList) {
 
         try {
@@ -375,8 +377,8 @@ public class TripController {
             String email = authentication.getName();
 
             // crea spesa
-            String res = tripService.createExpense(email, id, expenseCreationRequest);
-            return ResponseEntity.ok().body(res);
+            Long expenseId = tripService.createExpense(email, id, expenseCreationRequest);
+            return ResponseEntity.ok().body(expenseId);
         }
         catch (Exception ex) {
             System.out.println("Error creating expense: " + ex.getMessage());
@@ -401,6 +403,29 @@ public class TripController {
         }
         catch (Exception ex) {
             System.out.println("Error creating expense: " + ex.getMessage());
+            return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(ex.getMessage());
+        }
+    }
+
+    // Aggiorna una spesa
+    @PutMapping(value={"/{id}/expenses/{expense_id}", "/{id}/expenses/{expense_id}/"})
+    public ResponseEntity<?> updateExpense(@PathVariable Long id, @PathVariable Long expense_id, @Valid @RequestBody ExpenseCreationRequest expenseUpdateRequest) {
+        try {
+            // prendi l'utente dal token
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String email = authentication.getName();
+
+            // aggiorna la spesa
+            boolean res = tripService.updateExpense(email, id, expense_id, expenseUpdateRequest);
+            if (res) {
+                return ResponseEntity.ok().body("Spesa aggiornata con successo");
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Spesa non trovata");
+            }
+        } catch (Exception ex) {
+            System.out.println("Error updating expense: " + ex.getMessage());
             return ResponseEntity
                 .status(HttpStatus.FORBIDDEN)
                 .body(ex.getMessage());
@@ -806,6 +831,11 @@ public class TripController {
             List<Long> attachmentIds = attachmentService.createAttachments(files, email, trip).stream().map(Attachment::getId).toList();
             return ResponseEntity.ok(attachmentIds); // Ritorna gli ID degli attachments creati
         }
+        catch (MaxUploadSizeExceededException ex) {
+            return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body("Photo exceeds maximum size");
+        }
         catch (Exception ex) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
@@ -817,6 +847,26 @@ public class TripController {
     @PostMapping(value={"/{id}/photos", "/{id}/photos/"} /*, consumes = { MediaType.MULTIPART_FORM_DATA_VALUE }*/)
     public ResponseEntity<?> uploadImage(@PathVariable Long id, @RequestParam("image") MultipartFile[] files) throws IOException {
         return createAttachments(files, id);
+    }
+
+    // Ottieni info foto
+    @GetMapping(value={"/{id}/photos/{photo_id}/info", "/{id}/photos/{photo_id}/info/"})
+    public ResponseEntity<?> getImageInfoById(@PathVariable Long id, @PathVariable Long photo_id){
+        try {
+            // prendi l'utente dal token
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String email = authentication.getName();
+
+            // prendi info
+            ImageDataDTO imageDTO = tripService.getImageInfoById(email, id, photo_id);
+            return ResponseEntity.status(HttpStatus.OK)
+                .body(imageDTO);
+        }
+        catch (Exception ex) {
+            return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(ex.getMessage());
+        }
     }
 
     // Ottieni lista di foto id

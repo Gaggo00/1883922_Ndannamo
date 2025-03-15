@@ -1,13 +1,13 @@
-package com.example.backend.service;
+package com.example.cities.service;
 
-import com.example.backend.exception.ResourceNotFoundException;
+import com.example.cities.exception.ResourceNotFoundException;
+import com.example.cities.model.City;
+import com.example.cities.repositories.CityRepository;
 
 import java.util.List;
 
-import com.example.backend.model.City;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.example.backend.repositories.CityRepository;
 
 @Service
 public class CityService {

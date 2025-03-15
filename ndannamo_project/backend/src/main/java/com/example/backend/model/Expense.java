@@ -36,6 +36,7 @@ public class Expense {
     private LocalDate date;
     private double amount;
     private boolean splitEven;
+    private boolean refund;
     
     @ElementCollection              // Indicates that the map is a collection of elements that are not entities themselves
     @CollectionTable(

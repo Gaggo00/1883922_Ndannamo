@@ -32,8 +32,8 @@ export default function Navbar() {
             && (location.pathname !== '/register') ? style  : null}>
             <Link to="/">
                 <div className="logo">
-                    <img id="valigia-logo" src={valigiaLogo}></img>
-                    <img id="scritta-logo" src={scrittaLogo}></img>
+                    <img id="valigia-logo" src={valigiaLogo} alt=""></img>
+                    <img id="scritta-logo" src={scrittaLogo} alt=""></img>
                 </div>
             </Link>
             {isAuthenticated && (
@@ -46,7 +46,7 @@ export default function Navbar() {
                     {/* Usa la classe CSS personalizzata per il menu */}
                     <Dropdown.Menu className="dropdown-menu-custom">
                         <Dropdown.Item as={Link} to="/profile">My profile</Dropdown.Item>
-                        <Dropdown.Item as={Link} to="/main">My trips</Dropdown.Item>
+                        <Dropdown.Item as={Link} to="/trips">My trips</Dropdown.Item>
                         <Dropdown.Divider />
                         <Dropdown.Item as={Link} to="/" onClick={handleLogout}>Logout</Dropdown.Item>
                     </Dropdown.Menu>

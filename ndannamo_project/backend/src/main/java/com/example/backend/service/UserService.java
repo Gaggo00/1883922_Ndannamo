@@ -3,15 +3,22 @@ package com.example.backend.service;
 import com.example.backend.dto.ChangePasswordRequest;
 import com.example.backend.dto.TripDTO;
 import com.example.backend.dto.UserDTO;
+import com.example.backend.dto.UserDTOSimple;
 import com.example.backend.exception.ResourceNotFoundException;
-import com.example.backend.model.Trip;
 import com.example.backend.model.User;
 import com.example.backend.repositories.UserRepository;
 import com.example.backend.mapper.UserMapperImpl;
+import com.example.backend.mapper.UserMapperSimple;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import java.util.List;
+import java.util.stream.Collectors;
+
+
+// FUNZIONALITA': cambio password, cambio nickname
+
 
 @Service
 public class UserService {
@@ -19,27 +26,20 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserMapperImpl userMapper;
+    private final UserMapperSimple userMapperSimple;
 
     @Autowired
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, UserMapperImpl userMapper) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, UserMapperImpl userMapper, UserMapperSimple userMapperSimple) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.userMapper = userMapper;
+        this.userMapperSimple = userMapperSimple;
     }
 
     public UserDTO getUserDTOById(Long id) {
         User user = getUserById(id);
         UserDTO userDTO = userMapper.toDTO(user);
         return userDTO;
-    }
-
-    public UserDTO registerUser(User user) {
-        if(userRepository.findByEmail(user.getEmail()).isPresent()) {
-            throw new IllegalStateException("Email already taken");
-        }
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setRole(User.Role.USER);
-        return userMapper.toDTO(userRepository.save(user));
     }
 
     public UserDTO getUserDTOByEmail(String email) {
@@ -53,6 +53,7 @@ public class UserService {
         }
         return userDTO;
     }
+
     
     public User getUserByEmail(String email) {
         return userRepository.findByEmail(email).orElseThrow(()-> new ResourceNotFoundException("User not found!"));
@@ -62,6 +63,12 @@ public class UserService {
         return userRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("User not found!"));
     }
 
+    public List<UserDTOSimple> getAllUsers() {
+        List<User> users = userRepository.findAll(); // Recupera tutti gli utenti dal DB
+        return users.stream()
+                .map(userMapperSimple::toDTO) // Converte ogni utente in UserDTOSimple
+                .collect(Collectors.toList()); // Raccoglie i risultati in una lista
+    }
 
     
     // Cambio nickname
@@ -84,8 +91,9 @@ public class UserService {
 
 
     // per aggiornare gli utenti quando mandi inviti
-    protected void saveUser(User user) {
-        userRepository.save(user);
+    protected User saveUser(User user) {
+        return userRepository.save(user);
     }
+
 
 }

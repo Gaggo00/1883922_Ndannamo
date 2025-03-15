@@ -14,6 +14,7 @@ import { DateField } from '../../../components/Fields/Fields';
 import '../TripSchedule.css'
 import '../../../styles/Attachments.css'
 import '../../../styles/Common.css';
+import WeatherInfo from "./WeatherInfo";
 import AttachmentService from "../../../services/AttachmentService";
 import DataManipulationsUtils from "../../../utils/DataManipulationsUtils";
 
@@ -444,7 +445,7 @@ export default function EventOpenActivity({activity, latitude, longitude, reload
         );
     };
 
-    
+
 
 
     return (
@@ -571,8 +572,12 @@ export default function EventOpenActivity({activity, latitude, longitude, reload
                         )}
                     </div>
                     <div className='row-element'>
-                        <div className='label'>Weather</div>
-                        <div className='value'>Not available</div>
+                        <WeatherInfo
+                            latitude={latitude}
+                            longitude={longitude}
+                            date={tripStartDate}
+                            time={activity.startTime}
+                        />
                     </div>
                 </div>
 

@@ -9,7 +9,7 @@ import TripService from "../../services/TripService";
 import {useNavigate} from "react-router-dom";
 
 
-const MultiStepForm = () => {
+const MultiStepForm = ({reloadTrips}) => {
     const [step, setStep] = useState(1);
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
@@ -51,6 +51,7 @@ const MultiStepForm = () => {
             );
 
             if (response) {
+                reloadTrips();
                 nextStep();
             }
             else {

@@ -14,7 +14,7 @@ export default function Home() {
 
     const goToLogin = () => {
         if (isAuthenticated) {
-            navigate('/main');
+            navigate('/trips');
         } else {
             navigate('/login');
         }
@@ -43,7 +43,7 @@ export default function Home() {
 
     return (
         <div className="page">
-            <img id="top" src={ondaVerde}/>
+            <img id="top" src={ondaVerde} alt="green-wave"/>
             <div className='home'>
                 <img id="logo" src={logo} alt='App logo'/>
                 <div className='scritte'>
@@ -55,7 +55,7 @@ export default function Home() {
                     <button onClick={goToLogin}>START NOW</button>
                 </div>
             </div>
-            <img id="bottom" src={ondaArancione}/>
+            <img id="bottom" src={ondaArancione} alt="orange-wave"/>
         </div>
 
     );

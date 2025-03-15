@@ -3,6 +3,12 @@
     flex-direction: row;
     align-items: flex-start;
     gap: 0px;
+    flex: 1;
+    overflow-y: hidden;
+    margin-bottom: 2vh;
+    margin-top: 2vh;
+    margin-left: 2vw;
+    margin-right: 2vw;
 }
 
 .tc-left {
@@ -11,7 +17,7 @@
     justify-content: flex-start;
     gap: 15px;
     flex: 3;
-    padding: 20px;
+    padding: 20px 20px 0px 20px;
     height: 100%;
     overflow: hidden;
 }
@@ -27,6 +33,9 @@
     display: flex;
     flex-direction: row;
     gap: 10px;
+    background-color: #e7e7e7;
+    padding: 10px 10px 5px 10px;
+    border-radius: 8px 8px 0px 0;
 }
 
 .tc-top-text {
@@ -60,20 +69,24 @@
     align-items: center;
     display: flex;
     gap: 10px;
+    justify-content: center;
 }
+
 
 .tc-main-recap {
     display: flex;
     gap: 5vw;
+    justify-content: center;
 }
-
+.sb-search-bar{
+    width: 63%;
+}
 .tc-recap {
     display: flex;
     justify-content: space-between;
     font-size: 14px;
     text-align: center;
     gap: 20px;
-    width: 140px;
 }
 
 .tc-recap-expenses {
@@ -82,14 +95,9 @@
 }
 
 .tc-title {
-    font-size: 25px;
+    font-size: 24px;
     font-weight: bold;
-}
-
-.tc-list {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
+    text-align: left;
 }
 
 .tc-header {
@@ -136,7 +144,11 @@
     text-align: left;
     padding: 0 10px;
 }
-  
+.tc-column button {
+    border-radius: 8px;
+    background-color: #7edea3;
+    border: none;
+}
 .tc-name {
     font-weight: bold;
 }
@@ -149,21 +161,85 @@
 }
 
 .tc-button-container {
+    display: flex;
+    justify-content: center;
     width: 100%;
     justify-items: center;
 }
 
 .tc-add-button {
-    background-color: #EDEDED;
-    color: #666666;
     padding: 15px;
     border-radius: 15px;
     width: fit-content;
+
+}
+.tc-add-button button{
+    border-radius: 50%;
+    cursor: pointer;
+    background-color: #f2b95b;
+    color: black;
+    border: black solid 2px;
+    width: 50px;
+    height: 50px;
+    font-size: xx-large;
+}
+.tc-add-button-form{
+    background-color: #f2b95b;
+    padding: 6px;
+    width: 100%;
+    cursor: pointer;
+    box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.35);
+    border-radius: 6px;
+}
+PickField svg{
+    align-items: end;
+}
+.field-input{
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    height: 30px;
+}
+#split .field-input {
+    justify-content: end;
+    border: none;
+    padding-right: 0;
+
+}
+#split .field-input svg{
+    margin-left: 3px;
     cursor: pointer;
 }
 
+#split .field-suggestions {
+    margin-left: 54%;
+    width: 120px;
+}
+.field-suggestions-data {
+    padding: 8px;
+    font-size: 16px;
+}
+#paid .field-input {
+    justify-content: space-between;
+
+}
+#paid .field-suggestions {
+    margin-left: 0;
+    width: 253px;
+}
+.tc-add-button p{
+    font-size: 12px;
+    margin-top: 2px;
+    color: #666666;
+}
+
+
 .tc-form {
     position: relative;
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 .tc-form-line {
@@ -214,7 +290,26 @@
     gap: 10px;
     flex: 1;
     overflow-y: hidden;
+    padding-top: 10px;
+}
+
+.tc-list-refund {
+    background-color: #e7e7e7;
+    padding-left: 8px;
     padding-right: 16px;
+    border-radius: 8px;
+    gap: 8px;
+}
+
+.tc-list-container {
+    background-color: #e7e7e7;
+    flex: 1;
+    padding: 10px 4px 0px 4px;
+    gap: 10px;
+    display: flex;
+    flex-direction: column;
+    border-radius: 10px 10px 10px 10px;
+    overflow-y: auto;
 }
 
 .tc-list-inner {
@@ -223,7 +318,7 @@
     margin-right: -16px;
     padding-right: 16px;
 }
-  
+
 .tc-list-item {
     display: flex;
     justify-content: space-between; /* Testo a sinistra, prezzo a destra */
@@ -246,8 +341,8 @@
 .tc-button-line {
     display: flex;
     justify-content: flex-end;
-    gap: 20px;
-    padding-right: 40px;
+    padding-bottom: 10px;
+    gap: 10px
 }
 
 .tc-button {
@@ -285,4 +380,45 @@
     flex-direction: row;
     white-space: nowrap;
     width: 80%;
+}
+.field-title {
+    padding-left: 0.1vw;
+    font-size: 1.1vw;
+    font-weight: bold;
+}
+.react-datepicker {
+    font-size: 12px; /* Rimpicciolisce il testo del calendario */
+    width: 200px; /* Riduce la larghezza */
+}
+
+.react-datepicker__header {
+    padding: 5px; /* Riduce il padding dell'header */
+}
+
+.react-datepicker__day {
+    width: 20px; /* Riduce la dimensione dei giorni */
+    height: 20px;
+    line-height: 20px;
+    font-size: 12px;
+
+
+}
+
+.react-datepicker__current-month {
+    font-size: 14px; /* Riduce il testo del mese */
+    display: flex;
+}
+
+.react-datepicker__navigation {
+    width: 20px; /* Riduce le frecce di navigazione */
+    height: 20px;
+}
+.react-datepicker__month-container {
+float:none;
+}
+.tc-list-left input[type="checkbox"]{
+    accent-color: #f2b95b;
+    transform: scale(1.3);
+    vertical-align: middle;
+    margin-left: 6px;
 }

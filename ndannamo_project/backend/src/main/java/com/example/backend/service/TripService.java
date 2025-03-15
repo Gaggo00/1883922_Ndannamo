@@ -32,6 +32,7 @@ import com.example.backend.dto.AmountUserDTO;
 import com.example.backend.dto.EventDTO;
 import com.example.backend.dto.ExpenseCreationRequest;
 import com.example.backend.dto.ExpenseDTO;
+import com.example.backend.dto.ImageDataDTO;
 import com.example.backend.dto.OvernightStayDTO;
 import com.example.backend.dto.TravelCreationRequest;
 import com.example.backend.dto.TripCreationRequest;
@@ -480,7 +481,7 @@ public class TripService {
 
 
     // Per aggiungere una nuova spesa alla trip
-    public String createExpense(String email, long tripId, ExpenseCreationRequest expenseCreationRequest) {
+    public Long createExpense(String email, long tripId, ExpenseCreationRequest expenseCreationRequest) {
 
         Trip trip = getTripById(tripId);
 
@@ -498,6 +499,7 @@ public class TripService {
         expense.setDate(expenseCreationRequest.getDate());
         expense.setAmount(expenseCreationRequest.getAmount());
         expense.setSplitEven(expenseCreationRequest.getSplitEven());
+        expense.setRefund(expenseCreationRequest.getRefund());
 
         // Controllo che l'utente pagante faccia parte della trip
         User paidByUser = userService.getUserById(expenseCreationRequest.getPaidById());
@@ -554,7 +556,7 @@ public class TripService {
         }
 
 
-        return("Expense created");
+        return(expense.getId());
     }
 
 
@@ -589,6 +591,69 @@ public class TripService {
     }
 
 
+    public boolean updateExpense(String email, long tripId, long expenseId, ExpenseCreationRequest expenseUpdateRequest) {
+
+        Trip trip = getTripById(tripId);
+
+        // Controllo che l'utente loggato faccia parte della trip
+        if (!userIsAParticipant(email, trip)) {
+            throw new ResourceNotFoundException("Trip not found");
+        }
+
+        // Controllo che la spesa sia una spesa della trip
+        Expense expense = expenseService.getExpenseById(expenseId);
+        if (expense.getTrip() != trip) {
+            throw new ResourceNotFoundException("Expense not found");
+        }
+
+        expense.setTitle(expenseUpdateRequest.getTitle());
+        expense.setDate(expenseUpdateRequest.getDate());
+        expense.setAmount(expenseUpdateRequest.getAmount());
+        expense.setSplitEven(expenseUpdateRequest.getSplitEven());
+        expense.setRefund(expenseUpdateRequest.getRefund());
+
+        // Controllo che l'utente pagante faccia parte della trip
+        User paidByUser = userService.getUserById(expenseUpdateRequest.getPaidById());
+        if (!userIsAParticipant(paidByUser, trip)) {
+            throw new ResourceNotFoundException("User 'paid by' not found!");
+        }
+        expense.setPaidBy(paidByUser.getId());
+        expense.setPaidByNickname(paidByUser.getNickname());
+
+        // Per controllare che la somma degli amount di tutti gli utenti sia uguale all'amount totale
+        double tot = 0;
+
+        // Controllo che tutti gli utenti nella lista amountPerUser facciano parte della trip
+        List<AmountUserDTO> amountPerUserDTO = expenseUpdateRequest.getAmountPerUser();
+        //Map<User, Double> amountPerUserMap = new HashMap<User, Double>();
+        for (AmountUserDTO amountUser : amountPerUserDTO) {
+            // Controllo che l'utente faccia parte della trip
+            User user = userService.getUserById(amountUser.getUser());
+            if (!userIsAParticipant(user, trip)) {
+                throw new ResourceNotFoundException("User not found!");
+            }
+            tot += amountUser.getAmount();
+            //amountPerUserMap.put(user, amountUser.getAmount());
+        }
+        if (expenseUpdateRequest.getAmount() != tot) {
+            throw new ResourceNotFoundException("Expense division is incorrect");
+        }
+                
+        // Salvo la lista amountPerUser
+        //expense.setAmountPerUser(amountPerUserMap);
+        expense.setAmountPerUser(amountPerUserDTO);
+
+        try {
+            // Salvo la spesa
+            expenseService.saveExpense(expense);
+        } catch (Exception e) {
+            throw new ResourceNotFoundException("Errore saveExpense");
+        }
+
+        return true;
+    }
+
+
 
     /********************** FUNZIONI PER LE FOTO **********************/
 
@@ -603,8 +668,25 @@ public class TripService {
             throw new ResourceNotFoundException("Trip not found");
         }
 
+        // prendi tipo
+        //String type = imageDataService
+
         // Restituisco la foto
         return imageDataService.getImageById(imageId);
+    }
+
+    // Per ottenere info foto
+    @Transactional
+    public ImageDataDTO getImageInfoById(String email, Long tripId, Long imageId) {
+        Trip trip = getTripById(tripId);
+
+        // Controllo che l'utente loggato faccia parte della trip
+        if (!userIsAParticipant(email, trip)) {
+            throw new ResourceNotFoundException("Trip not found");
+        }
+
+        // Restituisco la foto
+        return imageDataService.getImageDataDTOById(imageId);
     }
 
     // Per ottenere la lista di ID delle foto di una trip

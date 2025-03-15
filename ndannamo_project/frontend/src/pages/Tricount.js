@@ -1,11 +1,9 @@
-import { useState, useRef, useEffect } from "react";
-import TCListItem, {TCListHeader} from "./TripPages/Tricount/TriListItem";
-import SearchBar from "../components/SearchBar";
+import { useState, useRef} from "react";
 import TCForm from "./TripPages/Tricount/TCForm";
 import TCSales from './TripPages/Tricount/TriSales';
 import { TCRefund } from "./TripPages/Tricount/TriRefund";
 import "../styles/Main.css";
-import TCUserRecap from "./TripPages/Tricount/TriRecap";
+
 
 class ExpenseDto {
     constructor(params = {}) {

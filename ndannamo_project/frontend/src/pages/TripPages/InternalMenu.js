@@ -67,7 +67,7 @@ export default function InternalMenu() {
 
             if (response) {
                 setIsModalOpen(false);
-                navigate("/main");
+                navigate("/trips");
             } else {
                 console.error('Invalid response data');
             }

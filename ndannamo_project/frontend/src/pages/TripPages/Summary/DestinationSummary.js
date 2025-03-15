@@ -165,7 +165,7 @@ export default function DestinationSummary() {
                     <img src={navigator_icon} alt="navigator_icon" />
                     <p>Destinations</p>
                 </div>
-                {!changeDestination &&
+                {!changeDestination && tripInfo.creator &&
                     <img id="edit" class="editable" onClick={handleEditDestination} src={edit_icon} alt="edit_icon" />}
                 {changeDestination && <UndoConfirm
                     onConfirm={handleChangeDestination}

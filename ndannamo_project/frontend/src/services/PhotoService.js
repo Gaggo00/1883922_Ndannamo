@@ -23,6 +23,36 @@ class PhotoService {
 
 
 
+    // Per ottenere una foto
+    static async getPhoto(token, tripId, photoId) {
+        try {
+            const response = await axios.get(`${PhotoService.BASE_URL}/${tripId}/photos/${photoId}`, {
+                headers: {
+                    'Content-Type': 'image/png',
+                    "Authorization": `Bearer ${token}`
+                },
+                responseType: "blob"
+            });
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    // Per ottenere info foto
+    static async getPhotoInfo(token, tripId, photoId) {
+        try {
+            const response = await axios.get(`${PhotoService.BASE_URL}/${tripId}/photos/${photoId}/info`, {
+                headers: {
+                    'Content-Type': "application/json",
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    }
 
     // Per eliminare una foto
 

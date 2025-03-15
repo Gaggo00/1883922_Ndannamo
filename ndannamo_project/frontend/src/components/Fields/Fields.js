@@ -4,9 +4,6 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { BsChevronDown } from "react-icons/bs";
 
-import DateUtilities from '../../utils/DateUtilities';
-
-
 export function DateField({
     value,
     setValue,
@@ -42,19 +39,6 @@ export function DateField({
             }
         }
     }
-
-    function changeValue(newValue) {
-        setIsChanged(true);
-        setValue(newValue);
-        if (validate !== undefined) {
-            const valid = validate(value);
-            if (valid)
-                setIsValid(1);
-            else
-                setIsValid(0);
-        }
-    }
-
 
     // serve perche' quando si seleziona una data per la prima volta, per problemi di time zone, imposta il giorno
     // prima rispetto al giorno selezionato

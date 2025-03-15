@@ -80,7 +80,7 @@ function Login() {
 
     return (
         <div className="all-page">
-            <img id="top" src={ondaVerde}/>
+            <img id="top" src={ondaVerde} alt="green-wave"/>
             <div className="log-container">
                 <div className="login-box">
                     <div className="image-box">
@@ -105,7 +105,7 @@ function Login() {
                     </div>
                 </div>
             </div>
-            <img id="bottom" src={ondaArancione}/>
+            <img id="bottom" src={ondaArancione} alt="orange-wave"/>
         </div>
 );
 }

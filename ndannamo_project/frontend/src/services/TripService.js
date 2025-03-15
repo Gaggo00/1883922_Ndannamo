@@ -134,17 +134,16 @@ class TripService{
         let participants_to_delete = old_participants.filter(element => !new_participants.includes(element));
         let invitations_to_send = new_invitations.filter(element => !old_invitations.includes(element));
         let invitations_to_revoke = old_invitations.filter(element => !new_invitations.includes(element));
-        participants_to_delete = participants_to_delete.map(p => p.email);
-        invitations_to_revoke = invitations_to_revoke.map(p => p.email);
-        invitations_to_send = invitations_to_send.map(p => p.email);
-        
+        //console.log("sto provando ad invitare:",invitations_to_send);
+        //console.log("inviti da revocare:", invitations_to_revoke);
+        //console.log("partecipanti da cancellare:",invitations_to_revoke);
         try {
             const requests = [];
 
             if (invitations_to_revoke.length > 0) {
                 requests.push(
-                    axios.post(
-                        `${TripService.BASE_URL}/${tripId}/remove-invitations`,
+                    axios.delete(
+                        `${TripService.BASE_URL}/${tripId}/invite`,
                         { inviteList: invitations_to_revoke },
                         { headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` } }
                     )
@@ -153,8 +152,8 @@ class TripService{
 
             if (participants_to_delete.length > 0) {
                 requests.push(
-                    axios.post(
-                        `${TripService.BASE_URL}/${tripId}/remove-participants`,
+                    axios.delete(
+                        `${TripService.BASE_URL}/${tripId}/participants`,
                         { inviteList: participants_to_delete },
                         { headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` } }
                     )
