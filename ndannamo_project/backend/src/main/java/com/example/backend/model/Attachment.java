@@ -3,6 +3,8 @@ package com.example.backend.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Data
 @Getter
@@ -35,6 +37,10 @@ public class Attachment {
     @ManyToOne
     @JoinColumn(name="trip_id", foreignKey = @ForeignKey(name = "fk_attachment_trip"))
     private Trip trip;
+
+    private LocalDateTime uploadDate;
+
+    private String description; // Descrizione del file
 
 
 }

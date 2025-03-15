@@ -58,7 +58,7 @@ public class Trip {
 
 
     // foto della trip
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "trip", orphanRemoval = true)
     private Set<Attachment> attachments = new HashSet<>();
 
 
@@ -92,7 +92,7 @@ public class Trip {
 
     //TODO: cambiare filtro?
     public List<Attachment> getPhotos(){
-        return this.attachments.stream().filter(attachment -> attachment.getFileType().startsWith('image')).collect(Collectors.toList())
+        return this.attachments.stream().filter(attachment -> attachment.getFileType().startsWith("image")).collect(Collectors.toList());
     }
 
     public boolean removeAttachment(final Attachment attachment) {

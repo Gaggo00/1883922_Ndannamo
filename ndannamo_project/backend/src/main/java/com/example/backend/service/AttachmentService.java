@@ -2,6 +2,7 @@ package com.example.backend.service;
 
 
 import com.example.backend.dto.AttachmentDTO;
+import com.example.backend.dto.AttachmentSimpleDTO;
 import com.example.backend.exception.ResourceNotFoundException;
 import com.example.backend.exception.UserNotParticipantException;
 import com.example.backend.exception.UserNotParticipantException.UserNotParticipantExceptionCodes;
@@ -15,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.example.backend.mapper.AttachmentMapperImpl;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,14 +48,16 @@ public class AttachmentService {
                     .fileSize(file.getSize())
                     .fileData(file.getBytes())
                     .uploadedBy(logged_user)
+                    .uploadDate(LocalDateTime.now())
                     .trip(trip)
                     .build();
 
             attachments.add(attachment);
         }
+        attachmentRepository.saveAll(attachments);
         trip.addAttachments(attachments);
         tripRepository.save(trip);
-        return attachmentRepository.saveAll(attachments);
+        return attachments;
     }
 
 
@@ -71,15 +75,24 @@ public class AttachmentService {
         return attachmentMapper.toDTO(attachment);
     }
 
+    public AttachmentSimpleDTO getAttachmentSimpleDTObyId(Long id, String email) {
+        Attachment attachment = getAttachment(id);
+        User user = userService.getUserByEmail(email);
+        if (!TripService.userIsAParticipant(user, attachment.getTrip())) {
+            throw new UserNotParticipantException(user, UserNotParticipantExceptionCodes.CANT_RETRIEVE);
+        }
+        return attachmentMapper.toSimpleDTO(attachment);
+    }
+
     public void deleteAttachment(Long id, String email) {
         Attachment attachment = getAttachment(id);
         User user = userService.getUserByEmail(email);
         Trip trip = attachment.getTrip();
-        if (!TripService.userIsAParticipant(user, attachment)) {
+        if (!TripService.userIsAParticipant(user, trip)) {
             throw new UserNotParticipantException(user, UserNotParticipantExceptionCodes.CANT_DELETE); //FIXME: gestire permessi per eliminazione
         }
-        attachment.removeAttachment(attachment);
-        tripRepository.save(attachment);
+        trip.removeAttachment(attachment);
+        tripRepository.save(trip);
         attachmentRepository.deleteById(id);
     }
 

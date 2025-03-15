@@ -1,6 +1,5 @@
 package com.example.backend.service;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -8,14 +7,13 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import com.example.backend.dto.*;
 import com.example.backend.exception.UserNotParticipantException;
 import com.example.backend.exception.UserNotParticipantException.UserNotParticipantExceptionCodes;
 import com.example.backend.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.example.backend.mapper.ExpenseMapperImpl;
 import com.example.backend.mapper.TripMapperImpl;
@@ -27,16 +25,6 @@ import com.example.backend.utils.TripValidation;
 import jakarta.transaction.Transactional;
 
 import com.example.backend.exception.ResourceNotFoundException;
-import com.example.backend.dto.ActivityCreationRequest;
-import com.example.backend.dto.AmountUserDTO;
-import com.example.backend.dto.EventDTO;
-import com.example.backend.dto.ExpenseCreationRequest;
-import com.example.backend.dto.ExpenseDTO;
-import com.example.backend.dto.ImageDataDTO;
-import com.example.backend.dto.OvernightStayDTO;
-import com.example.backend.dto.TravelCreationRequest;
-import com.example.backend.dto.TripCreationRequest;
-import com.example.backend.dto.TripDTO;
 
 @Service
 public class TripService {
@@ -46,21 +34,23 @@ public class TripService {
     private final UserService userService;
     private final EventService eventService;
     private final ExpenseService expenseService;
-    private final ImageDataService imageDataService;
+    private final CityService cityService;
 
     private final TripMapperImpl tripMapper;
     private final ExpenseMapperImpl expenseMapper;
+    private final AttachmentService attachmentService;
 
     @Autowired
     public TripService(TripRepository tripRepository, UserService userService, EventService eventService, ExpenseService expenseService,
-                    ImageDataService imageDataService, TripMapperImpl tripMapper, ExpenseMapperImpl expenseMapper) {
+                       CityService cityService, TripMapperImpl tripMapper, ExpenseMapperImpl expenseMapper, AttachmentService attachmentService) {
         this.tripRepository = tripRepository;
         this.expenseService = expenseService;
         this.userService = userService;
         this.eventService = eventService;
-        this.imageDataService = imageDataService;
+        this.cityService = cityService;
         this.tripMapper = tripMapper;
         this.expenseMapper = expenseMapper;
+        this.attachmentService = attachmentService;
     }
     
     public Trip getTripById(long id) {
@@ -77,7 +67,8 @@ public class TripService {
 
         Trip trip = Trip.builder()
                 .title(tripRequest.getTitle())
-                .locations(tripRequest.getLocations().stream().map(l -> cityService.getCityByNameAndCountry(l.split(',')[0].strip(), l.split(',')[1].strip())).collect(Collectors.toList()))
+                .locations(tripRequest.getLocations().stream().map(l -> cityService.getCityByNameAndCountry(
+                        l.split(",")[0].strip(), l.split(",")[1].strip())).collect(Collectors.toList()))
                 .creationDate(LocalDate.now())
                 .startDate(tripRequest.getStartDate())
                 .endDate(tripRequest.getEndDate())
@@ -658,35 +649,15 @@ public class TripService {
     /********************** FUNZIONI PER LE FOTO **********************/
 
 
-    // Per ottenere una foto
-    @Transactional
-    public byte[] getImageById(String email, Long tripId, Long imageId) {
-        Trip trip = getTripById(tripId);
-
-        // Controllo che l'utente loggato faccia parte della trip
-        if (!userIsAParticipant(email, trip)) {
-            throw new ResourceNotFoundException("Trip not found");
-        }
-
-        // prendi tipo
-        //String type = imageDataService
-
-        // Restituisco la foto
-        return imageDataService.getImageById(imageId);
-    }
-
     // Per ottenere info foto
     @Transactional
-    public ImageDataDTO getImageInfoById(String email, Long tripId, Long imageId) {
-        Trip trip = getTripById(tripId);
+    public AttachmentSimpleDTO getImageInfoById(String email, Long tripId, Long imageId) {
+
 
         // Controllo che l'utente loggato faccia parte della trip
-        if (!userIsAParticipant(email, trip)) {
-            throw new ResourceNotFoundException("Trip not found");
-        }
 
         // Restituisco la foto
-        return imageDataService.getImageDataDTOById(imageId);
+        return attachmentService.getAttachmentSimpleDTObyId(imageId, email);
     }
 
     // Per ottenere la lista di ID delle foto di una trip
@@ -709,26 +680,6 @@ public class TripService {
     }
 
     // Per eliminare una foto
-    @Transactional
-    public void deleteImage(String email, Long tripId, Long imageId) {
-        Trip trip = getTripById(tripId);
-
-        // Controllo che l'utente loggato faccia parte della trip
-        if (!userIsAParticipant(email, trip)) {
-            throw new ResourceNotFoundException("Trip not found");
-        }
-
-        // Ottengo la foto
-        ImageData image = imageDataService.getImageDataById(imageId);
-
-        // Rimuovo la foto dalla trip
-        trip.removePhoto(image);
-        tripRepository.save(trip);
-
-        // Elimino la foto
-        imageDataService.deleteImage(image);
-    }
-
 
     /********************** FUNZIONI PER CAMBIARE I DATI DI UNA TRIP **********************/
 
@@ -788,7 +739,7 @@ public class TripService {
         }
 
         // Aggiorna localita'
-        trip.setLocations(newLocations);
+        trip.setLocations(cityService.getFromListNamesCountries(newLocations));
 
         // Salva trip
         tripRepository.save(trip);

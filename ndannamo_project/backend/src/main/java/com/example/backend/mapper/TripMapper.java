@@ -1,6 +1,7 @@
 package com.example.backend.mapper;
 
 import com.example.backend.dto.TripDTO;
+import com.example.backend.model.City;
 import com.example.backend.model.Trip;
 import com.example.backend.model.User;
 
@@ -19,6 +20,7 @@ public interface TripMapper {
     @Mapping(target = "createdByName", source = "created_by.nickname") // Mappa solo l'ID del creatore
     @Mapping(target = "list_participants", source = "participants")
     @Mapping(target = "creator", ignore = true)
+    @Mapping(target = "locations", source = "locations", qualifiedByName = "mapCityListToStringList")
     @Mapping(target = "list_invitations", source ="invitations")
     TripDTO toDTO(Trip trip);
 
@@ -28,7 +30,7 @@ public interface TripMapper {
     @Mapping(target = "created_by.id", source = "createdBy")    // Mappa l'ID del creatore verso l'entità User
     @Mapping(target = "expenses", ignore = true)                // Ignora le spese
     @Mapping(target = "schedule", ignore = true)
-    @Mapping(target = "photos", ignore = true)
+    @Mapping(target = "locations", ignore = true)
     @Mapping(target = "attachments", ignore = true)
     Trip toEntity(TripDTO tripDTO);
 
@@ -52,6 +54,25 @@ public interface TripMapper {
             .collect(Collectors.toList());
         
         return userIds;
+    }
+
+    // Metodo per mappare una singola City in una String
+    default String mapCityToString(City city) {
+        if (city == null) {
+            return null;
+        }
+        return city.getName() + ", " + city.getCountry(); // Estrai il nome della città
+    }
+
+    // Metodo per mappare una lista di City in una lista di String
+    @Named("mapCityListToStringList")
+    default List<String> mapCityListToStringList(List<City> cities) {
+        if (cities == null) {
+            return null;
+        }
+        return cities.stream()
+                .map(this::mapCityToString) // Usa il metodo di mapping per ogni elemento
+                .toList();
     }
 }
 

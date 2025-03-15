@@ -87,7 +87,7 @@ class AttachmentService {
 
     static async getPhoto(token, tripId, photoId) {
         try {
-            const response = await axios.get(`${PhotoService.BASE_URL}/attachments/${photoId}`, {
+            const response = await axios.get(`${AttachmentService.BASE_URL}/attachments/${photoId}`, {
                 headers: {
                     'Content-Type': 'image/png',
                     "Authorization": `Bearer ${token}`
@@ -143,7 +143,7 @@ class AttachmentService {
         formData.append("image", file);
 
         try {
-            const response = await axios.post(`${PhotoService.BASE_URL}/${tripId}/photos`, formData, {
+            const response = await axios.post(`${AttachmentService.BASE_URL}/trips/${tripId}/photos`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     "Authorization": `Bearer ${token}`

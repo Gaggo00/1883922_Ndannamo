@@ -13,6 +13,9 @@ public interface AttachmentMapper {
     @Mapping(target = "attachedToId", source = "attachedTo.id")
     AttachmentDTO toDTO(Attachment attachment);
 
+    @Mapping(target = "tripId", source="trip.id")
     AttachmentSimpleDTO toSimpleDTO(Attachment attachment);
+
+
 
 }

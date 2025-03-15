@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
-import com.example.backend.exception.ResourceNotFoundException;
+import com.example.backend.dto.*;
 import com.example.backend.model.Attachment;
 import com.example.backend.service.AttachmentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,30 +12,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.validation.Valid;
 
-import com.example.backend.dto.ActivityCreationRequest;
-import com.example.backend.dto.EventDTO;
-import com.example.backend.dto.ExpenseCreationRequest;
-import com.example.backend.dto.ExpenseDTO;
-import com.example.backend.dto.GenericList;
-import com.example.backend.dto.GenericType;
-import com.example.backend.dto.ImageDataDTO;
-import com.example.backend.dto.OvernightStayDTO;
-import com.example.backend.dto.TravelCreationRequest;
-import com.example.backend.dto.TripCreationRequest;
-import com.example.backend.dto.TripDTO;
-import com.example.backend.dto.TripInviteList;
 import com.example.backend.model.OvernightStay;
 import com.example.backend.model.Trip;
-import com.example.backend.service.ImageDataService;
 import com.example.backend.service.TripService;
-import com.example.backend.service.UserService;
 
 
 @RestController
@@ -48,9 +33,6 @@ public class TripController {
 
     private final AttachmentService attachmentService;
     //private final UserService userService;
-
-    @Autowired
-    private ImageDataService imageDataService;
 
     @Autowired
     public TripController(TripService tripService, AttachmentService attachmentService /*, UserService userService*/) {
@@ -858,7 +840,7 @@ public class TripController {
             String email = authentication.getName();
 
             // prendi info
-            ImageDataDTO imageDTO = tripService.getImageInfoById(email, id, photo_id);
+            AttachmentSimpleDTO imageDTO = tripService.getImageInfoById(email, id, photo_id);
             return ResponseEntity.status(HttpStatus.OK)
                 .body(imageDTO);
         }
