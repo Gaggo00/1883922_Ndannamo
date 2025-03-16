@@ -44,6 +44,15 @@ const WeatherInfo = ({ latitude, longitude, date,time }) => {
 
     useEffect(() => {
         const fetchWeather = async () => {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0'); // Mese (0-11) -> Aggiungi 1 e formatta a due cifre
+            const day = String(now.getDate()).padStart(2, '0'); // Format a due cifre
+
+            const formattedDate = `${year}-${month}-${day}`;
+            console.log(formattedDate); // Es. 2025-03-11
+
+            if (date > formattedDate) {
             try {
                 const response = await MeteoService.getMeteoInfo(latitude, longitude, date,time);
                 setTemperature(response[0]);
@@ -52,6 +61,10 @@ const WeatherInfo = ({ latitude, longitude, date,time }) => {
                 setWeatherSymbol(icon_index);
             } catch (error) {
                 console.error("Errore nel recupero dati meteo:", error);
+            }}
+            else{
+                setTemperature(" Not available");
+                setWeatherSymbol(0);
             }
         };
 
@@ -65,7 +78,7 @@ const WeatherInfo = ({ latitude, longitude, date,time }) => {
                 {weatherSymbol !== null ? (
                     <>
                         <i className={weatherIcons[weatherSymbol] || "bi bi-question-circle"}></i>
-                        <span> {temperature}°C</span>
+                        <span>{temperature === " Not available" ? temperature : `${temperature}°C`}</span>
                     </>
                 ) : (
                     <span>Loading...</span>

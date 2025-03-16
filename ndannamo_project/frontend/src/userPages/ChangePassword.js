@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../auth/AuthContext';
 import UserService from '../services/AuthService';
 import '../styles/Login.css'
 import locker from "../static/locker.png";

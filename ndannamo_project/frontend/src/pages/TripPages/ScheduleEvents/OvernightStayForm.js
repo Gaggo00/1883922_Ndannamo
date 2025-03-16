@@ -1,7 +1,7 @@
-import {state, useState, useEffect} from 'react'
+import {useState} from 'react'
 import { useNavigate } from 'react-router-dom';
 
-import TextField, { DateField, PickedField, PickField } from "../../../components/Fields/Fields";
+import TextField, { DateField} from "../../../components/Fields/Fields";
 
 import ScheduleService from '../../../services/ScheduleService';
 import Loading from '../../../components/Loading';

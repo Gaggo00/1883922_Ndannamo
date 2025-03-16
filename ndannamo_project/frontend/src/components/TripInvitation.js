@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
 import UserService from '../services/UserService';
@@ -40,7 +39,7 @@ export default function TripInvitation({trip, reloadProfile}) {
 
 
     var participantsStr = "";
-    for (var i = 0; i < trip.list_participants.length - 1; i++) {
+    for (i = 0; i < trip.list_participants.length - 1; i++) {
         participantsStr += ", " + trip.list_participants[i];
     }
     participantsStr += trip.list_participants[trip.list_participants.length - 1];

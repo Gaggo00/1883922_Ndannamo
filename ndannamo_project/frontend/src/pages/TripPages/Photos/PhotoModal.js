@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState} from 'react';
 //import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import DateUtilities from '../../../utils/DateUtilities';
@@ -52,7 +52,7 @@ export default function PhotoModal({photoUrl, photoInfo, closeModal, deletePhoto
                             <i className="bi bi-x h4"></i>
                     </button>
                 </div>
-                <img className="" src={photoUrl}/>
+                <img className="" src={photoUrl} alt="photoUrl"/>
                 <div className='photo-modal-bottom-bar'>
                     <div className='photo-modal-info-row'>
                         <h6><i>Uploaded by {photoInfo.uploadedBy.nickname} on {uploadDate}</i></h6>

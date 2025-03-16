@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 
 import EventOpenNight from './EventOpenNight';
 import EventOpenActivity from './EventOpenActivity';

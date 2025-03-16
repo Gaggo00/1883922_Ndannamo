@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import {Link, useNavigate} from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import AuthService from '../services/AuthService';
 
@@ -84,7 +84,7 @@ function Register() {
 
     return (
         <div className="all-page">
-            <img id="top" src={ondaVerde}/>
+            <img id="top" src={ondaVerde} alt="green-wave"/>
             <div className="log-container">
                 <div className="login-box">
                     <div className="image-box">
@@ -109,7 +109,7 @@ function Register() {
                     </div>
                 </div>
             </div>
-            <img id="bottom" src={ondaArancione}/>
+            <img id="bottom" src={ondaArancione} alt="orange-wave"/>
         </div>
     )
         ;

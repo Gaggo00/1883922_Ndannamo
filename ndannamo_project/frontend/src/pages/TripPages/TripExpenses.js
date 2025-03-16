@@ -47,13 +47,13 @@ export default function TripExpenses() {
 
     const submit = async (newExpense, expenseId = -1) => {
         newExpense.refund = false;
-        if (expenseId == -1) {
+        if (expenseId === -1) {
             const backExpenseId = await saveExpense(newExpense);
             createNewExpense(newExpense, backExpenseId);
         }
         else
         {
-            const oldExpenseIndex = data.findIndex((expense) => expense.id == expenseId);
+            const oldExpenseIndex = data.findIndex((expense) => expense.id === expenseId);
             if (oldExpenseIndex >= 0) {
                 const newData = [...data];
                 const oldExpense = data[oldExpenseIndex];
@@ -120,7 +120,7 @@ export default function TripExpenses() {
 
 
     const handleClick = (id) => {
-        if (id == 'sales') {
+        if (id === 'sales') {
             setFormData({
                 expenseData: new ExpenseDto,
                 users: users,
@@ -156,7 +156,7 @@ export default function TripExpenses() {
     };
 
     function addSale() {
-        if (formData.status == 1 || !formVisibility) {
+        if (formData.status === 1 || !formVisibility) {
             setFormData({
                 expenseData: new ExpenseDto,
                 users: users,
@@ -168,7 +168,7 @@ export default function TripExpenses() {
                 onDestroy: destroy,
             });
             setFormVisibility(true);
-            if (selected != -1 && itemsRefs.current[selected])
+            if (selected !== -1 && itemsRefs.current[selected])
                 itemsRefs.current[selected].setClicked(false);
             setSelected(-1);
         }
@@ -201,7 +201,7 @@ export default function TripExpenses() {
 
     
     const destroy = async (expenseId) => {
-        const index = data.findIndex(expense => expense.id == expenseId);
+        const index = data.findIndex(expense => expense.id === expenseId);
         if (index >= 0) {
             const newData = [...data];
             newData.splice(index, 1);
@@ -233,9 +233,9 @@ export default function TripExpenses() {
                     <div className="tc-left">
                         <div className="tc-top">
                             <div className={`tc-top-text ${activeText === "list" ? "active" : "inactive"}`}
-                                id="list" onClick={()=>handleClick("list")}>Lista spese</div>
+                                id="list" onClick={()=>handleClick("list")}>Expenses</div>
                             <div className={`tc-top-text ${activeText === "sales" ? "active" : "inactive"}`}
-                                id="sales" onClick={()=>handleClick("sales")}>Saldi</div>
+                                id="sales" onClick={()=>handleClick("sales")}>Balances</div>
                         </div>
                         {activeText === "list" &&
                             <TCSales
@@ -244,7 +244,7 @@ export default function TripExpenses() {
                                 handleSelection={handleTricountSelection}
                                 handleAdd={addSale}/>
                         }
-                        {activeText == "sales" &&
+                        {activeText === "sales" &&
                             <TCRefund
                                 user={userId}
                                 expenses={data}
@@ -253,7 +253,7 @@ export default function TripExpenses() {
                             />
                         }
                     </div>
-                    {formVisibility == true &&
+                    {formVisibility === true &&
                         <div className="tc-right">
                             <TCForm {...formData}/>
                             {/***activeText === "sales" &&

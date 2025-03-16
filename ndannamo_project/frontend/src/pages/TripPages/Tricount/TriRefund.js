@@ -92,23 +92,22 @@ export const TriBalance = ({ id, nickname, amount, onClick = ()=>{} }) => {
                 className="tc-column tc-total"
                 style= {amount > 0 ? upStyle : amount < 0 ? downStyle : {}}
             >
-                {amount}
+                € {amount}
             </div>
         </div>
     )
 }
   
 
-const TriRefund = ({ by, to, amount, toNick, byNick, onClickPaid, onClickPay}) => {
+const TriRefund = ({ by, to, amount, toNick, byNick, onClickPaid}) => {
 
     return (
         <div className='tc-item-n-h'>
             <div className="tc-column tc-name">{byNick}</div>
             <div className="tc-column tc-expense">{toNick}</div>
-            <div className="tc-column tc-total">{amount}</div>
+            <div className="tc-column tc-total">€ {amount}</div>
             <div className="tc-column tc-date">
-                <button onClick={onClickPaid}>Paid</button>
-                <button onClick={onClickPay}>Pay</button>
+                <button onClick={onClickPaid}>Mark as Paid</button>
             </div>
         </div>
     );
@@ -181,7 +180,7 @@ export const TCRefund = ({user, expenses, users=[], onRefund}) => {
         while (newBalances[i].amount > 0) {
             var toRefound = newBalances[i].amount;
             while (toRefound > 0) {
-                if (lastValue.amount == 0) {
+                if (lastValue.amount === 0) {
                     lastValue = copyBalances.pop();
                     lastValue.amount *= -1;
                 }
@@ -208,12 +207,12 @@ export const TCRefund = ({user, expenses, users=[], onRefund}) => {
         const expenseByUser = [];
 
         expenses.map((e) => {
-            if (e.paidBy == userId) {
+            if (e.paidBy === userId) {
                 expenseByUser.push(e);
             }
             else {
                 for (let i = 0; i < e.amountPerUser.length; i++) {
-                    if (e.amountPerUser[i].user == userId)
+                    if (e.amountPerUser[i].user === userId)
                         expenseByUser.push(e);
                 }
             }
@@ -279,7 +278,7 @@ export const TCRefund = ({user, expenses, users=[], onRefund}) => {
                             toNick={users.find(user => user[0] === r.to) ? users.find(user => user[0] === r.to)[1] : null}
                             byNick={users.find(user => user[0] === r.by) ? users.find(user => user[0] === r.by)[1] : null}
                             onClickPaid={() => onClickPaid(index)}
-                            onClickPay={() => {console.log("Pollo")}}
+
                         />
                     ))}
                 </div>

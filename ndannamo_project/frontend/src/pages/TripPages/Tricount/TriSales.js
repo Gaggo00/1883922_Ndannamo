@@ -14,7 +14,7 @@ const TCSales = ({data, userId, handleSelection=()=>{}, handleAdd=()=>{}}) => {
 
     useEffect(() => {
         retriveExpenses(data);
-        if (!searchValue || searchValue == "")
+        if (!searchValue || searchValue === "")
             setSearchData(data);
         else {
             const filteredItems = data.filter(
@@ -31,10 +31,10 @@ const TCSales = ({data, userId, handleSelection=()=>{}, handleAdd=()=>{}}) => {
 
         expensesData.map((expense) => {
             console.log(expense.refund)
-            if (expense.refund != true) {
+            if (expense.refund !== true) {
                 totExpenses += expense.amount;
                 expense.amountPerUser.map((e) => {
-                    if (e.user == userId)
+                    if (e.user === userId)
                         myExpenses += e.amount;
                 })
             }
@@ -52,14 +52,14 @@ const TCSales = ({data, userId, handleSelection=()=>{}, handleAdd=()=>{}}) => {
 
 
     function handleItemSelection (event, index, item) {
-        if (selected != -1 && itemsRefs.current[selected])
+        if (selected !== -1 && itemsRefs.current[selected])
             itemsRefs.current[selected].setClicked(false);
         setSelected(index);
         handleSelection(event, item);
     }
 
     function addClicked () {
-        if (selected != -1 && itemsRefs.current[selected]) {
+        if (selected !== -1 && itemsRefs.current[selected]) {
             itemsRefs.current[selected].setClicked(false);
             setSelected(-1);
         }
@@ -71,22 +71,23 @@ const TCSales = ({data, userId, handleSelection=()=>{}, handleAdd=()=>{}}) => {
         <div className="tc-bottom">
             <div className="tc-main-recap">
                 <div className="tc-recap">
-                    <div>Le mie spese</div>
-                    <div className="tc-recap-expenses">{myTotalExpenses.toFixed(2)}</div>
+                    <div>My Expensive</div>
+                    <div className="tc-recap-expenses">€{myTotalExpenses.toFixed(2)}</div>
                 </div>
                 <div className="tc-recap">
-                    <div>Spese totali</div>
-                    <div className="tc-recap-expenses">{totalExpenses.toFixed(2)}</div>
+                    <div>Total Expensive</div>
+                    <div className="tc-recap-expenses">€{totalExpenses.toFixed(2)}</div>
                 </div>
             </div>
             <div className="tc-middle">
-                <div className="tc-title">Spese</div>
+                <div className="tc-title"></div>
                 <SearchBar
                     value={searchValue}
                     setValue={setSearchValue}
                     items={searchData}
                     setItems={setSearchData}
                     itemsAll={data}
+                    placeholder={"Search an Expensive"}
                     checkItemSearch={checkExpensesSearch}
                 />
             </div>
@@ -105,7 +106,9 @@ const TCSales = ({data, userId, handleSelection=()=>{}, handleAdd=()=>{}}) => {
                 </div>
             </div>
             <div className="tc-button-container">
-                <div className="tc-add-button" onClick={addClicked}>+ Add Spesa</div>
+                {1===1 && <div className="tc-add-button" >
+                    <button onClick={addClicked}>+</button>
+                    <p>Add Expenses</p></div>}
             </div>
         </div>
     )

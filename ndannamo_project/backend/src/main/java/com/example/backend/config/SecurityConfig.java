@@ -51,11 +51,7 @@ public class SecurityConfig {
                         .requestMatchers("/").permitAll()
                         .requestMatchers("/images/**").permitAll()
                         .requestMatchers("/index.html").permitAll()
-                        .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/cities/**").permitAll()
-                        //.requestMatchers("/profile/**").permitAll()
-                        .requestMatchers("/api/auth/change-password").authenticated()
-
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session

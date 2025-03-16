@@ -3,7 +3,7 @@ PER TESTARE SE IL DATABASE HA CARICATO LA TABELLA cities:
 - Avvia i container (chiamando docker-compose)
 
 - In un altro terminale, fai:
-  >>    docker exec -it my-postgres bash
+  >>    docker exec -it postgres_main bash
   >>    psql -U myuser -W mydatabase
 
 - Inserisci la password "mypassword"
@@ -38,3 +38,20 @@ PER RI-CREARE LA TABELLA CITIES SENZA ELIMINARE GLI ALTRI DATI:
   >>    COPY cities FROM '/docker-entrypoint-initdb.d/cities.csv' DELIMITER ',' CSV HEADER;
 
 
+
+#################################################################################
+
+PER VEDERE LO SCHEMA DI UNA TABELLA (comodo per la documentazione):
+
+  >> SELECT column_name, data_type FROM information_schema.columns WHERE table_name = 'trip';
+
+oppure
+>> SELECT column_name FROM information_schema.columns WHERE table_name = 'activities';
+
+
+
+
+
+
+
+  SELECT name FROM cities WHERE country = 'Italy' LIMIT 10;

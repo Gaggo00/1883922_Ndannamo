@@ -1,4 +1,4 @@
-package com.example.backend.controller;
+package com.example.cities.controller;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,9 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import com.example.backend.exception.ResourceNotFoundException;
-import com.example.backend.model.City;
-import com.example.backend.service.CityService;
+import com.example.cities.exception.ResourceNotFoundException;
+import com.example.cities.model.City;
+import com.example.cities.service.CityService;
 
 import jakarta.validation.Valid;
 

@@ -1,7 +1,9 @@
 
 services:
+
+  # Database autenticazione + backend principale
   postgres:
-    container_name: 'my-postgres'
+    container_name: 'postgres_main'
     image: 'postgres:17.1'
     environment:
       POSTGRES_USER: myuser
@@ -11,9 +13,6 @@ services:
       - '5432:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      #- ./database:/docker-entrypoint-initdb.d
-      #- ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
-      #- ./database/cities.csv:/docker-entrypoint-initdb.d/cities.csv
     networks:
       - spring_net
     healthcheck:
@@ -37,10 +36,48 @@ services:
       - chat_net
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U chatuser -d chatdb"]
+
+  # Database cities
+  postgres-cities:
+    container_name: 'postgres_cities'
+    image: 'postgres:17.1'
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: mydatabase
+    ports:
+      - '5434:5432'
+    volumes:
+      - postgres_cities_data:/var/lib/postgresql/data
+      - ./database:/docker-entrypoint-initdb.d
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./database/cities.csv:/docker-entrypoint-initdb.d/cities.csv
+    networks:
+      - cities_net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U myuser -d mydatabase"]
       interval: 10s
       timeout: 5s
       retries: 5
 
+  # Backend autenticazione
+  authentication:
+    build: authentication
+    container_name: authentication
+    ports:
+      - "8081:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/mydatabase
+      SPRING_DATASOURCE_USERNAME: myuser
+      SPRING_DATASOURCE_PASSWORD: mypassword
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - spring_net
+      - frontend_net
+
+  # Backend principale
   app:
     build: backend
     container_name: backend
@@ -73,6 +110,21 @@ services:
         condition: service_healthy
     networks:
       - chat_net
+  # Backend cities
+  cities:
+    build: cities
+    container_name: cities
+    ports:
+      - "8083:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-cities:5432/mydatabase
+      SPRING_DATASOURCE_USERNAME: myuser
+      SPRING_DATASOURCE_PASSWORD: mypassword
+    depends_on:
+      postgres-cities:
+        condition: service_healthy
+    networks:
+      - cities_net
       - frontend_net
 
   frontend:
@@ -90,9 +142,11 @@ services:
 
 networks:
   spring_net:
+  cities_net:
   frontend_net:
   chat_net:
 
 volumes:
   postgres_data:
   postgres_chat_data:
+  postgres_cities_data:

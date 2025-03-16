@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-
 import UserService from '../services/UserService';
 import ConfirmDelete from '../common/ConfirmDelete.js';
 import TripInvitation from '../components/TripInvitation.js'
-
 import passport from '../static/Passport.png';
 import "./ProfilePage.css";
 import "../styles/TripPreview.css";

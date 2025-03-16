@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import TripService from '../services/TripService';
 import CityService from '../services/CityService';
 import missingCityImage from '../static/missing_city_image.png'
 import "../styles/TripPreview.css";
