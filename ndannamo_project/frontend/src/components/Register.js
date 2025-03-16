@@ -7,6 +7,7 @@ import "../styles/Login.css";
 import logo from '../static/Logo app.png';
 import ondaVerde from "../static/svg/onda_sopra_verde.svg"
 import ondaArancione from "../static/svg/onda_sotto_arancione.svg"
+import ChatService from '../services/ChatService';
 
 function Register() {
     const [email, setEmail] = useState('');
@@ -67,6 +68,7 @@ function Register() {
                 var expiration = userDataArray[1];
                 localStorage.setItem('token', token);
                 localStorage.setItem('token-expiration', expiration);
+
                 login(); // Aggiorna lo stato di autenticazione (login fatto in automatico quando ti registri)
                 navigate('/');
             } else {
