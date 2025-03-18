@@ -44,7 +44,7 @@ function ProfilePage() {
         navigate('/trips');
     }
 
-    const fetchProfileInfo = async () => {
+    async function fetchProfileInfo() {
         try {
             const token = localStorage.getItem('token'); // Recuperiamo il token da localStorage
             if (!token) {
@@ -129,7 +129,7 @@ function ProfilePage() {
                         </div>
                         <div className='flex-row'>
                             <div id="image-box">
-                                <img src={passport} alt="User's passport photo" />
+                                <img src={passport} alt="User's passport" />
                             </div>
                             <div id="info">
                                 <h2>Hi, {profileInfo.nickname}</h2>

@@ -38,7 +38,7 @@ function Main() {
     useEffect(() => {
         fetchTripsInfo();
         fetchProfileInfo();
-    }, []);
+    });
 
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -201,7 +201,7 @@ function Main() {
                 {/*<div className="header"></div>*}
                 {/* BANNER */}
                 <div id='banner'>
-                    <img id="bannerImg" src={banner}></img>
+                    <img id="bannerImg" src={banner} alt="green hills"></img>
                 </div>
 
                 {/* UPCOMING TRIPS */}

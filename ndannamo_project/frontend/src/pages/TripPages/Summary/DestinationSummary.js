@@ -166,7 +166,7 @@ export default function DestinationSummary() {
                     <p>Destinations</p>
                 </div>
                 {!changeDestination && tripInfo.creator &&
-                    <img id="edit" class="editable" onClick={handleEditDestination} src={edit_icon} alt="edit_icon" />}
+                    <img id="edit" className="editable" onClick={handleEditDestination} src={edit_icon} alt="edit_icon" />}
                 {changeDestination && <UndoConfirm
                     onConfirm={handleChangeDestination}
                     onUndo={undoChangeDestination} />}
@@ -176,7 +176,7 @@ export default function DestinationSummary() {
                 {!changeDestination && <div className="destinations" id="1">
                     <div className="list-destination">
                         {tripInfo.locations.map((location, index) => (
-                        <p>{location}</p>
+                        <p key={index}>{location}</p>
                     ))}
                     </div>
                 </div>}

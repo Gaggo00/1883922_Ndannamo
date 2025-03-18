@@ -32,9 +32,9 @@ export default function PhotoPreview({photoId, tripId, openModal}) {
     useEffect(() => {
         fetchImage(photoId);
         fetchImageInfo(photoId);
-    }, []);
+    }, [photoId]);
 
-    const fetchImage = async (photoId) => {
+    async function fetchImage(photoId) {
         try {
             const token = localStorage.getItem('token');
             if (!token) {
@@ -58,7 +58,7 @@ export default function PhotoPreview({photoId, tripId, openModal}) {
         }
     };
 
-    const fetchImageInfo = async (photoId) => {
+    async function fetchImageInfo(photoId) {
         try {
             const token = localStorage.getItem('token');
             if (!token) {
@@ -80,7 +80,7 @@ export default function PhotoPreview({photoId, tripId, openModal}) {
 
     return (
         <div className="gallery-item">
-            <img src={imgURL} key={imgKey} onClick={() => {openModal(imgURL, photoInfo)}}/>
+            <img src={imgURL} key={imgKey} onClick={() => {openModal(imgURL, photoInfo)}} alt={photoInfo.name}/>
         </div>
     );
 }

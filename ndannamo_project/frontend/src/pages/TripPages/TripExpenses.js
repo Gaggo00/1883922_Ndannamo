@@ -80,7 +80,7 @@ export default function TripExpenses() {
     const [activeText, setActiveText] = useState("list");
     const [formVisibility, setFormVisibility] = useState(true);
     const [formData, setFormData] = useState({
-        expenseData: new ExpenseDto,
+        expenseData: new ExpenseDto(),
         users: users,
         filled: false,
         status: 0,
@@ -122,7 +122,7 @@ export default function TripExpenses() {
     const handleClick = (id) => {
         if (id === 'sales') {
             setFormData({
-                expenseData: new ExpenseDto,
+                expenseData: new ExpenseDto(),
                 users: users,
                 filled: false,
                 status: 0,
@@ -158,7 +158,7 @@ export default function TripExpenses() {
     function addSale() {
         if (formData.status === 1 || !formVisibility) {
             setFormData({
-                expenseData: new ExpenseDto,
+                expenseData: new ExpenseDto(),
                 users: users,
                 filled: false,
                 status: 0,

@@ -150,7 +150,7 @@ public class TripController {
     }
 
     // Annulla inviti
-    @DeleteMapping(value={"/{id}/invite", "/{id}/invite/"})
+    @PostMapping(value={"/{id}/remove-invitations", "/{id}/remove-invitations/"})
     public ResponseEntity<?> removeInvitation(@PathVariable Long id, @Valid @RequestBody TripInviteList inviteList) {
 
         try {
@@ -170,7 +170,7 @@ public class TripController {
     }
 
     // Rimuovi persone da una trip
-    @DeleteMapping(value={"/{id}/participants", "/{id}/participants/"})
+    @PostMapping(value={"/{id}/remove-participants", "/{id}/remove-participants/"})
     public ResponseEntity<?> removeParticipants(@PathVariable Long id, @Valid @RequestBody TripInviteList inviteList) {
 
         try {
