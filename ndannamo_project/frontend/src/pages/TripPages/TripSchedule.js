@@ -3,6 +3,8 @@ import {useLocation, useNavigate, useParams} from 'react-router-dom';
 
 import ScheduleService from '../../services/ScheduleService';
 import MapService from '../../services/MapService';
+import TripService from '../../services/TripService';
+import UserService from '../../services/UserService';
 
 import InternalMenu from "./InternalMenu";
 import ScheduleDay from "./ScheduleEvents/ScheduleDay"
@@ -26,7 +28,54 @@ import './TripSchedule.css'
 export default function TripSchedule() {
     const { id } = useParams();
     const location = useLocation();
-    const tripInfo = location.state?.trip; // Recupera il tripInfo dallo stato
+
+    const [tripInfo, setTripInfo] = useState(location.state?.trip);
+    const [profileInfo, setProfileInfo] = useState(location.state?.profile);
+
+    const fetchTripInfo = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                navigate("/login");
+            }
+            const response = await TripService.getTrip(token, id);
+            if (response) {
+                console.log("obtained trip info");
+                setTripInfo(response);
+                
+            } else {
+                console.error('Invalid response data');
+            }
+        } catch (error) {
+            console.error('Error fetching trip info:', error);
+        }
+    }
+    if (!tripInfo) {
+        fetchTripInfo();
+    }
+    const fetchProfileInfo = async () => {
+        try {
+            const token = localStorage.getItem('token'); // Recuperiamo il token da localStorage
+            if (!token) {
+                navigate("/login");
+            }
+
+            // Chiamata al servizio per ottenere le informazioni del profilo
+            const response = await UserService.getProfile(token);
+
+            if (response) {
+                setProfileInfo(response);  // Aggiorniamo lo stato con le informazioni del profilo
+            } else {
+                console.error('Invalid response data');
+            }
+        } catch (error) {
+            console.error('Error fetching profile information:', error);
+        }
+    };
+    if (!profileInfo) {
+        fetchProfileInfo();
+    }
+
 
     // Per il campo "type" negli elementi di schedule
     const NIGHT = "NIGHT";
@@ -329,7 +378,7 @@ export default function TripSchedule() {
 
     return (
         <div className="trip-info">
-            <InternalMenu />
+            <InternalMenu tripInfo={tripInfo} profileInfo={profileInfo}/>
             <div className="trip-content">
                 <div className="trip-top">
                     <span> <strong>{tripInfo.title}:</strong> {DateUtilities.yyyymmdd_To_ddMONTH(tripInfo.startDate)} - {DateUtilities.yyyymmdd_To_ddMONTH(tripInfo.endDate)}</span>

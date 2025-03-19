@@ -16,15 +16,13 @@ import edit_icon from "../../../static/svg/icons/edit_icon.svg";
 
 
 
-export default function DateSummary() {
+export default function DateSummary({tripInfo, profileInfo}) {
 
     const [changeDate, setChangeDate] = useState(false);
     const [newEndDate, setNewEndDate] = useState(null);
     const [newStartDate, setNewStartDate] = useState(null);
     const navigate = useNavigate();
     const location = useLocation();
-    const tripInfo = location.state?.trip; // Recupera il tripInfo dallo stato
-    const profileInfo = location.state?.profile; // Recupera il tripInfo dallo stato
 
     
     // Per il pop up di conferma

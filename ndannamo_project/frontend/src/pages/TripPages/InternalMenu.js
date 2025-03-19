@@ -4,12 +4,11 @@ import './InternalMenu.css';
 import TripService from "../../services/TripService";
 import ConfirmDelete from "../../common/ConfirmDelete";
 
-export default function InternalMenu() {
+export default function InternalMenu({tripInfo, profileInfo}) {
     const navigate = useNavigate();
     const { id } = useParams(); // Ottieni l'ID dinamico dalla URL
     const location = useLocation();
-    const [tripInfo, setTripInfo] = useState(location.state?.trip); // Recupera il tripInfo dallo stato
-    const profileInfo = location.state?.profile; // Recupera il tripInfo dallo stato
+
     const [selectedOption, setSelectedOption] = useState(null);
     const [hoveredOption, setHoveredOption] = useState(null); // Stato per l'hover
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -20,7 +19,6 @@ export default function InternalMenu() {
         { id: "schedule", icon: "bi bi-file-earmark-text h3", label: "Schedule", path: `/trips/${id}/schedule` },
         { id: "expenses", icon: "bi bi-currency-dollar h3", label: "Expenses", path: `/trips/${id}/expenses` },
         { id: "photos", icon: "bi bi-images h3", label: "Photos", path: `/trips/${id}/photos` },
-        { id: "tickets", icon: "bi bi-ticket-perforated h3", label: "Tickets", path: `/trips/${id}/tickets` },
         { id: "chat", icon: "bi bi-chat-left-text h3", label: "Messages", path: `/trips/${id}/chat` },
     ];
 
@@ -76,30 +74,6 @@ export default function InternalMenu() {
         }
     }
 
-
-    const fetchTripInfo = async () => {
-        try {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                navigate("/login");
-            }
-            const response = await TripService.getTrip(token, id);
-            if (response) {
-                console.log("obtained trip info");
-                setTripInfo(response);
-                
-            } else {
-                console.error('Invalid response data');
-            }
-        } catch (error) {
-            console.error('Error fetching trip info:', error);
-        }
-    }
-
-
-    if (!tripInfo) {
-        fetchTripInfo();
-    }
 
 
     return (

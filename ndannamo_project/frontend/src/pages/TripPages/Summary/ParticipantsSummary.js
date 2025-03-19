@@ -8,17 +8,16 @@ import { useLocation } from 'react-router-dom';
 import participants_icon from "../../../static/svg/icons/partecipants_icon.svg";
 import UsersService from "../../../services/UsersService";
 
-export default function ParticipantsSummary() {
+export default function ParticipantsSummary({tripInfo, profileInfo}) {
+    const navigate = useNavigate();
+    const location = useLocation();
+
     const [changeParticipants, setChangeParticipants] = useState(false);
     const [newParticipant, setNewParticipant] = useState("");
 
     const [invitations, setInvitations] = useState([]);
     const [participants, setParticipants] = useState([]);
 
-    const navigate = useNavigate();
-    const location = useLocation();
-    const tripInfo = location.state?.trip; // Recupera il tripInfo dallo stato
-    const profileInfo = location.state?.profile; // Recupera il tripInfo dallo stato
     const [listUsers, setListUsers] = useState([]);
     const [errorMessage, setErrorMessage] = useState("");
 

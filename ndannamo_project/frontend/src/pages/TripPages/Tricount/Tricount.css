@@ -32,10 +32,12 @@
 .tc-top {
     display: flex;
     flex-direction: row;
+    justify-content: center;
     gap: 10px;
-    background-color: #e7e7e7;
+    /*background-color: #e7e7e7;*/
     padding: 10px 10px 5px 10px;
     border-radius: 8px 8px 0px 0;
+    background-image: linear-gradient(rgba(0,0,0,0) 91%, #84bd9a  91%);
 }
 
 .tc-top-text {
@@ -43,15 +45,20 @@
     cursor: pointer;
     font-size: 14px;
     font-weight: 600;
+    padding: 1vh 1vw;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
 }
 
 .tc-top-text.active {
-    color: black;
-    text-decoration: underline;
+    color: rgb(255, 255, 255);
+    /*text-decoration: underline;*/
+    background-color: #84bd9a;
 }
 
 .tc-top-text.inactive {
-    color: gray;
+    color: rgb(80, 80, 80);
+    background-color: #e7e7e7;
 }
 
 .tc-bottom {
@@ -80,6 +87,7 @@
 }
 .sb-search-bar{
     width: 63%;
+    padding: 2vh 1vw;
 }
 .tc-recap {
     display: flex;
