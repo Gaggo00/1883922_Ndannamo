@@ -30,12 +30,22 @@
     margin: 0 0.3vw;
     border: none;
     border-radius: 10px;
-    background-color: #FAD8B2;
+    background-color: #fad8b2;
 }
 
-#calendar .calendar-element .calendar-element-content {
+#calendar .calendar-element {
     padding: 1vh 0.4vw;
-    width: 3.7vw;
+    width: 2.5vw;
+    height: 2.5vw;
+}
+#calendar .calendar-element.selected {
+    background-color: #ed8a53; /* Colore evidenziato */
+    font-weight: bold;
+    width: 4vw;
+    height: 4vw;
+}
+.flex-column align-items-center date-day p{
+    font-size: 1vw;
 }
 
 #calendar .date-day {
