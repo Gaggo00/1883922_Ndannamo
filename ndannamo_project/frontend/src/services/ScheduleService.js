@@ -314,6 +314,27 @@ class ScheduleService {
     }
 
     // Cambia indirizzo travel
+    static async changeTravelDestination(token, tripId, travelId, destination) {
+        const value = destination;
+        try{
+            const response = await axios.put(
+                `${ScheduleService.BASE_URL}/${tripId}/schedule/travel/${travelId}/destination`,
+                { value },
+                {
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                        "Content-Type": "application/json"
+                    }
+                });
+            console.log(response);
+            return response.data;
+        }
+        catch(err) {
+            throw (err);
+        }
+    }
+
+    // Cambia indirizzo travel
     static async changeTravelAddress(token, tripId, travelId, address) {
         const value = address;
         try{

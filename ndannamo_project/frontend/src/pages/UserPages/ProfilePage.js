@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import UserService from '../services/UserService';
-import ConfirmDelete from '../common/ConfirmDelete.js';
-import TripInvitation from '../components/TripInvitation.js'
-import passport from '../static/Passport.png';
+
+import UserService from '../../services/UserService.js';
+import ConfirmDelete from '../../common/ConfirmDelete.js';
+import TripInvitation from '../../components/TripInvitation.js'
+
+import passport from '../../static/Passport.png';
 import "./ProfilePage.css";
-import "../styles/TripPreview.css";
+import "../../styles/TripPreview.css";
 
 
 function ProfilePage() {
@@ -184,7 +186,7 @@ function ProfilePage() {
                     </div>
                 </div>
             </div>
-            <button id="deleteProfileButton" onClick={() => {setIsModalOpen(true)}}>Delete profile</button>
+            {/*<button id="deleteProfileButton" onClick={() => {setIsModalOpen(true)}}>Delete profile</button>*/}
             {isModalOpen && (
                 <div className="modal-overlay" onClick={handleOverlayClick}>
                     <div className="trip-box">
