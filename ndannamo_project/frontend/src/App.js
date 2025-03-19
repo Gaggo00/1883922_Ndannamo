@@ -7,15 +7,13 @@ import Home from "./pages/Home";
 import Main from "./pages/Main";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import {AuthProvider} from "./auth/AuthContext";
-import ProfilePage from "./userPages/ProfilePage";
-import ChangePassword from "./userPages/ChangePassword";
+import ProfilePage from "./pages/UserPages/ProfilePage";
+import ChangePassword from "./pages/UserPages/ChangePassword";
 import TripSummary from "./pages/TripPages/Summary/TripSummary";
 import TripChat from "./pages/TripPages/TripChat";
 import TripSchedule from "./pages/TripPages/TripSchedule";
 import TripExpenses from "./pages/TripPages/TripExpenses";
 import TripPhotos from "./pages/TripPages/TripPhotos";
-import TripTickets from "./pages/TripPages/TripTickets";
-import Tricount from "./pages/Tricount.js";
 import { WebSocketProvider } from './utils/WebSocketProvider.js';
 
 export default function App() {
@@ -38,9 +36,7 @@ export default function App() {
                                 <Route path="/trips/:id/schedule" element={<TripSchedule />} />
                                 <Route path="/trips/:id/expenses" element={<TripExpenses />} />
                                 <Route path="/trips/:id/photos" element={<TripPhotos />} />
-                                <Route path="/trips/:id/tickets" element={<TripTickets />} />
                                 <Route path="/change-password" element={<ChangePassword/>} />
-                                <Route path="/tricount" element={<Tricount />} />
                                 <Route path="/chat" element={<TripChat />} />
                             </Routes>
                         </main>

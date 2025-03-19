@@ -67,7 +67,7 @@ function Login() {
                 localStorage.setItem('token-expiration', expiration);
                 connect();
                 login(); // Aggiorna lo stato di autenticazione
-                navigate('/');
+                navigate('/trips');
             } else {
                 setError("Wrong email or password");
             }

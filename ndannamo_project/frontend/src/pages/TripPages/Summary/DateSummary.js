@@ -1,25 +1,50 @@
 import "./TripSummary.css";
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
+
 import UndoConfirm from "../../../common/UndoConfirm";
+import ConfirmDelete from "../../../common/ConfirmDelete";
+
+import DateUtilities from "../../../utils/DateUtilities";
+
+import TripService from "../../../services/TripService";
+
 import calendar_icon from "../../../static/svg/icons/calendar_icon.svg";
 import calendar from "../../../static/calendar.png";
 import arrow_down from "../../../static/svg/icons/arrow-down2.svg";
-import DateUtilities from "../../../utils/DateUtilities";
 import edit_icon from "../../../static/svg/icons/edit_icon.svg";
-import TripService from "../../../services/TripService";
-import { useLocation } from 'react-router-dom';
 
 
-export default function DateSummary() {
+
+export default function DateSummary({tripInfo, profileInfo}) {
 
     const [changeDate, setChangeDate] = useState(false);
     const [newEndDate, setNewEndDate] = useState(null);
     const [newStartDate, setNewStartDate] = useState(null);
     const navigate = useNavigate();
     const location = useLocation();
-    const tripInfo = location.state?.trip; // Recupera il tripInfo dallo stato
-    const profileInfo = location.state?.profile; // Recupera il tripInfo dallo stato
+
+    
+    // Per il pop up di conferma
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const handleOverlayClick = (e) => {
+        // Verifica se l'utente ha cliccato sull'overlay e non sul contenuto del modal
+        if (e.target.className === "modal-overlay") {
+            setIsModalOpen(false);
+        }
+    };
+
+    const checkWhetherToOpenModal = () => {
+        const oldLength = DateUtilities.daysBetween(tripInfo.startDate, tripInfo.endDate);
+        const newLength = DateUtilities.daysBetween(newStartDate, newEndDate);
+        if (newLength < oldLength) {
+            setIsModalOpen(true);
+        }
+        else {
+            handleChangeDates();
+        }
+    }
+
 
     const handleEditDates = () => {
         setNewStartDate(tripInfo.startDate);
@@ -40,7 +65,8 @@ export default function DateSummary() {
                     const response = await TripService.updateDates(token, tripInfo.id, newStartDate, newEndDate);
 
                     if (response) {
-                        setChangeDate(false)
+                        setIsModalOpen(false);
+                        setChangeDate(false);
                         tripInfo.startDate = newStartDate;
                         tripInfo.endDate = newEndDate;
                         navigate(`/trips/${tripInfo.id}/summary`, { state: { trip: tripInfo, profile: profileInfo } })
@@ -49,7 +75,7 @@ export default function DateSummary() {
                         console.error('Invalid response data');
                     }
                 } catch (error) {
-                    console.error('Error fetching schedule:', error);
+                    console.error('Error changing dates:', error);
                 }
             }
         }
@@ -73,9 +99,9 @@ export default function DateSummary() {
                     <p>Dates</p>
                 </div>
                 {!changeDate && tripInfo.creator &&
-                    <img id="edit" class="editable" onClick={handleEditDates} src={edit_icon} alt="edit_icon" />}
+                    <img id="edit" className="editable" onClick={handleEditDates} src={edit_icon} alt="edit_icon" />}
                 {changeDate && <UndoConfirm
-                    onConfirm={handleChangeDates}
+                    onConfirm={checkWhetherToOpenModal}
                     onUndo={undoChangeDates} />}
             </div>
             <div className="internal-section">
@@ -100,6 +126,16 @@ export default function DateSummary() {
                     ></input>}
                 </div>
             </div>
+            {isModalOpen && (
+                <div className="modal-overlay" onClick={handleOverlayClick}>
+                    <div className="trip-box">
+                        <ConfirmDelete
+                            message={"With these dates, the trip will be shorter. Any events outside the range will be deleted, are you sure?"}
+                            onConfirm={handleChangeDates}
+                            onClose={()=>{setIsModalOpen(false);}}/>
+                    </div>
+                </div>
+            )} 
         </div>
     );
 }

@@ -12,6 +12,7 @@ import '../../../styles/Common.css';
 
 export default function EventOpenTravel({travel, latitude, longitude, reloadSchedule, tripStartDate, tripEndDate}) {
 
+    const DESTINATION_MAX_CHARACTERS = 30;
     const ADDRESS_MAX_CHARACTERS = 60;
     const INFO_MAX_CHARACTERS = 500;
 
@@ -53,10 +54,50 @@ export default function EventOpenTravel({travel, latitude, longitude, reloadSche
     }
 
 
+    // Per modificare destinazione
+    const [editingDestination, setEditinDestination] = useState(false);
+    const [newDestination, setNewDestination] = useState(travel.destination);
+    
+    const saveNewDestination = async () => {
+    
+        // Se e' una stringa vuota o e' uguale a prima, non fare nulla
+        if (newDestination.trim() === "" || travel.destination === newDestination) {
+            setEditinDestination(false);
+            return;
+        }
+
+        // manda richiesta al server
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                navigate("/login");
+            }
+    
+            // cambia nome nel backend
+            const response = await ScheduleService.changeTravelDestination(token, travel.tripId, travel.id, newDestination);
+    
+            if (response) {
+                // aggiorna in locale
+                travel.destination = newDestination;
+                setEditinDestination(false);
+        
+                // ricarica la schedule a sinistra
+                reloadSchedule(null, false, false);
+            }
+            else {
+                console.error('Invalid response data');
+                alert("Server error");
+            }
+        } catch (error) {
+            console.error('Error modifying destination:', error);
+            alert("Couldn't modify destination: " + error.message);
+        }
+    }
+
+
     // Per modificare indirizzo
     const [editingAddress, setEditingAddress] = useState(false);
     const [newAddress, setNewAddress] = useState(travel.address);
-
 
     const saveNewAddress = async () => {
     
@@ -223,8 +264,33 @@ export default function EventOpenTravel({travel, latitude, longitude, reloadSche
                 savePlaceFunction={ScheduleService.changeTravelPlace} tripStartDate={tripStartDate} tripEndDate={tripEndDate}
                 canEditDate={true}/>
 
-                <div className='title'>
-                    Travel to {travel.destination.split(",")[0]}
+                <div className='row-element hidden-btn-parent'>
+
+                    {!editingDestination ? (
+                        <div className='flex-row'>
+                            <div className='title'>
+                                Travel to {travel.destination.split(",")[0]}
+                            </div>
+                            <button onClick={() => {setNewDestination(travel.destination); setEditinDestination(true);}} title='Edit destination'
+                            className='no-background no-border flex-column hidden-btn'>
+                                <i className="bi bi-pencil-fill gray-icon spaced"/>
+                            </button>
+                        </div>
+                    ) : (
+                        <div className='flex-row'>
+                            <div className='title'>
+                                Travel to 
+                                <input type="text" 
+                                    className="value edit-destination-input"
+                                    value={newDestination}
+                                    onChange={(e) => {handleInputChange(e, true, DESTINATION_MAX_CHARACTERS, setNewDestination);}}
+                                    onKeyDown={(e) => {handleKeyDown(e, saveNewDestination);}}/>
+                            </div>
+                            <button onClick={saveNewDestination} title='Save' className='no-background no-border flex-column'>
+                                <i className="bi bi-floppy-fill gray-icon spaced"/>
+                            </button>
+                        </div>
+                    )}
                 </div>
             </div>
             

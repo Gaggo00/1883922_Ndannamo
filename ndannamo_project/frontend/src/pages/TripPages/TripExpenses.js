@@ -1,9 +1,12 @@
 import React, {useEffect, useState, useRef} from 'react';
-import {useLocation, useNavigate} from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 
 import InternalMenu from "./InternalMenu";
 
 import ExpenseService from '../../services/ExpenseService';
+import TripService from '../../services/TripService';
+import UserService from '../../services/UserService';
+
 import TCForm from './Tricount/TCForm';
 import TCSales from './Tricount/TriSales';
 import { TCRefund } from "./Tricount/TriRefund";
@@ -30,14 +33,71 @@ class ExpenseDto {
 }
 
 export default function TripExpenses() {
-
+    const { id } = useParams();
     const location = useLocation();
-    const tripInfo = location.state?.trip; // Recupera il tripInfo dallo stato
-    const userId = location.state?.profile.id;
-    const users = tripInfo.list_participants.map(u => [
+    
+    const [tripInfo, setTripInfo] = useState(location.state?.trip);
+    const [profileInfo, setProfileInfo] = useState(location.state?.profile);
+    //const [userId, setUserId] = useState(location.state?.profile.id);
+    //const [userId, setUserId] = useState(profileInfo?.id);
+
+
+    const fetchTripInfo = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                navigate("/login");
+            }
+            const response = await TripService.getTrip(token, id);
+            if (response) {
+                console.log("obtained trip info");
+                setTripInfo(response);
+            } else {
+                console.error('Invalid response data');
+            }
+        } catch (error) {
+            console.error('Error fetching trip info:', error);
+        }
+    }
+    if (!tripInfo) {
+        fetchTripInfo();
+    }
+    const fetchProfileInfo = async () => {
+        try {
+            const token = localStorage.getItem('token'); // Recuperiamo il token da localStorage
+            if (!token) {
+                navigate("/login");
+            }
+
+            // Chiamata al servizio per ottenere le informazioni del profilo
+            const response = await UserService.getProfile(token);
+
+            if (response) {
+                setProfileInfo(response);  // Aggiorniamo lo stato con le informazioni del profilo
+                //setUserId(response.id);
+                /*
+                setUsers(response.list_participants.map(u => [
+                    parseInt(u.id),  // Trasforma il primo elemento in intero
+                    u.nickname    // Mantieni gli altri elementi invariati
+                  ]));
+                */
+            } else {
+                console.error('Invalid response data');
+            }
+        } catch (error) {
+            console.error('Error fetching profile information:', error);
+        }
+    };
+    if (!profileInfo) {
+        fetchProfileInfo();
+    }
+    
+
+
+    const [users, setUsers] = useState(tripInfo?.list_participants.map(u => [
         parseInt(u.id),  // Trasforma il primo elemento in intero
         u.nickname    // Mantieni gli altri elementi invariati
-      ]);
+      ]));
 
     const [data, setData] = useState([]);
 
@@ -80,7 +140,7 @@ export default function TripExpenses() {
     const [activeText, setActiveText] = useState("list");
     const [formVisibility, setFormVisibility] = useState(true);
     const [formData, setFormData] = useState({
-        expenseData: new ExpenseDto,
+        expenseData: new ExpenseDto(),
         users: users,
         filled: false,
         status: 0,
@@ -99,7 +159,7 @@ export default function TripExpenses() {
             }
 
             // Chiamata al servizio per ottenere le informazioni del profilo
-            const response = await ExpenseService.getExpenses(token, tripInfo.id);
+            const response = await ExpenseService.getExpenses(token, id);
             //const response = undefined
             if (response) {
                 //console.log("E'arrivata una risposta", response);
@@ -122,7 +182,7 @@ export default function TripExpenses() {
     const handleClick = (id) => {
         if (id === 'sales') {
             setFormData({
-                expenseData: new ExpenseDto,
+                expenseData: new ExpenseDto(),
                 users: users,
                 filled: false,
                 status: 0,
@@ -158,7 +218,7 @@ export default function TripExpenses() {
     function addSale() {
         if (formData.status === 1 || !formVisibility) {
             setFormData({
-                expenseData: new ExpenseDto,
+                expenseData: new ExpenseDto(),
                 users: users,
                 filled: false,
                 status: 0,
@@ -223,50 +283,55 @@ export default function TripExpenses() {
 
 
     return (
-        <div className="trip-info">
-            <InternalMenu />
-            <div className="trip-content">
-                <div className="trip-top">
-                    <span> <strong>{tripInfo.title}:</strong> {DateUtilities.yyyymmdd_To_ddMONTH(tripInfo.startDate)} - {DateUtilities.yyyymmdd_To_ddMONTH(tripInfo.endDate)}</span>
-                </div>
-                <div className="tc-content">
-                    <div className="tc-left">
-                        <div className="tc-top">
-                            <div className={`tc-top-text ${activeText === "list" ? "active" : "inactive"}`}
-                                id="list" onClick={()=>handleClick("list")}>Expenses</div>
-                            <div className={`tc-top-text ${activeText === "sales" ? "active" : "inactive"}`}
-                                id="sales" onClick={()=>handleClick("sales")}>Balances</div>
+        <div>
+            {tripInfo && profileInfo &&
+                <div className="trip-info">
+                    <InternalMenu tripInfo={tripInfo} profileInfo={profileInfo}/>
+                    <div className="trip-content">
+                        <div className="trip-top">
+                            <span> <strong>{tripInfo.title}:</strong> {DateUtilities.yyyymmdd_To_ddMONTH(tripInfo.startDate)} - {DateUtilities.yyyymmdd_To_ddMONTH(tripInfo.endDate)}</span>
                         </div>
-                        {activeText === "list" &&
-                            <TCSales
-                                data={data}
-                                userId={userId}
-                                handleSelection={handleTricountSelection}
-                                handleAdd={addSale}/>
-                        }
-                        {activeText === "sales" &&
-                            <TCRefund
-                                user={userId}
-                                expenses={data}
-                                users={users}
-                                onRefund={onRefund}
-                            />
-                        }
+                        <div className="tc-content">
+                            <div className="tc-left">
+                                <div className="tc-top">
+                                    <div className={`tc-top-text ${activeText === "list" ? "active" : "inactive"}`}
+                                        id="list" onClick={()=>handleClick("list")}>Expenses</div>
+                                    <div className={`tc-top-text ${activeText === "sales" ? "active" : "inactive"}`}
+                                        id="sales" onClick={()=>handleClick("sales")}>Balances</div>
+                                </div>
+                                {activeText === "list" &&
+                                    <TCSales
+                                        data={data}
+                                        userId={profileInfo.id}
+                                        formVisibility={formVisibility}
+                                        handleSelection={handleTricountSelection}
+                                        handleAdd={addSale}/>
+                                }
+                                {activeText === "sales" &&
+                                    <TCRefund
+                                        user={profileInfo.id}
+                                        expenses={data}
+                                        users={users}
+                                        onRefund={onRefund}
+                                    />
+                                }
+                            </div>
+                            {formVisibility &&
+                                <div className="tc-right">
+                                    <TCForm {...formData}/>
+                                    {/***activeText === "sales" &&
+                                        <TCUserRecap
+                                            user={userId}
+                                            userNickname={userNickname}
+                                            expenses={data}
+                                        />
+                                    ***/}
+                                </div>
+                            }
+                        </div>
                     </div>
-                    {formVisibility === true &&
-                        <div className="tc-right">
-                            <TCForm {...formData}/>
-                            {/***activeText === "sales" &&
-                                <TCUserRecap
-                                    user={userId}
-                                    userNickname={userNickname}
-                                    expenses={data}
-                                />
-                            ***/}
-                        </div>
-                    }
                 </div>
-            </div>
+            }
         </div>
     )
 }

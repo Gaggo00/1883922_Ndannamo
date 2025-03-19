@@ -43,6 +43,17 @@ public class TripValidation {
         return true;
     }
 
+    public static boolean datesValidAllowPastDates(LocalDate startDate, LocalDate endDate) {
+        // controlla che la data di fine sia dopo quella di inizio
+        if (!endDate.isAfter(startDate)) {
+            throw new ResourceNotFoundException("Trip end date must be after trip start date");
+        }
+        // controlla durata trip
+        if (startDate.until(endDate, java.time.temporal.ChronoUnit.DAYS) > TRIP_MAX_DAYS) {
+            throw new ResourceNotFoundException("Trip can be at most " + TRIP_MAX_DAYS + " days long");
+        }
+        return true;
+    }
 
     public static boolean tripValid(TripCreationRequest tripRequest) {
         boolean res = true;

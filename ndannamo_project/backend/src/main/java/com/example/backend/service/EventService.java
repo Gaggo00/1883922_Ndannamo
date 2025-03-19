@@ -22,10 +22,6 @@ import com.example.backend.mapper.NightMapperImpl;
 import com.example.backend.mapper.TravelMapperImpl;
 import com.example.backend.mapper.AttachmentMapperImpl;
 import com.example.backend.model.Event.EventType;
-import com.example.backend.repositories.ActivityRepository;
-import com.example.backend.repositories.NightRepository;
-import com.example.backend.repositories.OvernightStayRepository;
-import com.example.backend.repositories.TravelRepository;
 import com.example.backend.utils.OvernightstayValidation;
 
 
@@ -88,6 +84,19 @@ public class EventService {
     }
 
 
+
+    /*************** DELETE ***************/
+    public void deleteEvent(Event event) {
+        if (event.getType() == EventType.NIGHT) {
+            nightRepository.delete((Night) event);
+        }
+        else if (event.getType() == EventType.ACTIVITY) {
+            activityRepository.delete((Activity) event);
+        }
+        else if (event.getType() == EventType.TRAVEL) {
+            travelRepository.delete((Travel) event);
+        }
+    }
 
 
     /*************** DTO ***************/
@@ -461,7 +470,7 @@ public class EventService {
 
 
     // Cambia data evento
-    private void changeEventDate(EventType eventType, Trip trip, long eventId, LocalDate newDate) {
+    public void changeEventDate(EventType eventType, Trip trip, long eventId, LocalDate newDate) {
         
         // Trova l'evento
         Event event;
@@ -543,6 +552,19 @@ public class EventService {
         overnightStay.setTravelDays(nights);
 
         return overnightStayRepository.save(overnightStay);
+    }
+
+    public void removeNightFromOvernightStay(Night night, OvernightStay overnightStay) {
+        List<Night> nights = overnightStay.getTravelDays();
+        if (nights.contains(night)) {
+            nights.remove(night);
+            overnightStay.setTravelDays(nights);
+            overnightStayRepository.save(overnightStay);
+        }
+        // se non rimangono piu notti, eliminalo
+        if (nights.size() < 1) {
+            overnightStayRepository.delete(overnightStay);
+        }
     }
 
 

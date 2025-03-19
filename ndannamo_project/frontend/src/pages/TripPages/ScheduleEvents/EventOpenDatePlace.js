@@ -64,7 +64,7 @@ export default function EventOpenDatePlace({event, saveDateFunction, savePlaceFu
 
     const saveNewPlace = async () => {
         // se non è cambiato niente, non fare nulla
-        if (event.place === newPlace) {
+        if (event.place === newPlace || newPlace.trim() === "") {
             setEditingPlace(false);
             return;
         }

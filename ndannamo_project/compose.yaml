@@ -134,6 +134,7 @@ services:
       - cities_net
       - frontend_net
 
+ # Frontend 
   frontend:
     build: ./frontend
     container_name: frontend

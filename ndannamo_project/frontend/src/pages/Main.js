@@ -1,6 +1,8 @@
 import {React, useEffect, useState} from 'react';
 import {useNavigate} from "react-router-dom";
 
+import { useAuth } from '../auth/AuthContext';
+
 import TripService from '../services/TripService';
 
 import MultiStepForm from "../components/TripCreationForm/MultiStepForm";
@@ -17,6 +19,7 @@ import UserService from "../services/UserService";
 function Main() {
 
     const navigate = useNavigate();
+    const { isAuthenticated, logout } = useAuth();
 
     const [upcomingTripsAll, setUpcomingTripsAll] = useState([]);
     const [pastTripsAll, setPastTripsAll] = useState([]);
@@ -36,9 +39,14 @@ function Main() {
     
 
     useEffect(() => {
-        fetchTripsInfo();
-        fetchProfileInfo();
-    }, []);
+        if (isAuthenticated) {
+            fetchTripsInfo();
+            fetchProfileInfo();
+        }
+        else {
+            navigate("/");
+        }
+    },[]);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -186,7 +194,7 @@ function Main() {
                     {upcomingTrips.map((trip, index) =>
                         <TripSideBarPreview key={index} trip={trip} reloadProfile={null}></TripSideBarPreview>
                     )}
-                    <h2>Past Trips</h2>
+                    <h2 id="past-trips-separator">Past Trips</h2>
                     {pastTrips.map((trip, index) =>
                         <TripSideBarPreview key={index} trip={trip} reloadProfile={null}></TripSideBarPreview>
                     )}
@@ -201,7 +209,7 @@ function Main() {
                 {/*<div className="header"></div>*}
                 {/* BANNER */}
                 <div id='banner'>
-                    <img id="bannerImg" src={banner}></img>
+                    <img id="bannerImg" src={banner} alt="green hills"></img>
                 </div>
 
                 {/* UPCOMING TRIPS */}

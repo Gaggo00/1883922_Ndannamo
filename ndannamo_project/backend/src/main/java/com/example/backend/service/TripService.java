@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.example.backend.mapper.ExpenseMapperImpl;
 import com.example.backend.mapper.TripMapperImpl;
 import com.example.backend.repositories.TripRepository;
+import com.example.backend.utils.DateUtilities;
 import com.example.backend.utils.EventValidation;
 import com.example.backend.utils.OvernightstayValidation;
 import com.example.backend.utils.TripValidation;
@@ -804,12 +805,68 @@ public class TripService {
         }
 
         // Controllo validita' date
-        TripValidation.datesValid(newStartDate, newEndDate);
+        TripValidation.datesValidAllowPastDates(newStartDate, newEndDate);
 
-        // TODO:
-        // Shiftare le date degli eventi in modo che rientrino tra le nuove date (se la data iniziale e' cambiata),
+        // Dobbiamo shiftare le date degli eventi in modo che rientrino tra le nuove date (se la data iniziale e' cambiata),
         // eliminare eventi che cadono al di fuori delle nuove date (se ora la durata e' minore),
         // o creare nuove notti per coprire i giorni extra (se ora la durata e' maggiore)
+
+
+        long shift = DateUtilities.daysBetween(trip.getStartDate(), newStartDate);
+        boolean shiftPlus = newStartDate.isAfter(trip.getStartDate());
+
+        List<Event> schedule = trip.getSchedule();
+        List<Event> scheduleUpdated = new ArrayList<>();
+        List<Event> eventsToDelete = new ArrayList<>();
+
+        // prima shifta tutti gli eventi
+        for (Event event: schedule) {
+            if (shiftPlus) {
+                eventService.changeEventDate(event.getType(), trip, event.getId(), event.getDate().plusDays(shift));
+            }
+            else {
+                eventService.changeEventDate(event.getType(), trip, event.getId(), event.getDate().minusDays(shift));
+            }
+        }
+        
+        // poi elimina tutti gli eventi che cadono al di fuori del nuovo range
+        for (Event event: schedule) {
+            // elimina gli eventi dopo newEndDate
+            if (event.getDate().isAfter(newEndDate)) {
+                //event.setTrip(null);
+                eventsToDelete.add(event);
+                //trip.removeEvent(event);
+                //eventService.deleteEvent(event);
+            }
+            // elimina l'ultima notte
+            else if (event.getType() == EventType.NIGHT && event.getDate().isEqual(newEndDate)) {
+                //event.setTrip(null);
+                eventsToDelete.add(event);
+                //trip.removeEvent(event);
+                //eventService.deleteEvent(event);
+            }
+            // altrimenti tieni l'evento
+            else {
+                scheduleUpdated.add(event);
+            }
+        }
+        
+        long daysOld = DateUtilities.daysBetween(trip.getStartDate(), trip.getEndDate());
+        long daysNew = DateUtilities.daysBetween(newStartDate, newEndDate);
+
+        // se ora la trip e' piu' lunga, crea le nuove notti
+        if (daysNew > daysOld) {
+            long diff = daysNew - daysOld;
+            LocalDate oldEndDate = trip.getEndDate();
+
+            for (var i = 0; i < diff; i++) {
+                Night night = eventService.createNight(trip, oldEndDate.plusDays(i), trip.getLocations().get(0), null);
+                scheduleUpdated.add(night);
+            }
+        }   
+
+        // Aggiorna schedule
+        trip.setSchedule(scheduleUpdated);
 
         // Aggiorna date
         trip.setStartDate(newStartDate);
@@ -817,6 +874,20 @@ public class TripService {
 
         // Salva trip
         tripRepository.save(trip);
+
+        // Elimina gli eventi
+        for (Event event: eventsToDelete) {
+            // se l'evento e' una notte e ha un overnightstay, devi levargli il riferimento alla notte
+            // e salvarlo prima di eliminare la notte se no crasha tutto
+            if (event.getType() == EventType.NIGHT) {
+                Night night = (Night) event;
+                OvernightStay overnightStay = night.getOvernightStay();
+                if (overnightStay != null) {
+                    eventService.removeNightFromOvernightStay(night, overnightStay);
+                }
+            }
+            eventService.deleteEvent(event);
+        }
     }
 
     public void changeLocations(String email, long tripId, List<String> newLocations) {

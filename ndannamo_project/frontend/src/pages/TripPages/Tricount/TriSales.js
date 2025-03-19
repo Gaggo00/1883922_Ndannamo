@@ -2,7 +2,7 @@ import React, {useState, useEffect, useRef} from 'react';
 import SearchBar from '../../../components/SearchBar';
 import TCListItem, { TCListHeader } from './TriListItem';
 
-const TCSales = ({data, userId, handleSelection=()=>{}, handleAdd=()=>{}}) => {
+const TCSales = ({data, userId, formVisibility, handleSelection=()=>{}, handleAdd=()=>{}}) => {
 
     const [myTotalExpenses, setMyTotalExpenses] = useState(0);
     const [totalExpenses, setTotalExpenses] = useState(0);
@@ -71,11 +71,11 @@ const TCSales = ({data, userId, handleSelection=()=>{}, handleAdd=()=>{}}) => {
         <div className="tc-bottom">
             <div className="tc-main-recap">
                 <div className="tc-recap">
-                    <div>My Expensive</div>
+                    <div>My Expenses</div>
                     <div className="tc-recap-expenses">€{myTotalExpenses.toFixed(2)}</div>
                 </div>
                 <div className="tc-recap">
-                    <div>Total Expensive</div>
+                    <div>Total Expenses</div>
                     <div className="tc-recap-expenses">€{totalExpenses.toFixed(2)}</div>
                 </div>
             </div>
@@ -87,7 +87,7 @@ const TCSales = ({data, userId, handleSelection=()=>{}, handleAdd=()=>{}}) => {
                     items={searchData}
                     setItems={setSearchData}
                     itemsAll={data}
-                    placeholder={"Search an Expensive"}
+                    placeholder={"Search an expense"}
                     checkItemSearch={checkExpensesSearch}
                 />
             </div>
@@ -106,9 +106,12 @@ const TCSales = ({data, userId, handleSelection=()=>{}, handleAdd=()=>{}}) => {
                 </div>
             </div>
             <div className="tc-button-container">
-                {1===1 && <div className="tc-add-button" >
-                    <button onClick={addClicked}>+</button>
-                    <p>Add Expenses</p></div>}
+                {!formVisibility &&
+                    <div className="tc-add-button" >
+                        <button onClick={addClicked}>+</button>
+                        <p>Add Expenses</p>
+                    </div>
+                }
             </div>
         </div>
     )

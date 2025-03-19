@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams, useNavigate } from 'react-router-dom';
 import Message from './Chat/Message.js'
 import InternalMenu from "./InternalMenu";
 import './InternalMenu.css';
@@ -7,15 +7,22 @@ import SockJS from "sockjs-client";
 import { Client } from "@stomp/stompjs";
 import { BsSend } from "react-icons/bs";
 import "./Chat/Chat.css"
+
 import ChatService from "../../services/ChatService.js";
-import { WebSocketProvider } from "../../utils/WebSocketProvider.js";
+import TripService from "../../services/TripService";
+import UserService from "../../services/UserService";
+
 import { useWebSocket } from "../../utils/WebSocketProvider.js";
 
 export default function TripChat() {
+    const { id } = useParams();
+    const navigate = useNavigate();
     const location = useLocation();
-    const tripInfo = location.state?.trip; // Recupera il tripInfo dallo stato
-    const userId = location.state?.profile.id;
-    const userNickname = location.state?.profile.nickname;
+    const [tripInfo, setTripInfo] = useState(location.state?.trip);
+    const [profileInfo, setProfileInfo] = useState(location.state?.profile);
+    //const tripInfo = location.state?.trip; // Recupera il tripInfo dallo stato
+    //const userId = location.state?.profile.id;
+    //const userNickname = location.state?.profile.nickname;
     const [messages, setMessages] = useState([]);
     const [message, setMessage] = useState("");
     //const [stompClient, setStompClient] = useState(null);
@@ -26,6 +33,50 @@ export default function TripChat() {
     const [subscribed, setSubscribed] = useState({});
     const { connected, getClient } = useWebSocket();
     const subscriptionsRef = useRef({}); // Oggetto di riferimento per le sottoscrizioni attive
+
+    const fetchTripInfo = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                navigate("/login");
+            }
+            const response = await TripService.getTrip(token, id);
+            if (response) {
+                console.log("obtained trip info");
+                setTripInfo(response);
+                
+            } else {
+                console.error('Invalid response data');
+            }
+        } catch (error) {
+            console.error('Error fetching trip info:', error);
+        }
+    }
+    if (!tripInfo) {
+        fetchTripInfo();
+    }
+    const fetchProfileInfo = async () => {
+        try {
+            const token = localStorage.getItem('token'); // Recuperiamo il token da localStorage
+            if (!token) {
+                navigate("/login");
+            }
+
+            // Chiamata al servizio per ottenere le informazioni del profilo
+            const response = await UserService.getProfile(token);
+
+            if (response) {
+                setProfileInfo(response);  // Aggiorniamo lo stato con le informazioni del profilo
+            } else {
+                console.error('Invalid response data');
+            }
+        } catch (error) {
+            console.error('Error fetching profile information:', error);
+        }
+    };
+    if (!profileInfo) {
+        fetchProfileInfo();
+    }
 
     // Funzione per sottoscrivere un canale
     const subscribeToChannel = (channel, response) => {
@@ -174,8 +225,8 @@ export default function TripChat() {
         const client = getClient();
         if (client && connected) {
             const messageObj = {
-                senderId: userId,
-                nickname: userNickname,
+                senderId: profileInfo.id,
+                nickname: profileInfo.nickname,
                 body: message,
                 date: new Date().toISOString(), // Data e ora del messaggio
             };
@@ -241,93 +292,97 @@ export default function TripChat() {
     }
 
     return (
-        <div className="trip-info">
-            <InternalMenu />
-            <div className="trip-content">
-                <div className="trip-top">
-                    <span> <strong>{tripInfo.title}</strong> {tripInfo.startDate} {tripInfo.endDate}</span>
+        <div>
+            {tripInfo && profileInfo &&
+                <div className="trip-info">
+                    <InternalMenu tripInfo={tripInfo}/>
+                    <div className="trip-content">
+                        <div className="trip-top">
+                            <span> <strong>{tripInfo.title}</strong> {tripInfo.startDate} {tripInfo.endDate}</span>
+                        </div>
+                        <div className="ch-main-container">
+                            <div className="ch-col ch-col-1">
+                                <div className="participants-container">
+                                    <h3>Partecipanti</h3>
+                                    {chatParticipants.length > 0 ? (
+                                        <ul className="participants-list">
+                                            {chatParticipants.map((participant) => (
+                                                <li key={participant.id} className="participant-item">
+                                                    <span className="participant-nickname">{participant.nickname}</span>
+                                                    <span className={`participant-status ${participant.online ? 'online' : 'offline'}`}>
+                                                        ● {participant.online ? 'Online' : 'Offline'}
+                                                    </span>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    ) : (
+                                        <p>Nessun partecipante</p>
+                                    )}
+                                </div>
+                            </div>
+                            <div className="chat-container">
+                            <div className="chat-messages">
+                                {(() => {
+                                    let lastDate = null; // QUI! Prima del ciclo
+
+                                    return messages.map((msg, index) => {
+                                        const messageDate = new Date(msg.date);
+                                        const formattedDate = messageDate.toLocaleDateString('it-IT', {
+                                            year: 'numeric',
+                                            month: 'long',
+                                            day: 'numeric'
+                                        });
+
+                                        let showDateSeparator = false;
+                                        if (formattedDate !== lastDate) {
+                                            showDateSeparator = true;
+                                            lastDate = formattedDate;
+                                        }
+
+                                        return (
+                                            <React.Fragment key={index}>
+                                                {showDateSeparator && (
+                                                    <div className="date-separator">
+                                                        <span>{formatDateLabel(messageDate)}</span>
+                                                    </div>
+                                                )}
+                                                <Message
+                                                    date={msg.date}
+                                                    nickname={msg.nickname}
+                                                    body={msg.body}
+                                                    senderId={msg.senderId}
+                                                    receiverId={profileInfo.id}
+                                                />
+                                            </React.Fragment>
+                                        );
+                                    });
+                                })()}
+                                    <div ref={messagesEndRef} />
+                                </div>
+                                <div className="chat-input">
+                                    <textarea
+                                        className="chat-input-input"
+                                        value={message}
+                                        onChange={(e) => handleInput(e.target.value)}
+                                        placeholder="Scrivi un messaggio...">
+                                    </textarea>
+                                    <button
+                                        className="chat-input-button"
+                                        id="sendButton"
+                                        disabled={buttonDisabled}
+                                        onClick={() => handleClick()}
+                                    >
+                                        <BsSend />
+                                    </button>
+                                </div>
+                            </div>
+                            <div className="ch-col ch-col-3">
+                                <div>Colonna 3</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div className="ch-main-container">
-                    <div className="ch-col ch-col-1">
-                        <div className="participants-container">
-                            <h3>Partecipanti</h3>
-                            {chatParticipants.length > 0 ? (
-                                <ul className="participants-list">
-                                    {chatParticipants.map((participant) => (
-                                        <li key={participant.id} className="participant-item">
-                                            <span className="participant-nickname">{participant.nickname}</span>
-                                            <span className={`participant-status ${participant.online ? 'online' : 'offline'}`}>
-                                                ● {participant.online ? 'Online' : 'Offline'}
-                                            </span>
-                                        </li>
-                                    ))}
-                                </ul>
-                            ) : (
-                                <p>Nessun partecipante</p>
-                            )}
-                        </div>
-                    </div>
-                    <div className="chat-container">
-                    <div className="chat-messages">
-                        {(() => {
-                            let lastDate = null; // QUI! Prima del ciclo
-
-                            return messages.map((msg, index) => {
-                                const messageDate = new Date(msg.date);
-                                const formattedDate = messageDate.toLocaleDateString('it-IT', {
-                                    year: 'numeric',
-                                    month: 'long',
-                                    day: 'numeric'
-                                });
-
-                                let showDateSeparator = false;
-                                if (formattedDate !== lastDate) {
-                                    showDateSeparator = true;
-                                    lastDate = formattedDate;
-                                }
-
-                                return (
-                                    <React.Fragment key={index}>
-                                        {showDateSeparator && (
-                                            <div className="date-separator">
-                                                <span>{formatDateLabel(messageDate)}</span>
-                                            </div>
-                                        )}
-                                        <Message
-                                            date={msg.date}
-                                            nickname={msg.nickname}
-                                            body={msg.body}
-                                            senderId={msg.senderId}
-                                            receiverId={userId}
-                                        />
-                                    </React.Fragment>
-                                );
-                            });
-                        })()}
-                            <div ref={messagesEndRef} />
-                        </div>
-                        <div className="chat-input">
-                            <textarea
-                                className="chat-input-input"
-                                value={message}
-                                onChange={(e) => handleInput(e.target.value)}
-                                placeholder="Scrivi un messaggio...">
-                            </textarea>
-                            <button
-                                className="chat-input-button"
-                                id="sendButton"
-                                disabled={buttonDisabled}
-                                onClick={() => handleClick()}
-                            >
-                                <BsSend />
-                            </button>
-                        </div>
-                    </div>
-                    <div className="ch-col ch-col-3">
-                        <div>Colonna 3</div>
-                    </div>
-                </div>
-            </div>
-        </div>
+            }
+    </div>
     );
 }

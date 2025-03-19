@@ -10,14 +10,13 @@ import globe from "../../../static/globe.png";
 import CityService from "../../../services/CityService";
 
 
-export default function DestinationSummary() {
+export default function DestinationSummary({tripInfo, profileInfo}) {
 
     const [changeDestination, setChangeDestination] = useState(false);
     const [newDestination, setNewDestination] = useState([]);
     const navigate = useNavigate();
     const location = useLocation();
-    const tripInfo = location.state?.trip; // Recupera il tripInfo dallo stato
-    const profileInfo = location.state?.profile; // Recupera il tripInfo dallo stato
+    
     const [suggestions, setSuggestions] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [error, setError] = useState('');
@@ -166,7 +165,7 @@ export default function DestinationSummary() {
                     <p>Destinations</p>
                 </div>
                 {!changeDestination && tripInfo.creator &&
-                    <img id="edit" class="editable" onClick={handleEditDestination} src={edit_icon} alt="edit_icon" />}
+                    <img id="edit" className="editable" onClick={handleEditDestination} src={edit_icon} alt="edit_icon" />}
                 {changeDestination && <UndoConfirm
                     onConfirm={handleChangeDestination}
                     onUndo={undoChangeDestination} />}
@@ -176,7 +175,7 @@ export default function DestinationSummary() {
                 {!changeDestination && <div className="destinations" id="1">
                     <div className="list-destination">
                         {tripInfo.locations.map((location, index) => (
-                        <p>{location}</p>
+                        <p key={index}>{location}</p>
                     ))}
                     </div>
                 </div>}
