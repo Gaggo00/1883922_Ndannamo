@@ -173,9 +173,13 @@ body {
 
 
 .trip-list h2 {
-    margin-bottom: 1vh;
+    margin-bottom: 2vh;
     font-size: 1.5vw;
     color: #333;
+}
+
+#past-trips-separator {
+    margin-top: 4vh;
 }
 
 

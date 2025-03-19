@@ -257,6 +257,10 @@ button.no-border {
     width: 20vw;
 }
 
+.edit-destination-input {
+    margin-left: 1vw;
+    width: 25vw;
+}
 
 .hidden-btn {
     visibility: hidden;
