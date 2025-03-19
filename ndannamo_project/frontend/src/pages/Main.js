@@ -38,7 +38,7 @@ function Main() {
     useEffect(() => {
         fetchTripsInfo();
         fetchProfileInfo();
-    });
+    },[]);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
 

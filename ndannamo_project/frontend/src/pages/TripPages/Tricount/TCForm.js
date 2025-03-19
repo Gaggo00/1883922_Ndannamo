@@ -244,8 +244,8 @@ function TCForm({
                 <BsXLg className="tc-button" onClick={() => close()}/>
             </div>
             <div className="tc-title">
-                {sStatus === 2 && "Edit Expensive"}
-                {sStatus === 0 && "Add Expensive"}</div>
+                {sStatus === 2 && "Edit Expenses"}
+                {sStatus === 0 && "Add Expenses"}</div>
             <TextField value={sTitle} setValue={setTitle} name="Title" placeholder="E.g. Dinner" disabled={sStatus === 1} validate={sStatus !== 1 ? notEmpty : undefined}/>
             <TextField value={sAmount} setValue={changeAmount} name="Amount (€)" placeholder="0.00" type="number" disabled={sStatus === 1} validate={sStatus !== 1 ? validateAmount : undefined}/>
             <div className="tc-form-line"  id="paid" style={{gap: '15px'}}>
