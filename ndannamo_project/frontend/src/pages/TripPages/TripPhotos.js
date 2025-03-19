@@ -2,12 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 import InternalMenu from "./InternalMenu";
-
 import PhotoPreview from './Photos/PhotoPreview';
 import PhotoModal from './Photos/PhotoModal';
 
 import PhotoService from '../../services/PhotoService';
 import TripService from '../../services/TripService';
+import UserService from '../../services/UserService';
+
+import DateUtilities from '../../utils/DateUtilities';
 
 import './InternalMenu.css'
 import "./TripPhotos.css"
@@ -19,6 +21,7 @@ export default function TripPhotos() {
     const { id } = useParams();
 
     const [tripInfo, setTripInfo] = useState(location.state?.trip);
+    const [profileInfo, setProfileInfo] = useState(location.state?.profile);
 
     useEffect(() => {
         fetchPhotoIds();
@@ -198,19 +201,41 @@ export default function TripPhotos() {
             console.error('Error fetching trip info:', error);
         }
     }
-
-
     if (!tripInfo) {
         fetchTripInfo();
     }
+    const fetchProfileInfo = async () => {
+        try {
+            const token = localStorage.getItem('token'); // Recuperiamo il token da localStorage
+            if (!token) {
+                navigate("/login");
+            }
+
+            // Chiamata al servizio per ottenere le informazioni del profilo
+            const response = await UserService.getProfile(token);
+
+            if (response) {
+                setProfileInfo(response);  // Aggiorniamo lo stato con le informazioni del profilo
+            } else {
+                console.error('Invalid response data');
+            }
+        } catch (error) {
+            console.error('Error fetching profile information:', error);
+        }
+    };
+    if (!profileInfo) {
+        fetchProfileInfo();
+    }
+
+
 
     return (
         <div className="trip-info">
-            <InternalMenu />
+            <InternalMenu tripInfo={tripInfo} profileInfo={profileInfo}/>
             {tripInfo ? (
                 <div className="trip-content">
                     <div className="trip-top">
-                        <span> <strong>{tripInfo.title}</strong> {tripInfo.startDate} {tripInfo.endDate}</span>
+                        <span> <strong>{tripInfo.title}:</strong> {DateUtilities.yyyymmdd_To_ddMONTH(tripInfo.startDate)} - {DateUtilities.yyyymmdd_To_ddMONTH(tripInfo.endDate)}</span>
                     </div>
                     <div className="trip-details" >
                         <div className="gallery">

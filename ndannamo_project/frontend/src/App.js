@@ -14,7 +14,6 @@ import TripChat from "./pages/TripPages/TripChat";
 import TripSchedule from "./pages/TripPages/TripSchedule";
 import TripExpenses from "./pages/TripPages/TripExpenses";
 import TripPhotos from "./pages/TripPages/TripPhotos";
-import TripTickets from "./pages/TripPages/TripTickets";
 
 export default function App() {
 
@@ -35,7 +34,6 @@ export default function App() {
                             <Route path="/trips/:id/schedule" element={<TripSchedule />} />
                             <Route path="/trips/:id/expenses" element={<TripExpenses />} />
                             <Route path="/trips/:id/photos" element={<TripPhotos />} />
-                            <Route path="/trips/:id/tickets" element={<TripTickets />} />
                             <Route path="/change-password" element={<ChangePassword/>} />
                             <Route path="/chat" element={<TripChat />} />
                         </Routes>
