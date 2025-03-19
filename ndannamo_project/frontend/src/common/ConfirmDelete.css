@@ -2,7 +2,7 @@
     position: relative;
 }
 .confirmDelete-box {
-    height: 15vh;
+    height: fit-content;
     width: 18vw;
     margin: 0 auto;
     justify-content: center;

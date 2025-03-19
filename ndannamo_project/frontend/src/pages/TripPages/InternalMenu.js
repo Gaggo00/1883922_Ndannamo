@@ -31,7 +31,7 @@ export default function InternalMenu() {
         if (activeOption) {
             setSelectedOption(activeOption.id);
         }
-    }, [location.pathname, options]);
+    }, [location.pathname]);
 
     const handleNavigation = (optionId, path) => {
         setSelectedOption(optionId);

@@ -78,7 +78,7 @@ const MultiStepForm = ({reloadTrips}) => {
                     ></span>
                 ))}
             </div>
-            {step < 4 && <p>STEP {step}</p>}{step >= 4 && <p>DONE!</p>}
+            {step < 4 && <p>STEP {step}</p>}{step == 4 && <p>READY</p>}{step > 4 && <p>DONE!</p>}
             </div>
         );
     };

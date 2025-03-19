@@ -57,12 +57,6 @@ export default function OvernightStayForm({tripId, tripStartDate, tripEndDate, o
         return DateUtilities.getNextDay(tripStartDate);
     }
     
-    // per debug
-    const printAll = () => {
-        const value = {name, startDate, endDate, startCheckInTime, endCheckInTime, startCheckOutTime, endCheckOutTime, address, contact};
-        console.log(value);
-    }
-
 
     const createAccomodation = async () => {
         // verifica se i campi sono corretti

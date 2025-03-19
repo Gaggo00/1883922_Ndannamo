@@ -43,7 +43,12 @@ public class Trip {
 
 
     // attivita'/viaggi/notti della trip
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "trip")
+    @OneToMany(
+        fetch = FetchType.EAGER,
+        mappedBy = "trip" //,
+        /*cascade = CascadeType.ALL,*/
+        /*orphanRemoval = true*/
+    )
     private List<Event> schedule = new ArrayList<>();
 
 
@@ -84,6 +89,14 @@ public class Trip {
     public boolean removePhoto(ImageData photo) {
         if (this.photos.contains(photo)) {
             this.photos.remove(photo);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean removeEvent(Event event) {
+        if (this.schedule.contains(event)) {
+            this.schedule.remove(event);
             return true;
         }
         return false;

@@ -61,8 +61,8 @@ export default function ParticipantsSummary() {
                 if (response) {
                     setChangeParticipants(false);
 
-                    let data = await TripService.getTrips(token, tripInfo.id);
-                    navigate(`/trips/${tripInfo.id}/summary`, {state: {trip: data[0], profile: profileInfo}})
+                    let data = await TripService.getTrip(token, tripInfo.id);
+                    navigate(`/trips/${tripInfo.id}/summary`, {state: {trip: data, profile: profileInfo}})
                     console.log("Participants updated!");
                 } else {
                     console.error('Invalid response data');

@@ -71,11 +71,11 @@ const TCSales = ({data, userId, handleSelection=()=>{}, handleAdd=()=>{}}) => {
         <div className="tc-bottom">
             <div className="tc-main-recap">
                 <div className="tc-recap">
-                    <div>My Expensive</div>
+                    <div>My Expenses</div>
                     <div className="tc-recap-expenses">€{myTotalExpenses.toFixed(2)}</div>
                 </div>
                 <div className="tc-recap">
-                    <div>Total Expensive</div>
+                    <div>Total Expenses</div>
                     <div className="tc-recap-expenses">€{totalExpenses.toFixed(2)}</div>
                 </div>
             </div>
@@ -87,7 +87,7 @@ const TCSales = ({data, userId, handleSelection=()=>{}, handleAdd=()=>{}}) => {
                     items={searchData}
                     setItems={setSearchData}
                     itemsAll={data}
-                    placeholder={"Search an Expensive"}
+                    placeholder={"Search an expense"}
                     checkItemSearch={checkExpensesSearch}
                 />
             </div>
