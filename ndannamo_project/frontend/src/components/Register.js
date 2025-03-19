@@ -7,7 +7,6 @@ import "../styles/Login.css";
 import logo from '../static/Logo app.png';
 import ondaVerde from "../static/svg/onda_sopra_verde.svg"
 import ondaArancione from "../static/svg/onda_sotto_arancione.svg"
-import ChatService from '../services/ChatService';
 
 function Register() {
     const [email, setEmail] = useState('');

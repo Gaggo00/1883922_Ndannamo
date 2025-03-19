@@ -16,35 +16,38 @@ import TripExpenses from "./pages/TripPages/TripExpenses";
 import TripPhotos from "./pages/TripPages/TripPhotos";
 import TripTickets from "./pages/TripPages/TripTickets";
 import Tricount from "./pages/Tricount.js";
+import { WebSocketProvider } from './utils/WebSocketProvider.js';
 
 export default function App() {
 
     return (
         <AuthProvider>
-            <BrowserRouter>
-                <div className="App">
-                    <Navbar/>
-                    <main className="App-main">
-                        <Routes>
-                            <Route path="/" element={<Home/>} />
-                            <Route path="/login" element={<Login/>} />
-                            <Route path="/register" element={<Register/>} />
-                            <Route path="/trips" element={<Main/>} />
-                            <Route path="/profile" element={<ProfilePage/>} />
-                            <Route path="/trips/:id/summary" element={<TripSummary />} />
-                            <Route path="/trips/:id/chat" element={<TripChat />} />
-                            <Route path="/trips/:id/schedule" element={<TripSchedule />} />
-                            <Route path="/trips/:id/expenses" element={<TripExpenses />} />
-                            <Route path="/trips/:id/photos" element={<TripPhotos />} />
-                            <Route path="/trips/:id/tickets" element={<TripTickets />} />
-                            <Route path="/change-password" element={<ChangePassword/>} />
-                            <Route path="/tricount" element={<Tricount />} />
-                            <Route path="/chat" element={<TripChat />} />
-                        </Routes>
-                    </main>
-                    <FooterComponent/>
-                </div>
-            </BrowserRouter>
+            <WebSocketProvider>
+                <BrowserRouter>
+                    <div className="App">
+                        <Navbar/>
+                        <main className="App-main">
+                            <Routes>
+                                <Route path="/" element={<Home/>} />
+                                <Route path="/login" element={<Login/>} />
+                                <Route path="/register" element={<Register/>} />
+                                <Route path="/trips" element={<Main/>} />
+                                <Route path="/profile" element={<ProfilePage/>} />
+                                <Route path="/trips/:id/summary" element={<TripSummary />} />
+                                <Route path="/trips/:id/chat" element={<TripChat />} />
+                                <Route path="/trips/:id/schedule" element={<TripSchedule />} />
+                                <Route path="/trips/:id/expenses" element={<TripExpenses />} />
+                                <Route path="/trips/:id/photos" element={<TripPhotos />} />
+                                <Route path="/trips/:id/tickets" element={<TripTickets />} />
+                                <Route path="/change-password" element={<ChangePassword/>} />
+                                <Route path="/tricount" element={<Tricount />} />
+                                <Route path="/chat" element={<TripChat />} />
+                            </Routes>
+                        </main>
+                        <FooterComponent/>
+                    </div>
+                </BrowserRouter>
+            </WebSocketProvider>
         </AuthProvider>
     );
 }

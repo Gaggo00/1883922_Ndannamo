@@ -1,11 +1,240 @@
-import React from 'react';
+import React, { useEffect, useState, useRef } from "react";
 import { useLocation } from 'react-router-dom';
+import Message from './Chat/Message.js'
 import InternalMenu from "./InternalMenu";
 import './InternalMenu.css';
+import SockJS from "sockjs-client";
+import { Client } from "@stomp/stompjs";
+import { BsSend } from "react-icons/bs";
+import "./Chat/Chat.css"
+import ChatService from "../../services/ChatService.js";
+import { WebSocketProvider } from "../../utils/WebSocketProvider.js";
+import { useWebSocket } from "../../utils/WebSocketProvider.js";
 
 export default function TripChat() {
     const location = useLocation();
     const tripInfo = location.state?.trip; // Recupera il tripInfo dallo stato
+    const userId = location.state?.profile.id;
+    const userNickname = location.state?.profile.nickname;
+    const [messages, setMessages] = useState([]);
+    const [message, setMessage] = useState("");
+    //const [stompClient, setStompClient] = useState(null);
+    const [buttonDisabled, setButtonDisabled] = useState(true);
+    const messagesEndRef = useRef(null);
+    const [chatParticipants, setChatParticipants] = useState([]);
+    const [fetched, setFetched] = useState(false);
+    const [subscribed, setSubscribed] = useState({});
+    const { connected, getClient } = useWebSocket();
+    const subscriptionsRef = useRef({}); // Oggetto di riferimento per le sottoscrizioni attive
+
+    // Funzione per sottoscrivere un canale
+    const subscribeToChannel = (channel, response) => {
+        const client = getClient();
+        if (client && connected && !subscribed.hasOwnProperty(channel)) {
+            console.log(`Sottoscrivendosi al canale: ${channel}`);
+            const subscription = client.subscribe(`/topic/${channel}`, response);
+
+            // Aggiungi la sottoscrizione alla lista
+            setSubscribed((prevSubscribed) => ({
+                ...prevSubscribed,
+                [channel]: subscription,
+            }));
+
+            // Salva la sottoscrizione nel riferimento per poterla annullare successivamente
+            subscriptionsRef.current[channel] = subscription;
+        }
+    };
+
+    // Funzione per annullare la sottoscrizione da un canale
+    const unsubscribeFromChannel = (channel) => {
+        if (subscriptionsRef.current[channel]) {
+            console.log(`Annullando la sottoscrizione al canale: ${channel}`);
+            subscriptionsRef.current[channel].unsubscribe();
+            delete subscriptionsRef.current[channel]; // Rimuovi la sottoscrizione dal riferimento
+            setSubscribed((prevSubscribed) => {
+                const newSubscribed = { ...prevSubscribed };
+                delete newSubscribed[channel]; // Rimuovi la sottoscrizione dallo stato
+                return newSubscribed;
+            });
+        }
+    };
+
+    useEffect(() => {
+        // Esempio di sottoscrizione automatica a più canali
+        const channels = [
+            ['greetings', () => {console.log("Ciao")}],
+            [`messages/${tripInfo?.id}`, (msg) => {
+                setMessages((prev) => [...prev, JSON.parse(msg.body)]);
+            }]
+        ];
+
+        channels.forEach((channel) => subscribeToChannel(channel[0], channel[1]));
+
+        // Funzione di cleanup per annullare tutte le sottoscrizioni quando il componente è smontato
+        return () => {
+            console.log('Il componente è stato smontato, annulliamo tutte le sottoscrizioni!');
+            Object.keys(subscriptionsRef.current).forEach((channel) => {
+                unsubscribeFromChannel(channel);
+            });
+        };
+    }, [connected]);
+
+    const initParticipants = async (token) => {
+
+        const participants = tripInfo.list_participants || [];
+
+        try {
+            const onlineUsers = await ChatService.getOnlineUsers(token, tripInfo?.id);
+            const new_list_participants = participants.map((u) => ({
+                id: u.id,
+                nickname: u.nickname,
+                online: onlineUsers.includes(u[0]), // se l'user è nella lista online, metti true
+            }));
+
+            setChatParticipants(new_list_participants);
+        } catch (error) {
+            console.error("Errore recupero utenti online:", error);
+        }
+    };
+
+    useEffect(() => {
+        if (!tripInfo) return;
+    
+        const token = localStorage.getItem('token');
+    
+        initParticipants(token);
+    
+        const fetchMessages = async () => {
+            try {
+                const response = await ChatService.getMessages(token, tripInfo?.id);
+                const sortedMessages = response.sort((a, b) => new Date(a.date) - new Date(b.date));
+                setMessages(sortedMessages);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+    
+        if (!fetched) {
+            fetchMessages();
+            setFetched(true);
+        }
+    
+        /*// 1. Crea un solo WebSocket client
+        const socket = new SockJS("http://localhost:8082/ws");
+    
+        const client = new Client({
+            webSocketFactory: () => socket,
+            onConnect: () => {
+                console.log("Connected to WebSocket");
+    
+                client.subscribe(`/topic/messages/${tripInfo?.id}`, (msg) => {
+                    setMessages((prev) => [...prev, JSON.parse(msg.body)]);
+                });
+    
+                // 2. Iscriviti a ogni partecipante per aggiornamenti presenza
+                participants.forEach((u) => {
+                    const userId = u[0];
+    
+                    client.subscribe(`/topic/presence/${userId}`, (message) => {
+                        const notification = JSON.parse(message.body);
+                        const { userId, online } = notification;
+    
+                        console.log(`Notifica ricevuta per user ${userId}: online = ${online}`);
+    
+                        // 3. Aggiorna lo stato dei partecipanti
+                        setChatParticipants((prevParticipants) =>
+                            prevParticipants.map((p) =>
+                                p.id === userId ? { ...p, online } : p
+                            )
+                        );
+                    });
+                });
+            },
+        });
+    
+        client.activate();
+        setStompClient(client);
+    
+        // 4. Cleanup quando il componente si smonta o tripInfo?.id cambia
+        return () => {
+            if (client) {
+                client.deactivate();
+                console.log("Disconnected from WebSocket");
+            }
+        };*/
+    
+    }, [tripInfo]);
+    
+    useEffect(() => {
+        console.log('chatParticipants aggiornati:', chatParticipants);
+    }, [chatParticipants]);
+
+
+    const sendMessage = () => {
+        const client = getClient();
+        if (client && connected) {
+            const messageObj = {
+                senderId: userId,
+                nickname: userNickname,
+                body: message,
+                date: new Date().toISOString(), // Data e ora del messaggio
+            };
+
+            client.publish({
+                destination: `/app/chat/${tripInfo?.id}`, // Canale di destinazione
+                body: JSON.stringify(messageObj),
+            });
+        } else {
+            console.error('WebSocket non connesso!');
+        }
+    };
+
+
+    function handleInput(newValue) {
+        setMessage(newValue)
+        if (newValue == "")
+            setButtonDisabled(true);
+        else
+            setButtonDisabled(false);
+    }
+
+
+    function handleClick() {
+        sendMessage();
+        setMessage("");
+        setButtonDisabled(true);
+
+        setTimeout(() => {
+            messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+        }, 100);
+    }
+
+
+    function formatDateLabel(date) {
+        const today = new Date();
+        const yesterday = new Date(today);
+        yesterday.setDate(today.getDate() - 1);
+    
+        if (isSameDay(date, today)) {
+            return "Oggi";
+        } else if (isSameDay(date, yesterday)) {
+            return "Ieri";
+        } else {
+            return date.toLocaleDateString('it-IT', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+    }
+
+    
+    function isSameDay(date1, date2) {
+        return date1.getFullYear() === date2.getFullYear() &&
+               date1.getMonth() === date2.getMonth() &&
+               date1.getDate() === date2.getDate();
+    }    
+
 
     if (!tripInfo) {
         return <p>Loading trip details...</p>;
@@ -18,15 +247,87 @@ export default function TripChat() {
                 <div className="trip-top">
                     <span> <strong>{tripInfo.title}</strong> {tripInfo.startDate} {tripInfo.endDate}</span>
                 </div>
-                <div className="trip-details">
-                    <div className="sezione1">
-                        <h1>Trip Details</h1>
-                        <p>Showing details for trip ID: {tripInfo.id}</p>
+                <div className="ch-main-container">
+                    <div className="ch-col ch-col-1">
+                        <div className="participants-container">
+                            <h3>Partecipanti</h3>
+                            {chatParticipants.length > 0 ? (
+                                <ul className="participants-list">
+                                    {chatParticipants.map((participant) => (
+                                        <li key={participant.id} className="participant-item">
+                                            <span className="participant-nickname">{participant.nickname}</span>
+                                            <span className={`participant-status ${participant.online ? 'online' : 'offline'}`}>
+                                                ● {participant.online ? 'Online' : 'Offline'}
+                                            </span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            ) : (
+                                <p>Nessun partecipante</p>
+                            )}
+                        </div>
                     </div>
-                    <div className="sezione2"></div>
+                    <div className="chat-container">
+                    <div className="chat-messages">
+                        {(() => {
+                            let lastDate = null; // QUI! Prima del ciclo
+
+                            return messages.map((msg, index) => {
+                                const messageDate = new Date(msg.date);
+                                const formattedDate = messageDate.toLocaleDateString('it-IT', {
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric'
+                                });
+
+                                let showDateSeparator = false;
+                                if (formattedDate !== lastDate) {
+                                    showDateSeparator = true;
+                                    lastDate = formattedDate;
+                                }
+
+                                return (
+                                    <React.Fragment key={index}>
+                                        {showDateSeparator && (
+                                            <div className="date-separator">
+                                                <span>{formatDateLabel(messageDate)}</span>
+                                            </div>
+                                        )}
+                                        <Message
+                                            date={msg.date}
+                                            nickname={msg.nickname}
+                                            body={msg.body}
+                                            senderId={msg.senderId}
+                                            receiverId={userId}
+                                        />
+                                    </React.Fragment>
+                                );
+                            });
+                        })()}
+                            <div ref={messagesEndRef} />
+                        </div>
+                        <div className="chat-input">
+                            <textarea
+                                className="chat-input-input"
+                                value={message}
+                                onChange={(e) => handleInput(e.target.value)}
+                                placeholder="Scrivi un messaggio...">
+                            </textarea>
+                            <button
+                                className="chat-input-button"
+                                id="sendButton"
+                                disabled={buttonDisabled}
+                                onClick={() => handleClick()}
+                            >
+                                <BsSend />
+                            </button>
+                        </div>
+                    </div>
+                    <div className="ch-col ch-col-3">
+                        <div>Colonna 3</div>
+                    </div>
                 </div>
             </div>
         </div>
     );
 }
-

@@ -13,6 +13,7 @@ import jakarta.validation.Valid;
 
 import com.example.backend.dto.ChangePasswordRequest;
 import com.example.backend.dto.GenericType;
+import com.example.backend.service.ChatService;
 import com.example.backend.service.TripService;
 import com.example.backend.service.UserService;
 
@@ -24,11 +25,13 @@ public class UserController {
 
     private final TripService tripService;
     private final UserService userService;
+    private final ChatService chatService;
 
     @Autowired
-    public UserController(UserService userService, TripService tripService) {
+    public UserController(UserService userService, TripService tripService, ChatService chatService) {
         this.tripService = tripService;
         this.userService = userService;
+        this.chatService = chatService;
     }
 
 
@@ -61,7 +64,12 @@ public class UserController {
             tripService.manageInvitation(email, id, accept.getValue());
 
             String message = "Invitation ";
-            if (accept.getValue()) message += "accepted";
+            if (accept.getValue()) {
+                
+                chatService.addParticipant(email, id);
+
+                message += "accepted";
+            }
             else message += "refused";
             return ResponseEntity.ok().body(message);
         }

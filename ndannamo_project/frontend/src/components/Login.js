@@ -8,6 +8,7 @@ import '../styles/Login.css'
 import logo from '../static/Logo app.png'
 import ondaVerde from "../static/svg/onda_sopra_verde.svg"
 import ondaArancione from "../static/svg/onda_sotto_arancione.svg"
+import { useWebSocket } from '../utils/WebSocketProvider';
 
 
 function Login() {
@@ -15,6 +16,7 @@ function Login() {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const { login } = useAuth(); // Usa il contesto per aggiornare lo stato di autenticazione
+    const { connect } = useWebSocket();
     const navigate = useNavigate();
 
     const [showPassword, setShowPassword] = useState(false);
@@ -63,6 +65,7 @@ function Login() {
                 var expiration = userDataArray[1];
                 localStorage.setItem('token', token);
                 localStorage.setItem('token-expiration', expiration);
+                connect();
                 login(); // Aggiorna lo stato di autenticazione
                 navigate('/');
             } else {

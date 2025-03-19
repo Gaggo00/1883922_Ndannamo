@@ -74,6 +74,7 @@ services:
       postgres:
         condition: service_healthy
     networks:
+      - auth_chat_net
       - spring_net
       - frontend_net
 
@@ -88,12 +89,14 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/mydatabase
       SPRING_DATASOURCE_USERNAME: myuser
       SPRING_DATASOURCE_PASSWORD: mypassword
+      INTERNAL_API_KEY: supersecretkeybackend
     depends_on:
       postgres:
         condition: service_healthy
     networks:
       - spring_net
       - frontend_net
+      - back_chat
 
   chat-backend:
     build: ./chat
@@ -105,11 +108,15 @@ services:
       SPRING_DATASOURCE_USERNAME: chatuser
       SPRING_DATASOURCE_PASSWORD: chatpass
       SPRING_APPLICATION_NAME: NdannamoChat
+      INTERNAL_API_KEY: supersecretkeybackend
     depends_on:
       postgres-chat:
         condition: service_healthy
     networks:
+      - auth_chat_net
       - chat_net
+      - back_chat
+
   # Backend cities
   cities:
     build: cities
@@ -145,6 +152,8 @@ networks:
   cities_net:
   frontend_net:
   chat_net:
+  auth_chat_net:
+  back_chat:
 
 volumes:
   postgres_data:

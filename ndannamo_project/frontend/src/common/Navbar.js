@@ -8,10 +8,12 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 import valigiaLogo from "../static/valigia logo.png";
 import scrittaLogo from "../static/scritta logo.png";
+import { useWebSocket } from '../utils/WebSocketProvider';
 
 
 export default function Navbar() {
     const { isAuthenticated, logout } = useAuth();
+    const { disconnect } = useWebSocket();
     const location = useLocation(); // Ottieni il percorso corrente
 
     useEffect(() => {
@@ -20,6 +22,7 @@ export default function Navbar() {
     }, [location]);
 
     const handleLogout = () => {
+        disconnect();
         logout();
     }
 
