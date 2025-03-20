@@ -110,16 +110,41 @@ export default function TripChat() {
         }
     };
 
+    const encodeEmail = (email) => {
+        return email.replace(/@/g, "_at_").replace(/\./g, "_dot_");
+    };
+
     useEffect(() => {
         // Esempio di sottoscrizione automatica a più canali
         const channels = [
             ['greetings', () => {console.log("Ciao")}],
             [`messages/${tripInfo?.id}`, (msg) => {
                 setMessages((prev) => [...prev, JSON.parse(msg.body)]);
-            }]
+            }],
         ];
 
         channels.forEach((channel) => subscribeToChannel(channel[0], channel[1]));
+
+        const participants = tripInfo.list_participants || [];
+
+        participants.forEach((participant) => {
+            const encoded = encodeEmail(participant.email);
+            subscribeToChannel(`topic/notice/${encoded}/status`, (message) => {
+                console.log("Arriva un messaggio!", message);
+                const data = JSON.parse(message.body); // dipende da come arriva il messaggio
+                const { userEmail, online } = data;
+        
+                // Trova il participant corrispondente
+                const participantToUpdate = participants.find(p => p.email === userEmail);
+        
+                if (participantToUpdate) {
+                    participantToUpdate.online = online;
+        
+                    // Se stai usando un framework reattivo (React, Vue, ecc.), qui dovresti triggerare l'update dello stato!
+                    console.log(`Aggiornato ${participantToUpdate.nickname}: online = ${online}`);
+                }
+            });
+        });
 
         // Funzione di cleanup per annullare tutte le sottoscrizioni quando il componente è smontato
         return () => {
@@ -136,10 +161,12 @@ export default function TripChat() {
 
         try {
             const onlineUsers = await ChatService.getOnlineUsers(token, tripInfo?.id);
+            console.log("Gli utenti online: ", onlineUsers);
             const new_list_participants = participants.map((u) => ({
                 id: u.id,
                 nickname: u.nickname,
-                online: onlineUsers.includes(u[0]), // se l'user è nella lista online, metti true
+                email: u.email,
+                online: onlineUsers.includes(u.email), // se l'user è nella lista online, metti true
             }));
 
             setChatParticipants(new_list_participants);

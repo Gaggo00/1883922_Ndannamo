@@ -29,12 +29,12 @@ export const WebSocketProvider = ({ children }) => {
                 setConnected(true);
 
                 // Esempio di heartbeat, da gestire se serve
-                // heartbeatIntervalRef.current = setInterval(() => {
-                //     client.publish({
-                //         destination: '/app/presence/heartbeat',
-                //         body: JSON.stringify({ message: 'ping' })
-                //     });
-                // }, 5000);
+                heartbeatIntervalRef.current = setInterval(() => {
+                    client.publish({
+                        destination: '/app/presence/heartbeat',
+                        body: JSON.stringify({ message: 'ping' })
+                    });
+                }, 5000);
             },
             onDisconnect: () => {
                 console.log('❌ WebSocket disconnesso!');
