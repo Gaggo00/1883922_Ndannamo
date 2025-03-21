@@ -1,10 +1,12 @@
 package com.example.chat.config;
 
-import com.example.chat.service.JwtService;
+import com.example.chat.service.JwtBToBService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,14 +17,14 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    private final JwtService jwtService;
-    private final UserDetailsService userDetailsService;
-    private RequestMatcher requestMatcher = new AntPathRequestMatcher("/api/chat/**");  // Default per /api/chat
+public class JwtBToBAuthenticationFilter extends OncePerRequestFilter {
+    private final JwtBToBService jwtService;
+    private final UserDetailsService b2bUserDetailsService;
+    private RequestMatcher requestMatcher = new AntPathRequestMatcher("/api/channels/**");  // Default per /api/channels
 
-    public JwtAuthenticationFilter(JwtService jwtService, UserDetailsService userDetailsService) {
+    public JwtBToBAuthenticationFilter(JwtBToBService jwtService, @Qualifier("b2bUserDetailsService") UserDetailsService b2bUserDetailsService) {
         this.jwtService = jwtService;
-        this.userDetailsService = userDetailsService;
+        this.b2bUserDetailsService = b2bUserDetailsService;
     }
 
     @Override
@@ -43,7 +45,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
+            UserDetails userDetails = this.b2bUserDetailsService.loadUserByUsername(username);
             if (jwtService.validateToken(jwt, userDetails)) {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

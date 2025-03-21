@@ -3,6 +3,7 @@ package com.example.backend.service;
 import java.util.List;
 
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -16,16 +17,21 @@ public class ChatService {
 
     private final RestTemplate restTemplate;
     private final String CHAT_SERVER_URL = "http://chat:8082/api/channels/";
+    private final JwtService jwtService;
 
-    public ChatService(RestTemplate restTemplate) {
+    public ChatService(RestTemplate restTemplate, JwtService jwtService) {
         this.restTemplate = restTemplate;
+        this.jwtService = jwtService;
     }
 
     public ResponseEntity<?> createChannel(String email, Long tripId) {
 
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + jwtService.getCurrentJwt());
+
         List<String> participants = List.of(email);
         CreateChannelRequest request = new CreateChannelRequest(tripId, participants);
-        HttpEntity<CreateChannelRequest> requestEntity = new HttpEntity<CreateChannelRequest>(request);
+        HttpEntity<CreateChannelRequest> requestEntity = new HttpEntity<CreateChannelRequest>(request, headers);
 
         ResponseEntity<?> response = restTemplate.exchange(
             CHAT_SERVER_URL,
@@ -44,10 +50,15 @@ public class ChatService {
             .pathSegment(tripId.toString())
             .toUriString();
 
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + jwtService.getCurrentJwt());
+
+        HttpEntity<?> entity = new HttpEntity<>(headers);
+
         ResponseEntity<?> response = restTemplate.exchange(
             url,
             HttpMethod.DELETE,
-            null,
+            entity,
             String.class
         );
 
@@ -56,7 +67,9 @@ public class ChatService {
 
     public ResponseEntity<?> addParticipant(String email, Long channelId) {
 
-        HttpEntity<String> requestEntity = new HttpEntity<String>(email);
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + jwtService.getCurrentJwt());
+        HttpEntity<String> requestEntity = new HttpEntity<String>(email, headers);
 
         String url = UriComponentsBuilder
             .fromHttpUrl(CHAT_SERVER_URL)
@@ -75,7 +88,9 @@ public class ChatService {
 
     public ResponseEntity<?> removeParticipant(String email, Long channelId) {
 
-        HttpEntity<String> requestEntity = new HttpEntity<String>(email);
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + jwtService.getCurrentJwt());
+        HttpEntity<String> requestEntity = new HttpEntity<String>(email, headers);
 
         String url = UriComponentsBuilder
             .fromHttpUrl(CHAT_SERVER_URL)

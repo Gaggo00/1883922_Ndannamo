@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import {useNavigate} from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import AuthService from '../services/AuthService';
+import { useWebSocket } from '../utils/WebSocketProvider';
 
 import "../styles/Login.css";
 import logo from '../static/Logo app.png';
@@ -14,6 +15,7 @@ function Register() {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const { login } = useAuth(); // Usa il contesto per aggiornare lo stato di autenticazione
+    const { connect } = useWebSocket();
     const navigate = useNavigate();
 
 
@@ -67,8 +69,8 @@ function Register() {
                 var expiration = userDataArray[1];
                 localStorage.setItem('token', token);
                 localStorage.setItem('token-expiration', expiration);
-
                 login(); // Aggiorna lo stato di autenticazione (login fatto in automatico quando ti registri)
+                connect(token);
                 navigate('/trips');
             } else {
                 setError(userData.message);
