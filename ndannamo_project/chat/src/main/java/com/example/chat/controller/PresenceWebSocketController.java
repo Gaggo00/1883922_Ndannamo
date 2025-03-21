@@ -11,9 +11,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 
 import java.util.Set;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.security.Principal;
 import java.util.List;
 
@@ -33,12 +30,12 @@ public class PresenceWebSocketController {
     public void userHeartbeat(@AuthenticationPrincipal Principal principal) {
         String userId = principal.getName();
 
-        System.out.println("STIAMO NEL BATTITO " + userId);
+        String encodedEmail = customEncodeEmail(userId);
+        String destination = "/topic/notice/" + encodedEmail + "/status";
         Set<String> usersOnline = userPresenceService.getActiveUsers();
         if (!usersOnline.contains(userId)) {
-            String encodedEmail = customEncodeEmail(userId);
-            System.out.println(encodedEmail);
-            messagingTemplate.convertAndSend("/topic/notice/" + encodedEmail + "/status", new StatusNotice(userId, true));
+            //messagingTemplate.convertAndSend("/topic/notice/status", new StatusNotice(userId, true));
+            messagingTemplate.convertAndSend(destination, new StatusNotice(userId, true));
         }
         
         // Aggiorna la presenza dell'utente
@@ -48,17 +45,16 @@ public class PresenceWebSocketController {
     @Scheduled(fixedRate = 10000)  // Ogni 10 secondi
     public void checkUserPresence() {
         // Rimuovi gli utenti inattivi dalla lista
-        System.out.println("Non stiamo nel BATTITO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         List<String> offlineUsers = userPresenceService.removeInactiveUsers();
 
         // Invia le notifiche di stato offline per gli utenti rimossi
         for (String userId : offlineUsers) {
             String encodedEmail = customEncodeEmail(userId);
-            messagingTemplate.convertAndSend("/topic/notice/" + encodedEmail + "/status", new StatusNotice(userId, false));  // Offline
+            messagingTemplate.convertAndSend("/topic/notice/"+encodedEmail+"/status", new StatusNotice(userId, false));  // Offline
         }
     }
 
     public static String customEncodeEmail(String email) {
-        return email.replace("@", "_at_").replace(".", "_dot_");
+        return email.replace("@", "at").replace(".", "dot");
     }
 }

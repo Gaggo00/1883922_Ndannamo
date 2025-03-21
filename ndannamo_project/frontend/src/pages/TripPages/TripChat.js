@@ -42,7 +42,6 @@ export default function TripChat() {
             }
             const response = await TripService.getTrip(token, id);
             if (response) {
-                console.log("obtained trip info");
                 setTripInfo(response);
                 
             } else {
@@ -82,7 +81,6 @@ export default function TripChat() {
     const subscribeToChannel = (channel, response) => {
         const client = getClient();
         if (client && connected && !subscribed.hasOwnProperty(channel)) {
-            console.log(`Sottoscrivendosi al canale: ${channel}`);
             const subscription = client.subscribe(`/topic/${channel}`, response);
 
             // Aggiungi la sottoscrizione alla lista
@@ -99,7 +97,6 @@ export default function TripChat() {
     // Funzione per annullare la sottoscrizione da un canale
     const unsubscribeFromChannel = (channel) => {
         if (subscriptionsRef.current[channel]) {
-            console.log(`Annullando la sottoscrizione al canale: ${channel}`);
             subscriptionsRef.current[channel].unsubscribe();
             delete subscriptionsRef.current[channel]; // Rimuovi la sottoscrizione dal riferimento
             setSubscribed((prevSubscribed) => {
@@ -111,13 +108,12 @@ export default function TripChat() {
     };
 
     const encodeEmail = (email) => {
-        return email.replace(/@/g, "_at_").replace(/\./g, "_dot_");
+        return email.replace(/@/g, "at").replace(/\./g, "dot");
     };
 
     useEffect(() => {
         // Esempio di sottoscrizione automatica a più canali
         const channels = [
-            ['greetings', () => {console.log("Ciao")}],
             [`messages/${tripInfo?.id}`, (msg) => {
                 setMessages((prev) => [...prev, JSON.parse(msg.body)]);
             }],
@@ -127,10 +123,13 @@ export default function TripChat() {
 
         const participants = tripInfo.list_participants || [];
 
+        //subscribeToChannel('notice/status', (message) => {console.log("Arrivato il messagino!!", message.body)})
+        //subscribeToChannel('notice/olgaatolgadotit/status', (message) => {console.log("Arrivato il messagione!!", message.body)})
         participants.forEach((participant) => {
             const encoded = encodeEmail(participant.email);
-            subscribeToChannel(`topic/notice/${encoded}/status`, (message) => {
-                console.log("Arriva un messaggio!", message);
+            //console.log(encoded);
+            subscribeToChannel(`notice/${encoded}/status`, (message) => {
+                //console.log("Arriva un messaggio!", message.body);
                 const data = JSON.parse(message.body); // dipende da come arriva il messaggio
                 const { userEmail, online } = data;
         
@@ -138,17 +137,23 @@ export default function TripChat() {
                 const participantToUpdate = participants.find(p => p.email === userEmail);
         
                 if (participantToUpdate) {
+                    // Aggiorna la proprietà "online" del partecipante
                     participantToUpdate.online = online;
-        
-                    // Se stai usando un framework reattivo (React, Vue, ecc.), qui dovresti triggerare l'update dello stato!
-                    console.log(`Aggiornato ${participantToUpdate.nickname}: online = ${online}`);
+            
+                    // Triggera l'aggiornamento dello stato
+                    setChatParticipants((prevParticipants) =>
+                        prevParticipants.map((p) =>
+                            p.email === userEmail ? { ...p, online: online } : p
+                        )
+                    );
+            
+                    //console.log(`Aggiornato ${participantToUpdate.nickname}: online = ${online}`);
                 }
             });
         });
 
         // Funzione di cleanup per annullare tutte le sottoscrizioni quando il componente è smontato
         return () => {
-            console.log('Il componente è stato smontato, annulliamo tutte le sottoscrizioni!');
             Object.keys(subscriptionsRef.current).forEach((channel) => {
                 unsubscribeFromChannel(channel);
             });
@@ -161,7 +166,6 @@ export default function TripChat() {
 
         try {
             const onlineUsers = await ChatService.getOnlineUsers(token, tripInfo?.id);
-            console.log("Gli utenti online: ", onlineUsers);
             const new_list_participants = participants.map((u) => ({
                 id: u.id,
                 nickname: u.nickname,
