@@ -67,6 +67,7 @@ function Register() {
                 var expiration = userDataArray[1];
                 localStorage.setItem('token', token);
                 localStorage.setItem('token-expiration', expiration);
+
                 login(); // Aggiorna lo stato di autenticazione (login fatto in automatico quando ti registri)
                 navigate('/trips');
             } else {

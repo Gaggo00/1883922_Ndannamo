@@ -53,9 +53,11 @@ export default function TripExpenses() {
                 console.log("obtained trip info");
                 setTripInfo(response);
             } else {
+                navigate("/error");
                 console.error('Invalid response data');
             }
         } catch (error) {
+            navigate("/error");
             console.error('Error fetching trip info:', error);
         }
     }

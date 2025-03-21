@@ -44,9 +44,11 @@ export default function TripSchedule() {
                 setTripInfo(response);
                 
             } else {
+                navigate("/error");
                 console.error('Invalid response data');
             }
         } catch (error) {
+            navigate("/error");
             console.error('Error fetching trip info:', error);
         }
     }

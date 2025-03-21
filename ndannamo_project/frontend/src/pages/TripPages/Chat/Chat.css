@@ -1,0 +1,219 @@
+.ch-main-container {
+    display: flex; /* Usa Flexbox per disporre le colonne in linea */
+    width: 100%;
+    height: 100vh; /* Altezza della finestra */
+    overflow: hidden;
+    margin-bottom: 5px;
+}
+
+
+.ch-col {
+    padding: 10px;
+    box-sizing: border-box;
+    position: relative;
+}
+
+/*** COLONNA DEI MESSAGGI ***/
+.chat-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* Occupa tutta la finestra */
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+.chat-messages {
+    padding: 10px;
+    flex: 1; /* prende tutto lo spazio rimanente */
+    overflow-y: auto; /* abilita lo scroll se il contenuto cresce */
+    display: flex;
+    flex-direction: column; 
+    gap: 10px;
+    background-image: url("../../../static/sfondo chat.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+}
+
+.chat-input {
+    display: flex;
+    padding: 10px;
+    background-color: white;
+    border-top: 1px solid #ddd;
+}
+
+/* Barra di input: fissa in basso */
+.chat-input {
+    display: flex;
+    padding: 10px;
+    background-color: white;
+    border-top: 1px solid #ddd;
+}
+
+.chat-input-input {
+    flex-grow: 1; /* Occupa tutto lo spazio disponibile */
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    outline: none;
+}
+
+.chat-input-button {
+    margin-left: 10px;
+    padding: 8px 15px;
+    border: none;
+    background-color: #eb9b17;
+    color: white;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+/*******************/
+
+
+.ch-col-1 {
+    width:20%;
+}
+
+.ch-col {
+    border: 1px solid #ccc;
+    height: 100%;
+}
+
+.ch-col-central {
+    background-color: lightblue;
+}
+
+.ch-fixed-bottom {
+    display: flex;
+    position: absolute; /* Fisso in basso */
+    bottom: 0px; /* Distanza dal fondo della colonna */
+    left: 0px;
+    width: 100%; /* Si estende su tutta la larghezza della colonna centrale */
+    background-color: white;
+    padding: 10px;
+    border-top: 2px solid #ccc;
+    gap: 10px;
+}
+
+.ch-message-input {
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.ch-send-button {
+    padding: 10px 20px;
+    background-color: #4CAF50; /* Colore del pulsante */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.ch-send-button:disabled {
+    background-color: #ddd; /* Colore del pulsante disabilitato */
+    cursor: not-allowed;
+}
+
+.ch-message-container {
+    display: flex;
+    flex-direction: column;
+    max-width: 50%;
+    margin-bottom: 10px;
+    padding-left: 5px;
+    padding-right: 40px;
+    padding-top: 4px;
+    padding-bottom: 2px;
+    border-radius: 10px;
+    background-color: white;
+    position: relative;
+}
+
+.ch-message-nickname {
+    font-weight: bold;
+    text-align: start;
+    font-size: 11px;
+}
+
+.ch-message-body {
+    font-size: 14px;
+    margin-bottom: 0px;
+    align-content: left;
+    text-align: start;
+}
+
+
+.ch-message-time {
+    font-size: 10px;
+    color: #888;
+    position: absolute;
+    bottom: 0px;
+    right: 8px;
+}
+
+.ch-messages-container {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column; /* Messaggi impilati verticalmente */
+    gap: 8px; /* Distanza tra i messaggi */
+    overflow-y: auto; /* Aggiunge scroll verticale se i messaggi sono troppi */
+    max-height: calc(100vh - 150px); /* Altezza dinamica (sottrae spazio per input e altri elementi) */
+}
+
+/*** SEPARATORE ***/
+.ch-date-separator {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 1rem 0;
+    position: relative;
+}
+
+.ch-date-separator span {
+    background-color: #e0e0e0;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.participants-container {
+    padding: 1rem;
+}
+
+.participants-list {
+    list-style: none;
+    padding: 0;
+}
+
+.participant-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #eee;
+}
+
+.participant-nickname {
+    font-weight: 500;
+}
+
+.participant-status {
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+}
+
+.participant-status.online {
+    color: green;
+}
+
+.participant-status.offline {
+    color: gray;
+}

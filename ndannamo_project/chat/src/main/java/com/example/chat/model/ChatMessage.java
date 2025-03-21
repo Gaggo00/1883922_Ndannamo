@@ -1,6 +1,7 @@
 package com.example.chat.model;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;  // Utilizzo di LocalDateTime per le date
 
 @Entity
 @Table(name = "chat_messages")
@@ -10,17 +11,19 @@ public class ChatMessage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long tripId;
+    private Long channelId;
     private Long senderId;
     private String nickname;
     private String body;
-    private String date;
+    
+    @Column(name = "message_date")  // Specifico il nome della colonna per chiarezza
+    private LocalDateTime date;  // Uso LocalDateTime per rappresentare la data e l'ora
 
     // Costruttori
     public ChatMessage() {}
 
-    public ChatMessage(Long tripId, Long senderId, String nickname, String body, String date) {
-        this.tripId = tripId;
+    public ChatMessage(Long channelId, Long senderId, String nickname, String body, LocalDateTime date) {
+        this.channelId = channelId;
         this.senderId = senderId;
         this.nickname = nickname;
         this.body = body;
@@ -29,15 +32,15 @@ public class ChatMessage {
 
     // Getter e Setter
     public Long getId() { return id; }
-    public Long getTripId() { return tripId; }
+    public Long getChannelId() { return channelId; }
     public Long getSenderId() { return senderId; }
     public String getNickname() { return nickname; }
     public String getBody() { return body; }
-    public String getDate() { return date; }
+    public LocalDateTime getDate() { return date; }
 
-    public void setTripId(Long tripId) { this.tripId = tripId; }
+    public void setChannelId(Long channelId) { this.channelId = channelId; }
     public void setSenderId(Long senderId) { this.senderId = senderId; }
     public void setNickname(String nickname) { this.nickname = nickname; }
     public void setBody(String body) { this.body = body; }
-    public void setDate(String date) { this.date = date; }
+    public void setDate(LocalDateTime date) { this.date = date; }
 }

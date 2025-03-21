@@ -7,5 +7,5 @@ import java.util.List;
 
 @Repository
 public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> {
-    List<ChatMessage> findByTripId(Long tripId); // Recupera i messaggi per tripId
+    List<ChatMessage> findByChannelId(Long channelId); // Recupera i messaggi per tripId
 }

@@ -3,9 +3,10 @@ package com.example.authentication.controller;
 
 import com.example.authentication.dto.LoginRequest;
 import com.example.authentication.model.User;
+import com.example.authentication.service.ChatService;
 import com.example.authentication.service.JwtService;
 import com.example.authentication.service.UserService;
-
+import com.example.authentication.dto.TokenValidationResponse;
 
 import jakarta.validation.Valid;
 
@@ -30,18 +31,49 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final UserService userService;
     private final JwtService jwtService;
+    private final ChatService chatService;
 
     @Autowired
-    public AuthController(AuthenticationManager authenticationManager, UserService userService, JwtService jwtService) {
+    public AuthController(AuthenticationManager authenticationManager, UserService userService, JwtService jwtService, ChatService chatService) {
         this.authenticationManager = authenticationManager;
         this.userService = userService;
         this.jwtService = jwtService;
+        this.chatService = chatService;
     }
 
     @GetMapping("/prova")
     public ResponseEntity<?> prova() {
         User user = userService.getUserByEmail("anna@email.it");
         return ResponseEntity.ok().body(user);
+    }
+
+    // Endpoint per la validazione del token
+    @PostMapping("/validate-token")
+    public ResponseEntity<?> validateToken(@RequestHeader("Authorization") String authorizationHeader) {
+        // Controlla che l'header Authorization esista e inizi con "Bearer "
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            String jwt = authorizationHeader.substring(7); // Estrai il token
+
+            // Estrai il nome utente dal token
+            String username = jwtService.extractUsername(jwt);
+            try {
+                // Recupera i dettagli dell'utente
+                UserDetails userDetails = userService.getUserByEmail(username);
+                
+                // Verifica la validità del token
+                if (jwtService.validateToken(jwt, userDetails)) {
+                    TokenValidationResponse response = new TokenValidationResponse(true, username, "Valid");
+                    return ResponseEntity.ok(response);
+                } else {
+                    TokenValidationResponse response = new TokenValidationResponse(false, "", "Token non valido");
+                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+                }
+            } catch (Exception e) {
+                TokenValidationResponse response = new TokenValidationResponse(false, "", "Errore durante la validazione del token: " + e.getMessage());
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+            }
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Header Authorization mancante o mal formattato");
     }
 
     @PostMapping(value={"/login", "/login/"})
@@ -52,6 +84,8 @@ public class AuthController {
             );
             final UserDetails userDetails = userService.getUserByEmail(loginRequest.getEmail());
             final String jwt = jwtService.generateToken(userDetails);
+
+            chatService.createUser(loginRequest.getEmail()); // L'utente viene creato solo se già non esiste
 
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
             String expiration = simpleDateFormat.format(jwtService.extractExpiration(jwt));
@@ -76,6 +110,8 @@ public class AuthController {
             final UserDetails userDetails = userService.getUserByEmail(user.getEmail());
             final String jwt = jwtService.generateToken(userDetails);
             
+            chatService.createUser(user.getEmail()); // L'utente viene creato solo se già non esiste
+
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
             String expiration = simpleDateFormat.format(jwtService.extractExpiration(jwt));
 

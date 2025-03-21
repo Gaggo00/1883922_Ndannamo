@@ -61,9 +61,11 @@ export default function ParticipantsSummary({tripInfoParam, profileInfo}) {
                     //console.log("Participants updated!");
                     setTripInfo(data);
                 } else {
+                    navigate("/error");
                     console.error('Invalid response data');
                 }
             } catch (error) {
+                navigate("/error");
                 console.error('Error updating participants:', error);
             }
         }

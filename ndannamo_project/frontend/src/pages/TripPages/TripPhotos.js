@@ -109,9 +109,11 @@ export default function TripPhotos() {
                 console.log(response);
                 setImageIds(response);
             } else {
+                navigate("/error");
                 console.error('Invalid response data');
             }
         } catch (error) {
+            navigate("/error");
             console.error('Error fetching photos:', error);
         }
     }

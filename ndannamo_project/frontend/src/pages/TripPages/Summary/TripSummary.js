@@ -36,9 +36,11 @@ export default function TripSummary() {
                 setTripInfo(response);
                 
             } else {
+                navigate("/error");
                 console.error('Invalid response data');
             }
         } catch (error) {
+            navigate("/error");
             console.error('Error fetching trip info:', error);
         }
     }
@@ -58,9 +60,11 @@ export default function TripSummary() {
             if (response) {
                 setProfileInfo(response);  // Aggiorniamo lo stato con le informazioni del profilo
             } else {
+                navigate("/error");
                 console.error('Invalid response data');
             }
         } catch (error) {
+            navigate("/error");
             console.error('Error fetching profile information:', error);
         }
     };
