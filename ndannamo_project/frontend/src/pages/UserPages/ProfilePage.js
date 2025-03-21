@@ -60,9 +60,11 @@ function ProfilePage() {
                 setProfileInfo(response);  // Aggiorniamo lo stato con le informazioni del profilo
                 setNewNickname(response.nickname);
             } else {
+                navigate("/error");
                 console.error('Invalid response data');
             }
         } catch (error) {
+            navigate("/error");
             console.error('Error fetching profile information:', error);
         }
     };

@@ -72,9 +72,11 @@ export default function DateSummary({tripInfo, profileInfo}) {
                         navigate(`/trips/${tripInfo.id}/summary`, { state: { trip: tripInfo, profile: profileInfo } })
                         console.log("dates changed!")
                     } else {
+                        navigate("/error");
                         console.error('Invalid response data');
                     }
                 } catch (error) {
+                    navigate("/error");
                     console.error('Error changing dates:', error);
                 }
             }

@@ -64,9 +64,11 @@ export default function ParticipantsSummary({tripInfo, profileInfo}) {
                     navigate(`/trips/${tripInfo.id}/summary`, {state: {trip: data, profile: profileInfo}})
                     console.log("Participants updated!");
                 } else {
+                    navigate("/error");
                     console.error('Invalid response data');
                 }
             } catch (error) {
+                navigate("/error");
                 console.error('Error updating participants:', error);
             }
         }

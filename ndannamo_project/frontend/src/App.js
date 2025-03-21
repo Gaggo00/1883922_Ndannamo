@@ -15,6 +15,7 @@ import TripSchedule from "./pages/TripPages/TripSchedule";
 import TripExpenses from "./pages/TripPages/TripExpenses";
 import TripPhotos from "./pages/TripPages/TripPhotos";
 import { WebSocketProvider } from './utils/WebSocketProvider.js';
+import ErrorPage from "./pages/ErrorPage";
 
 export default function App() {
 
@@ -38,6 +39,8 @@ export default function App() {
                                 <Route path="/trips/:id/photos" element={<TripPhotos />} />
                                 <Route path="/change-password" element={<ChangePassword/>} />
                                 <Route path="/chat" element={<TripChat />} />
+                                <Route path="/error" element={<ErrorPage />} />
+                                <Route path="*" element={<ErrorPage />} />
                             </Routes>
                         </main>
                         <FooterComponent/>

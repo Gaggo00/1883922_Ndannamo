@@ -101,6 +101,7 @@ export default function DestinationSummary({tripInfo, profileInfo}) {
                 locations = response.map(city => city.name + ", " + city.country);
 
             } else {
+
                 console.error('Invalid response data');
             }
         } catch (error) {
@@ -126,9 +127,11 @@ export default function DestinationSummary({tripInfo, profileInfo}) {
                         navigate(`/trips/${tripInfo.id}/summary`, { state: { trip: tripInfo, profile: profileInfo } })
                         console.log("locations changed!")
                     } else {
+                        navigate("/error");
                         console.error('Invalid response data');
                     }
                 } catch (error) {
+                    navigate("/error");
                     console.error('Error fetching schedule:', error);
                 }
             }
