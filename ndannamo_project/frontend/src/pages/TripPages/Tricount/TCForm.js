@@ -193,7 +193,7 @@ function TCForm({
             paidBy: paidByUser === undefined ? -1 : paidByUser[0],
             paidByNickname: sPaidBy,
             amountPerUser: sSplitValue,
-            splitEven: sSplitMethod === 'In modo equo' ? true : false,
+            splitEven: sSplitMethod === 'Equally' ? true : false,
         }
         onSubmit(newExpense, expenseId);
         reset();
@@ -270,7 +270,7 @@ function TCForm({
                             <label htmlFor={`item-${index}`}>{user[1]}</label>
                         </div>
                         {
-                            sSplitMethod === 'Personalizzato' &&
+                            sSplitMethod === 'As Amounts' &&
                             <div className="tc-list-right">
                                 <input
                                     type="number"
@@ -286,7 +286,7 @@ function TCForm({
                             </div>
                         }
                         {
-                            sSplitMethod !== 'Personalizzato' &&
+                            sSplitMethod !== 'As Amounts' &&
                             <div className="tc-list-right">€ {sSplitValue.find(expense => expense.user === user[0])?.amount ?? 0}</div>
                         }
                     </div>
