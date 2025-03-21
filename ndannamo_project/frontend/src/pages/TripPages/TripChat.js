@@ -334,7 +334,7 @@ export default function TripChat() {
                         <div className="ch-main-container">
                             <div className="ch-col ch-col-1">
                                 <div className="participants-container">
-                                    <h3>Partecipanti</h3>
+                                    <h3>Participants</h3>
                                     {chatParticipants.length > 0 ? (
                                         <ul className="participants-list">
                                             {chatParticipants.map((participant) => (
@@ -406,9 +406,6 @@ export default function TripChat() {
                                         <BsSend />
                                     </button>
                                 </div>
-                            </div>
-                            <div className="ch-col ch-col-3">
-                                <div>Colonna 3</div>
                             </div>
                         </div>
                     </div>
