@@ -8,9 +8,11 @@ import { useLocation } from 'react-router-dom';
 import participants_icon from "../../../static/svg/icons/partecipants_icon.svg";
 import UsersService from "../../../services/UsersService";
 
-export default function ParticipantsSummary({tripInfo, profileInfo}) {
+export default function ParticipantsSummary({tripInfoParam, profileInfo}) {
     const navigate = useNavigate();
     const location = useLocation();
+
+    const [tripInfo, setTripInfo] = useState(tripInfoParam);
 
     const [changeParticipants, setChangeParticipants] = useState(false);
     const [newParticipant, setNewParticipant] = useState("");
@@ -18,13 +20,7 @@ export default function ParticipantsSummary({tripInfo, profileInfo}) {
     const [invitations, setInvitations] = useState([]);
     const [participants, setParticipants] = useState([]);
 
-    const [listUsers, setListUsers] = useState([]);
     const [errorMessage, setErrorMessage] = useState("");
-
-
-    useEffect(() => {
-        initUserList();
-    }, []);
 
 
     const handleEditParticipants = () => {
@@ -61,8 +57,9 @@ export default function ParticipantsSummary({tripInfo, profileInfo}) {
                     setChangeParticipants(false);
 
                     let data = await TripService.getTrip(token, tripInfo.id);
-                    navigate(`/trips/${tripInfo.id}/summary`, {state: {trip: data, profile: profileInfo}})
-                    console.log("Participants updated!");
+                    //navigate(`/trips/${tripInfo.id}/summary`, {state: {trip: data, profile: profileInfo}})
+                    //console.log("Participants updated!");
+                    setTripInfo(data);
                 } else {
                     console.error('Invalid response data');
                 }
@@ -80,46 +77,55 @@ export default function ParticipantsSummary({tripInfo, profileInfo}) {
         setNewParticipant(event.target.value); // Aggiorna lo stato dell'input
     }
 
-    const initUserList = async ()=> {
+    const checkIfUserExists = async (email) => {
         try {
             const token = localStorage.getItem('token');
             if (!token) {
                 navigate("/login");
             }
-            let response = await UsersService.getAllUsers(token);
-            if (response) {
-                //listUsersBackup = [...(response.map(p => p.email))];
-                setListUsers(response.map(p => p.email));
-            }
+            let response = await UsersService.userExists(token, email);
+            //console.log(response);
+            return response;
 
         } catch (error) {
-            console.error('Error updating participants:', error);
+            alert("Error: " + error);
         }
-
+        return false;
     }
 
-    const handleAddParticipant = () => {
-
-        //console.log("list:");
-        //console.log(listUsers);
+    const handleAddParticipant = async () => {
 
         const newParticipantTrim = newParticipant.trim();
+        
+        let email_list_participants = participants.map(p => p.email);
+        let email_list_invitations = invitations.map(p => p.email);
 
         if (newParticipantTrim === "") {
             return;
         }
 
-        if (listUsers.length === 0) {
-            initUserList();
+        // Se l'utente e' gia' un partecipante
+        if (email_list_participants.includes(newParticipantTrim)) {
+            setErrorMessage("This user is already a participant!");
+            return;
         }
-        if (listUsers.includes(newParticipantTrim) && !invitations.includes(newParticipantTrim)) { // Aggiungi solo se non è già presente
-            setInvitations([...invitations, newParticipantTrim]); // Aggiorna la lista dei partecipanti
-            setNewParticipant(""); // Resetta il campo di input
+
+        // Controlla se l'utente e' gia' stato invitato
+        if (invitations.includes(newParticipantTrim) || email_list_invitations.includes(newParticipantTrim)) {
+            setErrorMessage("This user has already been invited!");
+            return;
         }
-        else {
-            console.log("email not found!");
+
+        // Altrimenti controlla se l'utente esiste
+        const userExists = await checkIfUserExists(newParticipantTrim);
+        if (!userExists) {
             setErrorMessage("email not found!");
+            return;
         }
+
+        // Invita l'utente
+        setInvitations([...invitations, newParticipantTrim]); // Aggiorna la lista dei partecipanti
+        setNewParticipant(""); // Resetta il campo di input
     }
 
     function removeInvitation(index) {
@@ -181,7 +187,7 @@ export default function ParticipantsSummary({tripInfo, profileInfo}) {
                             {participant.nickname !== profileInfo.nickname
                                 ?
                                 <p>{participant.length > 6 ? participant.substring(0, 10) + "..." : participant.nickname}</p>
-                                : <p>you</p>}
+                                : <p>You</p>}
                         </div>
                     ))}
                 </div>
@@ -194,6 +200,12 @@ export default function ParticipantsSummary({tripInfo, profileInfo}) {
                                     name="email"
                                     value={newParticipant}
                                     onChange={handleChange}
+                                    onKeyDown={(event) => {
+                                        setErrorMessage("");
+                                        if (event.key === 'Enter') {
+                                            handleAddParticipant();
+                                        }
+                                    }}
                                     placeholder="Enter the email"
                                 />
                                 <button onClick={handleAddParticipant}>+</button>

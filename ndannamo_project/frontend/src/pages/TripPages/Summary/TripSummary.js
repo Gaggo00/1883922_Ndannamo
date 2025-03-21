@@ -79,7 +79,7 @@ export default function TripSummary() {
                         <span> <strong>{tripInfo.title}:</strong> {DateUtilities.yyyymmdd_To_ddMONTH(tripInfo.startDate)} - {DateUtilities.yyyymmdd_To_ddMONTH(tripInfo.endDate)}</span>
                     </div>
                     <div className="trip-details">
-                        <ParticipantsSummary tripInfo={tripInfo} profileInfo={profileInfo}/>
+                        <ParticipantsSummary tripInfoParam={tripInfo} profileInfo={profileInfo}/>
                         <div className="other-section">
                             <DestinationSummary tripInfo={tripInfo} profileInfo={profileInfo}/>
                             <DateSummary tripInfo={tripInfo} profileInfo={profileInfo}/>
