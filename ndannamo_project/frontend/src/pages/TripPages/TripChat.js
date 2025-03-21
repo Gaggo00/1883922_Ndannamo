@@ -123,13 +123,9 @@ export default function TripChat() {
 
         const participants = tripInfo.list_participants || [];
 
-        //subscribeToChannel('notice/status', (message) => {console.log("Arrivato il messagino!!", message.body)})
-        //subscribeToChannel('notice/olgaatolgadotit/status', (message) => {console.log("Arrivato il messagione!!", message.body)})
         participants.forEach((participant) => {
             const encoded = encodeEmail(participant.email);
-            //console.log(encoded);
             subscribeToChannel(`notice/${encoded}/status`, (message) => {
-                //console.log("Arriva un messaggio!", message.body);
                 const data = JSON.parse(message.body); // dipende da come arriva il messaggio
                 const { userEmail, online } = data;
         
@@ -146,8 +142,6 @@ export default function TripChat() {
                             p.email === userEmail ? { ...p, online: online } : p
                         )
                     );
-            
-                    //console.log(`Aggiornato ${participantToUpdate.nickname}: online = ${online}`);
                 }
             });
         });
@@ -200,51 +194,7 @@ export default function TripChat() {
             fetchMessages();
             setFetched(true);
         }
-    
-        /*// 1. Crea un solo WebSocket client
-        const socket = new SockJS("http://localhost:8082/ws");
-    
-        const client = new Client({
-            webSocketFactory: () => socket,
-            onConnect: () => {
-                console.log("Connected to WebSocket");
-    
-                client.subscribe(`/topic/messages/${tripInfo?.id}`, (msg) => {
-                    setMessages((prev) => [...prev, JSON.parse(msg.body)]);
-                });
-    
-                // 2. Iscriviti a ogni partecipante per aggiornamenti presenza
-                participants.forEach((u) => {
-                    const userId = u[0];
-    
-                    client.subscribe(`/topic/presence/${userId}`, (message) => {
-                        const notification = JSON.parse(message.body);
-                        const { userId, online } = notification;
-    
-                        console.log(`Notifica ricevuta per user ${userId}: online = ${online}`);
-    
-                        // 3. Aggiorna lo stato dei partecipanti
-                        setChatParticipants((prevParticipants) =>
-                            prevParticipants.map((p) =>
-                                p.id === userId ? { ...p, online } : p
-                            )
-                        );
-                    });
-                });
-            },
-        });
-    
-        client.activate();
-        setStompClient(client);
-    
-        // 4. Cleanup quando il componente si smonta o tripInfo?.id cambia
-        return () => {
-            if (client) {
-                client.deactivate();
-                console.log("Disconnected from WebSocket");
-            }
-        };*/
-    
+        
     }, [tripInfo]);
     
     useEffect(() => {
