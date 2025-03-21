@@ -70,6 +70,10 @@ public class UserService {
                 .collect(Collectors.toList()); // Raccoglie i risultati in una lista
     }
 
+    public Boolean userExists(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
     
     // Cambio nickname
     public void changeNickname(String email, String newNickname) {

@@ -38,11 +38,12 @@ export default function TripInvitation({trip, reloadProfile}) {
     locationString += trip.locations[trip.locations.length - 1];
 
 
+    var list_participants = trip.list_participants.map(p => p.nickname);
     var participantsStr = "";
-    for (i = 0; i < trip.list_participants.length - 1; i++) {
-        participantsStr += ", " + trip.list_participants[i];
+    for (i = 0; i < list_participants.length - 1; i++) {
+        participantsStr += ", " + list_participants[i];
     }
-    participantsStr += trip.list_participants[trip.list_participants.length - 1];
+    participantsStr += list_participants[list_participants.length - 1];
 
 
     const [imgURL, setImgURL] = useState(missingCityImage);

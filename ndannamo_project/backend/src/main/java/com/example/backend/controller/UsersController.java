@@ -52,5 +52,28 @@ public class UsersController {
         }
     }
 
+        
+    // Per vedere se un utente esiste
+    @GetMapping(value={"/{email}/exists" , "/{email}/exists/"})
+    public ResponseEntity<?> getUserExists(@PathVariable String email) {
+        try {
+            // prendi l'utente dal token
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+            if (authentication == null || !authentication.isAuthenticated()) {
+                throw new AccessDeniedException("Must be logged in to do this operation");
+            }
+
+            // controlla se l'utente esiste
+            return ResponseEntity.ok().body(userService.userExists(email));
+    
+        }
+        catch (Exception ex) {
+            return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(ex.getMessage());
+        }
+    }
+
 
 }
