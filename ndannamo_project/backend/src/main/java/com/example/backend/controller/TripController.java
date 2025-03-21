@@ -30,6 +30,7 @@ import com.example.backend.dto.TripDTO;
 import com.example.backend.dto.TripInviteList;
 import com.example.backend.model.OvernightStay;
 import com.example.backend.model.Trip;
+import com.example.backend.service.ChatService;
 import com.example.backend.service.ImageDataService;
 import com.example.backend.service.TripService;
 import com.example.backend.service.UserService;
@@ -42,14 +43,16 @@ public class TripController {
 
     @Autowired
     private final TripService tripService;
+    private final ChatService chatService;
     //private final UserService userService;
 
     @Autowired
     private ImageDataService imageDataService;
 
     @Autowired
-    public TripController(TripService tripService /*, UserService userService*/) {
+    public TripController(TripService tripService, ChatService chatService /*, UserService userService*/) {
         this.tripService = tripService;
+        this.chatService = chatService;
         //this.userService = userService;
     }
 
@@ -62,6 +65,10 @@ public class TripController {
             String email = authentication.getName();
             // crea trip
             final Trip trip = tripService.createTrip(email, tripRequest);
+
+            ResponseEntity<?> chatResponse = chatService.createChannel(email, trip.getId());
+            System.out.println("La risposta: " + chatResponse);
+
             return ResponseEntity.ok().body(trip.getId());
         }
         catch (Exception ex) {
@@ -119,6 +126,9 @@ public class TripController {
             String email = authentication.getName();
             // elimina trip
             tripService.deleteTrip(email, id);
+
+            chatService.deleteChannel(id);
+
             return ResponseEntity.ok().body("Done");
         }
         catch (Exception ex) {
@@ -201,6 +211,9 @@ public class TripController {
 
             // lascia trip
             tripService.leaveTrip(email, id);
+
+            chatService.removeParticipant(email, id);
+
             return ResponseEntity.ok().body("Trip left");
         }
         catch (Exception ex) {

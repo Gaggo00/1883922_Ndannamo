@@ -21,6 +21,22 @@ services:
       timeout: 5s
       retries: 5
 
+  postgres-chat:
+    container_name: 'chat-postgres'
+    image: 'postgres:17.1'
+    environment:
+      POSTGRES_USER: chatuser
+      POSTGRES_PASSWORD: chatpass
+      POSTGRES_DB: chatdb
+    ports:
+      - '5433:5432'  # Espone la porta esterna 5433 verso la 5432 interna
+    volumes:
+      - postgres_chat_data:/var/lib/postgresql/data
+    networks:
+      - chat_net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U chatuser -d chatdb"]
+
   # Database cities
   postgres-cities:
     container_name: 'postgres_cities'
@@ -58,6 +74,7 @@ services:
       postgres:
         condition: service_healthy
     networks:
+      - auth_chat_net
       - spring_net
       - frontend_net
 
@@ -72,12 +89,33 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/mydatabase
       SPRING_DATASOURCE_USERNAME: myuser
       SPRING_DATASOURCE_PASSWORD: mypassword
+      INTERNAL_API_KEY: supersecretkeybackend
     depends_on:
       postgres:
         condition: service_healthy
     networks:
       - spring_net
       - frontend_net
+      - back_chat
+
+  chat-backend:
+    build: ./chat
+    container_name: chat
+    ports:
+      - "8082:8082"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-chat:5432/chatdb
+      SPRING_DATASOURCE_USERNAME: chatuser
+      SPRING_DATASOURCE_PASSWORD: chatpass
+      SPRING_APPLICATION_NAME: NdannamoChat
+      INTERNAL_API_KEY: supersecretkeybackend
+    depends_on:
+      postgres-chat:
+        condition: service_healthy
+    networks:
+      - auth_chat_net
+      - chat_net
+      - back_chat
 
   # Backend cities
   cities:
@@ -114,7 +152,11 @@ networks:
   spring_net:
   cities_net:
   frontend_net:
+  chat_net:
+  auth_chat_net:
+  back_chat:
 
 volumes:
   postgres_data:
+  postgres_chat_data:
   postgres_cities_data:

@@ -29,6 +29,9 @@ export default class UserService {
                     }
                 }
             );
+
+            /*await ChatService.addParticipant(token, tripId);*/
+
             return response.data;
         } catch (error) {
             throw error; // L'errore sarà gestito all'esterno
