@@ -13,8 +13,9 @@ export const WebSocketProvider = ({ children }) => {
     const heartbeatIntervalRef = useRef(null);
     const [connected, setConnected] = useState(false);
 
-    const connect = () => {
-        const token = localStorage.getItem('token');
+    const connect = (passedToken) => {
+        console.log("Il token passato: ", passedToken);
+        const token = passedToken || localStorage.getItem('token');
         if (!token) return;
 
         const socket = new SockJS(`http://localhost:8082/ws?token=${token}`);

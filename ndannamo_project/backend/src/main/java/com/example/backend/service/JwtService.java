@@ -3,7 +3,10 @@ package com.example.backend.service;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import jakarta.annotation.PostConstruct;
+
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -20,10 +23,38 @@ public class JwtService {
     @Value("${jwt.expiration}")
     private Long expiration;
 
+    @Value("${jwt.secretbtob}")
+    private String secretbtob;
+    @Value("${jwt.expirationbtob}")
+    private Long expirationbtob;
+
+    private String tokenBToB;
+
+    @PostConstruct
+    public void init() {
+        // Questo eseguirà il metodo subito all'avvio
+        generateBtoBToken();
+    }
+
     public String generateToken(UserDetails userDetails){
         Map<String, Object> claims = new HashMap<>();
         return createToken(claims, userDetails.getUsername());
     }
+
+    @Scheduled(fixedRate = 6 * 60 * 60 * 1000)
+    public void generateBtoBToken() {
+        tokenBToB = Jwts.builder()
+                .setSubject("backend")
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis()+expirationbtob))
+                .signWith(SignatureAlgorithm.HS256, secretbtob)
+                .compact();
+    }
+
+    public String getCurrentJwt() {
+        return tokenBToB;
+    }
+
     private String createToken(Map<String, Object> claims, String subject){
         return Jwts.builder()
                 .setClaims(claims)
