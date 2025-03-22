@@ -82,7 +82,7 @@ The frontend also connects to some external services: LocationIQ, OpenStreetMap 
 | 67 | City suggestion                           | As a user who's creating or updating a trip, I want to see be suggested names of cities                                                                  |
 | 68 | Check Online Status                       | As a user , I want to check if a user is online, so that I know if they are available to chat in real time                                             |
 
-* Not implemented
+\* Not implemented
 
 # CONTAINERS:
 
