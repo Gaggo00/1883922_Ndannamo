@@ -15,7 +15,7 @@ The frontend also connects to some external services: LocationIQ, OpenStreetMap 
 | -- | ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 1  | Registration                              | As a future user, I want to register via email and password, to begin using the application.                                                             |
 | 2  | Login                                     | As a user, I want to login, to access the application's features.                                                                                        |
-| 3  | Account deletion                          | As a user, I want to delete my account.                                                                                                                  |
+| 3 *  | Account deletion                          | As a user, I want to delete my account.                                                                                                                  |
 | 4  | Seeing the profile                        | As a user, I want to access my profile, to see my information.                                                                                           |
 | 5  | Changing username                         | As a user, I want to modify my username.                                                                                                                 |
 | 6  | Changing password                         | As a user, I want to modify my password.                                                                                                                 |
@@ -40,24 +40,24 @@ The frontend also connects to some external services: LocationIQ, OpenStreetMap 
 | 25 | Activity deletion                         | As a trip participant, I want to delete an activity from a trip's schedule                                                                               |
 | 26 | Seeing an activity's details              | As a trip participant, I want to see the details of an activity from the schedule.                                                                       |
 | 27 | Changing an activity's information        | As a trip participant, I want to modify an activity's name, time, place, date, address and additional information.                                       |
-| 28 | Adding an attachment to an activity       | As a trip participant, I want to add an attachment to an activity, to save tickets/reservations/etc                                                      |
+| 28* | Adding an attachment to an activity       | As a trip participant, I want to add an attachment to an activity, to save tickets/reservations/etc                                                      |
 | 29 | Seeing an activity's map                  | As a trip participant, I want to see a map with a marker on the activity's address.                                                                      |
-| 30 | Seeing an activity's attachments          | As a trip participant, I want to see an activity's attachments, to check the tickets/reservations/etc                                                    |
-| 31 | Downloading an activity's attachments     | As a trip participant, I want to be able to download the attachments of an activity                                                                      |
+| 30* | Seeing an activity's attachments          | As a trip participant, I want to see an activity's attachments, to check the tickets/reservations/etc                                                    |
+| 31* | Downloading an activity's attachments     | As a trip participant, I want to be able to download the attachments of an activity                                                                      |
 | 32 | Travel creation                           | As a trip participant, I want to add a travel to a trip's schedule                                                                                       |
 | 33 | Travel deletion                           | As a trip participant, I want to delete a travel from a trip's schedule                                                                                  |
 | 34 | Seeing a travel's details                 | As a trip participant, I want to see the details of a travel from the schedule.                                                                          |
 | 35 | Changing a travel's information           | As a trip participant, I want to modify a travel's name, departure time, arrival time, departure place, arrival place, date, and additional information. |
 | 36 | Adding an attachment to a travel          | As a trip participant, I want to add an attachment to a travel, to save tickets/reservations/etc                                                         |
 | 37 | Seeing a travel's map                     | As a trip participant, I want to see a map with a marker on the travel's departure address                                                               |
-| 38 | Seeing a travel's attachments             | As a trip participant, I want to see a travel's attachments, to check the tickets/reservations/etc                                                       |
-| 39 | Downloading a travel's attachments        | As a trip participant, I want to be able to download the attachments of a travel                                                                         |
+| 38* | Seeing a travel's attachments             | As a trip participant, I want to see a travel's attachments, to check the tickets/reservations/etc                                                       |
+| 39* | Downloading a travel's attachments        | As a trip participant, I want to be able to download the attachments of a travel                                                                         |
 | 40 | Changing a night's place                  | As a trip participant, I want to change the main location of a night                                                                                     |
 | 41 | Accomodation creation                     | As a trip participant, I want to create an accomodation spanning several nights, to save information about it                                            |
 | 42 | Accomodation deletion                     | As a trip participant, I want to delete an accomodation                                                                                                  |
-| 43 | Seeing an accomodation's details          | As a trip participant, I want to see the details of a night's accomodation                                                                               |
+| 43* | Seeing an accomodation's details          | As a trip participant, I want to see the details of a night's accomodation                                                                               |
 | 44 | Changing an accomodation's information    | As a trip participant, I want to modify an accomodation's name, check-in and check-out time, dates, contacts, address and additional information.        |
-| 45 | Adding an attachment to an accomodation   | As a trip participant, I want to add an attachment to an accomodation, to save tickets/reservations/etc                                                  |
+| 45* | Adding an attachment to an accomodation   | As a trip participant, I want to add an attachment to an accomodation, to save tickets/reservations/etc                                                  |
 | 46 | Seeing an accomodation's attachments      | As a trip participant, I want to see an accomodation's attachments, to check the tickets/reservations/etc                                                |
 | 47 | Downloading an accomodation's attachments | As a trip participant, I want to be able to download the attachments of an accomodation                                                                  |
 | 48 | Expense creation                          | As a trip participant, I want to create a new expense, to settle up at the end of the trip                                                               |
@@ -73,15 +73,16 @@ The frontend also connects to some external services: LocationIQ, OpenStreetMap 
 | 58 | Detbs reminder                            | As a trip participant, I want to remind other users to settle their debts with me                                                                        |
 | 59 | Write message                             | As a trip participant, I want to send a message to the others participants in a group chat                                                               |
 | 60 | Read message                              | As a trip participant, I want to see the message sent in the group chat in real time                                                                     |
-| 61 | Delete message                            | As the user who sent a message, I want to delete that message                                                                                            |
-| 62 | Modify message                            | As the user who sent a message, I wanto to modify that message                                                                                           |
-| 63 | Check message                             | As the user who sent a message, I want to see if other participants receive and/or read the message                                                      |
+| 61* | Delete message                            | As the user who sent a message, I want to delete that message                                                                                            |
+| 62* | Modify message                            | As the user who sent a message, I wanto to modify that message                                                                                           |
+| 63* | Check message                             | As the user who sent a message, I want to see if other participants receive and/or read the message                                                      |
 | 64 | Seeing the photos                         | As a trip participant, I want to see the photos of a trip uploaded by me and the other participants                                                      |
 | 65 | Uploading a photo                         | As a trip participant, I want to upload a photo of a trip                                                                                                |
 | 66 | Deleting a photo                          | As a trip participant, I want to delete a photo of a trip                                                                                                |
 | 67 | City suggestion                           | As a user who's creating or updating a trip, I want to see be suggested names of cities                                                                  |
 | 68 | Check Online Status                       | As a user , I want to check if a user is online, so that I know if they are available to chat in real time                                             |
 
+* Not implemented
 
 # CONTAINERS:
 
