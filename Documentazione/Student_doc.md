@@ -15,7 +15,7 @@ The frontend also connects to some external services: LocationIQ, OpenStreetMap 
 | -- | ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 1  | Registration                              | As a future user, I want to register via email and password, to begin using the application.                                                             |
 | 2  | Login                                     | As a user, I want to login, to access the application's features.                                                                                        |
-| 3 *  | Account deletion                          | As a user, I want to delete my account.                                                                                                                  |
+| 3*  | Account deletion                          | As a user, I want to delete my account.                                                                                                                  |
 | 4  | Seeing the profile                        | As a user, I want to access my profile, to see my information.                                                                                           |
 | 5  | Changing username                         | As a user, I want to modify my username.                                                                                                                 |
 | 6  | Changing password                         | As a user, I want to modify my password.                                                                                                                 |
@@ -48,7 +48,7 @@ The frontend also connects to some external services: LocationIQ, OpenStreetMap 
 | 33 | Travel deletion                           | As a trip participant, I want to delete a travel from a trip's schedule                                                                                  |
 | 34 | Seeing a travel's details                 | As a trip participant, I want to see the details of a travel from the schedule.                                                                          |
 | 35 | Changing a travel's information           | As a trip participant, I want to modify a travel's name, departure time, arrival time, departure place, arrival place, date, and additional information. |
-| 36 | Adding an attachment to a travel          | As a trip participant, I want to add an attachment to a travel, to save tickets/reservations/etc                                                         |
+| 36* | Adding an attachment to a travel          | As a trip participant, I want to add an attachment to a travel, to save tickets/reservations/etc                                                         |
 | 37 | Seeing a travel's map                     | As a trip participant, I want to see a map with a marker on the travel's departure address                                                               |
 | 38* | Seeing a travel's attachments             | As a trip participant, I want to see a travel's attachments, to check the tickets/reservations/etc                                                       |
 | 39* | Downloading a travel's attachments        | As a trip participant, I want to be able to download the attachments of a travel                                                                         |
