@@ -307,14 +307,14 @@ It connects to a PostgreSQL database hosted by chat-postegres container. Expose 
 	| ----------- | --- | ----------- | ------------ |
 	| SEND | /chat/{tripId} | Receives messages from users in the specified trip channel | 60 |
 	| SEND | /presence/heartbeat | Sends heartbeats to notify server of active users' presence | 68 |
-	| SEND | /topic/messages/{tripId} | Sends messages to all users subscribed to the specified trip channel | 60 |
+	| SEND | /topic/messages/{tripId} | Sends messages to all users subscribed to the specified trip channel | 59 |
 	| SEND | /topic/notice/{encodedEmail}/status | Sends status notifications about a user's online/offline status | 68 |
 
 - DB STRUCTURE:
- - Main tables:
-      **channels**: |**id**| tripId | participants
-      **users**: |**id**| email
-      **messages**: |**id**| channelId | senderId | senderNickname | body | date
+	- Main tables:
+   		**channels**: |**id**| tripId | participants
+   		**users**: |**id**| email
+   		**messages**: |**id**| channelId | senderId | senderNickname | body | date
 
 ## CONTAINER_NAME: cities
 
