@@ -470,6 +470,37 @@ This microservice is implemented by running the official PostgreSQL Docker image
     **_amount\_per\_user_** : | expense_id | amount_per_user |
 
 
+## CONTAINER_NAME: Postgres_chat
+Database to store messages
+
+### USER STORIES:
+59, 60, 68
+
+### PORTS:
+- 5433
+
+### PERSISTENCE EVALUATION
+We ensured the persistence of data by mounting a volume associated to this container.
+
+### EXTERNAL SERVICES CONNECTIONS
+This container doesn't connect to any external service.
+
+### MICROSERVICES:
+#### MICROSERVICE: Chat Database
+- TYPE: database
+- DESCRIPTION: Implements a database to store and retrieve messages
+- PORTS: 5433
+- TECHNOLOGICAL SPECIFICATION:
+This microservice is implemented by running the official PostgreSQL Docker image.
+- DB STRUCTURE:
+
+  - Main tables:
+
+    **_channels_** : | **_id_** | tripId |
+    
+    **_users_** : | **_id_** | email |
+
+    **_messages_** : | **_id_** | channelId | senderId | senderNickname | body | date |
 
 ## CONTAINER_NAME: Postgres_cities
 
