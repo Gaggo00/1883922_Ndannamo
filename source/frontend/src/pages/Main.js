@@ -214,11 +214,14 @@ function Main() {
 
                 {/* UPCOMING TRIPS */}
                 <div id='upcomingTrips'>
+                    <div className="upcomingTrips-title">
                     <button className="trips-top-row" onClick={toggleUpcomingTrips}>
                         <input type="checkbox" id="upcomingCheckbox"/>
                         <img id="upcoming-arrow-down" className="arrow-icon" src={arrowDown} alt=">"></img>
                         <h2>Upcoming trips</h2>
                     </button>
+                        {profileInfo.invitations.length >0 && <button onClick={() => navigate('/profile')}  className="invitations">{(profileInfo.invitations).length}</button>}
+                    </div>
                     {showingUpcomingTrips &&
                         <div className='tripPreviewBlocksContainer'>
                             {upcomingTrips.map((trip, index) =>
