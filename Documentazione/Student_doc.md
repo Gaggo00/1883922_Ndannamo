@@ -291,7 +291,8 @@ This service persists all chat messages exchanged between users during a trip. M
 - TECHNOLOGICAL SPECIFICATION: Microservice realized in Java using the SpringBoot framework. The microservice implements real-time, bidirectional communication using WebSocket as the transport protocol, with STOMP (Simple Text Oriented Messaging Protocol) layered on top for message exchange and routing.
 It connects to a PostgreSQL database hosted by chat-postegres container. Expose a REST interface on port 8082 to store and retrieve messages, and to create Channels
 - SERVICE ARCHITECTURE:
-- ENDPOINTS:
+  <img src="images/ChatMicroService.png" alt="System architecture" width="80%"/>
+- ENDPOINTS (REST):
     | HTTP METHOD | URL | Description | User Stories |
     | ----------- | --- | ----------- | ------------ |
     | POST | /api/channels | Creates a new channel | 59 |
@@ -301,6 +302,19 @@ It connects to a PostgreSQL database hosted by chat-postegres container. Expose 
     | GET | /api/chat/{id} | Returns messages of channel {id} | 60 |
     | GET | /api/chat/{id}/presence | Returns online user of channel {id} | 68 |
     | POST | /api/users | Create an user | 59 |
+- ENDPOINTS (WEBSOCKET):
+| HTTP METHOD |	URL | Description | User Stories |
+| ----------- | --- | ----------- | ------------ |
+| SEND | /chat/{tripId} | Receives messages from users in the specified trip channel | 60 |
+| SEND | /presence/heartbeat | Sends heartbeats to notify server of active users' presence | 68 |
+| SEND | /topic/messages/{tripId} | Sends messages to all users subscribed to the specified trip channel | 60 |
+| SEND | /topic/notice/{encodedEmail}/status | Sends status notifications about a user's online/offline status | 68 |
+
+- DB STRUCTURE:
+ - Main tables:
+      **channels**: |**id**| tripId | participants
+      **users**: |**id**| email
+      **messages**: |**id**| channelId | senderId | senderNickname | body | date
 
 ## CONTAINER_NAME: cities
 
