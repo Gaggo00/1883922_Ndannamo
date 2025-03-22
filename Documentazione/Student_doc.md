@@ -269,7 +269,7 @@ This container doesn't connect to any external service.
 This container provides a communication service via socket. It also manages the store of masseges sent for each trips.
 
 ### USER STORIES:
-59-63, 68
+59-60, 68
 
 ### PORTS:
 - 8082
@@ -315,6 +315,7 @@ It connects to a PostgreSQL database hosted by chat-postegres container. Expose 
   - Main tables:
 
     **_channels_** : | **_id_** | tripId |
+    
     **_users_** : | **_id_** | email |
 
     **_messages_** : | **_id_** | channelId | senderId | senderNickname | body | date |
