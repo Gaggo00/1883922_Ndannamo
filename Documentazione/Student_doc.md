@@ -303,12 +303,12 @@ It connects to a PostgreSQL database hosted by chat-postegres container. Expose 
     | GET | /api/chat/{id}/presence | Returns online user of channel {id} | 68 |
     | POST | /api/users | Create an user | 59 |
 - ENDPOINTS (WEBSOCKET):
-| HTTP METHOD |	URL | Description | User Stories |
-| ----------- | --- | ----------- | ------------ |
-| SEND | /chat/{tripId} | Receives messages from users in the specified trip channel | 60 |
-| SEND | /presence/heartbeat | Sends heartbeats to notify server of active users' presence | 68 |
-| SEND | /topic/messages/{tripId} | Sends messages to all users subscribed to the specified trip channel | 60 |
-| SEND | /topic/notice/{encodedEmail}/status | Sends status notifications about a user's online/offline status | 68 |
+	| HTTP METHOD |	URL | Description | User Stories |
+	| ----------- | --- | ----------- | ------------ |
+	| SEND | /chat/{tripId} | Receives messages from users in the specified trip channel | 60 |
+	| SEND | /presence/heartbeat | Sends heartbeats to notify server of active users' presence | 68 |
+	| SEND | /topic/messages/{tripId} | Sends messages to all users subscribed to the specified trip channel | 60 |
+	| SEND | /topic/notice/{encodedEmail}/status | Sends status notifications about a user's online/offline status | 68 |
 
 - DB STRUCTURE:
  - Main tables:
