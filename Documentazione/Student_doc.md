@@ -311,10 +311,13 @@ It connects to a PostgreSQL database hosted by chat-postegres container. Expose 
 	| SEND | /topic/notice/{encodedEmail}/status | Sends status notifications about a user's online/offline status | 68 |
 
 - DB STRUCTURE:
-	- Main tables:
-   		**channels**: |**id**| tripId | participants
-   		**users**: |**id**| email
-   		**messages**: |**id**| channelId | senderId | senderNickname | body | date
+
+  - Main tables:
+
+    **_channels_** : | **_id_** | tripId |
+    **_users_** : | **_id_** | email |
+
+    **_messages_** : | **_id_** | channelId | senderId | senderNickname | body | date |
 
 ## CONTAINER_NAME: cities
 
