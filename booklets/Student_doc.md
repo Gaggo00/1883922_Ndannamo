@@ -6,7 +6,6 @@ Our system is organized as shown in the picture: there are 8 Docker containers, 
 
 The frontend also connects to some external services: LocationIQ, OpenStreetMap and MeteoMatics. The containers are organized by Docker Compose in four different networks: spring_net, frontend_net, chat_net and cities_net, ensuring separation between containers that aren't meant to exchange data.
 
-[da rimuovere, template: https://drive.google.com/file/d/1stCQoen6ojT3hBexAkyp0Ja8H6XzOuFn/view ]
 
 
 # USER STORIES:
