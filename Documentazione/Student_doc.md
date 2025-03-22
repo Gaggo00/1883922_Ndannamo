@@ -80,6 +80,7 @@ The frontend also connects to some external services: LocationIQ, OpenStreetMap 
 | 65 | Uploading a photo                         | As a trip participant, I want to upload a photo of a trip                                                                                                |
 | 66 | Deleting a photo                          | As a trip participant, I want to delete a photo of a trip                                                                                                |
 | 67 | City suggestion                           | As a user who's creating or updating a trip, I want to see be suggested names of cities                                                                  |
+| 68 | Check Online Status                       | As a user , I want to check if a user is online, so that I know if they are available to chat in real time                                             |
 
 
 # CONTAINERS:
@@ -263,6 +264,43 @@ This container doesn't connect to any external service.
 
 
 
+
+## CONTAINER_NAME: chat
+This container provides a communication service via socket. It also manages the store of masseges sent for each trips.
+
+### USER STORIES:
+59-63, 68
+
+### PORTS:
+- 8082
+
+### PERSISTENCE EVALUATION
+This service persists all chat messages exchanged between users during a trip. Messages are stored in a PostgreSQL database.
+
+### EXTERNAL SERVICE CONNECTIONS
+- The container communicates with the Authentication container through the /api/users/ endpoint to syncrhonize its users with those in the Authentication container
+- The container communicates witj the Backedn container throush the /api/channels/ endpoint to ensure that each Trip corresponds to a messaging channel
+
+### MICROSERVICES:
+- Chat
+
+#### MICROSERVICE: Chat
+- TYPE: backend
+- DESCRIPTION: Users can exchange messages in real-time within the trip channels they are enrolled in
+- PORTS: 8082
+- TECHNOLOGICAL SPECIFICATION: Microservice realized in Java using the SpringBoot framework. The microservice implements real-time, bidirectional communication using WebSocket as the transport protocol, with STOMP (Simple Text Oriented Messaging Protocol) layered on top for message exchange and routing.
+It connects to a PostgreSQL database hosted by chat-postegres container. Expose a REST interface on port 8082 to store and retrieve messages, and to create Channels
+- SERVICE ARCHITECTURE:
+- ENDPOINTS:
+    | HTTP METHOD | URL | Description | User Stories |
+    | ----------- | --- | ----------- | ------------ |
+    | POST | /api/channels | Creates a new channel | 59 |
+    | DELETE | /api/channels/{id} | Delete a channel | 59 |
+    | POST | /api/channels/{id}/participants | Add a participant to channel {id} | 59
+    | DELETE | /api/channels/{id}/participants | Remova a participant from channel {id} | 59
+    | GET | /api/chat/{id} | Returns messages of channel {id} | 60 |
+    | GET | /api/chat/{id}/presence | Returns online user of channel {id} | 68 |
+    | POST | /api/users | Create an user | 59 |
 
 ## CONTAINER_NAME: cities
 
