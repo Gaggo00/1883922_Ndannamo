@@ -63,7 +63,12 @@ public class Trip {
 
 
     // foto della trip
-    @OneToMany
+    @OneToMany(
+            fetch = FetchType.LAZY,
+            mappedBy = "trip",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
     private List<ImageData> photos = new ArrayList<>();
 
 
