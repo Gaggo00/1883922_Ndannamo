@@ -3,6 +3,7 @@ package com.example.backend.controller;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +29,7 @@ import com.example.backend.dto.TravelCreationRequest;
 import com.example.backend.dto.TripCreationRequest;
 import com.example.backend.dto.TripDTO;
 import com.example.backend.dto.TripInviteList;
+import com.example.backend.dto.UserDTOSimple;
 import com.example.backend.model.OvernightStay;
 import com.example.backend.model.Trip;
 import com.example.backend.service.ChatService;
@@ -66,8 +68,11 @@ public class TripController {
             // crea trip
             final Trip trip = tripService.createTrip(email, tripRequest);
 
-            ResponseEntity<?> chatResponse = chatService.createChannel(email, trip.getId());
-            System.out.println("La risposta: " + chatResponse);
+            try {
+                chatService.createChannel(email, trip.getId());
+            } catch (Exception e) {
+                System.out.println("Errore nel creare un canale. CREATE fallita");
+            }
 
             return ResponseEntity.ok().body(trip.getId());
         }
@@ -88,6 +93,20 @@ public class TripController {
             String email = authentication.getName();
             // ottieni trips
             final List<TripDTO> tripsDTO = tripService.getTripsOfUser(email);
+
+            try {
+                tripsDTO.forEach(tripDTO -> {
+                    // Estrai la lista delle email dei partecipanti
+                    List<String> participantEmails = tripDTO.getListParticipants().stream()
+                                                            .map(UserDTOSimple::getEmail)  // Ottieni l'email da ogni UserDTOSimple
+                                                            .collect(Collectors.toList());
+                    // Chiama il servizio chat per creare un canale
+                    chatService.checkCreateChannel(participantEmails, tripDTO.getId());
+                });
+            } catch  (Exception e) {
+                System.out.println("Errore nel collegarsi a chat. CHECKCREATE trip fallito");
+            }
+
             return ResponseEntity.ok().body(tripsDTO);
         }
         catch (Exception ex) {
@@ -105,8 +124,10 @@ public class TripController {
             // prendi l'utente dal token
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String email = authentication.getName();
+
             // ottieni trip
             final TripDTO tripDTO = tripService.getTripDTOById(email, id);
+
             return ResponseEntity.ok().body(tripDTO);
         }
         catch (Exception ex) {
@@ -127,7 +148,11 @@ public class TripController {
             // elimina trip
             tripService.deleteTrip(email, id);
 
-            chatService.deleteChannel(id);
+            try {
+                chatService.deleteChannel(id);
+            } catch (Exception e) {
+                System.out.println("Problema nel collegarsi a Chat. DELETE del canale fallita");
+            }
 
             return ResponseEntity.ok().body("Done");
         }
@@ -212,7 +237,11 @@ public class TripController {
             // lascia trip
             tripService.leaveTrip(email, id);
 
-            chatService.removeParticipant(email, id);
+            try {
+                chatService.removeParticipant(email, id);
+            } catch (Exception e) {
+                System.out.println("Errore nel collegatsi a Chat. DELETE participant fallita");
+            }
 
             return ResponseEntity.ok().body("Trip left");
         }

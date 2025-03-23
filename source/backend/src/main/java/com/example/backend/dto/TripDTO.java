@@ -30,5 +30,13 @@ public class TripDTO {
     private List<UserDTOSimple> list_invitations = new ArrayList<>();
     private boolean isCreator = false;
     
+    public List<UserDTOSimple> getListParticipants() {
+        return list_participants;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
     //private List<Expense> expenses = new ArrayList<>();
 }

@@ -43,6 +43,29 @@ public class ChatService {
         return response;  
     }
 
+    public ResponseEntity<?> checkCreateChannel(List<String> participants, Long tripId) {
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + jwtService.getCurrentJwt());
+
+        CreateChannelRequest request = new CreateChannelRequest(tripId, participants);
+        HttpEntity<CreateChannelRequest> requestEntity = new HttpEntity<CreateChannelRequest>(request, headers);
+        
+        String url = UriComponentsBuilder.fromHttpUrl(CHAT_SERVER_URL)
+            .path("/{tripId}")
+            .buildAndExpand(tripId) // sostituisce {tripId} con il valore reale
+            .toUriString();
+
+        ResponseEntity<?> response = restTemplate.exchange(
+            url,
+            HttpMethod.POST,
+            requestEntity,
+            String.class
+        );
+
+        return response;  
+    }
+
     public ResponseEntity<?> deleteChannel(Long tripId) {
 
         String url = UriComponentsBuilder

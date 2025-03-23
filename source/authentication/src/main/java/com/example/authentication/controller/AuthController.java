@@ -85,7 +85,11 @@ public class AuthController {
             final UserDetails userDetails = userService.getUserByEmail(loginRequest.getEmail());
             final String jwt = jwtService.generateToken(userDetails);
 
-            chatService.createUser(loginRequest.getEmail()); // L'utente viene creato solo se già non esiste
+            try {
+                chatService.createUser(loginRequest.getEmail()); // L'utente viene creato solo se già non esiste
+            } catch (Exception e) {
+                System.out.println("Errore nel collegarsi con il servizio chat");
+            }
 
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
             String expiration = simpleDateFormat.format(jwtService.extractExpiration(jwt));
@@ -110,7 +114,11 @@ public class AuthController {
             final UserDetails userDetails = userService.getUserByEmail(user.getEmail());
             final String jwt = jwtService.generateToken(userDetails);
             
-            chatService.createUser(user.getEmail()); // L'utente viene creato solo se già non esiste
+            try {
+                chatService.createUser(user.getEmail()); // L'utente viene creato solo se già non esiste
+            } catch (Exception e) {
+                System.out.println("Errore nel collegarsi con il servizio chat");
+            }
 
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
             String expiration = simpleDateFormat.format(jwtService.extractExpiration(jwt));
