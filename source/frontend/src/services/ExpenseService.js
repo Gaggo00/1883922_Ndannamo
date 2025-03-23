@@ -74,9 +74,7 @@ class ExpenseService {
     }
 
     static async update(token, tripId, expenseId, updatedExpense) {
-        const {title, paidByNickname, paidBy, date, amount, splitEven, amountPerUser} = updatedExpense;
-        console.log("Updated: ", updatedExpense)
-        console.log("Padid by:", paidBy);
+        const {title, paidByNickname, paidBy, date, amount, splitEven, amountPerUser, refund} = updatedExpense;
 
         let year = date.getFullYear();
         let month = ("0" + (date.getMonth() + 1)).slice(-2); // Aggiungi lo zero davanti al mese se è inferiore a 10
@@ -93,6 +91,7 @@ class ExpenseService {
                     amount: amount,
                     splitEven: splitEven,
                     amountPerUser: amountPerUser,
+                    refund: refund,
                 },
                 {
                     headers: {

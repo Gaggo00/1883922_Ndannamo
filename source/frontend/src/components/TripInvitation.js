@@ -91,7 +91,6 @@ export default function TripInvitation({trip, reloadProfile}) {
             if (response) {
                 setIsModalOpen(false);
                 reloadProfile();
-                console.log("Invitation accepted!")
                 alert("You accepted the invitation!");
             } else {
                 console.error('Invalid response data');
@@ -117,7 +116,6 @@ export default function TripInvitation({trip, reloadProfile}) {
                 //setProfileInfo(response);  // Aggiorniamo lo stato con le informazioni del profilo
                 setIsModalOpen(false);
                 reloadProfile();
-                console.log("Invitation refused!");
                 alert("You refused the invitation!");
             } else {
                 console.error('Invalid response data');

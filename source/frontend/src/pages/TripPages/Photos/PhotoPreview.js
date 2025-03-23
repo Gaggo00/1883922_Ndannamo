@@ -44,7 +44,6 @@ export default function PhotoPreview({photoId, tripId, openModal}) {
             const response = await PhotoService.getPhoto(token, tripId, photoId);
 
             if (response) {
-                console.log("fetched image of id: " + photoId);
                 //setPhoto(response);
                 const imageObjectURL = URL.createObjectURL(response);
 

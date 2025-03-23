@@ -14,7 +14,6 @@ export const WebSocketProvider = ({ children }) => {
     const [connected, setConnected] = useState(false);
 
     const connect = (passedToken) => {
-        console.log("Il token passato: ", passedToken);
         const token = passedToken || localStorage.getItem('token');
         if (!token) return;
 
@@ -67,7 +66,6 @@ export const WebSocketProvider = ({ children }) => {
     };
 
     useEffect(() => {
-        console.log("WOOOOOW, dentro l'use effect!");
         connect();
 
         return () => {

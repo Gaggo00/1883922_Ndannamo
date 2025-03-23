@@ -49,7 +49,6 @@ export default class UserService {
                         "Authorization": `Bearer ${token}`,
                         "Content-Type": "application/json"}
                 });
-            console.log(response);
             return response.data;
         }
         catch(err) {
@@ -68,7 +67,6 @@ export default class UserService {
                         "Authorization": `Bearer ${token}`,
                         "Content-Type": "application/json"}
                 });
-            console.log(response);
             return response.data;
         }
         catch(err) {

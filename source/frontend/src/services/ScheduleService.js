@@ -154,7 +154,6 @@ class ScheduleService {
                         "Content-Type": "application/json"
                     }
                 });
-            console.log(response);
             return response.data;
         }
         catch(err) {
@@ -175,7 +174,6 @@ class ScheduleService {
                         "Content-Type": "application/json"
                     }
                 });
-            console.log(response);
             return response.data;
         }
         catch(err) {
@@ -196,7 +194,6 @@ class ScheduleService {
                         "Content-Type": "application/json"
                     }
                 });
-            console.log(response);
             return response.data;
         }
         catch(err) {
@@ -217,7 +214,6 @@ class ScheduleService {
                         "Content-Type": "application/json"
                     }
                 });
-            console.log(response);
             return response.data;
         }
         catch(err) {
@@ -238,7 +234,6 @@ class ScheduleService {
                         "Content-Type": "application/json"
                     }
                 });
-            console.log(response);
             return response.data;
         }
         catch(err) {
@@ -259,7 +254,6 @@ class ScheduleService {
                         "Content-Type": "application/json"
                     }
                 });
-            console.log(response);
             return response.data;
         }
         catch(err) {
@@ -284,7 +278,6 @@ class ScheduleService {
                         "Content-Type": "application/json"
                     }
                 });
-            console.log(response);
             return response.data;
         }
         catch(err) {
@@ -305,7 +298,6 @@ class ScheduleService {
                         "Content-Type": "application/json"
                     }
                 });
-            console.log(response);
             return response.data;
         }
         catch(err) {
@@ -326,7 +318,6 @@ class ScheduleService {
                         "Content-Type": "application/json"
                     }
                 });
-            console.log(response);
             return response.data;
         }
         catch(err) {
@@ -347,7 +338,6 @@ class ScheduleService {
                         "Content-Type": "application/json"
                     }
                 });
-            console.log(response);
             return response.data;
         }
         catch(err) {
@@ -368,7 +358,6 @@ class ScheduleService {
                         "Content-Type": "application/json"
                     }
                 });
-            console.log(response);
             return response.data;
         }
         catch(err) {
@@ -388,7 +377,6 @@ class ScheduleService {
                         "Content-Type": "application/json"
                     }
                 });
-            console.log(response);
             return response.data;
         }
         catch(err) {
@@ -413,7 +401,6 @@ class ScheduleService {
                         "Content-Type": "application/json"
                     }
                 });
-            console.log(response);
             return response.data;
         }
         catch(err) {

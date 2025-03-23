@@ -18,7 +18,6 @@ export const ScrollableRow = ({ blocks=[] }) => {
         if (!container) return;
 
         const { scrollLeft, scrollWidth, clientWidth } = container;
-        console.log({ scrollLeft, scrollWidth, clientWidth });
         setShowLeftArrow(scrollLeft > 0);
         setShowRightArrow(scrollLeft + clientWidth < scrollWidth);
     };
@@ -118,6 +117,12 @@ class Refound {
         this.amount = params.amount ?? 0;
         this.by = params.by ?? -1;
         this.to = params.to ?? -1;
+
+        let byNickname = params.users.find(user => user[0] === params.by)
+        let toNickname = params.users.find(user => user[0] === params.to)
+
+        this.byNick = byNickname ? byNickname[1] : null
+        this.toNick = toNickname ? toNickname[1] : null
     }
 }
 
@@ -147,6 +152,7 @@ export const TCRefund = ({user, expenses, users=[], onRefund}) => {
             dict[e.paidBy] = dict[e.paidBy] || 0; 
             dict[e.paidBy] += e.amount;
             e.amountPerUser.map((userAmount) => {
+                dict[userAmount.user] = dict[userAmount.user] || 0;
                 dict[userAmount.user] -= userAmount.amount;
                 dict[userAmount.user] = parseFloat(dict[userAmount.user].toFixed(2))
             })
@@ -156,11 +162,12 @@ export const TCRefund = ({user, expenses, users=[], onRefund}) => {
             .map(([key, value]) => [Number(key), value])
             .sort(([, valueA], [, valueB]) => valueB - valueA);
         sorted.map((value) => {
+            let userNickname = ""
             const indx = users.findIndex(user => user[0] === value[0]);
-            if (indx >= 0) {
-                const newBalance = {amount: value[1], id: value[0], nickname: users[indx][1]};
-                balances.push(newBalance);
-            }
+            if (indx >= 0)
+                userNickname = users[indx][1]
+            const newBalance = {amount: value[1], id: value[0], nickname: userNickname};
+            balances.push(newBalance);
         })
 
         return balances;
@@ -194,7 +201,7 @@ export const TCRefund = ({user, expenses, users=[], onRefund}) => {
                 toRefound -= refoundValue;
                 lastValue.amount -= refoundValue;
                 lastValue.amount = parseFloat(lastValue.amount.toFixed(2))
-                const refound = new Refound({to: newBalances[i].id, amount: refoundValue, by: lastValue.id})
+                const refound = new Refound({to: newBalances[i].id, amount: refoundValue, by: lastValue.id, users: users})
                 newRefounds.push(refound);
             }
 
@@ -227,17 +234,20 @@ export const TCRefund = ({user, expenses, users=[], onRefund}) => {
 
     function onClickPaid(index) {
         const refund = refunds[index];
-        const userBy  = users.find(user => user[0] === refund.by);
-        const userTo = users.find(user => user[0] === refund.to);
+
+        if (refund.by < 0 || refund.to < 0) {
+            console.log("ERROR: Bad users id:", refund.by, refund.to)
+            return;
+        }
 
         const newExpenseDto = {
-            title: "Refund by " + userBy[1] + " to " + userTo[1],
+            title: "Refund by " + refund.byNick + " to " + refund.toNick,
             amount: refund.amount,
             date: new Date(),
-            paidBy: userBy[0],
-            paidByNickname: userBy[1],
+            paidBy: refund.by,
+            paidByNickname: refund.byNick,
             splitEven: true,
-            amountPerUser: [{user: userTo[0], amount: refund.amount, userNickname: userTo[1]}],
+            amountPerUser: [{user: refund.to, amount: refund.amount, userNickname: refund.by}],
             refund: true,
         }
 
@@ -275,8 +285,8 @@ export const TCRefund = ({user, expenses, users=[], onRefund}) => {
                             by={r.by}
                             to={r.to}
                             amount={r.amount}
-                            toNick={users.find(user => user[0] === r.to) ? users.find(user => user[0] === r.to)[1] : null}
-                            byNick={users.find(user => user[0] === r.by) ? users.find(user => user[0] === r.by)[1] : null}
+                            toNick={r.toNick}
+                            byNick={r.byNick}
                             onClickPaid={() => onClickPaid(index)}
 
                         />

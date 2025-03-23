@@ -106,7 +106,6 @@ export default function TripPhotos() {
             const response = await PhotoService.getPhotoIds(token, id);
 
             if (response) {
-                console.log(response);
                 setImageIds(response);
             } else {
                 navigate("/error");
@@ -126,7 +125,6 @@ export default function TripPhotos() {
             alert("Choose a file first");
             return;
         }
-        console.log("uploading photo");
         try {
             const token = localStorage.getItem('token');
             if (!token) {
@@ -137,7 +135,6 @@ export default function TripPhotos() {
             const response = await PhotoService.uploadPhoto(token, id, file);
 
             if (response) {
-                console.log(response);
                 fetchPhotoIds();
                 
             } else {
@@ -160,7 +157,6 @@ export default function TripPhotos() {
         if (photoId === -1) {
             return;
         }
-        console.log("deleting photo, id: " + photoId);
         try {
             const token = localStorage.getItem('token');
             if (!token) {
@@ -193,7 +189,6 @@ export default function TripPhotos() {
             }
             const response = await TripService.getTrip(token, id);
             if (response) {
-                console.log("obtained trip info");
                 setTripInfo(response);
                 
             } else {

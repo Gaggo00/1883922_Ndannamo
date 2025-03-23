@@ -14,6 +14,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -25,6 +26,7 @@ public class Expense {
     private long id;
 
     @ManyToOne
+    @JoinColumn(name="trip_id", nullable=false)
     private Trip trip;
 
     private String title;

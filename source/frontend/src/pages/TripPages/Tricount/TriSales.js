@@ -30,7 +30,6 @@ const TCSales = ({data, userId, formVisibility, handleSelection=()=>{}, handleAd
         let myExpenses = 0;
 
         expensesData.map((expense) => {
-            console.log(expense.refund)
             if (expense.refund !== true) {
                 totExpenses += expense.amount;
                 expense.amountPerUser.map((e) => {

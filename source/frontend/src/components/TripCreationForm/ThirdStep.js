@@ -74,7 +74,6 @@ const ThirdStep = ({ nextStep, prevStep, handleChange, values }) => {
 
     // Per aggiungere la citta' passata in input alla lista di destinazioni scelte (serve per quando scegli un suggerimento)
     const addCity = (cityToAdd) => {
-        console.log("cityToAdd: " + cityToAdd);
 
         if (cityToAdd.trim() === '') {
             setError('City name cannot be empty!');
@@ -115,7 +114,6 @@ const ThirdStep = ({ nextStep, prevStep, handleChange, values }) => {
 
     // Per quando clicchi su una destinazione dai suggerimenti
     const handleSelect = (index) => {
-        console.log("selected location: " + suggestions[index]);
 
         setSearchTerm("");
         setSuggestions([]);     // Nasconde i suggerimenti

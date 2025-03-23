@@ -50,7 +50,6 @@ export default function TripExpenses() {
             }
             const response = await TripService.getTrip(token, id);
             if (response) {
-                console.log("obtained trip info");
                 setTripInfo(response);
             } else {
                 navigate("/error");
@@ -123,7 +122,6 @@ export default function TripExpenses() {
                     ...oldExpense,
                     ...newExpense,
                 }
-
                 newData[oldExpenseIndex] = newExpenseDto;
                 const now = new Date();
                 newData.sort((a, b) => Math.abs(b.date - now) - Math.abs(a.date - now));
@@ -168,9 +166,34 @@ export default function TripExpenses() {
                 response.map(expense => [
                     expense.date = new Date(expense.date),
                 ]);
+
                 const now = new Date();
                 response.sort((a, b) => Math.abs(b.date - now) - Math.abs(a.date - now));
                 //console.log("E'arrivata una risposta", response);
+
+                const retrievedOldUsers = [...users];
+
+                response.forEach(expense => {
+                    let retrievedUser = [expense.paidBy, expense.paidByNickname];
+                
+                    const alreadyRetrieved = retrievedOldUsers.some(user => user[0] === retrievedUser[0]);
+                
+                    if (!alreadyRetrieved) {
+                        retrievedOldUsers.push(retrievedUser);
+                    }
+                
+                    expense.amountPerUser.forEach(a => {
+                        retrievedUser = [a.user, a.userNickname];
+                
+                        const alreadyRetrieved = retrievedOldUsers.some(user => user[0] === retrievedUser[0]);
+                
+                        if (!alreadyRetrieved) {
+                            retrievedOldUsers.push(retrievedUser);
+                        }
+                    });
+                });                
+                
+                setUsers(retrievedOldUsers);
                 setData(response);
             } else {
                 console.error('Invalid response data');

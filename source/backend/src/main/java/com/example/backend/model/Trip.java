@@ -53,7 +53,12 @@ public class Trip {
 
 
     // spese della trip
-    @OneToMany
+    @OneToMany(
+        fetch = FetchType.EAGER,
+        mappedBy = "trip",
+        cascade = CascadeType.ALL,
+        orphanRemoval = true
+    )
     private List<Expense> expenses = new ArrayList<>();
 
 

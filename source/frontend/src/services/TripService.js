@@ -112,7 +112,6 @@ class TripService{
     static async updateDestination(token, tripId, newDestination) {
         var value = newDestination
         try {
-            console.log("New locations=", value);
             const response = await axios.put(
                 `${TripService.BASE_URL}/${tripId}/locations`,
                 {value},
@@ -141,7 +140,6 @@ class TripService{
             const requests = [];
 
             if (invitations_to_revoke.length > 0) {
-                console.log("revoking invitations");
                 requests.push(
                     axios.post(
                         `${TripService.BASE_URL}/${tripId}/remove-invitations`,

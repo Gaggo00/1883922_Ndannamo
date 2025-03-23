@@ -27,7 +27,6 @@ export default function ParticipantsSummary({tripInfoParam, profileInfo}) {
         setChangeParticipants(true);
         setParticipants(tripInfo.list_participants);
         setInvitations(tripInfo.list_invitations);
-        console.log("list_invitations", tripInfo.list_invitations);
         setErrorMessage([]);
     }
 

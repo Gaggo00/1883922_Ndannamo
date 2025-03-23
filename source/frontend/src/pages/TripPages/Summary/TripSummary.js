@@ -32,7 +32,6 @@ export default function TripSummary() {
             }
             const response = await TripService.getTrip(token, id);
             if (response) {
-                console.log("obtained trip info");
                 setTripInfo(response);
                 
             } else {

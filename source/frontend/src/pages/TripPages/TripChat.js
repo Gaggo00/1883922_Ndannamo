@@ -199,9 +199,9 @@ export default function TripChat() {
         
     }, [tripInfo]);
     
-    useEffect(() => {
+    /*useEffect(() => {
         console.log('chatParticipants aggiornati:', chatParticipants);
-    }, [chatParticipants]);
+    }, [chatParticipants]);*/
 
 
     const sendMessage = () => {

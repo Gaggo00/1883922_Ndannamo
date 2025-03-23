@@ -35,7 +35,6 @@ export default function EventOpenDatePlace({event, saveDateFunction, savePlaceFu
 
             // cambia data nel backend
             const response = await saveDateFunction(token, event.tripId, event.id, newDate);
-            console.log(newDate);
 
             if (response) {
                 // aggiorna in locale
@@ -79,7 +78,6 @@ export default function EventOpenDatePlace({event, saveDateFunction, savePlaceFu
             // cambia posto nel backend
             const response = await savePlaceFunction(token, event.tripId, event.id, newPlace);
             //const response = "ok";
-            console.log(newPlace);
 
             if (response) {
                 // aggiorna in locale

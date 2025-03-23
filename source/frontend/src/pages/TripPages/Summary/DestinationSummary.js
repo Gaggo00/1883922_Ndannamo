@@ -73,7 +73,6 @@ export default function DestinationSummary({tripInfo, profileInfo}) {
     };
     // Per aggiungere la citta' passata in input alla lista di destinazioni scelte (serve per quando scegli un suggerimento)
     const addCity = (cityToAdd) => {
-        console.log("cityToAdd: " + cityToAdd);
 
         if (cityToAdd.trim() === '') {
             setError('City name cannot be empty!');
@@ -125,7 +124,6 @@ export default function DestinationSummary({tripInfo, profileInfo}) {
                         setChangeDestination(false)
                         tripInfo.locations= newDestination;
                         navigate(`/trips/${tripInfo.id}/summary`, { state: { trip: tripInfo, profile: profileInfo } })
-                        console.log("locations changed!")
                     } else {
                         navigate("/error");
                         console.error('Invalid response data');
@@ -141,10 +139,8 @@ export default function DestinationSummary({tripInfo, profileInfo}) {
     // Per rimuovere una destinazione dalla lista di destinazioni scelte
     const removeCity = (index) => {
         setNewDestination(newDestination.filter((_, i) => i !== index));
-        console.log(newDestination);
     };
     const handleSelect = (index) => {
-        console.log("selected location: " + suggestions[index]);
 
         setSearchTerm("");
         setSuggestions([]);     // Nasconde i suggerimenti
