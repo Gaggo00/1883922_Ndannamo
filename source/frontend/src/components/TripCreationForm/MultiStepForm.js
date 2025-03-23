@@ -55,7 +55,6 @@ const MultiStepForm = ({reloadTrips}) => {
                 nextStep();
             }
             else {
-                console.log(response);
                 alert("Server error");
             }
         } catch (error) {

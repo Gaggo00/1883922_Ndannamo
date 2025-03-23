@@ -14,9 +14,10 @@ export default function DestinationSummary({tripInfo, profileInfo}) {
 
     const [changeDestination, setChangeDestination] = useState(false);
     const [newDestination, setNewDestination] = useState([]);
+    const [errorMessage, setErrorMessage] = useState("");
     const navigate = useNavigate();
     const location = useLocation();
-    
+
     const [suggestions, setSuggestions] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [error, setError] = useState('');
@@ -25,9 +26,12 @@ export default function DestinationSummary({tripInfo, profileInfo}) {
     const handleEditDestination = () => {
         setNewDestination(tripInfo.locations);
         setChangeDestination(true);
+        setErrorMessage("");
     }
     const handleInputChange = async (event) => {
         setError("");
+        // Clear the error message when user starts typing a new destination
+        setErrorMessage("");
         setSearchTerm(event.target.value);
 
         const value = event.target.value.trim();
@@ -58,6 +62,8 @@ export default function DestinationSummary({tripInfo, profileInfo}) {
         }
 
         setError('');
+        // Clear the error message when a new destination is added
+        setErrorMessage("");
         setNewDestination([...newDestination, searchTerm]);
 
         setSearchTerm("");
@@ -73,7 +79,6 @@ export default function DestinationSummary({tripInfo, profileInfo}) {
     };
     // Per aggiungere la citta' passata in input alla lista di destinazioni scelte (serve per quando scegli un suggerimento)
     const addCity = (cityToAdd) => {
-        console.log("cityToAdd: " + cityToAdd);
 
         if (cityToAdd.trim() === '') {
             setError('City name cannot be empty!');
@@ -85,8 +90,9 @@ export default function DestinationSummary({tripInfo, profileInfo}) {
         }
 
         setError('');
+        // Clear the error message when a new destination is added
+        setErrorMessage("");
         setNewDestination([...newDestination, cityToAdd]);
-
 
         setSearchTerm("");
     };
@@ -113,6 +119,12 @@ export default function DestinationSummary({tripInfo, profileInfo}) {
         if (newDestination === tripInfo.locations) {
             setChangeDestination(false);
         } else {
+            // Verifica che ci sia almeno una destinazione
+            if (newDestination.length === 0) {
+                setErrorMessage("At least one destination is required.");
+                return;
+            }
+
             if (newDestination) {
                 try {
                     const token = localStorage.getItem('token');
@@ -123,9 +135,8 @@ export default function DestinationSummary({tripInfo, profileInfo}) {
 
                     if (response) {
                         setChangeDestination(false)
-                        tripInfo.locations= newDestination;
+                        tripInfo.locations = newDestination;
                         navigate(`/trips/${tripInfo.id}/summary`, { state: { trip: tripInfo, profile: profileInfo } })
-                        console.log("locations changed!")
                     } else {
                         navigate("/error");
                         console.error('Invalid response data');
@@ -136,26 +147,26 @@ export default function DestinationSummary({tripInfo, profileInfo}) {
                 }
             }
         }
-
     }
+
     // Per rimuovere una destinazione dalla lista di destinazioni scelte
     const removeCity = (index) => {
         setNewDestination(newDestination.filter((_, i) => i !== index));
-        console.log(newDestination);
     };
-    const handleSelect = (index) => {
-        console.log("selected location: " + suggestions[index]);
 
+    const handleSelect = (index) => {
         setSearchTerm("");
         setSuggestions([]);     // Nasconde i suggerimenti
-
         addCity(suggestions[index]);
     };
+
     function undoChangeDestination() {
         setChangeDestination(false);
         setSuggestions([]);
         setSearchTerm("");
+        setErrorMessage("");
     }
+
     function logVar(){
         console.log(newDestination);
     }
@@ -178,56 +189,65 @@ export default function DestinationSummary({tripInfo, profileInfo}) {
                 {!changeDestination && <div className="destinations" id="1">
                     <div className="list-destination">
                         {tripInfo.locations.map((location, index) => (
-                        <p key={index}>{location}</p>
-                    ))}
+                            <p key={index}>{location}</p>
+                        ))}
                     </div>
                 </div>}
                 {changeDestination &&
-                <div className="destinations">
-                    <div className="list-destination">
-
-                        {changeDestination && newDestination.map((location, index) => (
-                            <li key={index}>
-                                {location}
-                                <button onClick={() => removeCity(index)}><i className="bi bi-x"></i></button>
-                            </li>
-                        ))}
-
-                    </div>
-                    <div id="input">
-                        {changeDestination && false && <button onClick={logVar}> log </button>}
-                        {changeDestination && <label>
-                            <input
-                                id="text-input"
-                                type="text"
-                                className='long-input'
-                                value={searchTerm}
-                                onChange={handleInputChange}
-                                onKeyDown={handleKeyDown}
-                                placeholder='Type a destination'
-                            />
-                        </label>}
-                        {suggestions.length > 0 && (
-                            <div className='suggestions'>
-                                <div className='suggestions-destination'>
-                                    {suggestions.map((location, index) => (
-                                        <li
-                                            key={index}
-                                            onClick={() => handleSelect(index)}
-                                            className='data'
-                                            onMouseOver={(e) => (e.target.style.backgroundColor = "#f0f0f0")}
-                                            onMouseOut={(e) => (e.target.style.backgroundColor = "#fff")}
-                                        >
-                                            <strong>{location.substring(0, document.getElementById("text-input").value.trim().length)}</strong>{location.substring(document.getElementById("text-input").value.trim().length)}
-                                        </li>
-                                    ))}
+                    <div className="destinations">
+                        <div className="list-destination">
+                            {changeDestination && newDestination.map((location, index) => (
+                                <li key={index}>
+                                    {location}
+                                    <button
+                                        onClick={() => removeCity(index)}
+                                        className="remove-button"
+                                        title="Remove destination"
+                                    >
+                                        <i className="bi bi-x"></i>
+                                    </button>
+                                </li>
+                            ))}
+                        </div>
+                        {errorMessage && <div className="destination-error-message" style={{ color: 'red' }}>
+                            <p>{errorMessage}</p>
+                        </div>}
+                        <div id="input">
+                            {changeDestination && false && <button onClick={logVar}> log </button>}
+                            {changeDestination && <label>
+                                <input
+                                    id="text-input"
+                                    type="text"
+                                    className='long-input'
+                                    value={searchTerm}
+                                    onChange={handleInputChange}
+                                    onKeyDown={handleKeyDown}
+                                    placeholder='Type a destination'
+                                />
+                            </label>}
+                            {error && <div className="input-error-message">
+                                <p>{error}</p>
+                            </div>}
+                            {suggestions.length > 0 && (
+                                <div className='suggestions'>
+                                    <div className='suggestions-destination'>
+                                        {suggestions.map((location, index) => (
+                                            <li
+                                                key={index}
+                                                onClick={() => handleSelect(index)}
+                                                className='data'
+                                                onMouseOver={(e) => (e.target.style.backgroundColor = "#f0f0f0")}
+                                                onMouseOut={(e) => (e.target.style.backgroundColor = "#fff")}
+                                            >
+                                                <strong>{location.substring(0, document.getElementById("text-input").value.trim().length)}</strong>{location.substring(document.getElementById("text-input").value.trim().length)}
+                                            </li>
+                                        ))}
+                                    </div>
                                 </div>
-                            </div>
-                        )}
-                    </div>
-                </div>}
+                            )}
+                        </div>
+                    </div>}
             </div>
         </div>
     );
 }
-

@@ -294,6 +294,19 @@ body {
     cursor: pointer;
     border-radius: 5px;
 }
+.upcomingTrips-title {
+    display:flex
+}
+.upcomingTrips-title .invitations{
+    background-color: #f25b5b;
+    border-radius: 50%;
+    width: 20px;       /* o qualsiasi dimensione tu voglia */
+    height: 20px;
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
 
 

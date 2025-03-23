@@ -523,9 +523,9 @@ public class TripService {
 
         // Controllo che l'utente pagante faccia parte della trip
         User paidByUser = userService.getUserById(expenseCreationRequest.getPaidById());
-        if (!userIsAParticipant(paidByUser, trip)) {
-            throw new ResourceNotFoundException("User 'paid by' not found!");
-        }
+        //if (!userIsAParticipant(paidByUser, trip)) {
+        //    throw new ResourceNotFoundException("User 'paid by' not found!");
+        //}
         expense.setPaidBy(paidByUser.getId());
         expense.setPaidByNickname(paidByUser.getNickname());
 
@@ -538,9 +538,9 @@ public class TripService {
         for (AmountUserDTO amountUser : amountPerUserDTO) {
             // Controllo che l'utente faccia parte della trip
             User user = userService.getUserById(amountUser.getUser());
-            if (!userIsAParticipant(user, trip)) {
-                throw new ResourceNotFoundException("User not found!");
-            }
+            //if (!userIsAParticipant(user, trip)) {
+            //    throw new ResourceNotFoundException("User not found!");
+            //}
             tot += amountUser.getAmount();
             //amountPerUserMap.put(user, amountUser.getAmount());
         }
@@ -634,9 +634,9 @@ public class TripService {
 
         // Controllo che l'utente pagante faccia parte della trip
         User paidByUser = userService.getUserById(expenseUpdateRequest.getPaidById());
-        if (!userIsAParticipant(paidByUser, trip)) {
-            throw new ResourceNotFoundException("User 'paid by' not found!");
-        }
+        //if (!userIsAParticipant(paidByUser, trip)) {
+        //    throw new ResourceNotFoundException("User 'paid by' not found!");
+        //}
         expense.setPaidBy(paidByUser.getId());
         expense.setPaidByNickname(paidByUser.getNickname());
 
@@ -649,9 +649,9 @@ public class TripService {
         for (AmountUserDTO amountUser : amountPerUserDTO) {
             // Controllo che l'utente faccia parte della trip
             User user = userService.getUserById(amountUser.getUser());
-            if (!userIsAParticipant(user, trip)) {
-                throw new ResourceNotFoundException("User not found!");
-            }
+            //if (!userIsAParticipant(user, trip)) {
+            //    throw new ResourceNotFoundException("User not found!");
+            //}
             tot += amountUser.getAmount();
             //amountPerUserMap.put(user, amountUser.getAmount());
         }

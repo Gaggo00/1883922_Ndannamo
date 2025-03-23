@@ -27,7 +27,6 @@ export default function ParticipantsSummary({tripInfoParam, profileInfo}) {
         setChangeParticipants(true);
         setParticipants(tripInfo.list_participants);
         setInvitations(tripInfo.list_invitations);
-        console.log("list_invitations", tripInfo.list_invitations);
         setErrorMessage([]);
     }
 
@@ -96,37 +95,42 @@ export default function ParticipantsSummary({tripInfoParam, profileInfo}) {
     }
 
     const handleAddParticipant = async () => {
-
         const newParticipantTrim = newParticipant.trim();
-        
-        let email_list_participants = participants.map(p => p.email);
-        let email_list_invitations = invitations.map(p => p.email);
 
+        // Se l'input è vuoto, non fare nulla
         if (newParticipantTrim === "") {
             return;
         }
 
-        // Se l'utente e' gia' un partecipante
+        // Ottieni le email dei partecipanti esistenti
+        let email_list_participants = participants.map(p => p.email);
+
+        // Ottieni le email degli inviti
+        let email_list_invitations = invitations.map(p =>
+            (typeof p === "object" && p !== null && "email" in p) ? p.email : p
+        );
+
+        // Controlla se l'utente è già un partecipante
         if (email_list_participants.includes(newParticipantTrim)) {
             setErrorMessage("This user is already a participant!");
             return;
         }
 
-        // Controlla se l'utente e' gia' stato invitato
-        if (invitations.includes(newParticipantTrim) || email_list_invitations.includes(newParticipantTrim)) {
+        // Controlla se l'utente è già stato invitato
+        if (email_list_invitations.includes(newParticipantTrim)) {
             setErrorMessage("This user has already been invited!");
             return;
         }
 
-        // Altrimenti controlla se l'utente esiste
+        // Controlla se l'utente esiste
         const userExists = await checkIfUserExists(newParticipantTrim);
         if (!userExists) {
-            setErrorMessage("email not found!");
+            setErrorMessage("Email not found!");
             return;
         }
 
         // Invita l'utente
-        setInvitations([...invitations, newParticipantTrim]); // Aggiorna la lista dei partecipanti
+        setInvitations([...invitations, newParticipantTrim]);
         setNewParticipant(""); // Resetta il campo di input
     }
 

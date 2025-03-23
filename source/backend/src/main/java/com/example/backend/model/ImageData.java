@@ -27,6 +27,7 @@ public class ImageData {
     private LocalDateTime uploadDate;
 
     @ManyToOne
+    @JoinColumn(name="trip_id", nullable=false)
     private Trip trip;
 
     @ManyToOne

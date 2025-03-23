@@ -65,8 +65,12 @@ public class UserController {
 
             String message = "Invitation ";
             if (accept.getValue()) {
-                
-                chatService.addParticipant(email, id);
+            
+                try {
+                    chatService.addParticipant(email, id);
+                } catch (Exception e) {
+                    System.out.println("Errore nel comunicare con chat. Aggiunta partecipanti FALLITA");
+                }
 
                 message += "accepted";
             }

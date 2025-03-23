@@ -113,7 +113,6 @@ function ProfilePage() {
 
     // Funzione per eliminare il profilo, ancora da fare
     const deleteProfile = () => {
-        console.log("profile deleted");
         setIsModalOpen(false);
     }
 

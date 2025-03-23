@@ -1,12 +1,11 @@
 # SYSTEM DESCRIPTION:
 
-<img src="images/Ndannamo-Architecture.png" alt="System architecture" width="100%"/>
+<img src="booklets/images/Ndannamo-Architecture.png" alt="System architecture" width="100%"/>
 
 Our system is organized as shown in the picture: there are 8 Docker containers, orchestrated by Docker Compose. One container runs the frontend, 4 containers run different microservices of the backend, and 3 containers run the PostgreSQL Docker image and together they constitute the database of our application.
 
 The frontend also connects to some external services: LocationIQ, OpenStreetMap and MeteoMatics. The containers are organized by Docker Compose in four different networks: spring_net, frontend_net, chat_net and cities_net, ensuring separation between containers that aren't meant to exchange data.
 
-[da rimuovere, template: https://drive.google.com/file/d/1stCQoen6ojT3hBexAkyp0Ja8H6XzOuFn/view ]
 
 
 # USER STORIES:
@@ -112,7 +111,7 @@ This container doesn't connect to any external service.
 - PORTS: 8081
 - TECHNOLOGICAL SPECIFICATION: Microservice realized in Java using the SpringBoot framework. It connects to a PostgreSQL database hosted by the Postgres_main container, and exposes a REST interface on port 8081.
 - SERVICE ARCHITECTURE: 
-<img src="images/Ndannamo_Microservice_Authentication.png" alt="System architecture" width="80%"/>
+<img src="booklets/images/Ndannamo_Microservice_Authentication.png" alt="System architecture" width="80%"/>
 
 - ENDPOINTS:
 		
@@ -157,7 +156,7 @@ This container doesn't connect to any external service.
 - PORTS: 8080
 - TECHNOLOGICAL SPECIFICATION: Microservice realized in Java using the SpringBoot framework. It connects to a PostgreSQL database hosted by the Postgres_main container, and exposes a REST interface on port 8080.
 - SERVICE ARCHITECTURE: 
-<img src="images/Ndannamo_Microservice_Profile_Managing.png" alt="System architecture" width="80%"/>
+<img src="booklets/images/Ndannamo_Microservice_Profile_Managing.png" alt="System architecture" width="80%"/>
 
 - ENDPOINTS:
 		
@@ -186,7 +185,7 @@ This container doesn't connect to any external service.
 - PORTS: 8080
 - TECHNOLOGICAL SPECIFICATION: Microservice realized in Java using the SpringBoot framework. It connects to a PostgreSQL database hosted by the Postgres_main container, and exposes a REST interface on port 8080.
 - SERVICE ARCHITECTURE: 
-<img src="images/Ndannamo_Microservice_Trip_Managing.png" alt="System architecture" width="100%"/>
+<img src="booklets/images/Ndannamo_Microservice_Trip_Managing.png" alt="System architecture" width="100%"/>
 
 - ENDPOINTS:
 		
@@ -292,7 +291,7 @@ This service persists all chat messages exchanged between users during a trip. M
 - TECHNOLOGICAL SPECIFICATION: Microservice realized in Java using the SpringBoot framework. The microservice implements real-time, bidirectional communication using WebSocket as the transport protocol, with STOMP (Simple Text Oriented Messaging Protocol) layered on top for message exchange and routing.
 It connects to a PostgreSQL database hosted by chat-postegres container. Expose a REST interface on port 8082 to store and retrieve messages, and to create Channels
 - SERVICE ARCHITECTURE:
-  <img src="images/ChatMicroService.png" alt="System architecture" width="80%"/>
+  <img src="booklets/images/ChatMicroService.png" alt="System architecture" width="80%"/>
 - ENDPOINTS (REST):
     | HTTP METHOD | URL | Description | User Stories |
     | ----------- | --- | ----------- | ------------ |
@@ -348,7 +347,7 @@ This container doesn't connect to any external service.
 - PORTS: 8083
 - TECHNOLOGICAL SPECIFICATION: Microservice realized in Java using the SpringBoot framework. It connects to a PostgreSQL database hosted by the Postgres_cities container, and exposes a REST interface on port 8083, only allowing the methods GET and OPTIONS. It doesn't require users to be logged in.
 - SERVICE ARCHITECTURE: 
-<img src="images/Ndannamo_Microservice_Cities_Information.png" alt="System architecture" width="80%"/>
+<img src="booklets/images/Ndannamo_Microservice_Cities_Information.png" alt="System architecture" width="80%"/>
 
 - ENDPOINTS:
 		
@@ -394,7 +393,7 @@ This container doesn't require persistent data.
 - PORTS: 3000
 - TECHNOLOGICAL SPECIFICATION: Microservice realized in Javascript using the React framework. It connects to both external services and to the microservices offered by the other containers of the application. It provides the users with a web interface through with they can access the functionalities of the application.
 - SERVICE ARCHITECTURE: 
-<img src="images/Ndannamo_Microservice_Frontend.png" alt="System architecture" width="100%"/>
+<img src="booklets/images/Ndannamo_Microservice_Frontend.png" alt="System architecture" width="100%"/>
 
 - PAGES: <put this bullet point only in the case of frontend and fill the following table>
 
@@ -440,7 +439,7 @@ This container doesn't connect to any external service.
 - TECHNOLOGICAL SPECIFICATION:
 This microservice is implemented by running the official PostgreSQL Docker image.
 - SERVICE ARCHITECTURE: 
-<img src="images/Ndannamo_PostgresMain_Schema.png" alt="System architecture" width="80%"/>
+<img src="booklets/images/Ndannamo_PostgresMain_Schema.png" alt="System architecture" width="80%"/>
 
 - DB STRUCTURE: <put this bullet point only in the case a DB is used in the microservice and specify the structure of the tables and columns>
 

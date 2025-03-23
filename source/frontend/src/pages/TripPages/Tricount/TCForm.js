@@ -122,7 +122,6 @@ function TCForm({
     
       const handleBlurCost = (index, e) => {
         // Se l'input è vuoto, ripristina il valore a 0
-        console.log(e.target.value)
         if (e.target.value <= 0) {
             setSplitValue((prev) =>
                 prev.filter((expense, idx) => idx !== index) // Rimuovi l'elemento con l'indice 'index'
@@ -137,29 +136,21 @@ function TCForm({
 
     function checkSubmit() {
         if (sTitle === "" || sTitle === undefined) {
-            console.log("problema titolo");
             return false;}
-        if (Number(sAmount) <= 0 || sTitle === undefined){
-            console.log("problema amount");
+        if (Number(sAmount) <= 0 || Number(sAmount) > 10000 || sTitle === undefined){
             return false;}
         if (sPaidBy === "" || sPaidBy === undefined){
-            console.log("problema paid");
             return false;}
         const compDat1 = new Date(sDate);
         const compDat2 = new Date();
         compDat1.setHours(0, 0, 0, 0);
         compDat2.setHours(0, 0, 0, 0)
         if (compDat1 < compDat2 || sDate === undefined){
-            console.log("problema con date 1");
             return false;}
         if (sSplitValue.length === 0 || sSplitValue === undefined){
-            console.log("problema splitvalue");
             return false;}
         const totalAmount = sSplitValue.reduce((sum, item) => sum + item.amount, 0);
         if (totalAmount != sAmount){
-            console.log("total amount", totalAmount);
-            console.log("sAmount:",sAmount);
-            console.log("problema totale");
             return false;}
         return true;
     }
@@ -185,7 +176,8 @@ function TCForm({
             return;
         }
 
-        const paidByUser = users.find((u) => u[1] === sPaidBy);
+        let paidByUser = users.find((u) => u[1] === sPaidBy);
+
         const newExpense = {
             title: sTitle,
             amount: Number(sAmount),
