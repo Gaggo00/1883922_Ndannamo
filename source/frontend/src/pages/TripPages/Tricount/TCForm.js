@@ -137,7 +137,7 @@ function TCForm({
     function checkSubmit() {
         if (sTitle === "" || sTitle === undefined) {
             return false;}
-        if (Number(sAmount) <= 0 || sTitle === undefined){
+        if (Number(sAmount) <= 0 || Number(sAmount) > 10000 || sTitle === undefined){
             return false;}
         if (sPaidBy === "" || sPaidBy === undefined){
             return false;}
